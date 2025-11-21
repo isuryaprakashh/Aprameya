@@ -8,6 +8,26 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { apiRequest } from '@/lib/queryClient';
 import { Project, BlogPost, ResearchItem, Event } from '@/lib/types';
 import { useToast } from '@/hooks/use-toast';
+import { motion, AnimatePresence } from 'framer-motion';
+import {
+  FaProjectDiagram,
+  FaNewspaper,
+  FaFlask,
+  FaCalendarAlt,
+  FaComments,
+  FaPlus,
+  FaEdit,
+  FaTrash,
+  FaTimes,
+  FaSave,
+  FaPaperPlane,
+  FaImage,
+  FaUsers,
+  FaTag,
+  FaAlignLeft,
+  FaClock,
+  FaMapMarkerAlt
+} from 'react-icons/fa';
 
 const CoreTeamDashboard = () => {
   const queryClient = useQueryClient();
@@ -16,29 +36,29 @@ const CoreTeamDashboard = () => {
   const [isEditing, setIsEditing] = useState(false);
 
   // Fetch projects, blogs, research items, and events
-  const { data: projects = [] } = useQuery({
+  const { data: projects = [] } = useQuery<Project[]>({
     queryKey: ['/api/projects'],
     staleTime: 5000,
   });
 
-  const { data: blogs = [] } = useQuery({
+  const { data: blogs = [] } = useQuery<BlogPost[]>({
     queryKey: ['/api/blogs'],
     staleTime: 5000,
   });
 
-  const { data: research = [] } = useQuery({
+  const { data: research = [] } = useQuery<ResearchItem[]>({
     queryKey: ['/api/research'],
     staleTime: 5000,
   });
 
-  const { data: events = [] } = useQuery({
+  const { data: events = [] } = useQuery<Event[]>({
     queryKey: ['/api/events'],
     staleTime: 5000,
   });
 
   // Message thread for core team
   const { data: messages = [] } = useQuery({
-    queryKey: ['/api/messages'],
+    queryKey: ['/api/db/messages'],
     staleTime: 5000,
   });
 
@@ -46,7 +66,7 @@ const CoreTeamDashboard = () => {
 
   // Mutations
   const createProject = useMutation({
-    mutationFn: (project: Omit<Project, 'id'>) => 
+    mutationFn: (project: Omit<Project, 'id'>) =>
       apiRequest('/api/projects', { method: 'POST', body: JSON.stringify(project) }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/projects'] });
@@ -60,7 +80,7 @@ const CoreTeamDashboard = () => {
   });
 
   const updateProject = useMutation({
-    mutationFn: (project: Project) => 
+    mutationFn: (project: Project) =>
       apiRequest(`/api/projects/${project.id}`, { method: 'PATCH', body: JSON.stringify(project) }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/projects'] });
@@ -74,7 +94,7 @@ const CoreTeamDashboard = () => {
   });
 
   const createBlog = useMutation({
-    mutationFn: (blog: Omit<BlogPost, 'id'>) => 
+    mutationFn: (blog: Omit<BlogPost, 'id'>) =>
       apiRequest('/api/blogs', { method: 'POST', body: JSON.stringify(blog) }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/blogs'] });
@@ -88,7 +108,7 @@ const CoreTeamDashboard = () => {
   });
 
   const updateBlog = useMutation({
-    mutationFn: (blog: BlogPost) => 
+    mutationFn: (blog: BlogPost) =>
       apiRequest(`/api/blogs/${blog.id}`, { method: 'PATCH', body: JSON.stringify(blog) }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/blogs'] });
@@ -102,7 +122,7 @@ const CoreTeamDashboard = () => {
   });
 
   const createResearch = useMutation({
-    mutationFn: (research: Omit<ResearchItem, 'id'>) => 
+    mutationFn: (research: Omit<ResearchItem, 'id'>) =>
       apiRequest('/api/research', { method: 'POST', body: JSON.stringify(research) }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/research'] });
@@ -116,7 +136,7 @@ const CoreTeamDashboard = () => {
   });
 
   const updateResearch = useMutation({
-    mutationFn: (research: ResearchItem) => 
+    mutationFn: (research: ResearchItem) =>
       apiRequest(`/api/research/${research.id}`, { method: 'PATCH', body: JSON.stringify(research) }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/research'] });
@@ -130,7 +150,7 @@ const CoreTeamDashboard = () => {
   });
 
   const createEvent = useMutation({
-    mutationFn: (event: Omit<Event, 'id'>) => 
+    mutationFn: (event: Omit<Event, 'id'>) =>
       apiRequest('/api/events', { method: 'POST', body: JSON.stringify(event) }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/events'] });
@@ -144,7 +164,7 @@ const CoreTeamDashboard = () => {
   });
 
   const updateEvent = useMutation({
-    mutationFn: (event: Event) => 
+    mutationFn: (event: Event) =>
       apiRequest(`/api/events/${event.id}`, { method: 'PATCH', body: JSON.stringify(event) }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/events'] });
@@ -158,10 +178,10 @@ const CoreTeamDashboard = () => {
   });
 
   const sendMessage = useMutation({
-    mutationFn: (content: string) => 
-      apiRequest('/api/messages', { method: 'POST', body: JSON.stringify({ content }) }),
+    mutationFn: (content: string) =>
+      apiRequest('/api/db/messages', { method: 'POST', body: JSON.stringify({ content }) }),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['/api/messages'] });
+      queryClient.invalidateQueries({ queryKey: ['/api/db/messages'] });
       setNewMessage('');
     },
   });
@@ -174,7 +194,7 @@ const CoreTeamDashboard = () => {
 
   const handleCreate = (type: string) => {
     const newItem: any = {};
-    
+
     if (type === 'project') {
       newItem.title = '';
       newItem.description = '';
@@ -204,7 +224,7 @@ const CoreTeamDashboard = () => {
       newItem.location = '';
       newItem.image = '';
     }
-    
+
     setSelectedItem({ ...newItem, type });
     setIsEditing(true);
   };
@@ -253,440 +273,469 @@ const CoreTeamDashboard = () => {
 
   const renderForm = () => {
     if (!selectedItem) return null;
-    
+
     const { type } = selectedItem;
-    
-    if (type === 'project') {
-      return (
-        <Card className="w-full mb-6">
-          <CardHeader>
-            <CardTitle>{selectedItem.id ? 'Edit Project' : 'New Project'}</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div>
-              <label htmlFor="title" className="text-sm font-medium">Title</label>
-              <Input 
-                id="title" 
-                value={selectedItem.title} 
-                onChange={(e) => handleInputChange('title', e.target.value)} 
-              />
-            </div>
-            <div>
-              <label htmlFor="category" className="text-sm font-medium">Category</label>
-              <Input 
-                id="category" 
-                value={selectedItem.category} 
-                onChange={(e) => handleInputChange('category', e.target.value)} 
-              />
-            </div>
-            <div>
-              <label htmlFor="description" className="text-sm font-medium">Description</label>
-              <Textarea 
-                id="description" 
-                value={selectedItem.description} 
-                onChange={(e) => handleInputChange('description', e.target.value)} 
-              />
-            </div>
-            <div>
-              <label htmlFor="technologies" className="text-sm font-medium">Technologies (comma separated)</label>
-              <Input 
-                id="technologies" 
-                value={selectedItem.technologies} 
-                onChange={(e) => handleInputChange('technologies', e.target.value)} 
-              />
-            </div>
-            <div>
-              <label htmlFor="team" className="text-sm font-medium">Team Members (comma separated)</label>
-              <Input 
-                id="team" 
-                value={selectedItem.team} 
-                onChange={(e) => handleInputChange('team', e.target.value)} 
-              />
-            </div>
-            <div>
-              <label htmlFor="image" className="text-sm font-medium">Image URL</label>
-              <Input 
-                id="image" 
-                value={selectedItem.image} 
-                onChange={(e) => handleInputChange('image', e.target.value)} 
-              />
-            </div>
-          </CardContent>
-          <CardFooter className="flex justify-between">
-            <Button variant="outline" onClick={handleCancelEdit}>Cancel</Button>
-            <Button onClick={handleSave}>Save</Button>
-          </CardFooter>
-        </Card>
-      );
-    } else if (type === 'blog') {
-      return (
-        <Card className="w-full mb-6">
-          <CardHeader>
-            <CardTitle>{selectedItem.id ? 'Edit Blog Post' : 'New Blog Post'}</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div>
-              <label htmlFor="title" className="text-sm font-medium">Title</label>
-              <Input 
-                id="title" 
-                value={selectedItem.title} 
-                onChange={(e) => handleInputChange('title', e.target.value)} 
-              />
-            </div>
-            <div>
-              <label htmlFor="excerpt" className="text-sm font-medium">Excerpt</label>
-              <Input 
-                id="excerpt" 
-                value={selectedItem.excerpt} 
-                onChange={(e) => handleInputChange('excerpt', e.target.value)} 
-              />
-            </div>
-            <div>
-              <label htmlFor="content" className="text-sm font-medium">Content</label>
-              <Textarea 
-                id="content" 
-                value={selectedItem.content} 
-                rows={6}
-                onChange={(e) => handleInputChange('content', e.target.value)} 
-              />
-            </div>
-            <div>
-              <label htmlFor="category" className="text-sm font-medium">Category</label>
-              <Input 
-                id="category" 
-                value={selectedItem.category} 
-                onChange={(e) => handleInputChange('category', e.target.value)} 
-              />
-            </div>
-            <div>
-              <label htmlFor="image" className="text-sm font-medium">Image URL</label>
-              <Input 
-                id="image" 
-                value={selectedItem.image} 
-                onChange={(e) => handleInputChange('image', e.target.value)} 
-              />
-            </div>
-          </CardContent>
-          <CardFooter className="flex justify-between">
-            <Button variant="outline" onClick={handleCancelEdit}>Cancel</Button>
-            <Button onClick={handleSave}>Save</Button>
-          </CardFooter>
-        </Card>
-      );
-    } else if (type === 'research') {
-      return (
-        <Card className="w-full mb-6">
-          <CardHeader>
-            <CardTitle>{selectedItem.id ? 'Edit Research Item' : 'New Research Item'}</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div>
-              <label htmlFor="title" className="text-sm font-medium">Title</label>
-              <Input 
-                id="title" 
-                value={selectedItem.title} 
-                onChange={(e) => handleInputChange('title', e.target.value)} 
-              />
-            </div>
-            <div>
-              <label htmlFor="category" className="text-sm font-medium">Category</label>
-              <Input 
-                id="category" 
-                value={selectedItem.category} 
-                onChange={(e) => handleInputChange('category', e.target.value)} 
-              />
-            </div>
-            <div>
-              <label htmlFor="description" className="text-sm font-medium">Description</label>
-              <Textarea 
-                id="description" 
-                value={selectedItem.description} 
-                onChange={(e) => handleInputChange('description', e.target.value)} 
-              />
-            </div>
-            <div>
-              <label htmlFor="authors" className="text-sm font-medium">Authors (comma separated)</label>
-              <Input 
-                id="authors" 
-                value={selectedItem.authors} 
-                onChange={(e) => handleInputChange('authors', e.target.value)} 
-              />
-            </div>
-            <div>
-              <label htmlFor="citations" className="text-sm font-medium">Citations</label>
-              <Input 
-                id="citations" 
-                type="number"
-                value={selectedItem.citations} 
-                onChange={(e) => handleInputChange('citations', parseInt(e.target.value, 10) || 0)} 
-              />
-            </div>
-            <div>
-              <label htmlFor="image" className="text-sm font-medium">Image URL</label>
-              <Input 
-                id="image" 
-                value={selectedItem.image} 
-                onChange={(e) => handleInputChange('image', e.target.value)} 
-              />
-            </div>
-          </CardContent>
-          <CardFooter className="flex justify-between">
-            <Button variant="outline" onClick={handleCancelEdit}>Cancel</Button>
-            <Button onClick={handleSave}>Save</Button>
-          </CardFooter>
-        </Card>
-      );
-    } else if (type === 'event') {
-      return (
-        <Card className="w-full mb-6">
-          <CardHeader>
-            <CardTitle>{selectedItem.id ? 'Edit Event' : 'New Event'}</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div>
-              <label htmlFor="title" className="text-sm font-medium">Title</label>
-              <Input 
-                id="title" 
-                value={selectedItem.title} 
-                onChange={(e) => handleInputChange('title', e.target.value)} 
-              />
-            </div>
-            <div>
-              <label htmlFor="type" className="text-sm font-medium">Event Type</label>
-              <Input 
-                id="type" 
-                value={selectedItem.type} 
-                onChange={(e) => handleInputChange('type', e.target.value)} 
-              />
-            </div>
-            <div>
-              <label htmlFor="description" className="text-sm font-medium">Description</label>
-              <Textarea 
-                id="description" 
-                value={selectedItem.description} 
-                onChange={(e) => handleInputChange('description', e.target.value)} 
-              />
-            </div>
-            <div>
-              <label htmlFor="date" className="text-sm font-medium">Date</label>
-              <Input 
-                id="date" 
-                type="date"
-                value={selectedItem.date} 
-                onChange={(e) => handleInputChange('date', e.target.value)} 
-              />
-            </div>
-            <div>
-              <label htmlFor="time" className="text-sm font-medium">Time</label>
-              <Input 
-                id="time" 
-                value={selectedItem.time} 
-                onChange={(e) => handleInputChange('time', e.target.value)} 
-              />
-            </div>
-            <div>
-              <label htmlFor="location" className="text-sm font-medium">Location</label>
-              <Input 
-                id="location" 
-                value={selectedItem.location} 
-                onChange={(e) => handleInputChange('location', e.target.value)} 
-              />
-            </div>
-            <div>
-              <label htmlFor="image" className="text-sm font-medium">Image URL</label>
-              <Input 
-                id="image" 
-                value={selectedItem.image} 
-                onChange={(e) => handleInputChange('image', e.target.value)} 
-              />
-            </div>
-          </CardContent>
-          <CardFooter className="flex justify-between">
-            <Button variant="outline" onClick={handleCancelEdit}>Cancel</Button>
-            <Button onClick={handleSave}>Save</Button>
-          </CardFooter>
-        </Card>
-      );
-    }
-    
-    return null;
+
+    const FormField = ({ label, id, type = "text", value, onChange, isTextArea = false, rows = 3 }: any) => (
+      <div className="space-y-2">
+        <label htmlFor={id} className="text-sm font-medium text-emerald-400/80 ml-1">{label}</label>
+        {isTextArea ? (
+          <Textarea
+            id={id}
+            value={value}
+            rows={rows}
+            onChange={(e) => onChange(e.target.value)}
+            className="bg-black/40 border-white/10 focus:border-emerald-500/50 text-white placeholder:text-white/20 resize-none"
+          />
+        ) : (
+          <Input
+            id={id}
+            type={type}
+            value={value}
+            onChange={(e) => onChange(type === 'number' ? (parseInt(e.target.value, 10) || 0) : e.target.value)}
+            className="bg-black/40 border-white/10 focus:border-emerald-500/50 text-white placeholder:text-white/20 h-10"
+          />
+        )}
+      </div>
+    );
+
+    return (
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        exit={{ opacity: 0, y: -20 }}
+        className="w-full mb-8"
+      >
+        <div className="glass-panel p-6 border-emerald-500/20 relative overflow-hidden group">
+          <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-emerald-500/0 via-emerald-500/50 to-emerald-500/0 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+
+          <div className="flex justify-between items-center mb-6 border-b border-white/10 pb-4">
+            <h2 className="text-2xl font-bold text-white flex items-center gap-3">
+              {type === 'project' && <FaProjectDiagram className="text-emerald-400" />}
+              {type === 'blog' && <FaNewspaper className="text-emerald-400" />}
+              {type === 'research' && <FaFlask className="text-emerald-400" />}
+              {type === 'event' && <FaCalendarAlt className="text-emerald-400" />}
+              <span className="bg-clip-text text-transparent bg-gradient-to-r from-white to-emerald-200">
+                {selectedItem.id ? `Edit ${type.charAt(0).toUpperCase() + type.slice(1)}` : `New ${type.charAt(0).toUpperCase() + type.slice(1)}`}
+              </span>
+            </h2>
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={handleCancelEdit}
+              className="text-gray-400 hover:text-white hover:bg-white/10 rounded-full"
+            >
+              <FaTimes />
+            </Button>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {type === 'project' && (
+              <>
+                <div className="md:col-span-2">
+                  <FormField label="Project Title" id="title" value={selectedItem.title} onChange={(v: any) => handleInputChange('title', v)} />
+                </div>
+                <FormField label="Category" id="category" value={selectedItem.category} onChange={(v: any) => handleInputChange('category', v)} />
+                <FormField label="Technologies (comma separated)" id="technologies" value={selectedItem.technologies} onChange={(v: any) => handleInputChange('technologies', v)} />
+                <div className="md:col-span-2">
+                  <FormField label="Description" id="description" value={selectedItem.description} onChange={(v: any) => handleInputChange('description', v)} isTextArea rows={4} />
+                </div>
+                <div className="md:col-span-2">
+                  <FormField label="Team Members (comma separated)" id="team" value={selectedItem.team} onChange={(v: any) => handleInputChange('team', v)} />
+                </div>
+                <div className="md:col-span-2">
+                  <FormField label="Image URL" id="image" value={selectedItem.image} onChange={(v: any) => handleInputChange('image', v)} />
+                </div>
+              </>
+            )}
+
+            {type === 'blog' && (
+              <>
+                <div className="md:col-span-2">
+                  <FormField label="Post Title" id="title" value={selectedItem.title} onChange={(v: any) => handleInputChange('title', v)} />
+                </div>
+                <div className="md:col-span-2">
+                  <FormField label="Excerpt" id="excerpt" value={selectedItem.excerpt} onChange={(v: any) => handleInputChange('excerpt', v)} isTextArea rows={2} />
+                </div>
+                <div className="md:col-span-2">
+                  <FormField label="Content" id="content" value={selectedItem.content} onChange={(v: any) => handleInputChange('content', v)} isTextArea rows={8} />
+                </div>
+                <FormField label="Category" id="category" value={selectedItem.category} onChange={(v: any) => handleInputChange('category', v)} />
+                <FormField label="Image URL" id="image" value={selectedItem.image} onChange={(v: any) => handleInputChange('image', v)} />
+              </>
+            )}
+
+            {type === 'research' && (
+              <>
+                <div className="md:col-span-2">
+                  <FormField label="Research Title" id="title" value={selectedItem.title} onChange={(v: any) => handleInputChange('title', v)} />
+                </div>
+                <FormField label="Category" id="category" value={selectedItem.category} onChange={(v: any) => handleInputChange('category', v)} />
+                <FormField label="Citations" id="citations" type="number" value={selectedItem.citations} onChange={(v: any) => handleInputChange('citations', v)} />
+                <div className="md:col-span-2">
+                  <FormField label="Description" id="description" value={selectedItem.description} onChange={(v: any) => handleInputChange('description', v)} isTextArea rows={4} />
+                </div>
+                <div className="md:col-span-2">
+                  <FormField label="Authors (comma separated)" id="authors" value={selectedItem.authors} onChange={(v: any) => handleInputChange('authors', v)} />
+                </div>
+                <div className="md:col-span-2">
+                  <FormField label="Image URL" id="image" value={selectedItem.image} onChange={(v: any) => handleInputChange('image', v)} />
+                </div>
+              </>
+            )}
+
+            {type === 'event' && (
+              <>
+                <div className="md:col-span-2">
+                  <FormField label="Event Title" id="title" value={selectedItem.title} onChange={(v: any) => handleInputChange('title', v)} />
+                </div>
+                <FormField label="Event Type" id="type" value={selectedItem.type} onChange={(v: any) => handleInputChange('type', v)} />
+                <FormField label="Date" id="date" type="date" value={selectedItem.date} onChange={(v: any) => handleInputChange('date', v)} />
+                <FormField label="Time" id="time" value={selectedItem.time} onChange={(v: any) => handleInputChange('time', v)} />
+                <FormField label="Location" id="location" value={selectedItem.location} onChange={(v: any) => handleInputChange('location', v)} />
+                <div className="md:col-span-2">
+                  <FormField label="Description" id="description" value={selectedItem.description} onChange={(v: any) => handleInputChange('description', v)} isTextArea rows={4} />
+                </div>
+                <div className="md:col-span-2">
+                  <FormField label="Image URL" id="image" value={selectedItem.image} onChange={(v: any) => handleInputChange('image', v)} />
+                </div>
+              </>
+            )}
+          </div>
+
+          <div className="flex justify-end gap-3 mt-8 pt-4 border-t border-white/10">
+            <Button
+              variant="ghost"
+              onClick={handleCancelEdit}
+              className="text-gray-400 hover:text-white hover:bg-white/10"
+            >
+              Cancel
+            </Button>
+            <Button
+              onClick={handleSave}
+              className="bg-emerald-500 hover:bg-emerald-600 text-white border-0"
+            >
+              <FaSave className="mr-2" /> Save Changes
+            </Button>
+          </div>
+        </div>
+      </motion.div>
+    );
   };
 
   return (
-    <div className="container mx-auto py-6">
-      <h1 className="text-3xl font-bold mb-6">Core Team Dashboard</h1>
-      
-      {isEditing ? (
-        renderForm()
-      ) : (
-        <Tabs defaultValue="projects">
-          <TabsList className="mb-6">
-            <TabsTrigger value="projects">Projects</TabsTrigger>
-            <TabsTrigger value="blogs">Blogs</TabsTrigger>
-            <TabsTrigger value="research">Research</TabsTrigger>
-            <TabsTrigger value="events">Events</TabsTrigger>
-            <TabsTrigger value="team-chat">Team Chat</TabsTrigger>
-          </TabsList>
-          
-          <TabsContent value="projects" className="space-y-4">
-            <div className="flex justify-between mb-4">
-              <h2 className="text-2xl font-semibold">Projects</h2>
-              <Button onClick={() => handleCreate('project')}>Add Project</Button>
-            </div>
-            
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {projects.map((project: Project) => (
-                <Card key={project.id} className="overflow-hidden">
-                  {project.image && (
-                    <div className="h-48 overflow-hidden">
-                      <img src={project.image} alt={project.title} className="w-full h-full object-cover" />
+    <div className="min-h-screen dither-bg text-white font-sans selection:bg-emerald-500/30">
+      <div className="container mx-auto py-8 px-4">
+        <div className="glass-panel p-8 mb-8 border-b border-white/10 relative overflow-hidden">
+          <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-emerald-500/0 via-emerald-500/50 to-emerald-500/0" />
+          <h1 className="text-4xl font-bold mb-2 bg-clip-text text-transparent bg-gradient-to-r from-white via-emerald-200 to-emerald-400">
+            Core Team Dashboard
+          </h1>
+          <p className="text-gray-400 max-w-2xl">
+            Manage projects, publications, events, and team communications.
+          </p>
+        </div>
+
+        {isEditing ? (
+          renderForm()
+        ) : (
+          <Tabs defaultValue="projects" className="space-y-8">
+            <TabsList className="glass-panel p-1 bg-black/40 border-emerald-500/20 w-full justify-start overflow-x-auto">
+              <TabsTrigger value="projects" className="data-[state=active]:bg-emerald-500 data-[state=active]:text-white text-gray-400 hover:text-white transition-all duration-300 px-6 py-2 rounded-lg">Projects</TabsTrigger>
+              <TabsTrigger value="blogs" className="data-[state=active]:bg-emerald-500 data-[state=active]:text-white text-gray-400 hover:text-white transition-all duration-300 px-6 py-2 rounded-lg">Blogs</TabsTrigger>
+              <TabsTrigger value="research" className="data-[state=active]:bg-emerald-500 data-[state=active]:text-white text-gray-400 hover:text-white transition-all duration-300 px-6 py-2 rounded-lg">Research</TabsTrigger>
+              <TabsTrigger value="events" className="data-[state=active]:bg-emerald-500 data-[state=active]:text-white text-gray-400 hover:text-white transition-all duration-300 px-6 py-2 rounded-lg">Events</TabsTrigger>
+              <TabsTrigger value="team-chat" className="data-[state=active]:bg-emerald-500 data-[state=active]:text-white text-gray-400 hover:text-white transition-all duration-300 px-6 py-2 rounded-lg">Team Chat</TabsTrigger>
+            </TabsList>
+
+            <TabsContent value="projects" className="space-y-6">
+              <div className="glass-panel p-6 rounded-xl border border-white/10">
+                <div className="flex justify-between items-center mb-6">
+                  <div className="flex items-center gap-3">
+                    <div className="p-3 rounded-lg bg-emerald-500/10 border border-emerald-500/20">
+                      <FaProjectDiagram className="text-2xl text-emerald-400" />
                     </div>
-                  )}
-                  <CardHeader>
-                    <CardTitle>{project.title}</CardTitle>
-                    <CardDescription>{project.category}</CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <p className="line-clamp-3">{project.description}</p>
-                  </CardContent>
-                  <CardFooter>
-                    <Button 
-                      variant="outline"
-                      onClick={() => handleEdit(project, 'project')}
-                    >
-                      Edit
-                    </Button>
-                  </CardFooter>
-                </Card>
-              ))}
-            </div>
-          </TabsContent>
-          
-          <TabsContent value="blogs" className="space-y-4">
-            <div className="flex justify-between mb-4">
-              <h2 className="text-2xl font-semibold">Blog Posts</h2>
-              <Button onClick={() => handleCreate('blog')}>Add Blog Post</Button>
-            </div>
-            
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {blogs.map((blog: BlogPost) => (
-                <Card key={blog.id} className="overflow-hidden">
-                  {blog.image && (
-                    <div className="h-48 overflow-hidden">
-                      <img src={blog.image} alt={blog.title} className="w-full h-full object-cover" />
+                    <div>
+                      <h2 className="text-2xl font-bold text-white">Projects</h2>
+                      <p className="text-gray-400 text-sm">Manage ongoing and completed projects</p>
                     </div>
-                  )}
-                  <CardHeader>
-                    <CardTitle>{blog.title}</CardTitle>
-                    <CardDescription>{blog.category}</CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <p className="line-clamp-3">{blog.excerpt}</p>
-                  </CardContent>
-                  <CardFooter>
-                    <Button 
-                      variant="outline"
-                      onClick={() => handleEdit(blog, 'blog')}
+                  </div>
+                  <Button onClick={() => handleCreate('project')} className="btn-primary bg-emerald-500 hover:bg-emerald-600 text-white border-0 shadow-lg shadow-emerald-500/20">
+                    <FaPlus className="mr-2" /> Add Project
+                  </Button>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {projects.map((project: Project, index: number) => (
+                    <motion.div
+                      key={project.id}
+                      initial={{ opacity: 0, scale: 0.95 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      transition={{ delay: index * 0.05 }}
+                      className="clean-card group h-full flex flex-col"
                     >
-                      Edit
-                    </Button>
-                  </CardFooter>
-                </Card>
-              ))}
-            </div>
-          </TabsContent>
-          
-          <TabsContent value="research" className="space-y-4">
-            <div className="flex justify-between mb-4">
-              <h2 className="text-2xl font-semibold">Research</h2>
-              <Button onClick={() => handleCreate('research')}>Add Research</Button>
-            </div>
-            
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {research.map((item: ResearchItem) => (
-                <Card key={item.id} className="overflow-hidden">
-                  {item.image && (
-                    <div className="h-48 overflow-hidden">
-                      <img src={item.image} alt={item.title} className="w-full h-full object-cover" />
+                      {project.image && (
+                        <div className="h-48 overflow-hidden relative">
+                          <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent z-10" />
+                          <img
+                            src={project.image}
+                            alt={project.title}
+                            className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 filter brightness-75 group-hover:brightness-100"
+                          />
+                          <div className="absolute top-4 right-4 z-20">
+                            <span className="px-3 py-1 rounded-full bg-black/70 backdrop-blur-md text-xs font-mono text-emerald-400 border border-emerald-500/30">
+                              {project.category}
+                            </span>
+                          </div>
+                        </div>
+                      )}
+                      <CardHeader className="relative z-10">
+                        <CardTitle className="text-xl font-bold text-white group-hover:text-emerald-400 transition-colors">{project.title}</CardTitle>
+                      </CardHeader>
+                      <CardContent className="flex-grow relative z-10">
+                        <p className="text-gray-400 line-clamp-3 text-sm leading-relaxed">{project.description}</p>
+                      </CardContent>
+                      <CardFooter className="border-t border-white/5 bg-black/20 p-4 flex justify-end relative z-10">
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => handleEdit(project, 'project')}
+                          className="text-gray-400 hover:text-white hover:bg-white/10 transition-colors"
+                        >
+                          <FaEdit className="mr-2" /> Edit
+                        </Button>
+                      </CardFooter>
+                    </motion.div>
+                  ))}
+                </div>
+              </div>
+            </TabsContent>
+
+            <TabsContent value="blogs" className="space-y-6">
+              <div className="glass-panel p-6 rounded-xl border border-white/10">
+                <div className="flex justify-between items-center mb-6">
+                  <div className="flex items-center gap-3">
+                    <div className="p-3 rounded-lg bg-emerald-500/10 border border-emerald-500/20">
+                      <FaNewspaper className="text-2xl text-emerald-400" />
                     </div>
-                  )}
-                  <CardHeader>
-                    <CardTitle>{item.title}</CardTitle>
-                    <CardDescription>{item.category}</CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <p className="line-clamp-3">{item.description}</p>
-                    <p className="mt-2 text-sm">Citations: {item.citations}</p>
-                  </CardContent>
-                  <CardFooter>
-                    <Button 
-                      variant="outline"
-                      onClick={() => handleEdit(item, 'research')}
-                    >
-                      Edit
-                    </Button>
-                  </CardFooter>
-                </Card>
-              ))}
-            </div>
-          </TabsContent>
-          
-          <TabsContent value="events" className="space-y-4">
-            <div className="flex justify-between mb-4">
-              <h2 className="text-2xl font-semibold">Events</h2>
-              <Button onClick={() => handleCreate('event')}>Add Event</Button>
-            </div>
-            
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {events.map((event: Event) => (
-                <Card key={event.id} className="overflow-hidden">
-                  {event.image && (
-                    <div className="h-48 overflow-hidden">
-                      <img src={event.image} alt={event.title} className="w-full h-full object-cover" />
+                    <div>
+                      <h2 className="text-2xl font-bold text-white">Blog Posts</h2>
+                      <p className="text-gray-400 text-sm">Manage blog articles and updates</p>
                     </div>
-                  )}
-                  <CardHeader>
-                    <CardTitle>{event.title}</CardTitle>
-                    <CardDescription>{event.type} - {event.date}</CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <p className="line-clamp-3">{event.description}</p>
-                    <p className="mt-2 text-sm">{event.location} at {event.time}</p>
-                  </CardContent>
-                  <CardFooter>
-                    <Button 
-                      variant="outline"
-                      onClick={() => handleEdit(event, 'event')}
+                  </div>
+                  <Button onClick={() => handleCreate('blog')} className="btn-primary bg-emerald-500 hover:bg-emerald-600 text-white border-0 shadow-lg shadow-emerald-500/20">
+                    <FaPlus className="mr-2" /> Add Post
+                  </Button>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {blogs.map((blog: BlogPost, index: number) => (
+                    <motion.div
+                      key={blog.id}
+                      initial={{ opacity: 0, scale: 0.95 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      transition={{ delay: index * 0.05 }}
+                      className="clean-card group h-full flex flex-col"
                     >
-                      Edit
-                    </Button>
-                  </CardFooter>
-                </Card>
-              ))}
-            </div>
-          </TabsContent>
-          
-          <TabsContent value="team-chat" className="space-y-4">
-            <div className="mb-4">
-              <h2 className="text-2xl font-semibold">Core Team Chat</h2>
-              <p className="text-gray-600">Private chat for core team members to discuss club matters</p>
-            </div>
-            
-            <Card>
-              <CardContent className="p-4 h-96 flex flex-col">
-                <div className="flex-1 overflow-y-auto mb-4 space-y-3">
-                  {messages.map((message: any) => (
-                    <div key={message.id} className="p-3 bg-gray-100 rounded-lg">
-                      <div className="flex justify-between items-start">
-                        <span className="font-medium">{message.user_id}</span>
-                        <span className="text-xs text-gray-500">{new Date(message.created_at).toLocaleString()}</span>
+                      {blog.image && (
+                        <div className="h-48 overflow-hidden relative">
+                          <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent z-10" />
+                          <img
+                            src={blog.image}
+                            alt={blog.title}
+                            className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 filter brightness-75 group-hover:brightness-100"
+                          />
+                          <div className="absolute top-4 right-4 z-20">
+                            <span className="px-3 py-1 rounded-full bg-black/70 backdrop-blur-md text-xs font-mono text-emerald-400 border border-emerald-500/30">
+                              {blog.category}
+                            </span>
+                          </div>
+                        </div>
+                      )}
+                      <CardHeader className="relative z-10">
+                        <CardTitle className="text-xl font-bold text-white group-hover:text-emerald-400 transition-colors">{blog.title}</CardTitle>
+                      </CardHeader>
+                      <CardContent className="flex-grow relative z-10">
+                        <p className="text-gray-400 line-clamp-3 text-sm leading-relaxed">{blog.excerpt}</p>
+                      </CardContent>
+                      <CardFooter className="border-t border-white/5 bg-black/20 p-4 flex justify-end relative z-10">
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => handleEdit(blog, 'blog')}
+                          className="text-gray-400 hover:text-white hover:bg-white/10 transition-colors"
+                        >
+                          <FaEdit className="mr-2" /> Edit
+                        </Button>
+                      </CardFooter>
+                    </motion.div>
+                  ))}
+                </div>
+              </div>
+            </TabsContent>
+
+            <TabsContent value="research" className="space-y-6">
+              <div className="glass-panel p-6 rounded-xl border border-white/10">
+                <div className="flex justify-between items-center mb-6">
+                  <div className="flex items-center gap-3">
+                    <div className="p-3 rounded-lg bg-emerald-500/10 border border-emerald-500/20">
+                      <FaFlask className="text-2xl text-emerald-400" />
+                    </div>
+                    <div>
+                      <h2 className="text-2xl font-bold text-white">Research</h2>
+                      <p className="text-gray-400 text-sm">Manage research publications and findings</p>
+                    </div>
+                  </div>
+                  <Button onClick={() => handleCreate('research')} className="btn-primary bg-emerald-500 hover:bg-emerald-600 text-white border-0 shadow-lg shadow-emerald-500/20">
+                    <FaPlus className="mr-2" /> Add Research
+                  </Button>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {research.map((item: ResearchItem, index: number) => (
+                    <motion.div
+                      key={item.id}
+                      initial={{ opacity: 0, scale: 0.95 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      transition={{ delay: index * 0.05 }}
+                      className="clean-card group h-full flex flex-col"
+                    >
+                      {item.image && (
+                        <div className="h-48 overflow-hidden relative">
+                          <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent z-10" />
+                          <img
+                            src={item.image}
+                            alt={item.title}
+                            className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 filter brightness-75 group-hover:brightness-100"
+                          />
+                          <div className="absolute top-4 right-4 z-20">
+                            <span className="px-3 py-1 rounded-full bg-black/70 backdrop-blur-md text-xs font-mono text-emerald-400 border border-emerald-500/30">
+                              {item.category}
+                            </span>
+                          </div>
+                        </div>
+                      )}
+                      <CardHeader className="relative z-10">
+                        <CardTitle className="text-xl font-bold text-white group-hover:text-emerald-400 transition-colors">{item.title}</CardTitle>
+                      </CardHeader>
+                      <CardContent className="flex-grow relative z-10">
+                        <p className="text-gray-400 line-clamp-3 text-sm leading-relaxed mb-4">{item.description}</p>
+                        <div className="flex items-center text-emerald-400/80 text-sm font-mono bg-emerald-500/5 p-2 rounded border border-emerald-500/10 w-fit">
+                          <FaTag className="mr-2" /> Citations: {item.citations}
+                        </div>
+                      </CardContent>
+                      <CardFooter className="border-t border-white/5 bg-black/20 p-4 flex justify-end relative z-10">
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => handleEdit(item, 'research')}
+                          className="text-gray-400 hover:text-white hover:bg-white/10 transition-colors"
+                        >
+                          <FaEdit className="mr-2" /> Edit
+                        </Button>
+                      </CardFooter>
+                    </motion.div>
+                  ))}
+                </div>
+              </div>
+            </TabsContent>
+
+            <TabsContent value="events" className="space-y-6">
+              <div className="glass-panel p-6 rounded-xl border border-white/10">
+                <div className="flex justify-between items-center mb-6">
+                  <div className="flex items-center gap-3">
+                    <div className="p-3 rounded-lg bg-emerald-500/10 border border-emerald-500/20">
+                      <FaCalendarAlt className="text-2xl text-emerald-400" />
+                    </div>
+                    <div>
+                      <h2 className="text-2xl font-bold text-white">Events</h2>
+                      <p className="text-gray-400 text-sm">Manage upcoming and past events</p>
+                    </div>
+                  </div>
+                  <Button onClick={() => handleCreate('event')} className="btn-primary bg-emerald-500 hover:bg-emerald-600 text-white border-0 shadow-lg shadow-emerald-500/20">
+                    <FaPlus className="mr-2" /> Add Event
+                  </Button>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {events.map((event: Event, index: number) => (
+                    <motion.div
+                      key={event.id}
+                      initial={{ opacity: 0, scale: 0.95 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      transition={{ delay: index * 0.05 }}
+                      className="clean-card group h-full flex flex-col"
+                    >
+                      {event.image && (
+                        <div className="h-48 overflow-hidden relative">
+                          <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent z-10" />
+                          <img
+                            src={event.image}
+                            alt={event.title}
+                            className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 filter brightness-75 group-hover:brightness-100"
+                          />
+                          <div className="absolute top-4 right-4 z-20">
+                            <span className="px-3 py-1 rounded-full bg-black/70 backdrop-blur-md text-xs font-mono text-emerald-400 border border-emerald-500/30">
+                              {event.type}
+                            </span>
+                          </div>
+                        </div>
+                      )}
+                      <CardHeader className="relative z-10">
+                        <div className="flex justify-between items-start">
+                          <CardTitle className="text-xl font-bold text-white group-hover:text-emerald-400 transition-colors">{event.title}</CardTitle>
+                        </div>
+                        <CardDescription className="text-emerald-400 font-mono text-xs mt-1 flex items-center">
+                          <FaClock className="mr-1" /> {event.date} • {event.time}
+                        </CardDescription>
+                      </CardHeader>
+                      <CardContent className="flex-grow relative z-10">
+                        <p className="text-gray-400 line-clamp-3 text-sm leading-relaxed mb-3">{event.description}</p>
+                        <div className="flex items-center text-gray-500 text-xs">
+                          <FaMapMarkerAlt className="mr-1 text-emerald-500" /> {event.location}
+                        </div>
+                      </CardContent>
+                      <CardFooter className="border-t border-white/5 bg-black/20 p-4 flex justify-end relative z-10">
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => handleEdit(event, 'event')}
+                          className="text-gray-400 hover:text-white hover:bg-white/10 transition-colors"
+                        >
+                          <FaEdit className="mr-2" /> Edit
+                        </Button>
+                      </CardFooter>
+                    </motion.div>
+                  ))}
+                </div>
+              </div>
+            </TabsContent>
+
+            <TabsContent value="team-chat" className="space-y-6">
+              <div className="glass-panel p-6 rounded-xl border border-white/10 h-[600px] flex flex-col">
+                <div className="flex items-center gap-3 mb-6 pb-4 border-b border-white/10">
+                  <div className="p-3 rounded-lg bg-emerald-500/10 border border-emerald-500/20">
+                    <FaComments className="text-2xl text-emerald-400" />
+                  </div>
+                  <div>
+                    <h2 className="text-2xl font-bold text-white">Core Team Chat</h2>
+                    <p className="text-gray-400 text-sm">Private secure channel for core team discussions</p>
+                  </div>
+                </div>
+
+                <div className="flex-1 overflow-y-auto mb-4 space-y-4 pr-2 custom-scrollbar bg-black/20 rounded-lg p-4 border border-white/5">
+                  {(messages as any[]).map((message: any) => (
+                    <div key={message.id} className="flex flex-col bg-white/5 border border-white/10 rounded-lg p-3 hover:border-emerald-500/30 transition-colors">
+                      <div className="flex justify-between items-start mb-2">
+                        <span className="font-bold text-emerald-400 text-sm">{message.user?.username || `User ${message.user_id}`}</span>
+                        <span className="text-xs font-mono text-gray-500">{new Date(message.created_at).toLocaleString()}</span>
                       </div>
-                      <p className="mt-1">{message.content}</p>
+                      <p className="text-gray-300 text-sm leading-relaxed">{message.content}</p>
                     </div>
                   ))}
                 </div>
-                
-                <div className="flex space-x-2">
+
+                <div className="flex gap-3 pt-4 border-t border-white/10">
                   <Input
                     placeholder="Type your message..."
                     value={newMessage}
@@ -696,20 +745,24 @@ const CoreTeamDashboard = () => {
                         sendMessage.mutate(newMessage);
                       }
                     }}
+                    className="bg-black/40 border-white/10 focus:border-emerald-500/50 text-white placeholder:text-white/20"
                   />
-                  <Button onClick={() => {
-                    if (newMessage.trim()) {
-                      sendMessage.mutate(newMessage);
-                    }
-                  }}>
-                    Send
+                  <Button
+                    onClick={() => {
+                      if (newMessage.trim()) {
+                        sendMessage.mutate(newMessage);
+                      }
+                    }}
+                    className="bg-emerald-500 hover:bg-emerald-600 text-white border-0 shadow-lg shadow-emerald-500/20"
+                  >
+                    <FaPaperPlane className="mr-2" /> Send
                   </Button>
                 </div>
-              </CardContent>
-            </Card>
-          </TabsContent>
-        </Tabs>
-      )}
+              </div>
+            </TabsContent>
+          </Tabs>
+        )}
+      </div>
     </div>
   );
 };

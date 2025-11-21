@@ -1,12 +1,19 @@
 {
   "version": "7",
-  "dialect": "postgresql",
+  "dialect": "sqlite",
   "entries": [
     {
       "idx": 0,
-      "version": "7",
-      "when": 1743323309883,
-      "tag": "0000_bright_shatterstar",
+      "version": "6",
+      "when": 1762343388111,
+      "tag": "0000_whole_pepper_potts",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "6",
+      "when": 1762350000456,
+      "tag": "0001_true_triathlon",
       "breakpoints": true
     }
   ]

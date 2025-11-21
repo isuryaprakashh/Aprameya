@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { apiRequest } from '@/lib/queryClient';
 import { useToast } from '@/hooks/use-toast';
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
@@ -10,6 +9,8 @@ import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { User, EventRegistration, Comment } from '@shared/schema';
+import { motion } from 'framer-motion';
+import { FaUser, FaEnvelope, FaShieldAlt, FaCalendar, FaComment, FaHistory } from 'react-icons/fa';
 
 const UserProfile = () => {
   const queryClient = useQueryClient();
@@ -41,7 +42,7 @@ const UserProfile = () => {
 
   // Update profile mutation
   const updateProfile = useMutation({
-    mutationFn: (userData: any) => 
+    mutationFn: (userData: any) =>
       apiRequest('/api/user/profile', { method: 'PATCH', body: JSON.stringify(userData) }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/me'] });
@@ -67,7 +68,7 @@ const UserProfile = () => {
 
   // Cancel event registration mutation
   const cancelEventRegistration = useMutation({
-    mutationFn: (registrationId: number) => 
+    mutationFn: (registrationId: number) =>
       apiRequest(`/api/event-registrations/${registrationId}`, { method: 'DELETE' }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/event-registrations/user'] });
@@ -80,7 +81,7 @@ const UserProfile = () => {
 
   // Delete comment mutation
   const deleteComment = useMutation({
-    mutationFn: (commentId: number) => 
+    mutationFn: (commentId: number) =>
       apiRequest(`/api/comments/${commentId}`, { method: 'DELETE' }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/comments/user'] });
@@ -128,11 +129,11 @@ const UserProfile = () => {
     }
 
     const updateData: any = {};
-    
+
     if (profileData.email && profileData.email !== currentUser?.email) {
       updateData.email = profileData.email;
     }
-    
+
     if (profileData.newPassword) {
       updateData.password = profileData.newPassword;
     }
@@ -162,12 +163,10 @@ const UserProfile = () => {
 
   if (!currentUser) {
     return (
-      <div className="container mx-auto py-8">
-        <Card>
-          <CardContent className="flex items-center justify-center py-10">
-            <p>Please login to view your profile</p>
-          </CardContent>
-        </Card>
+      <div className="min-h-screen flex items-center justify-center bg-[var(--bg-body)]">
+        <div className="glass-panel p-8 rounded-xl text-center">
+          <p className="text-white">Please login to view your profile</p>
+        </div>
       </div>
     );
   }
@@ -179,240 +178,248 @@ const UserProfile = () => {
   const getRoleBadgeColor = (role: string) => {
     switch (role.toUpperCase()) {
       case 'ADMIN':
-        return 'bg-red-500';
+        return 'bg-red-500/20 text-red-400 border-red-500/50';
       case 'CORE':
       case 'CORE_TEAM':
-        return 'bg-blue-500';
+        return 'bg-blue-500/20 text-blue-400 border-blue-500/50';
       default:
-        return 'bg-green-500';
+        return 'bg-emerald-500/20 text-emerald-400 border-emerald-500/50';
     }
   };
 
   return (
-    <div className="container mx-auto py-8">
-      <h1 className="text-3xl font-bold mb-6">User Profile</h1>
+    <div className="min-h-screen bg-[var(--bg-body)] pt-24 pb-12 px-4 relative overflow-hidden">
+      <div className="absolute inset-0 dither-bg opacity-30 pointer-events-none"></div>
 
-      {isEditing ? (
-        <Card className="mb-6">
-          <CardHeader>
-            <CardTitle>Edit Profile</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div>
-              <label htmlFor="email" className="text-sm font-medium">Email</label>
-              <Input 
-                id="email" 
-                value={profileData.email} 
-                onChange={(e) => handleInputChange('email', e.target.value)} 
-              />
+      <div className="container mx-auto max-w-6xl relative z-10">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="mb-8 flex items-center justify-between"
+        >
+          <div>
+            <div className="inline-flex items-center gap-2 mb-2 border border-[var(--border-color)] px-3 py-1 bg-black/50 rounded-full">
+              <span className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></span>
+              <span className="text-[10px] font-bold text-white tracking-widest uppercase">User Dashboard</span>
             </div>
-            <div>
-              <label htmlFor="newPassword" className="text-sm font-medium">New Password</label>
-              <Input 
-                id="newPassword" 
-                type="password"
-                value={profileData.newPassword} 
-                onChange={(e) => handleInputChange('newPassword', e.target.value)} 
-              />
-            </div>
-            <div>
-              <label htmlFor="confirmPassword" className="text-sm font-medium">Confirm Password</label>
-              <Input 
-                id="confirmPassword" 
-                type="password"
-                value={profileData.confirmPassword} 
-                onChange={(e) => handleInputChange('confirmPassword', e.target.value)} 
-              />
-            </div>
-          </CardContent>
-          <CardFooter className="flex justify-between">
-            <Button variant="outline" onClick={handleCancelEdit}>Cancel</Button>
-            <Button onClick={handleUpdateProfile}>Save Changes</Button>
-          </CardFooter>
-        </Card>
-      ) : (
-        <Card className="mb-6">
-          <CardHeader className="flex flex-row items-center justify-between">
-            <div className="flex items-center space-x-4">
-              <Avatar className="h-20 w-20">
-                <AvatarImage src="" alt={currentUser.username} />
-                <AvatarFallback className="text-lg">{getInitials(currentUser.username)}</AvatarFallback>
-              </Avatar>
-              <div>
-                <CardTitle className="text-2xl">{currentUser.username}</CardTitle>
-                <CardDescription>{currentUser.email}</CardDescription>
-                <Badge className={`mt-2 ${getRoleBadgeColor(currentUser.role)}`}>
+            <h1 className="text-4xl font-bold text-white font-mono">PROFILE_SETTINGS</h1>
+          </div>
+        </motion.div>
+
+        <div className="grid lg:grid-cols-3 gap-8">
+          {/* Sidebar / Profile Card */}
+          <motion.div
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 0.1 }}
+            className="lg:col-span-1"
+          >
+            <div className="glass-panel p-6 rounded-xl border border-[var(--border-color)] sticky top-24">
+              <div className="flex flex-col items-center text-center mb-6">
+                <Avatar className="h-24 w-24 mb-4 border-2 border-emerald-500/30">
+                  <AvatarImage src="" alt={currentUser.username} />
+                  <AvatarFallback className="bg-[var(--card-bg)] text-2xl font-mono text-emerald-400">
+                    {getInitials(currentUser.username)}
+                  </AvatarFallback>
+                </Avatar>
+                <h2 className="text-2xl font-bold text-white mb-1">{currentUser.username}</h2>
+                <p className="text-gray-400 text-sm mb-3">{currentUser.email}</p>
+                <Badge className={`border ${getRoleBadgeColor(currentUser.role)}`}>
                   {currentUser.role}
                 </Badge>
               </div>
-            </div>
-            <Button onClick={handleEditProfile}>Edit Profile</Button>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              <div>
-                <h3 className="text-lg font-semibold">Account Information</h3>
-                <Separator className="my-2" />
-                <div className="grid grid-cols-2 gap-2">
-                  <div className="text-sm font-medium">Username:</div>
-                  <div className="text-sm">{currentUser.username}</div>
-                  <div className="text-sm font-medium">Email:</div>
-                  <div className="text-sm">{currentUser.email}</div>
-                  <div className="text-sm font-medium">Role:</div>
-                  <div className="text-sm">
-                    <Badge className={`${getRoleBadgeColor(currentUser.role)}`}>
-                      {currentUser.role}
-                    </Badge>
-                  </div>
-                  <div className="text-sm font-medium">Member Since:</div>
-                  <div className="text-sm">{new Date(currentUser.created_at).toLocaleDateString()}</div>
-                </div>
-              </div>
-              
-              <div>
-                <h3 className="text-lg font-semibold">Activity Summary</h3>
-                <Separator className="my-2" />
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
-                  <div className="bg-blue-50 p-3 rounded-lg text-center">
-                    <p className="text-lg font-bold text-blue-600">{userEventRegistrations.length}</p>
-                    <p className="text-xs text-gray-500">Event Registrations</p>
-                  </div>
-                  <div className="bg-green-50 p-3 rounded-lg text-center">
-                    <p className="text-lg font-bold text-green-600">{userComments.length}</p>
-                    <p className="text-xs text-gray-500">Comments</p>
-                  </div>
-                  <div className="bg-purple-50 p-3 rounded-lg text-center">
-                    <p className="text-lg font-bold text-purple-600">{
-                      new Date(currentUser.created_at).toLocaleDateString() !== 'Invalid Date' 
-                        ? Math.floor((new Date().getTime() - new Date(currentUser.created_at).getTime()) / (1000 * 3600 * 24))
-                        : 0
-                    }</p>
-                    <p className="text-xs text-gray-500">Days as Member</p>
-                  </div>
-                </div>
-              </div>
-              
-              <div>
-                <h3 className="text-lg font-semibold">Access & Permissions</h3>
-                <Separator className="my-2" />
-                <div className="mt-4 space-y-2">
-                  {currentUser.role === 'ADMIN' && (
-                    <div className="flex items-center space-x-2">
-                      <Badge className="bg-purple-500">Full Admin Access</Badge>
-                      <span className="text-sm text-gray-500">Can manage all content and users</span>
-                    </div>
-                  )}
-                  
-                  {(currentUser.role === 'ADMIN' || currentUser.role === 'CORE') && (
-                    <div className="flex items-center space-x-2">
-                      <Badge className="bg-blue-500">Content Management</Badge>
-                      <span className="text-sm text-gray-500">Can create and edit content</span>
-                    </div>
-                  )}
-                  
-                  <div className="flex items-center space-x-2">
-                    <Badge className="bg-green-500">Event Registration</Badge>
-                    <span className="text-sm text-gray-500">Can register for events</span>
-                  </div>
-                  
-                  <div className="flex items-center space-x-2">
-                    <Badge className="bg-amber-500">Comment Access</Badge>
-                    <span className="text-sm text-gray-500">Can comment on content</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-      )}
 
-      <Tabs defaultValue="registrations">
-        <TabsList className="mb-6">
-          <TabsTrigger value="registrations">Event Registrations</TabsTrigger>
-          <TabsTrigger value="comments">Your Comments</TabsTrigger>
-        </TabsList>
-        
-        <TabsContent value="registrations" className="space-y-4">
-          <h2 className="text-xl font-semibold mb-4">Your Event Registrations</h2>
-          
-          {userEventRegistrations.length === 0 ? (
-            <Card>
-              <CardContent className="py-6">
-                <p className="text-center text-gray-500">You haven't registered for any events yet.</p>
-              </CardContent>
-            </Card>
-          ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {userEventRegistrations.map((registration: any) => (
-                <Card key={registration.id}>
-                  <CardHeader>
-                    <CardTitle>{registration.event?.title || 'Event'}</CardTitle>
-                    <CardDescription>
-                      {registration.event?.date || 'Date TBA'} | {registration.event?.location || 'Location TBA'}
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <p className="line-clamp-2">{registration.event?.description || 'No description available'}</p>
-                  </CardContent>
-                  <CardFooter>
-                    <Button 
-                      variant="destructive" 
-                      size="sm"
-                      onClick={() => handleCancelRegistration(registration.id)}
-                    >
-                      Cancel Registration
-                    </Button>
-                  </CardFooter>
-                </Card>
-              ))}
+              <Separator className="bg-[var(--border-color)] my-6" />
+
+              <div className="space-y-4">
+                <div className="flex items-center justify-between text-sm">
+                  <span className="text-gray-500 flex items-center"><FaHistory className="mr-2" /> Member Since</span>
+                  <span className="text-white font-mono">{new Date(currentUser.created_at).toLocaleDateString()}</span>
+                </div>
+                <div className="flex items-center justify-between text-sm">
+                  <span className="text-gray-500 flex items-center"><FaCalendar className="mr-2" /> Events</span>
+                  <span className="text-white font-mono">{userEventRegistrations.length}</span>
+                </div>
+                <div className="flex items-center justify-between text-sm">
+                  <span className="text-gray-500 flex items-center"><FaComment className="mr-2" /> Comments</span>
+                  <span className="text-white font-mono">{userComments.length}</span>
+                </div>
+              </div>
+
+              <div className="mt-8">
+                <Button
+                  onClick={isEditing ? handleCancelEdit : handleEditProfile}
+                  className="w-full btn-secondary"
+                >
+                  {isEditing ? 'Cancel Editing' : 'Edit Profile'}
+                </Button>
+              </div>
             </div>
-          )}
-        </TabsContent>
-        
-        <TabsContent value="comments" className="space-y-4">
-          <h2 className="text-xl font-semibold mb-4">Your Comments</h2>
-          
-          {userComments.length === 0 ? (
-            <Card>
-              <CardContent className="py-6">
-                <p className="text-center text-gray-500">You haven't made any comments yet.</p>
-              </CardContent>
-            </Card>
-          ) : (
-            <div className="space-y-4">
-              {userComments.map((comment: any) => (
-                <Card key={comment.id}>
-                  <CardHeader>
-                    <CardTitle className="text-base">
-                      {comment.project_id 
-                        ? `Comment on Project: ${comment.project?.title || 'Unknown Project'}`
-                        : comment.blog_id 
-                          ? `Comment on Blog: ${comment.blog?.title || 'Unknown Blog'}`
-                          : `Comment on Research: ${comment.research?.title || 'Unknown Research'}`
-                      }
-                    </CardTitle>
-                    <CardDescription className="text-xs">
-                      {new Date(comment.created_at).toLocaleString()}
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <p>{comment.content}</p>
-                  </CardContent>
-                  <CardFooter>
-                    <Button 
-                      variant="destructive" 
-                      size="sm"
-                      onClick={() => handleDeleteComment(comment.id)}
-                    >
-                      Delete Comment
+          </motion.div>
+
+          {/* Main Content */}
+          <motion.div
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 0.2 }}
+            className="lg:col-span-2 space-y-6"
+          >
+            {isEditing ? (
+              <div className="glass-panel p-6 rounded-xl border border-[var(--border-color)]">
+                <h3 className="text-xl font-bold text-white mb-6 flex items-center">
+                  <FaUser className="mr-2 text-emerald-400" /> Edit Profile
+                </h3>
+                <div className="space-y-4">
+                  <div>
+                    <label htmlFor="email" className="text-xs font-mono text-gray-400 mb-2 block uppercase">Email Address</label>
+                    <Input
+                      id="email"
+                      value={profileData.email}
+                      onChange={(e) => handleInputChange('email', e.target.value)}
+                      className="bg-[var(--card-bg)] border-[var(--border-color)] text-white"
+                    />
+                  </div>
+                  <div className="grid md:grid-cols-2 gap-4">
+                    <div>
+                      <label htmlFor="newPassword" className="text-xs font-mono text-gray-400 mb-2 block uppercase">New Password</label>
+                      <Input
+                        id="newPassword"
+                        type="password"
+                        value={profileData.newPassword}
+                        onChange={(e) => handleInputChange('newPassword', e.target.value)}
+                        className="bg-[var(--card-bg)] border-[var(--border-color)] text-white"
+                      />
+                    </div>
+                    <div>
+                      <label htmlFor="confirmPassword" className="text-xs font-mono text-gray-400 mb-2 block uppercase">Confirm Password</label>
+                      <Input
+                        id="confirmPassword"
+                        type="password"
+                        value={profileData.confirmPassword}
+                        onChange={(e) => handleInputChange('confirmPassword', e.target.value)}
+                        className="bg-[var(--card-bg)] border-[var(--border-color)] text-white"
+                      />
+                    </div>
+                  </div>
+                  <div className="pt-4 flex justify-end">
+                    <Button onClick={handleUpdateProfile} className="btn-primary">
+                      Save Changes
                     </Button>
-                  </CardFooter>
-                </Card>
-              ))}
-            </div>
-          )}
-        </TabsContent>
-      </Tabs>
+                  </div>
+                </div>
+              </div>
+            ) : (
+              <>
+                {/* Access & Permissions */}
+                <div className="glass-panel p-6 rounded-xl border border-[var(--border-color)]">
+                  <h3 className="text-lg font-bold text-white mb-4 flex items-center">
+                    <FaShieldAlt className="mr-2 text-emerald-400" /> Access Level
+                  </h3>
+                  <div className="grid sm:grid-cols-2 gap-4">
+                    {currentUser.role === 'ADMIN' && (
+                      <div className="clean-card p-4 rounded-lg border border-purple-500/30 bg-purple-500/5">
+                        <div className="font-bold text-purple-400 mb-1">Full Admin Access</div>
+                        <div className="text-xs text-gray-400">Can manage all content and users</div>
+                      </div>
+                    )}
+                    {(currentUser.role === 'ADMIN' || currentUser.role === 'CORE') && (
+                      <div className="clean-card p-4 rounded-lg border border-blue-500/30 bg-blue-500/5">
+                        <div className="font-bold text-blue-400 mb-1">Content Management</div>
+                        <div className="text-xs text-gray-400">Can create and edit content</div>
+                      </div>
+                    )}
+                    <div className="clean-card p-4 rounded-lg border border-emerald-500/30 bg-emerald-500/5">
+                      <div className="font-bold text-emerald-400 mb-1">Event Registration</div>
+                      <div className="text-xs text-gray-400">Can register for events</div>
+                    </div>
+                    <div className="clean-card p-4 rounded-lg border border-amber-500/30 bg-amber-500/5">
+                      <div className="font-bold text-amber-400 mb-1">Comment Access</div>
+                      <div className="text-xs text-gray-400">Can comment on content</div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Tabs for Registrations & Comments */}
+                <Tabs defaultValue="registrations" className="w-full">
+                  <TabsList className="w-full bg-[var(--card-bg)] border border-[var(--border-color)] p-1 rounded-lg">
+                    <TabsTrigger value="registrations" className="flex-1 data-[state=active]:bg-emerald-500/20 data-[state=active]:text-emerald-400">Event Registrations</TabsTrigger>
+                    <TabsTrigger value="comments" className="flex-1 data-[state=active]:bg-emerald-500/20 data-[state=active]:text-emerald-400">Your Comments</TabsTrigger>
+                  </TabsList>
+
+                  <TabsContent value="registrations" className="space-y-4 mt-6">
+                    {userEventRegistrations.length === 0 ? (
+                      <div className="text-center py-12 border border-dashed border-[var(--border-color)] rounded-xl">
+                        <p className="text-gray-500">You haven't registered for any events yet.</p>
+                      </div>
+                    ) : (
+                      <div className="grid gap-4">
+                        {userEventRegistrations.map((registration: any) => (
+                          <div key={registration.id} className="clean-card p-4 rounded-lg flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                            <div>
+                              <h4 className="font-bold text-white text-lg">{registration.event?.title || 'Event'}</h4>
+                              <p className="text-sm text-gray-400 mb-1">
+                                {registration.event?.date || 'Date TBA'} | {registration.event?.location || 'Location TBA'}
+                              </p>
+                              <p className="text-xs text-gray-500 line-clamp-1">{registration.event?.description}</p>
+                            </div>
+                            <Button
+                              variant="destructive"
+                              size="sm"
+                              onClick={() => handleCancelRegistration(registration.id)}
+                              className="bg-red-500/10 text-red-400 border border-red-500/30 hover:bg-red-500/20"
+                            >
+                              Cancel
+                            </Button>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </TabsContent>
+
+                  <TabsContent value="comments" className="space-y-4 mt-6">
+                    {userComments.length === 0 ? (
+                      <div className="text-center py-12 border border-dashed border-[var(--border-color)] rounded-xl">
+                        <p className="text-gray-500">You haven't made any comments yet.</p>
+                      </div>
+                    ) : (
+                      <div className="space-y-4">
+                        {userComments.map((comment: any) => (
+                          <div key={comment.id} className="clean-card p-4 rounded-lg">
+                            <div className="flex justify-between items-start mb-2">
+                              <h4 className="font-bold text-white text-sm">
+                                {comment.project_id
+                                  ? `On Project: ${comment.project?.title || 'Unknown Project'}`
+                                  : comment.blog_id
+                                    ? `On Blog: ${comment.blog?.title || 'Unknown Blog'}`
+                                    : `On Research: ${comment.research?.title || 'Unknown Research'}`
+                                }
+                              </h4>
+                              <span className="text-xs text-gray-500 font-mono">{new Date(comment.created_at).toLocaleString()}</span>
+                            </div>
+                            <p className="text-gray-300 text-sm mb-4 bg-black/30 p-3 rounded border border-[var(--border-color)]">
+                              "{comment.content}"
+                            </p>
+                            <div className="flex justify-end">
+                              <Button
+                                variant="destructive"
+                                size="sm"
+                                onClick={() => handleDeleteComment(comment.id)}
+                                className="bg-red-500/10 text-red-400 border border-red-500/30 hover:bg-red-500/20 h-8 text-xs"
+                              >
+                                Delete Comment
+                              </Button>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </TabsContent>
+                </Tabs>
+              </>
+            )}
+          </motion.div>
+        </div>
+      </div>
     </div>
   );
 };

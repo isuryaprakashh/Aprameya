@@ -1,108 +1,0 @@
-"Design a modern, responsive frontend for AprameyaKLU.com, a club dedicated to autonomous vehicle technology and self-driving car development. The website should have a clean, futuristic aesthetic with a color scheme of blues, whites, and subtle grays, reflecting cutting-edge tech. Focus solely on the frontend—HTML, CSS, and JavaScript—with no backend integration for now. Include the following pages with specific content and layouts as described below, ensuring easy navigation via a consistent top navigation bar across all pages. Use placeholder text and images where specified, and make it mobile-friendly and SEO-optimized.
-Homepage:
-Purpose: Introduce the Aprameya Club and highlight key activities.
-
-Content:
-Header: Title 'AprameyaKLU - Pioneering Autonomous Vehicle Innovation' in bold, with a tagline 'Exploring the Future of Self-Driving Technology'.
-
-Hero Section: Full-width background image (placeholder: a futuristic car or drone), with a 'Learn More' button linking to the Projects page.
-
-Featured Section: Three cards showcasing 'Latest Project', 'Upcoming Event', and 'Recent Research' (use placeholders: 'Project 1', 'Event 1', 'Research 1' with generic tech images).
-
-Footer: Simple text '© 2025 AprameyaKLU. All rights reserved.' with social media icons (Twitter, LinkedIn placeholders).
-Projects Page:
-Purpose: Showcase autonomous vehicle projects.
-
-Content:
-Header: 'Our Projects'.
-
-Gallery Layout: Grid of 3-4 project cards, each with:
-Placeholder image (e.g., autonomous car, drone).
-
-Title (e.g., 'Self-Driving Prototype', 'Autonomous Delivery Drone').
-
-Short description (e.g., 'A compact car designed for urban navigation').
-
-'Read More' button (links to a modal or static placeholder for now).
-Call-to-Action: 'Want to join us? Sign up!' button linking to Signup page.
-Blogs Page:
-Purpose: Share articles on self-driving tech.
-
-Content:
-Header: 'Blog - Insights on Autonomous Systems'.
-
-List Layout: 3 blog previews in a vertical stack, each with:
-Placeholder image (e.g., tech diagram or vehicle).
-
-Title (e.g., 'The Future of Autonomous Navigation', 'AI in Self-Driving Cars').
-
-Excerpt (e.g., 'Exploring how AI powers the next generation of vehicles...').
-
-'Read Full Article' button (links to a static placeholder page).
-Sidebar: Categories list (e.g., 'AI', 'Vehicles', 'Research') with placeholder links.
-Research Page:
-Purpose: Highlight research work on autonomous systems.
-
-Content:
-Header: 'Research - Advancing Autonomous Technology'.
-
-Section Layout: 2-3 research entries, each with:
-Title (e.g., 'Path Planning Algorithms', 'Sensor Fusion Study').
-
-Summary (e.g., 'A study on optimizing routes for self-driving cars...').
-
-Download button (placeholder link: '#', labeled 'Download PDF').
-Footer Note: 'Research conducted by AprameyaKLU members'.
-Events Page:
-Purpose: List upcoming events and allow registration interest.
-
-Content:
-Header: 'Events - Join Our Community'.
-
-Event List: 2 events in a card format, each with:
-Title (e.g., 'Workshop on Autonomous Systems', 'Self-Driving Demo Day').
-
-Date (e.g., 'April 15, 2025', 'May 10, 2025').
-
-Description (e.g., 'Learn the basics of autonomous tech...').
-
-'Register Interest' button (links to a form on the same page).
-Registration Form: Simple static form with fields: Name (text), Email (email), and a Submit button (non-functional for now, placeholder action).
-About Page:
-Purpose: Explain the club’s mission and team.
-
-Content:
-Header: 'About AprameyaKLU'.
-
-Mission Section: Text 'We are a student-led club at KLU driving innovation in autonomous vehicles and systems through projects, research, and collaboration.'
-
-Team Section: 3 placeholder team cards (e.g., 'Admin Name - Lead', 'Core Team Member 1', 'Core Team Member 2') with generic avatars and roles.
-
-Contact Info: Placeholder email 'contact@aprameyaklu.com'.
-Login Page:
-Purpose: Placeholder for user authentication (Admin, Core Team, Aspirants).
-
-Content:
-Header: 'Login to Your Account'.
-
-Form: Static fields for Email (text), Password (password), and a 'Login' button (non-functional placeholder).
-
-Link: 'New here? Sign up!' linking to Signup page.
-Signup Page:
-Purpose: Allow Aspirants to join the club.
-
-Content:
-Header: 'Join AprameyaKLU'.
-
-Form: Static fields for Name (text), Email (email), Role (dropdown: 'Aspirant', 'Core Team' - placeholder only), and a 'Sign Up' button (non-functional).
-
-Link: 'Already a member? Login' linking to Login page.
-Additional Instructions:
-Use a fixed top navigation bar with links to: Home, Projects, Blogs, Research, Events, About, Login, Signup.
-
-Include smooth scroll animations for internal page links.
-
-Add hover effects on buttons and cards (e.g., scale up slightly).
-
-Use placeholder images from a tech theme (e.g., autonomous cars, drones, circuits) and generic text where content is unspecified.
-

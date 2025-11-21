@@ -1,8 +1,11 @@
 import { Route, Switch, useLocation, Redirect } from "wouter";
 import { Toaster } from "@/components/ui/toaster";
+import { ThemeProvider } from "@/components/theme-provider";
 import { useQuery } from "@tanstack/react-query";
+import { useEffect } from "react";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
+import NeuralCanvas from "./components/NeuralCanvas";
 import DashboardRouter from "./components/DashboardRouter";
 import Home from "./pages/Home";
 import Projects from "./pages/Projects";
@@ -30,7 +33,7 @@ const ProtectedRoute = ({ component: Component, roles, ...rest }: ProtectedRoute
     queryKey: ['/api/me'],
     staleTime: 5000,
   });
-  
+
   const [, navigate] = useLocation();
 
   if (isLoading) {
@@ -53,16 +56,17 @@ const ProtectedRoute = ({ component: Component, roles, ...rest }: ProtectedRoute
 // We're now using DashboardRouter component instead of redirects
 
 function App() {
-  // Get current user for conditional rendering
-  const { data: user } = useQuery<User>({
-    queryKey: ['/api/me'],
-    staleTime: 5000,
-  });
+  const [location] = useLocation();
+  const isHomePage = location === '/';
+
+  // Magnetic buttons are now handled by the MagneticWrap component
+  // or individual useMagnetic hooks, so we don't need global initialization.
 
   return (
-    <div className="flex flex-col min-h-screen">
+    <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
+      <NeuralCanvas />
       <Navbar />
-      <main className="flex-grow pt-16">
+      <main className="flex-grow">
         <Switch>
           <Route path="/" component={Home} />
           <Route path="/projects" component={Projects} />
@@ -72,20 +76,25 @@ function App() {
           <Route path="/about" component={About} />
           <Route path="/login" component={Login} />
           <Route path="/signup" component={Signup} />
-          
-          {/* Dashboard route - will route to the appropriate dashboard based on user role */}
-          <Route path="/dashboard" component={DashboardRouter} />
-          
-          <Route path="/profile">
-            <ProtectedRoute component={UserProfile} roles={['ADMIN', 'CORE', 'ASPIRANT']} />
+
+          {/* Dashboard routes - will route to the appropriate dashboard based on user role */}
+          <Route path="/dashboard">
+            <ProtectedRoute component={DashboardRouter} />
           </Route>
-          
+          <Route path="/dashboard/:rest*">
+            <ProtectedRoute component={DashboardRouter} />
+          </Route>
+
+          <Route path="/profile">
+            <ProtectedRoute component={UserProfile} />
+          </Route>
+
           <Route component={NotFound} />
         </Switch>
       </main>
       <Footer />
       <Toaster />
-    </div>
+    </ThemeProvider>
   );
 }
 

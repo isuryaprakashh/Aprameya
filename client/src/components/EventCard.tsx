@@ -1,7 +1,6 @@
+import { useState } from 'react';
 import { Event } from '../lib/types';
-import SocialShare from './SocialShare';
-import { motion } from 'framer-motion';
-import { CalendarIcon, MapPinIcon, Clock3Icon, UsersIcon } from 'lucide-react';
+import { Zap, Music, CreditCard, MessageSquare, Database, Calendar } from 'lucide-react';
 
 interface EventCardProps {
   event: Event;
@@ -9,91 +8,77 @@ interface EventCardProps {
 }
 
 const EventCard = ({ event, onRegisterInterest }: EventCardProps) => {
-  // Create absolute URL for sharing
-  const currentUrl = window.location.origin;
-  const shareUrl = `${currentUrl}/events/${event.id}`;
-  
+  const [isConnected, setIsConnected] = useState(false);
+  const [buttonText, setButtonText] = useState("Initialize Connection");
+
+  const handleConnect = () => {
+    if (!isConnected) {
+      setButtonText("Establishing Uplink...");
+
+      setTimeout(() => {
+        setIsConnected(true);
+        setButtonText("Connection Secure");
+        onRegisterInterest(event);
+      }, 1500);
+    } else {
+      setIsConnected(false);
+      setButtonText("Initialize Connection");
+    }
+  };
+
   return (
-    <motion.div 
-      className="bg-white dark:bg-slate-800 rounded-xl shadow-md overflow-hidden"
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.4 }}
-      whileHover={{ y: -5 }}
-    >
-      <div className="md:flex">
-        <div className="md:w-1/3 h-48 md:h-auto bg-primary relative group">
-          <img 
-            src={event.image} 
-            alt={event.title} 
-            className="w-full h-full object-cover opacity-70 group-hover:scale-105 transition-transform duration-500" 
-          />
-          <div className="absolute inset-0 flex flex-col justify-center items-center text-white">
-            <span className="text-3xl font-bold">{event.day}</span>
-            <span className="text-lg font-medium">{event.month}</span>
-            <span className="text-sm">{event.year}</span>
+    <div className="clean-card p-8 flex flex-col justify-between h-full">
+      <div className="shimmer pointer-events-none"></div>
+
+      <div>
+        <div className="flex items-center justify-between mb-8">
+          <div className="flex items-center gap-3">
+            <div className="w-8 h-8 rounded-lg bg-white/5 flex items-center justify-center border border-white/10">
+              <Zap className="w-4 h-4 text-white" />
+            </div>
+            <span className="text-sm font-medium text-white">{event.type}</span>
           </div>
-          <div className="absolute bottom-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-            <SocialShare 
-              url={shareUrl}
-              title={`Join me at ${event.title}`}
-              description={`${event.description} - ${event.date} at ${event.location}`}
-              variant="minimal"
-            />
+          <span className="text-[10px] text-gray-500 font-mono bg-white/5 px-2 py-1 rounded">
+            {event.date}
+          </span>
+        </div>
+
+        {/* Orbit System */}
+        <div className="orbit-system mb-8">
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-12 h-12 bg-white rounded-full flex items-center justify-center z-20 shadow-[0_0_30px_rgba(255,255,255,0.1)]">
+            <Zap className="w-5 h-5 text-black fill-current" />
+          </div>
+
+          <div className={`orbit-node w-10 h-10 rounded-full flex items-center justify-center top-[10%] left-[20%] hover:text-white hover:border-white/50 bg-[#0a0a0a] ${isConnected ? 'docked' : ''}`}>
+            <Music className="w-4 h-4" />
+          </div>
+          <div className={`orbit-node w-10 h-10 rounded-full flex items-center justify-center top-[20%] right-[10%] hover:text-white hover:border-white/50 bg-[#0a0a0a] ${isConnected ? 'docked' : ''}`}>
+            <CreditCard className="w-4 h-4" />
+          </div>
+          <div className={`orbit-node w-10 h-10 rounded-full flex items-center justify-center bottom-[20%] left-[15%] hover:text-white hover:border-white/50 bg-[#0a0a0a] ${isConnected ? 'docked' : ''}`}>
+            <MessageSquare className="w-4 h-4" />
+          </div>
+          <div className={`orbit-node w-10 h-10 rounded-full flex items-center justify-center bottom-[10%] right-[25%] hover:text-white hover:border-white/50 bg-[#0a0a0a] ${isConnected ? 'docked' : ''}`}>
+            <Database className="w-4 h-4" />
           </div>
         </div>
-        <div className="p-6 md:w-2/3">
-          <div className="flex justify-between items-start mb-3">
-            <div>
-              <h2 className="font-space font-bold text-xl md:text-2xl dark:text-white">{event.title}</h2>
-              <div className="flex items-center gap-2 mt-1">
-                <span className="text-xs font-medium px-3 py-1 rounded-full bg-secondary/10 text-secondary">
-                  {event.type}
-                </span>
-                <CalendarIcon className="h-4 w-4 text-primary" />
-                <span className="text-xs text-foreground/70 dark:text-white/70">{event.date}</span>
-              </div>
-            </div>
-            <SocialShare 
-              url={shareUrl}
-              title={`Join me at ${event.title}`}
-              description={`${event.description} - ${event.date} at ${event.location}`}
-            />
-          </div>
-          <div className="flex flex-col md:flex-row gap-4 mb-4">
-            <div className="flex items-center text-foreground/60 dark:text-white/60">
-              <Clock3Icon className="w-4 h-4 mr-2" />
-              <span>{event.time}</span>
-            </div>
-            <div className="flex items-center text-foreground/60 dark:text-white/60">
-              <MapPinIcon className="w-4 h-4 mr-2" />
-              <span>{event.location}</span>
-            </div>
-          </div>
-          <p className="text-foreground/70 dark:text-white/70 mb-6">
-            {event.description}
-          </p>
-          <div className="flex flex-wrap gap-3">
-            <motion.button 
-              className="flex items-center gap-2 px-4 py-2 bg-primary text-white font-medium rounded-full hover:bg-primary/90 transition-all btn-glow"
-              onClick={() => onRegisterInterest(event)}
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-            >
-              <UsersIcon className="h-4 w-4" />
-              Register Interest
-            </motion.button>
-            <motion.button 
-              className="px-4 py-2 border border-primary text-primary font-medium rounded-full hover:bg-primary/5 transition-all dark:text-white dark:border-white"
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-            >
-              Learn More
-            </motion.button>
-          </div>
-        </div>
+
+        <h3 className="text-lg font-medium text-white text-center mb-2">{event.title}</h3>
+        <p className="text-xs text-gray-500 text-center mb-8 max-w-xs mx-auto line-clamp-3">
+          {event.description}
+        </p>
       </div>
-    </motion.div>
+
+      <button
+        onClick={handleConnect}
+        className={`w-full py-3 text-sm font-medium transition-all duration-300 rounded-lg ${isConnected
+            ? 'bg-emerald-400 text-black border-emerald-400'
+            : 'btn-secondary'
+          }`}
+      >
+        {buttonText}
+      </button>
+    </div>
   );
 };
 

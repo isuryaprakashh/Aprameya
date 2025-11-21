@@ -1,4 +1,4 @@
-import { pgTable, text, serial, integer, boolean, timestamp, pgEnum } from "drizzle-orm/pg-core";
+import { sqliteTable, text, integer, blob } from "drizzle-orm/sqlite-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 import { relations } from "drizzle-orm";
@@ -13,8 +13,8 @@ export const UserRole = {
 export type UserRoleType = typeof UserRole[keyof typeof UserRole];
 
 // Define all tables first without relations
-export const users = pgTable("users", {
-  id: serial("id").primaryKey(),
+export const users = sqliteTable("users", {
+  id: integer("id").primaryKey({ autoIncrement: true }),
   username: text("username").notNull().unique(),
   password: text("password").notNull(),
   email: text("email").notNull().unique(),
@@ -32,64 +32,65 @@ export const users = pgTable("users", {
   bio: text("bio"),
 });
 
-export const projects = pgTable("projects", {
-  id: serial("id").primaryKey(),
+export const projects = sqliteTable("projects", {
+  id: integer("id").primaryKey({ autoIncrement: true }),
   title: text("title").notNull(),
   description: text("description").notNull(),
   category: text("category").notNull(),
   image: text("image").notNull(),
   technologies: text("technologies").notNull(), // Comma-separated list
   team: text("team").notNull(), // Comma-separated list
-  created_at: timestamp("created_at").defaultNow().notNull(),
+  created_at: text("created_at").notNull().default(new Date().toISOString()),
   user_id: integer("user_id").references(() => users.id).notNull(),
 });
 
-export const blogs = pgTable("blogs", {
-  id: serial("id").primaryKey(),
+export const blogs = sqliteTable("blogs", {
+  id: integer("id").primaryKey({ autoIncrement: true }),
   title: text("title").notNull(),
   excerpt: text("excerpt").notNull(),
   content: text("content").notNull(),
   category: text("category").notNull(),
   image: text("image").notNull(),
-  date: timestamp("date").defaultNow().notNull(),
+  date: text("date").notNull().default(new Date().toISOString()),
   user_id: integer("user_id").references(() => users.id).notNull(),
 });
 
-export const researchItems = pgTable("research_items", {
-  id: serial("id").primaryKey(),
+export const researchItems = sqliteTable("research_items", {
+  id: integer("id").primaryKey({ autoIncrement: true }),
   title: text("title").notNull(),
   description: text("description").notNull(),
   category: text("category").notNull(),
   authors: text("authors").notNull(), // Comma-separated list
   citations: integer("citations").default(0).notNull(),
   image: text("image").notNull(),
-  date: timestamp("date").defaultNow().notNull(),
+  date: text("date").notNull().default(new Date().toISOString()),
   user_id: integer("user_id").references(() => users.id).notNull(),
 });
 
-export const events = pgTable("events", {
-  id: serial("id").primaryKey(),
+export const events = sqliteTable("events", {
+  id: integer("id").primaryKey({ autoIncrement: true }),
   title: text("title").notNull(),
   description: text("description").notNull(),
   type: text("type").notNull(),
-  date: timestamp("date").notNull(),
+  date: text("date").notNull(),
   time: text("time").notNull(),
   location: text("location").notNull(),
   image: text("image").notNull(),
   user_id: integer("user_id").references(() => users.id).notNull(),
 });
 
-export const eventRegistrations = pgTable("event_registrations", {
-  id: serial("id").primaryKey(),
+export const eventRegistrations = sqliteTable("event_registrations", {
+  id: integer("id").primaryKey({ autoIncrement: true }),
   event_id: integer("event_id").references(() => events.id).notNull(),
   user_id: integer("user_id").references(() => users.id).notNull(),
-  created_at: timestamp("created_at").defaultNow().notNull(),
+  message: text("message"), // Optional message from user about why they're interested
+  created_at: text("created_at").notNull().default(new Date().toISOString()),
 });
 
-export const comments = pgTable("comments", {
-  id: serial("id").primaryKey(),
+export const comments = sqliteTable("comments", {
+  id: integer("id").primaryKey({ autoIncrement: true }),
   content: text("content").notNull(),
-  created_at: timestamp("created_at").defaultNow().notNull(),
+  created_at: text("created_at").notNull().default(new Date().toISOString()),
   user_id: integer("user_id").references(() => users.id).notNull(),
   project_id: integer("project_id").references(() => projects.id),
   blog_id: integer("blog_id").references(() => blogs.id),
@@ -97,10 +98,10 @@ export const comments = pgTable("comments", {
 });
 
 // Define a messages table for core team communication
-export const messages = pgTable("messages", {
-  id: serial("id").primaryKey(),
+export const messages = sqliteTable("messages", {
+  id: integer("id").primaryKey({ autoIncrement: true }),
   content: text("content").notNull(),
-  created_at: timestamp("created_at").defaultNow().notNull(),
+  created_at: text("created_at").notNull().default(new Date().toISOString()),
   user_id: integer("user_id").references(() => users.id).notNull(),
 });
 

@@ -2,6 +2,7 @@ import { Link } from 'wouter';
 import { BlogPost } from '../lib/types';
 import SocialShare from './SocialShare';
 import { motion } from 'framer-motion';
+import { FaArrowRight, FaCalendar, FaUser, FaTag } from 'react-icons/fa';
 
 interface BlogPostProps {
   post: BlogPost;
@@ -11,57 +12,68 @@ const BlogPostComponent = ({ post }: BlogPostProps) => {
   // Create absolute URL for sharing
   const currentUrl = window.location.origin;
   const shareUrl = `${currentUrl}/blogs/${post.id}`;
-  
+
   return (
-    <motion.div 
-      className="grid md:grid-cols-5 gap-6 items-start p-6 bg-white dark:bg-slate-800 rounded-lg shadow-md"
+    <motion.div
+      className="clean-card p-0 overflow-hidden group"
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4 }}
     >
-      <div className="md:col-span-2 h-48 md:h-full bg-muted dark:bg-slate-700 rounded-lg overflow-hidden relative group">
-        <img 
-          src={post.image} 
-          alt={post.title} 
-          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" 
-        />
-        <div className="absolute bottom-3 right-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-          <SocialShare 
-            url={shareUrl}
-            title={`Check out this blog post: ${post.title}`}
-            description={post.excerpt}
-            variant="minimal"
+      <div className="grid md:grid-cols-5 gap-0 h-full">
+        {/* Image Section */}
+        <div className="md:col-span-2 h-64 md:h-full relative overflow-hidden border-r border-[var(--border-color)]">
+          <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent z-10 md:hidden"></div>
+          <img
+            src={post.image}
+            alt={post.title}
+            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 brightness-75 group-hover:brightness-100"
           />
-        </div>
-      </div>
-      <div className="md:col-span-3">
-        <div className="flex items-center justify-between mb-3">
-          <div className="flex items-center space-x-4">
-            <span className="text-xs font-medium px-3 py-1 rounded-full bg-secondary/10 text-secondary">
+          <div className="absolute top-4 left-4 z-20">
+            <span className="px-3 py-1 rounded-full bg-black/50 backdrop-blur-md border border-white/10 text-[10px] font-bold uppercase tracking-wider text-emerald-400 flex items-center">
+              <FaTag className="mr-2 w-3 h-3" />
               {post.category}
             </span>
-            <span className="text-foreground/60 dark:text-white/60 text-sm">{post.date}</span>
           </div>
-          <SocialShare 
-            url={shareUrl}
-            title={`Check out this blog post: ${post.title}`}
-            description={post.excerpt}
-          />
         </div>
-        <h2 className="font-bold text-2xl mb-3 dark:text-white">{post.title}</h2>
-        <p className="text-foreground/70 dark:text-white/70 mb-4">
-          {post.excerpt}
-        </p>
-        <div className="flex items-center justify-between">
-          <Link href={`/blogs/${post.id}`} className="inline-flex items-center text-primary font-medium hover:text-secondary transition-colors">
-            Read Full Article
-            <svg className="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
-            </svg>
-          </Link>
-          <div className="flex items-center space-x-2">
-            <span className="text-sm text-foreground/60 dark:text-white/60">By</span>
-            <span className="text-sm font-medium">{post.author}</span>
+
+        {/* Content Section */}
+        <div className="md:col-span-3 p-8 flex flex-col justify-between relative">
+          <div className="shimmer pointer-events-none"></div>
+
+          <div>
+            <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center space-x-4 text-xs text-gray-500 font-mono">
+                <span className="flex items-center">
+                  <FaCalendar className="mr-2" />
+                  {post.date}
+                </span>
+                <span className="flex items-center">
+                  <FaUser className="mr-2" />
+                  {post.author}
+                </span>
+              </div>
+              <SocialShare
+                url={shareUrl}
+                title={`Check out this blog post: ${post.title}`}
+                description={post.excerpt}
+                variant="minimal"
+              />
+            </div>
+
+            <h2 className="font-mono font-bold text-2xl mb-4 text-white group-hover:text-emerald-400 transition-colors leading-tight">
+              {post.title}
+            </h2>
+            <p className="text-gray-400 mb-6 leading-relaxed text-sm">
+              {post.excerpt}
+            </p>
+          </div>
+
+          <div className="flex items-center justify-between mt-auto pt-6 border-t border-[var(--border-color)]">
+            <Link href={`/blogs/${post.id}`} className="btn-secondary px-6 py-2 text-xs flex items-center group/btn">
+              Read Article
+              <FaArrowRight className="ml-2 w-3 h-3 group-hover/btn:translate-x-1 transition-transform" />
+            </Link>
           </div>
         </div>
       </div>

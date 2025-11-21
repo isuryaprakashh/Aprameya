@@ -62,3 +62,29 @@ export interface StatItem {
   value: string;
   label: string;
 }
+
+export interface User {
+  id: number;
+  username: string;
+  email: string;
+  role: string;
+  created_at?: string;
+}
+
+export interface EventRegistration {
+  id: number;
+  event_id: number;
+  user_id: number;
+  registered_at?: string;
+  event?: Event;
+}
+
+export interface Comment {
+  id: number;
+  content: string;
+  user_id: number;
+  project_id?: number;
+  blog_id?: number;
+  research_id?: number;
+  created_at?: string;
+}

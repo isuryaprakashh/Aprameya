@@ -1,23 +1,32 @@
 import { researchItems } from '../lib/data';
 import ResearchItemComponent from '../components/ResearchItem';
+import VoidAurora from '../components/backgrounds/VoidAurora';
 
 const Research = () => {
   return (
     <div className="fadeIn">
       {/* Header Section */}
-      <div className="diagonal-bg py-20 px-4 relative">
+      <section className="relative py-24 px-4 bg-[var(--bg-body)] border-b border-[var(--border-color)] overflow-hidden">
+        <VoidAurora />
+        <div className="absolute inset-0 dither-bg opacity-30 pointer-events-none"></div>
         <div className="container mx-auto relative z-10">
-          <h1 className="font-space font-bold text-3xl md:text-5xl text-white text-center mb-4">
-            Research - Advancing Autonomous Technology
-          </h1>
-          <p className="text-lg text-white/80 text-center max-w-3xl mx-auto">
-            Our cutting-edge research contributes to the global community of autonomous systems development
-          </p>
+          <div className="text-center">
+            <div className="inline-flex items-center gap-2 mb-6 border border-[var(--border-color)] px-3 py-1 bg-black">
+              <span className="w-2 h-2 bg-[#00ff41] rounded-full animate-pulse"></span>
+              <span className="text-xs font-bold text-white tracking-widest">R&D_DIVISION</span>
+            </div>
+            <h1 className="font-bold text-4xl md:text-6xl mb-6 text-white leading-none tracking-tighter">
+              ADVANCING<br />AUTONOMOUS TECH
+            </h1>
+            <p className="text-sm text-gray-400 max-w-2xl mx-auto font-mono">
+              Our cutting-edge research contributes to the global community of autonomous systems development.
+            </p>
+          </div>
         </div>
-      </div>
+      </section>
 
       {/* Research Content */}
-      <div className="py-16 px-4 bg-white">
+      <div className="py-16 px-4 bg-[var(--bg-body)]">
         <div className="container mx-auto max-w-5xl">
           {/* Research Entries */}
           {researchItems.map((item) => (

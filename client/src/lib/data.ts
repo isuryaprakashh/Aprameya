@@ -5,29 +5,56 @@ export const projects: Project[] = [
   {
     id: "1",
     title: "Autonomous Navigation System",
-    description: "Developed an advanced navigation system using computer vision and deep learning.",
+    description: "Developed an advanced navigation system using computer vision and deep learning for real-world autonomous vehicle applications.",
     category: "Autonomous Driving",
-    image: "/images/project1.jpg",
-    technologies: ["Python", "TensorFlow", "ROS"],
+    image: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80",
+    technologies: ["Python", "TensorFlow", "ROS", "OpenCV"],
     team: ["John Doe", "Jane Smith", "Robert Johnson"]
   },
   {
     id: "2",
     title: "Smart Traffic Management",
-    description: "AI-powered traffic management system to reduce congestion and improve road safety.",
+    description: "AI-powered traffic management system to reduce congestion and improve road safety using real-time data analysis.",
     category: "Smart City",
-    image: "/images/project2.jpg",
-    technologies: ["Python", "Computer Vision", "IoT"],
+    image: "https://images.unsplash.com/photo-1449824913935-59a10b8d2000?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80",
+    technologies: ["Python", "Computer Vision", "IoT", "Machine Learning"],
     team: ["Michael Brown", "Sarah Williams", "David Miller"]
   },
   {
     id: "3",
     title: "Drone Delivery System",
-    description: "Autonomous drone system for efficient package delivery in urban environments.",
+    description: "Autonomous drone system for efficient package delivery in urban environments with obstacle avoidance.",
     category: "Drones",
-    image: "/images/project3.jpg",
-    technologies: ["C++", "ROS", "Flight Control Systems"],
+    image: "https://images.unsplash.com/photo-1473968512647-3e447244af8f?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80",
+    technologies: ["C++", "ROS", "Flight Control", "GPS Navigation"],
     team: ["Emily Johnson", "Mark Wilson", "Lisa Chen"]
+  },
+  {
+    id: "4",
+    title: "Vehicle-to-Vehicle Communication",
+    description: "Developing V2V communication protocols for coordinated autonomous vehicle movement in traffic scenarios.",
+    category: "Connected Vehicles",
+    image: "https://images.unsplash.com/photo-1485827404703-89b55fcc595e?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80",
+    technologies: ["C++", "Networking", "Protocol Design", "Real-time Systems"],
+    team: ["Alex Turner", "Maria Garcia", "James Wilson"]
+  },
+  {
+    id: "5",
+    title: "Autonomous Parking Assistant",
+    description: "Smart parking system that automatically finds and navigates to available parking spaces using sensor fusion.",
+    category: "Parking Solutions",
+    image: "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80",
+    technologies: ["Python", "Sensor Fusion", "Path Planning", "Computer Vision"],
+    team: ["Sophie Chen", "Ryan Martinez", "Emma Thompson"]
+  },
+  {
+    id: "6",
+    title: "Predictive Maintenance System",
+    description: "AI-driven system for predicting vehicle maintenance needs to ensure optimal performance and safety.",
+    category: "Maintenance",
+    image: "https://images.unsplash.com/photo-1581092160562-40aa08e78837?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80",
+    technologies: ["Machine Learning", "Data Analytics", "IoT Sensors", "Python"],
+    team: ["Daniel Kim", "Isabella Rodriguez", "Lucas Anderson"]
   }
 ];
 
@@ -105,40 +132,53 @@ export const events: Event[] = [
     id: "1",
     title: "Annual Autonomous Vehicle Symposium",
     type: "Conference",
-    date: "2023-09-15",
+    date: "2024-03-15",
     day: "15",
-    month: "Sep",
-    year: "2023",
+    month: "Mar",
+    year: "2024",
     time: "9:00 AM - 5:00 PM",
     location: "Main Auditorium, KLU Campus",
-    description: "Join us for our annual symposium showcasing the latest advancements in autonomous vehicle technology.",
-    image: "/images/event1.jpg"
+    description: "Join us for our annual symposium showcasing the latest advancements in autonomous vehicle technology with industry experts and researchers.",
+    image: "https://images.unsplash.com/photo-1540575467063-178a50c2df87?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80"
   },
   {
     id: "2",
     title: "Hackathon: Future Mobility Solutions",
-    type: "Competition",
-    date: "2023-10-10",
+    type: "Hackathon",
+    date: "2024-04-10",
     day: "10",
-    month: "Oct",
-    year: "2023",
+    month: "Apr",
+    year: "2024",
     time: "10:00 AM - 8:00 PM",
     location: "Innovation Hub, Engineering Block",
-    description: "A 10-hour hackathon challenging participants to develop innovative solutions for future mobility challenges.",
-    image: "/images/event2.jpg"
+    description: "A 10-hour hackathon challenging participants to develop innovative solutions for future mobility challenges with exciting prizes.",
+    image: "https://images.unsplash.com/photo-1522071820081-009f0129c71c?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80"
   },
   {
     id: "3",
     title: "Workshop on Sensor Fusion",
     type: "Workshop",
-    date: "2023-11-05",
+    date: "2024-05-05",
     day: "05",
-    month: "Nov",
-    year: "2023",
+    month: "May",
+    year: "2024",
     time: "2:00 PM - 5:00 PM",
     location: "Lab 201, Technology Building",
-    description: "Hands-on workshop on integrating multiple sensors for robust autonomous navigation systems.",
-    image: "/images/event3.jpg"
+    description: "Hands-on workshop on integrating multiple sensors for robust autonomous navigation systems with practical demonstrations.",
+    image: "https://images.unsplash.com/photo-1581092160562-40aa08e78837?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80"
+  },
+  {
+    id: "4",
+    title: "Industry Panel: Future of Transportation",
+    type: "Panel Discussion",
+    date: "2024-06-20",
+    day: "20",
+    month: "Jun",
+    year: "2024",
+    time: "3:00 PM - 5:00 PM",
+    location: "Virtual Event",
+    description: "Panel discussion with industry leaders discussing the future of autonomous transportation and career opportunities.",
+    image: "https://images.unsplash.com/photo-1559136555-9303baea8ebd?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80"
   }
 ];
 
@@ -150,7 +190,7 @@ export const teamMembers: TeamMember[] = [
     role: "Faculty Advisor",
     department: "Computer Science",
     year: "Professor",
-    image: "/images/team1.jpg",
+    image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-1.2.1&auto=format&fit=crop&w=300&q=80",
     socialLinks: {
       linkedin: "https://linkedin.com/in/johndoe",
       github: "https://github.com/johndoe",
@@ -163,7 +203,7 @@ export const teamMembers: TeamMember[] = [
     role: "President",
     department: "Electrical Engineering",
     year: "4th Year",
-    image: "/images/team2.jpg",
+    image: "https://images.unsplash.com/photo-1494790108755-2616b612b786?ixlib=rb-1.2.1&auto=format&fit=crop&w=300&q=80",
     socialLinks: {
       linkedin: "https://linkedin.com/in/janesmith",
       github: "https://github.com/janesmith",
@@ -176,7 +216,7 @@ export const teamMembers: TeamMember[] = [
     role: "Technical Lead",
     department: "Mechanical Engineering",
     year: "3rd Year",
-    image: "/images/team3.jpg",
+    image: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&auto=format&fit=crop&w=300&q=80",
     socialLinks: {
       linkedin: "https://linkedin.com/in/robertjohnson",
       github: "https://github.com/robertjohnson",
@@ -189,7 +229,7 @@ export const teamMembers: TeamMember[] = [
     role: "Research Coordinator",
     department: "Computer Science",
     year: "4th Year",
-    image: "/images/team4.jpg",
+    image: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixlib=rb-1.2.1&auto=format&fit=crop&w=300&q=80",
     socialLinks: {
       linkedin: "https://linkedin.com/in/sarahwilliams",
       github: "https://github.com/sarahwilliams",
@@ -202,11 +242,24 @@ export const teamMembers: TeamMember[] = [
     role: "Event Coordinator",
     department: "Electronics Engineering",
     year: "3rd Year",
-    image: "/images/team5.jpg",
+    image: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?ixlib=rb-1.2.1&auto=format&fit=crop&w=300&q=80",
     socialLinks: {
       linkedin: "https://linkedin.com/in/michaelbrown",
       github: "https://github.com/michaelbrown",
       email: "michael.brown@klu.ac.in"
+    }
+  },
+  {
+    id: "6",
+    name: "Emily Chen",
+    role: "Marketing Lead",
+    department: "Information Technology",
+    year: "3rd Year",
+    image: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?ixlib=rb-1.2.1&auto=format&fit=crop&w=300&q=80",
+    socialLinks: {
+      linkedin: "https://linkedin.com/in/emilychen",
+      github: "https://github.com/emilychen",
+      email: "emily.chen@klu.ac.in"
     }
   }
 ];
@@ -244,16 +297,28 @@ export const blogCategories = [
 // Sample data for upcoming events
 export const upcomingEvents = [
   {
-    id: "4",
+    id: "5",
     title: "Guest Lecture: Future of Mobility",
-    date: "2023-12-10",
+    day: "15",
+    month: "Dec",
+    date: "2024-12-15",
     location: "Virtual Event"
   },
   {
-    id: "5",
+    id: "6",
     title: "Winter Project Showcase",
-    date: "2023-12-20",
+    day: "20",
+    month: "Dec", 
+    date: "2024-12-20",
     location: "Main Auditorium"
+  },
+  {
+    id: "7",
+    title: "New Year Tech Meetup",
+    day: "05",
+    month: "Jan",
+    date: "2025-01-05",
+    location: "Innovation Hub"
   }
 ];
 
@@ -263,18 +328,27 @@ export const featuredItems = [
     id: "1",
     type: "project",
     title: "Autonomous Navigation System",
-    image: "/images/project1.jpg"
+    description: "Developed an advanced navigation system using computer vision and deep learning for real-world autonomous vehicle applications.",
+    category: "Autonomous Driving",
+    image: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80",
+    link: "/projects"
   },
   {
-    id: "1",
+    id: "2",
     type: "blog",
     title: "The Future of Autonomous Vehicles",
-    image: "/images/blog1.jpg"
+    description: "Exploring the potential impact of self-driving cars on urban transportation and the challenges ahead.",
+    category: "Technology",
+    image: "https://images.unsplash.com/photo-1555353540-64580b51c258?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80",
+    link: "/blogs"
   },
   {
-    id: "1",
+    id: "3",
     type: "research",
-    title: "Advanced Perception Systems for Autonomous Vehicles",
-    image: "/images/research1.jpg"
+    title: "Advanced Perception Systems",
+    description: "Research on improving computer vision systems for adverse weather conditions in autonomous vehicles.",
+    category: "Computer Vision",
+    image: "https://images.unsplash.com/photo-1485827404703-89b55fcc595e?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80",
+    link: "/research"
   }
 ];
