@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Link, useLocation } from 'wouter';
-import { useQuery } from '@tanstack/react-query';
-import { apiRequest } from '@/lib/queryClient';
+import { useAuth } from '@/context/AuthContext';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -16,13 +15,6 @@ import { Menu, X, User, LogOut, ChevronRight } from 'lucide-react';
 import { ThemeToggle } from '@/components/theme-toggle';
 import { useTheme } from '@/components/theme-provider';
 
-interface UserData {
-  id: number;
-  username: string;
-  email: string;
-  role: string;
-}
-
 const Navbar = () => {
   const [location] = useLocation();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -30,11 +22,7 @@ const Navbar = () => {
   const { theme } = useTheme();
   const isDark = theme === 'dark' || (theme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches);
 
-  // Fetch current user
-  const { data: user, isLoading } = useQuery<UserData>({
-    queryKey: ['/api/users/me'],
-    staleTime: 5000,
-  });
+  const { user, logoutMutation } = useAuth();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -61,13 +49,10 @@ const Navbar = () => {
     return username?.substring(0, 2).toUpperCase() || 'A';
   };
 
-  const handleLogout = async () => {
-    try {
-      await apiRequest('/api/logout', { method: 'POST' });
-      window.location.href = '/';
-    } catch (error) {
-      console.error('Logout failed:', error);
-    }
+  const handleLogout = () => {
+    logoutMutation.mutate();
+    // No need to redirect manually as AuthContext handles state, but we might want to close menu
+    closeMobileMenu();
   };
 
   return (

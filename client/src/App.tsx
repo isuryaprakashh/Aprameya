@@ -1,8 +1,7 @@
 import { Route, Switch, useLocation, Redirect } from "wouter";
 import { Toaster } from "@/components/ui/toaster";
 import { ThemeProvider } from "@/components/theme-provider";
-import { useQuery } from "@tanstack/react-query";
-import { useEffect } from "react";
+import { AuthProvider, useAuth } from "@/context/AuthContext";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 import NeuralCanvas from "./components/NeuralCanvas";
@@ -18,9 +17,6 @@ import Signup from "./pages/Signup";
 import UserProfile from "./pages/UserProfile";
 import NotFound from "./pages/not-found";
 
-// Import User type
-import { User } from "@shared/schema";
-
 // Protected route component
 interface ProtectedRouteProps {
   component: React.ComponentType<any>;
@@ -29,11 +25,7 @@ interface ProtectedRouteProps {
 }
 
 const ProtectedRoute = ({ component: Component, roles, ...rest }: ProtectedRouteProps) => {
-  const { data: user, isLoading } = useQuery<User>({
-    queryKey: ['/api/me'],
-    staleTime: 5000,
-  });
-
+  const { user, isLoading } = useAuth();
   const [, navigate] = useLocation();
 
   if (isLoading) {
@@ -53,47 +45,41 @@ const ProtectedRoute = ({ component: Component, roles, ...rest }: ProtectedRoute
   return <Component {...rest} />;
 };
 
-// We're now using DashboardRouter component instead of redirects
-
 function App() {
-  const [location] = useLocation();
-  const isHomePage = location === '/';
-
-  // Magnetic buttons are now handled by the MagneticWrap component
-  // or individual useMagnetic hooks, so we don't need global initialization.
-
   return (
     <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
-      <NeuralCanvas />
-      <Navbar />
-      <main className="flex-grow">
-        <Switch>
-          <Route path="/" component={Home} />
-          <Route path="/projects" component={Projects} />
-          <Route path="/blogs" component={Blogs} />
-          <Route path="/research" component={Research} />
-          <Route path="/events" component={Events} />
-          <Route path="/about" component={About} />
-          <Route path="/login" component={Login} />
-          <Route path="/signup" component={Signup} />
+      <AuthProvider>
+        <NeuralCanvas />
+        <Navbar />
+        <main className="flex-grow">
+          <Switch>
+            <Route path="/" component={Home} />
+            <Route path="/projects" component={Projects} />
+            <Route path="/blogs" component={Blogs} />
+            <Route path="/research" component={Research} />
+            <Route path="/events" component={Events} />
+            <Route path="/about" component={About} />
+            <Route path="/login" component={Login} />
+            <Route path="/signup" component={Signup} />
 
-          {/* Dashboard routes - will route to the appropriate dashboard based on user role */}
-          <Route path="/dashboard">
-            <ProtectedRoute component={DashboardRouter} />
-          </Route>
-          <Route path="/dashboard/:rest*">
-            <ProtectedRoute component={DashboardRouter} />
-          </Route>
+            {/* Dashboard routes - will route to the appropriate dashboard based on user role */}
+            <Route path="/dashboard">
+              <ProtectedRoute component={DashboardRouter} />
+            </Route>
+            <Route path="/dashboard/:rest*">
+              <ProtectedRoute component={DashboardRouter} />
+            </Route>
 
-          <Route path="/profile">
-            <ProtectedRoute component={UserProfile} />
-          </Route>
+            <Route path="/profile">
+              <ProtectedRoute component={UserProfile} />
+            </Route>
 
-          <Route component={NotFound} />
-        </Switch>
-      </main>
-      <Footer />
-      <Toaster />
+            <Route component={NotFound} />
+          </Switch>
+        </main>
+        <Footer />
+        <Toaster />
+      </AuthProvider>
     </ThemeProvider>
   );
 }
