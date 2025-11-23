@@ -64,16 +64,16 @@ const Projects = () => {
             </p>
 
             {/* Featured Project Highlight */}
-            <div className="inline-flex items-center gap-4 p-4 bg-[var(--card-bg)] border border-[var(--border-color)] rounded-lg max-w-2xl">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 p-4 bg-[var(--card-bg)] border border-[var(--border-color)] rounded-lg max-w-2xl">
               <div className="w-12 h-12 bg-[hsl(var(--accent))]/10 flex items-center justify-center rounded-md border border-[hsl(var(--accent))]/20 shrink-0">
                 <Users className="w-6 h-6 text-[hsl(var(--accent))]" />
               </div>
-              <div>
+              <div className="flex-1">
                 <div className="text-[10px] text-[hsl(var(--accent))] font-bold uppercase tracking-wider mb-1">Featured Project</div>
                 <div className="text-[var(--text-primary)] font-bold">Autonomous Navigation System v2.0</div>
                 <div className="text-xs text-gray-400">AI/ML • Active Development</div>
               </div>
-              <Button className="ml-auto btn-primary" size="sm" onClick={() => {
+              <Button className="w-full sm:w-auto ml-auto btn-primary" size="sm" onClick={() => {
                 const project = projects.find(p => p.id === '1');
                 if (project) handleViewDetails(project);
               }}>
@@ -139,29 +139,31 @@ const Projects = () => {
       </section>
 
       {/* CTA Section */}
-      <section className="py-16 bg-[var(--bg-body)]">
-        <div className="max-w-7xl mx-auto px-8">
+      {/* CTA Section */}
+      <section className="py-16 px-4 bg-[var(--bg-body)]">
+        <div className="container mx-auto max-w-4xl">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
             viewport={{ once: true }}
           >
-            <div className="bg-gradient-to-r from-primary to-secondary rounded-2xl p-8 md:p-12 text-[var(--text-primary)]">
-              <h2 className="text-3xl md:text-4xl font-bold mb-4">
+            <div className="bg-gradient-to-r from-[hsl(var(--accent))] to-[hsl(var(--accent))]/80 rounded-2xl p-8 md:p-12 text-[var(--bg-body)] text-center shadow-xl">
+              <h2 className="text-3xl md:text-4xl font-bold mb-6 text-[var(--bg-body)]">
                 Ready to Build the Future?
               </h2>
-              <p className="text-lg mb-8 opacity-90">
+              <p className="text-lg mb-8 opacity-90 max-w-2xl mx-auto font-medium">
                 Join our community of innovators and start your journey in autonomous systems.
+                Whether you're a coder, designer, or hardware enthusiast, there's a place for you.
               </p>
-              <div className="flex flex-wrap gap-4">
-                <Button asChild size="lg" className="bg-[var(--card-bg)] text-[hsl(var(--accent))] hover:bg-[var(--card-bg)]/90 font-semibold">
+              <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                <Button asChild size="lg" className="bg-[var(--card-bg)] text-[hsl(var(--accent))] hover:bg-[var(--card-bg)]/90 font-bold border-0">
                   <Link href="/signup">
                     <Users className="mr-2 h-5 w-5" />
                     Join Now
                   </Link>
                 </Button>
-                <Button asChild variant="outline" size="lg" className="border-[var(--border-color)] text-[var(--text-primary)] hover:bg-[var(--bg-body)]/10">
+                <Button asChild variant="outline" size="lg" className="bg-transparent border-[var(--bg-body)] text-[var(--bg-body)] hover:bg-[var(--bg-body)]/10 hover:text-[var(--bg-body)]">
                   <Link href="/about">
                     Learn More
                   </Link>
