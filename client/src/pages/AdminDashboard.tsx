@@ -383,14 +383,14 @@ const AdminDashboard = () => {
 
     const FormField = ({ label, id, type = "text", value, onChange, isTextArea = false, rows = 4 }: any) => (
       <div className="mb-4">
-        <label htmlFor={id} className="text-xs font-mono text-gray-400 mb-2 block uppercase">{label}</label>
+        <label htmlFor={id} className="text-xs font-mono text-[var(--text-secondary)] mb-2 block uppercase">{label}</label>
         {isTextArea ? (
           <Textarea
             id={id}
             value={value}
             rows={rows}
             onChange={onChange}
-            className="bg-[var(--card-bg)] border-[var(--border-color)] text-white focus:border-emerald-500/50"
+            className="bg-[var(--card-bg)] border-[var(--border-color)] text-[var(--text-primary)] focus:border-[hsl(var(--accent))]/50"
           />
         ) : (
           <Input
@@ -398,7 +398,7 @@ const AdminDashboard = () => {
             type={type}
             value={value}
             onChange={onChange}
-            className="bg-[var(--card-bg)] border-[var(--border-color)] text-white focus:border-emerald-500/50"
+            className="bg-[var(--card-bg)] border-[var(--border-color)] text-[var(--text-primary)] focus:border-[hsl(var(--accent))]/50"
           />
         )}
       </div>
@@ -411,11 +411,11 @@ const AdminDashboard = () => {
         className="glass-panel p-6 rounded-xl border border-[var(--border-color)] mb-8"
       >
         <div className="flex justify-between items-center mb-6 border-b border-[var(--border-color)] pb-4">
-          <h3 className="text-xl font-bold text-white flex items-center gap-2">
-            <FaEdit className="text-emerald-400" />
+          <h3 className="text-xl font-bold text-[var(--text-primary)] flex items-center gap-2">
+            <FaEdit className="text-[hsl(var(--accent))]" />
             {selectedItem.id ? `Edit ${type.charAt(0).toUpperCase() + type.slice(1)}` : `New ${type.charAt(0).toUpperCase() + type.slice(1)}`}
           </h3>
-          <Button variant="ghost" size="sm" onClick={handleCancelEdit} className="text-gray-400 hover:text-white">
+          <Button variant="ghost" size="sm" onClick={handleCancelEdit} className="text-[var(--text-secondary)] hover:text-[var(--text-primary)]">
             <FaTimes />
           </Button>
         </div>
@@ -468,7 +468,7 @@ const AdminDashboard = () => {
           )}
 
           <div className="flex justify-end gap-3 mt-6 pt-4 border-t border-[var(--border-color)]">
-            <Button variant="ghost" onClick={handleCancelEdit} className="text-gray-400 hover:text-white hover:bg-white/10">
+            <Button variant="ghost" onClick={handleCancelEdit} className="text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--text-primary)]/10">
               Cancel
             </Button>
             <Button onClick={handleSave} className="btn-primary">
@@ -491,11 +491,11 @@ const AdminDashboard = () => {
           className="mb-8 flex items-center justify-between"
         >
           <div>
-            <div className="inline-flex items-center gap-2 mb-2 border border-[var(--border-color)] px-3 py-1 bg-black/50 rounded-full">
-              <span className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></span>
-              <span className="text-[10px] font-bold text-white tracking-widest uppercase">System Admin</span>
+            <div className="inline-flex items-center gap-2 mb-2 border border-[var(--border-color)] px-3 py-1 bg-[var(--card-bg)]/50 rounded-full">
+              <span className="w-2 h-2 bg-[hsl(var(--accent))] rounded-full animate-pulse"></span>
+              <span className="text-[10px] font-bold text-[var(--text-primary)] tracking-widest uppercase">System Admin</span>
             </div>
-            <h1 className="text-4xl font-bold text-white font-mono">COMMAND_CENTER</h1>
+            <h1 className="text-4xl font-bold text-[var(--text-primary)] font-mono">COMMAND_CENTER</h1>
           </div>
         </motion.div>
 
@@ -504,32 +504,32 @@ const AdminDashboard = () => {
         ) : (
           <Tabs defaultValue="users" className="w-full">
             <TabsList className="w-full bg-[var(--card-bg)] border border-[var(--border-color)] p-1 rounded-lg mb-8 overflow-x-auto flex-nowrap justify-start">
-              <TabsTrigger value="users" className="flex-1 min-w-[100px] data-[state=active]:bg-emerald-500/20 data-[state=active]:text-emerald-400">Users</TabsTrigger>
-              <TabsTrigger value="projects" className="flex-1 min-w-[100px] data-[state=active]:bg-emerald-500/20 data-[state=active]:text-emerald-400">Projects</TabsTrigger>
-              <TabsTrigger value="blogs" className="flex-1 min-w-[100px] data-[state=active]:bg-emerald-500/20 data-[state=active]:text-emerald-400">Blogs</TabsTrigger>
-              <TabsTrigger value="research" className="flex-1 min-w-[100px] data-[state=active]:bg-emerald-500/20 data-[state=active]:text-emerald-400">Research</TabsTrigger>
-              <TabsTrigger value="events" className="flex-1 min-w-[100px] data-[state=active]:bg-emerald-500/20 data-[state=active]:text-emerald-400">Events</TabsTrigger>
-              <TabsTrigger value="registrations" className="flex-1 min-w-[100px] data-[state=active]:bg-emerald-500/20 data-[state=active]:text-emerald-400">Registrations</TabsTrigger>
-              <TabsTrigger value="team-chat" className="flex-1 min-w-[100px] data-[state=active]:bg-emerald-500/20 data-[state=active]:text-emerald-400">Team Chat</TabsTrigger>
+              <TabsTrigger value="users" className="flex-1 min-w-[100px] data-[state=active]:bg-[hsl(var(--accent))]/20 data-[state=active]:text-[hsl(var(--accent))]">Users</TabsTrigger>
+              <TabsTrigger value="projects" className="flex-1 min-w-[100px] data-[state=active]:bg-[hsl(var(--accent))]/20 data-[state=active]:text-[hsl(var(--accent))]">Projects</TabsTrigger>
+              <TabsTrigger value="blogs" className="flex-1 min-w-[100px] data-[state=active]:bg-[hsl(var(--accent))]/20 data-[state=active]:text-[hsl(var(--accent))]">Blogs</TabsTrigger>
+              <TabsTrigger value="research" className="flex-1 min-w-[100px] data-[state=active]:bg-[hsl(var(--accent))]/20 data-[state=active]:text-[hsl(var(--accent))]">Research</TabsTrigger>
+              <TabsTrigger value="events" className="flex-1 min-w-[100px] data-[state=active]:bg-[hsl(var(--accent))]/20 data-[state=active]:text-[hsl(var(--accent))]">Events</TabsTrigger>
+              <TabsTrigger value="registrations" className="flex-1 min-w-[100px] data-[state=active]:bg-[hsl(var(--accent))]/20 data-[state=active]:text-[hsl(var(--accent))]">Registrations</TabsTrigger>
+              <TabsTrigger value="team-chat" className="flex-1 min-w-[100px] data-[state=active]:bg-[hsl(var(--accent))]/20 data-[state=active]:text-[hsl(var(--accent))]">Team Chat</TabsTrigger>
             </TabsList>
 
             <TabsContent value="users" className="space-y-4">
               <div className="glass-panel p-6 rounded-xl border border-[var(--border-color)]">
                 <div className="flex justify-between items-center mb-6">
                   <div>
-                    <h2 className="text-2xl font-bold text-white flex items-center gap-2">
-                      <FaUsers className="text-emerald-400" /> User Management
+                    <h2 className="text-2xl font-bold text-[var(--text-primary)] flex items-center gap-2">
+                      <FaUsers className="text-[hsl(var(--accent))]" /> User Management
                     </h2>
-                    <p className="text-gray-400 text-sm">Manage user roles and permissions</p>
+                    <p className="text-[var(--text-secondary)] text-sm">Manage user roles and permissions</p>
                   </div>
-                  <div className="bg-emerald-500/10 border border-emerald-500/30 px-4 py-2 rounded-lg">
-                    <span className="text-emerald-400 font-mono font-bold">{users.length} Active Users</span>
+                  <div className="bg-[hsl(var(--accent))]/10 border border-[hsl(var(--accent))]/30 px-4 py-2 rounded-lg">
+                    <span className="text-[hsl(var(--accent))] font-mono font-bold">{users.length} Active Users</span>
                   </div>
                 </div>
 
                 <div className="relative overflow-x-auto rounded-lg border border-[var(--border-color)]">
-                  <table className="w-full text-sm text-left text-gray-300">
-                    <thead className="text-xs text-gray-400 uppercase bg-black/50 border-b border-[var(--border-color)]">
+                  <table className="w-full text-sm text-left text-[var(--text-secondary)]">
+                    <thead className="text-xs text-[var(--text-secondary)] uppercase bg-[var(--card-bg)]/50 border-b border-[var(--border-color)]">
                       <tr>
                         <th scope="col" className="px-6 py-3 font-mono">ID</th>
                         <th scope="col" className="px-6 py-3 font-mono">Username</th>
@@ -541,31 +541,31 @@ const AdminDashboard = () => {
                     </thead>
                     <tbody>
                       {users.map((user) => (
-                        <tr key={user.id} className="bg-[var(--card-bg)] border-b border-[var(--border-color)] hover:bg-white/5 transition-colors">
-                          <td className="px-6 py-4 font-mono text-xs text-gray-500">{user.id}</td>
-                          <td className="px-6 py-4 font-bold text-white">{user.username}</td>
-                          <td className="px-6 py-4 text-gray-400">{user.email}</td>
+                        <tr key={user.id} className="bg-[var(--card-bg)] border-b border-[var(--border-color)] hover:bg-[var(--text-primary)]/5 transition-colors">
+                          <td className="px-6 py-4 font-mono text-xs text-[var(--text-secondary)]">{user.id}</td>
+                          <td className="px-6 py-4 font-bold text-[var(--text-primary)]">{user.username}</td>
+                          <td className="px-6 py-4 text-[var(--text-secondary)]">{user.email}</td>
                           <td className="px-6 py-4">
                             <Select
                               defaultValue={user.role}
                               onValueChange={(value) => handleChangeUserRole(user.id, value)}
                             >
-                              <SelectTrigger className="w-[140px] bg-black/30 border-[var(--border-color)] text-white h-8 text-xs">
+                              <SelectTrigger className="w-[140px] bg-[var(--card-bg)]/30 border-[var(--border-color)] text-[var(--text-primary)] h-8 text-xs">
                                 <SelectValue placeholder="Select role" />
                               </SelectTrigger>
-                              <SelectContent className="bg-[var(--card-bg)] border-[var(--border-color)] text-white">
+                              <SelectContent className="bg-[var(--card-bg)] border-[var(--border-color)] text-[var(--text-primary)]">
                                 <SelectItem value="ASPIRANT">Aspirant</SelectItem>
                                 <SelectItem value="CORE">Core Team</SelectItem>
                                 <SelectItem value="ADMIN">Admin</SelectItem>
                               </SelectContent>
                             </Select>
                           </td>
-                          <td className="px-6 py-4 font-mono text-xs text-gray-500">{new Date(user.created_at).toLocaleDateString()}</td>
+                          <td className="px-6 py-4 font-mono text-xs text-[var(--text-secondary)]">{new Date(user.created_at).toLocaleDateString()}</td>
                           <td className="px-6 py-4">
                             <Button
                               variant="ghost"
                               size="sm"
-                              className="text-emerald-400 hover:text-emerald-300 hover:bg-emerald-500/10 h-8 text-xs"
+                              className="text-[hsl(var(--accent))] hover:text-[hsl(var(--accent))]/80 hover:bg-[hsl(var(--accent))]/10 h-8 text-xs"
                             >
                               Details
                             </Button>
@@ -582,10 +582,10 @@ const AdminDashboard = () => {
               <div className="glass-panel p-6 rounded-xl border border-[var(--border-color)]">
                 <div className="flex justify-between items-center mb-6">
                   <div>
-                    <h2 className="text-2xl font-bold text-white flex items-center gap-2">
-                      <FaProjectDiagram className="text-emerald-400" /> Projects
+                    <h2 className="text-2xl font-bold text-[var(--text-primary)] flex items-center gap-2">
+                      <FaProjectDiagram className="text-[hsl(var(--accent))]" /> Projects
                     </h2>
-                    <p className="text-gray-400 text-sm">Manage portfolio projects</p>
+                    <p className="text-[var(--text-secondary)] text-sm">Manage portfolio projects</p>
                   </div>
                   <Button onClick={() => handleCreate('project')} className="btn-primary">
                     <FaPlus className="mr-2" /> Add Project
@@ -602,38 +602,38 @@ const AdminDashboard = () => {
                     >
                       {project.image && (
                         <div className="h-48 overflow-hidden relative border-b border-[var(--border-color)]">
-                          <div className="absolute inset-0 bg-emerald-500/10 opacity-0 group-hover:opacity-100 transition-opacity z-10"></div>
+                          <div className="absolute inset-0 bg-[hsl(var(--accent))]/10 opacity-0 group-hover:opacity-100 transition-opacity z-10"></div>
                           <img
                             src={project.image}
                             alt={project.title}
                             className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 filter brightness-75 group-hover:brightness-100"
                           />
                           <div className="absolute top-2 right-2 z-20">
-                            <span className="bg-black/70 backdrop-blur-md text-emerald-400 text-xs font-mono px-2 py-1 rounded border border-emerald-500/30">
+                            <span className="bg-[var(--bg-body)]/70 backdrop-blur-md text-[hsl(var(--accent))] text-xs font-mono px-2 py-1 rounded border border-[hsl(var(--accent))]/30">
                               {project.category}
                             </span>
                           </div>
                         </div>
                       )}
                       <CardHeader className="pb-2">
-                        <CardTitle className="text-white group-hover:text-emerald-400 transition-colors">{project.title}</CardTitle>
+                        <CardTitle className="text-[var(--text-primary)] group-hover:text-[hsl(var(--accent))] transition-colors">{project.title}</CardTitle>
                       </CardHeader>
                       <CardContent className="flex-grow">
-                        <p className="text-gray-400 text-sm line-clamp-3 mb-4">{project.description}</p>
+                        <p className="text-[var(--text-secondary)] text-sm line-clamp-3 mb-4">{project.description}</p>
                         <div className="flex flex-wrap gap-1">
                           {project.technologies?.slice(0, 3).map((tech, i) => (
-                            <span key={i} className="text-[10px] bg-[var(--bg-body)] border border-[var(--border-color)] text-gray-500 px-1.5 py-0.5 rounded">
+                            <span key={i} className="text-[10px] bg-[var(--bg-body)] border border-[var(--border-color)] text-[var(--text-secondary)] px-1.5 py-0.5 rounded">
                               {tech}
                             </span>
                           ))}
                         </div>
                       </CardContent>
-                      <CardFooter className="flex justify-between pt-4 border-t border-[var(--border-color)] bg-black/20">
+                      <CardFooter className="flex justify-between pt-4 border-t border-[var(--border-color)] bg-[var(--card-bg)]/20">
                         <Button
                           variant="ghost"
                           size="sm"
                           onClick={() => handleEdit(project, 'project')}
-                          className="text-gray-400 hover:text-white hover:bg-white/10"
+                          className="text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--text-primary)]/10"
                         >
                           <FaEdit className="mr-2 h-3 w-3" /> Edit
                         </Button>
@@ -641,7 +641,7 @@ const AdminDashboard = () => {
                           variant="ghost"
                           size="sm"
                           onClick={() => handleDelete(Number(project.id), 'project')}
-                          className="text-red-400 hover:text-red-300 hover:bg-red-500/10"
+                          className="text-red-500 hover:text-red-400 hover:bg-red-500/10"
                         >
                           <FaTrash className="mr-2 h-3 w-3" /> Delete
                         </Button>
@@ -656,10 +656,10 @@ const AdminDashboard = () => {
               <div className="glass-panel p-6 rounded-xl border border-[var(--border-color)]">
                 <div className="flex justify-between items-center mb-6">
                   <div>
-                    <h2 className="text-2xl font-bold text-white flex items-center gap-2">
-                      <FaNewspaper className="text-emerald-400" /> Blog Posts
+                    <h2 className="text-2xl font-bold text-[var(--text-primary)] flex items-center gap-2">
+                      <FaNewspaper className="text-[hsl(var(--accent))]" /> Blog Posts
                     </h2>
-                    <p className="text-gray-400 text-sm">Manage articles and updates</p>
+                    <p className="text-[var(--text-secondary)] text-sm">Manage articles and updates</p>
                   </div>
                   <Button onClick={() => handleCreate('blog')} className="btn-primary">
                     <FaPlus className="mr-2" /> Add Post
@@ -681,25 +681,25 @@ const AdminDashboard = () => {
                             alt={blog.title}
                             className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 filter brightness-75 group-hover:brightness-100"
                           />
-                          <div className="absolute bottom-0 left-0 w-full bg-gradient-to-t from-black/80 to-transparent p-4 pt-12">
-                            <span className="text-emerald-400 text-xs font-mono font-bold uppercase tracking-wider">
+                          <div className="absolute bottom-0 left-0 w-full bg-gradient-to-t from-[var(--bg-body)]/80 to-transparent p-4 pt-12">
+                            <span className="text-[hsl(var(--accent))] text-xs font-mono font-bold uppercase tracking-wider">
                               {blog.category}
                             </span>
                           </div>
                         </div>
                       )}
                       <CardHeader className="pb-2">
-                        <CardTitle className="text-white group-hover:text-emerald-400 transition-colors line-clamp-2">{blog.title}</CardTitle>
+                        <CardTitle className="text-[var(--text-primary)] group-hover:text-[hsl(var(--accent))] transition-colors line-clamp-2">{blog.title}</CardTitle>
                       </CardHeader>
                       <CardContent className="flex-grow">
-                        <p className="text-gray-400 text-sm line-clamp-3">{blog.excerpt}</p>
+                        <p className="text-[var(--text-secondary)] text-sm line-clamp-3">{blog.excerpt}</p>
                       </CardContent>
-                      <CardFooter className="flex justify-between pt-4 border-t border-[var(--border-color)] bg-black/20">
+                      <CardFooter className="flex justify-between pt-4 border-t border-[var(--border-color)] bg-[var(--card-bg)]/20">
                         <Button
                           variant="ghost"
                           size="sm"
                           onClick={() => handleEdit(blog, 'blog')}
-                          className="text-gray-400 hover:text-white hover:bg-white/10"
+                          className="text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--text-primary)]/10"
                         >
                           <FaEdit className="mr-2 h-3 w-3" /> Edit
                         </Button>
@@ -707,7 +707,7 @@ const AdminDashboard = () => {
                           variant="ghost"
                           size="sm"
                           onClick={() => handleDelete(Number(blog.id), 'blog')}
-                          className="text-red-400 hover:text-red-300 hover:bg-red-500/10"
+                          className="text-red-500 hover:text-red-400 hover:bg-red-500/10"
                         >
                           <FaTrash className="mr-2 h-3 w-3" /> Delete
                         </Button>
@@ -722,10 +722,10 @@ const AdminDashboard = () => {
               <div className="glass-panel p-6 rounded-xl border border-[var(--border-color)]">
                 <div className="flex justify-between items-center mb-6">
                   <div>
-                    <h2 className="text-2xl font-bold text-white flex items-center gap-2">
-                      <FaFlask className="text-emerald-400" /> Research
+                    <h2 className="text-2xl font-bold text-[var(--text-primary)] flex items-center gap-2">
+                      <FaFlask className="text-[hsl(var(--accent))]" /> Research
                     </h2>
-                    <p className="text-gray-400 text-sm">Manage publications and findings</p>
+                    <p className="text-[var(--text-secondary)] text-sm">Manage publications and findings</p>
                   </div>
                   <Button onClick={() => handleCreate('research')} className="btn-primary">
                     <FaPlus className="mr-2" /> Add Research
@@ -748,28 +748,28 @@ const AdminDashboard = () => {
                             className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 filter brightness-75 group-hover:brightness-100"
                           />
                           <div className="absolute top-2 right-2 z-20">
-                            <span className="bg-black/70 backdrop-blur-md text-emerald-400 text-xs font-mono px-2 py-1 rounded border border-emerald-500/30">
+                            <span className="bg-[var(--bg-body)]/70 backdrop-blur-md text-[hsl(var(--accent))] text-xs font-mono px-2 py-1 rounded border border-[hsl(var(--accent))]/30">
                               {item.category}
                             </span>
                           </div>
                         </div>
                       )}
                       <CardHeader className="pb-2">
-                        <CardTitle className="text-white group-hover:text-emerald-400 transition-colors">{item.title}</CardTitle>
+                        <CardTitle className="text-[var(--text-primary)] group-hover:text-[hsl(var(--accent))] transition-colors">{item.title}</CardTitle>
                       </CardHeader>
                       <CardContent className="flex-grow">
-                        <p className="text-gray-400 text-sm line-clamp-3 mb-4">{item.description}</p>
+                        <p className="text-[var(--text-secondary)] text-sm line-clamp-3 mb-4">{item.description}</p>
                         <div className="flex items-center justify-between text-xs font-mono border-t border-[var(--border-color)] pt-3">
-                          <span className="text-emerald-400">Citations: {item.citations}</span>
-                          <span className="text-gray-500 truncate max-w-[150px]">{item.authors}</span>
+                          <span className="text-[hsl(var(--accent))]">Citations: {item.citations}</span>
+                          <span className="text-[var(--text-secondary)] truncate max-w-[150px]">{item.authors}</span>
                         </div>
                       </CardContent>
-                      <CardFooter className="flex justify-between pt-4 border-t border-[var(--border-color)] bg-black/20">
+                      <CardFooter className="flex justify-between pt-4 border-t border-[var(--border-color)] bg-[var(--card-bg)]/20">
                         <Button
                           variant="ghost"
                           size="sm"
                           onClick={() => handleEdit(item, 'research')}
-                          className="text-gray-400 hover:text-white hover:bg-white/10"
+                          className="text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--text-primary)]/10"
                         >
                           <FaEdit className="mr-2 h-3 w-3" /> Edit
                         </Button>
@@ -777,7 +777,7 @@ const AdminDashboard = () => {
                           variant="ghost"
                           size="sm"
                           onClick={() => handleDelete(Number(item.id), 'research')}
-                          className="text-red-400 hover:text-red-300 hover:bg-red-500/10"
+                          className="text-red-500 hover:text-red-400 hover:bg-red-500/10"
                         >
                           <FaTrash className="mr-2 h-3 w-3" /> Delete
                         </Button>
@@ -792,10 +792,10 @@ const AdminDashboard = () => {
               <div className="glass-panel p-6 rounded-xl border border-[var(--border-color)]">
                 <div className="flex justify-between items-center mb-6">
                   <div>
-                    <h2 className="text-2xl font-bold text-white flex items-center gap-2">
-                      <FaCalendarAlt className="text-emerald-400" /> Events
+                    <h2 className="text-2xl font-bold text-[var(--text-primary)] flex items-center gap-2">
+                      <FaCalendarAlt className="text-[hsl(var(--accent))]" /> Events
                     </h2>
-                    <p className="text-gray-400 text-sm">Manage upcoming events and workshops</p>
+                    <p className="text-[var(--text-secondary)] text-sm">Manage upcoming events and workshops</p>
                   </div>
                   <Button onClick={() => handleCreate('event')} className="btn-primary">
                     <FaPlus className="mr-2" /> Add Event
@@ -818,28 +818,28 @@ const AdminDashboard = () => {
                             className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 filter brightness-75 group-hover:brightness-100"
                           />
                           <div className="absolute top-2 right-2 z-20">
-                            <span className="bg-black/70 backdrop-blur-md text-emerald-400 text-xs font-mono px-2 py-1 rounded border border-emerald-500/30">
+                            <span className="bg-[var(--bg-body)]/70 backdrop-blur-md text-[hsl(var(--accent))] text-xs font-mono px-2 py-1 rounded border border-[hsl(var(--accent))]/30">
                               {event.type}
                             </span>
                           </div>
                         </div>
                       )}
                       <CardHeader className="pb-2">
-                        <CardTitle className="text-white group-hover:text-emerald-400 transition-colors">{event.title}</CardTitle>
-                        <CardDescription className="text-emerald-500 font-mono text-xs">{event.date} • {event.time}</CardDescription>
+                        <CardTitle className="text-[var(--text-primary)] group-hover:text-[hsl(var(--accent))] transition-colors">{event.title}</CardTitle>
+                        <CardDescription className="text-[hsl(var(--accent))] font-mono text-xs">{event.date} • {event.time}</CardDescription>
                       </CardHeader>
                       <CardContent className="flex-grow">
-                        <p className="text-gray-400 text-sm line-clamp-3 mb-2">{event.description}</p>
-                        <p className="text-gray-500 text-xs flex items-center gap-1">
-                          <span className="w-2 h-2 bg-gray-600 rounded-full"></span> {event.location}
+                        <p className="text-[var(--text-secondary)] text-sm line-clamp-3 mb-2">{event.description}</p>
+                        <p className="text-[var(--text-secondary)]/70 text-xs flex items-center gap-1">
+                          <span className="w-2 h-2 bg-[var(--text-secondary)] rounded-full"></span> {event.location}
                         </p>
                       </CardContent>
-                      <CardFooter className="flex justify-between pt-4 border-t border-[var(--border-color)] bg-black/20">
+                      <CardFooter className="flex justify-between pt-4 border-t border-[var(--border-color)] bg-[var(--card-bg)]/20">
                         <Button
                           variant="ghost"
                           size="sm"
                           onClick={() => handleEdit(event, 'event')}
-                          className="text-gray-400 hover:text-white hover:bg-white/10"
+                          className="text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-body)]/10"
                         >
                           <FaEdit className="mr-2 h-3 w-3" /> Edit
                         </Button>
@@ -861,8 +861,8 @@ const AdminDashboard = () => {
             <TabsContent value="registrations" className="space-y-4">
               <div className="glass-panel p-6 rounded-xl border border-[var(--border-color)]">
                 <div className="mb-6">
-                  <h2 className="text-2xl font-bold text-white flex items-center gap-2">
-                    <FaClipboardList className="text-emerald-400" /> Event Registrations
+                  <h2 className="text-2xl font-bold text-[var(--text-primary)] flex items-center gap-2">
+                    <FaClipboardList className="text-[hsl(var(--accent))]" /> Event Registrations
                   </h2>
                   <p className="text-gray-400 text-sm">Manage event registrations and view attendee lists</p>
                 </div>
@@ -871,7 +871,7 @@ const AdminDashboard = () => {
                   {eventRegistrations.registrations && eventRegistrations.registrations.length > 0 ? (
                     <Card className="clean-card">
                       <CardHeader>
-                        <CardTitle className="text-white">All Event Registrations ({eventRegistrations.totalRegistrations})</CardTitle>
+                        <CardTitle className="text-[var(--text-primary)]">All Event Registrations ({eventRegistrations.totalRegistrations})</CardTitle>
                         <CardDescription className="text-gray-400">
                           Complete list of all event registrations across all events
                         </CardDescription>
@@ -882,10 +882,10 @@ const AdminDashboard = () => {
                             <div key={registration.id} className="border border-[var(--border-color)] bg-[var(--bg-body)] rounded-lg p-4 hover:border-emerald-500/30 transition-colors">
                               <div className="flex justify-between items-start mb-2">
                                 <div>
-                                  <h4 className="font-bold text-lg text-white">
+                                  <h4 className="font-bold text-lg text-[var(--text-primary)]">
                                     {registration.event?.title || 'Unknown Event'}
                                   </h4>
-                                  <p className="text-sm text-emerald-400 font-mono">
+                                  <p className="text-sm text-[hsl(var(--accent))] font-mono">
                                     📅 {registration.event?.date} at {registration.event?.time}
                                   </p>
                                   <p className="text-sm text-gray-400">
@@ -893,13 +893,13 @@ const AdminDashboard = () => {
                                   </p>
                                 </div>
                                 <div className="text-right">
-                                  <p className="text-sm font-medium text-white">
+                                  <p className="text-sm font-medium text-[var(--text-primary)]">
                                     {registration.user?.display_name || registration.user?.username}
                                   </p>
                                   <p className="text-xs text-gray-500">
                                     {registration.user?.email}
                                   </p>
-                                  <Badge variant="outline" className="mt-1 border-emerald-500/30 text-emerald-400 text-[10px]">
+                                  <Badge variant="outline" className="mt-1 border-[hsl(var(--accent))]/30 text-[hsl(var(--accent))] text-[10px]">
                                     {registration.user?.role}
                                   </Badge>
                                 </div>
@@ -911,7 +911,7 @@ const AdminDashboard = () => {
                                 <Button
                                   variant="ghost"
                                   size="sm"
-                                  className="text-emerald-400 hover:text-emerald-300 hover:bg-emerald-500/10 h-8 text-xs"
+                                  className="text-[hsl(var(--accent))] hover:text-[hsl(var(--accent))]/80 hover:bg-[hsl(var(--accent))]/10 h-8 text-xs"
                                   onClick={() => {
                                     // TODO: Add email functionality
                                     alert(`Contact: ${registration.user?.email}`);
@@ -939,7 +939,7 @@ const AdminDashboard = () => {
                   {/* Individual Event Registration Counts */}
                   <Card className="clean-card">
                     <CardHeader>
-                      <CardTitle className="text-white">Registration Summary by Event</CardTitle>
+                      <CardTitle className="text-[var(--text-primary)]">Registration Summary by Event</CardTitle>
                       <CardDescription className="text-gray-400">
                         Quick overview of registrations per event
                       </CardDescription>
@@ -952,17 +952,17 @@ const AdminDashboard = () => {
                           ) || [];
 
                           return (
-                            <div key={event.id} className="flex justify-between items-center p-3 border border-[var(--border-color)] rounded bg-[var(--bg-body)] hover:bg-white/5 transition-colors">
+                            <div key={event.id} className="flex justify-between items-center p-3 border border-[var(--border-color)] rounded bg-[var(--bg-body)] hover:bg-[var(--bg-body)]/50 transition-colors">
                               <div>
-                                <h4 className="font-medium text-white">{event.title}</h4>
+                                <h4 className="font-medium text-[var(--text-primary)]">{event.title}</h4>
                                 <p className="text-sm text-gray-500">{event.date}</p>
                               </div>
                               <div className="text-right flex items-center gap-4">
-                                <p className="font-bold text-emerald-400">{eventRegs.length} registrations</p>
+                                <p className="font-bold text-[hsl(var(--accent))]">{eventRegs.length} registrations</p>
                                 <Button
                                   variant="outline"
                                   size="sm"
-                                  className="border-[var(--border-color)] text-gray-400 hover:text-white hover:bg-white/10 h-8 text-xs"
+                                  className="border-[var(--border-color)] text-gray-400 hover:text-[var(--text-primary)] hover:bg-white/10 h-8 text-xs"
                                   onClick={async () => {
                                     try {
                                       const response = await fetch(`/api/events/${event.id}/registrations`);
@@ -998,8 +998,8 @@ const AdminDashboard = () => {
             <TabsContent value="team-chat" className="space-y-4">
               <div className="glass-panel p-6 rounded-xl border border-[var(--border-color)]">
                 <div className="mb-6">
-                  <h2 className="text-2xl font-bold text-white flex items-center gap-2">
-                    <FaComments className="text-emerald-400" /> Core Team Chat
+                  <h2 className="text-2xl font-bold text-[var(--text-primary)] flex items-center gap-2">
+                    <FaComments className="text-[hsl(var(--accent))]" /> Core Team Chat
                   </h2>
                   <p className="text-gray-400 text-sm">Private chat for core team members to discuss club matters</p>
                 </div>
@@ -1010,7 +1010,7 @@ const AdminDashboard = () => {
                       {(messages as any[]).map((message: any) => (
                         <div key={message.id} className="p-3 bg-[var(--card-bg)] border border-[var(--border-color)] rounded-lg hover:border-emerald-500/30 transition-colors">
                           <div className="flex justify-between items-start mb-1">
-                            <span className="font-bold text-emerald-400 text-sm">{message.user?.username || `User ${message.user_id}`}</span>
+                            <span className="font-bold text-[hsl(var(--accent))] text-sm">{message.user?.username || `User ${message.user_id}`}</span>
                             <span className="text-[10px] font-mono text-gray-500">{new Date(message.created_at).toLocaleString()}</span>
                           </div>
                           <p className="text-gray-300 text-sm">{message.content}</p>
@@ -1023,7 +1023,7 @@ const AdminDashboard = () => {
                         placeholder="Type your message..."
                         value={newMessage}
                         onChange={(e) => setNewMessage(e.target.value)}
-                        className="bg-[var(--bg-body)] border-[var(--border-color)] text-white focus:border-emerald-500/50"
+                        className="bg-[var(--bg-body)] border-[var(--border-color)] text-[var(--text-primary)] focus:border-emerald-500/50"
                         onKeyPress={(e) => {
                           if (e.key === 'Enter' && newMessage.trim()) {
                             sendMessage.mutate(newMessage);

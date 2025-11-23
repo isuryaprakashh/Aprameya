@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Project } from '../lib/types';
 import { ChevronLeft, ChevronRight, Moon } from 'lucide-react';
 import MagneticWrap from './ui/MagneticWrap';
+import { CleanCard } from './ui/v6-card';
 
 interface ProjectCardProps {
   project: Project;
@@ -24,7 +25,7 @@ const ProjectCard = ({ project, onViewDetails, viewMode = 'grid' }: ProjectCardP
   };
 
   return (
-    <div className="clean-card group h-full flex flex-col">
+    <CleanCard className="group h-full flex flex-col p-0 overflow-hidden">
       <div className="shimmer pointer-events-none"></div>
 
       {/* Image Slider */}
@@ -45,19 +46,19 @@ const ProjectCard = ({ project, onViewDetails, viewMode = 'grid' }: ProjectCardP
         </div>
 
         {/* Gradient Overlay */}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent pointer-events-none"></div>
+        <div className="absolute inset-0 bg-gradient-to-t from-[var(--bg-body)]/80 to-transparent pointer-events-none"></div>
 
         {/* Controls */}
         <div className="absolute bottom-6 right-6 flex gap-2 z-20">
           <button
             onClick={(e) => { e.stopPropagation(); moveSlide(-1); }}
-            className="w-10 h-10 flex items-center justify-center rounded-full bg-white/10 backdrop-blur-md border border-white/10 hover:bg-white/20 text-white transition-all"
+            className="w-10 h-10 flex items-center justify-center rounded-full bg-[var(--text-primary)]/10 backdrop-blur-md border border-[var(--text-primary)]/10 hover:bg-[var(--text-primary)]/20 text-[var(--text-primary)] transition-all"
           >
             <ChevronLeft className="w-4 h-4" />
           </button>
           <button
             onClick={(e) => { e.stopPropagation(); moveSlide(1); }}
-            className="w-10 h-10 flex items-center justify-center rounded-full bg-white/10 backdrop-blur-md border border-white/10 hover:bg-white/20 text-white transition-all"
+            className="w-10 h-10 flex items-center justify-center rounded-full bg-[var(--text-primary)]/10 backdrop-blur-md border border-[var(--text-primary)]/10 hover:bg-[var(--text-primary)]/20 text-[var(--text-primary)] transition-all"
           >
             <ChevronRight className="w-4 h-4" />
           </button>
@@ -65,7 +66,7 @@ const ProjectCard = ({ project, onViewDetails, viewMode = 'grid' }: ProjectCardP
 
         {/* Category Badge */}
         <div className="absolute top-6 left-6 z-20">
-          <span className="px-3 py-1 rounded-full bg-black/50 backdrop-blur-md border border-white/10 text-[10px] font-medium uppercase tracking-wider text-white">
+          <span className="px-3 py-1 rounded-full bg-[var(--bg-body)]/50 backdrop-blur-md border border-[var(--text-primary)]/10 text-[10px] font-medium uppercase tracking-wider text-[var(--text-primary)]">
             {project.category}
           </span>
         </div>
@@ -73,15 +74,15 @@ const ProjectCard = ({ project, onViewDetails, viewMode = 'grid' }: ProjectCardP
 
       {/* Content */}
       <div className="p-8 flex flex-col grow">
-        <h3 className="text-2xl font-medium text-white mb-2">{project.title}</h3>
-        <p className="text-sm text-gray-500 mb-6 leading-relaxed line-clamp-3 grow">
+        <h3 className="text-2xl font-medium text-[var(--text-primary)] mb-2">{project.title}</h3>
+        <p className="text-sm text-[var(--text-secondary)] mb-6 leading-relaxed line-clamp-3 grow">
           {project.description}
         </p>
 
         {/* Tags */}
         <div className="flex flex-wrap gap-2 mb-6">
           {project.technologies.slice(0, 3).map((tech, index) => (
-            <span key={index} className="text-xs px-2 py-1 bg-white/5 border border-white/10 rounded text-gray-400">
+            <span key={index} className="text-xs px-2 py-1 bg-[var(--text-primary)]/5 border border-[var(--text-primary)]/10 rounded text-[var(--text-secondary)]">
               {tech}
             </span>
           ))}
@@ -95,12 +96,12 @@ const ProjectCard = ({ project, onViewDetails, viewMode = 'grid' }: ProjectCardP
               className="w-full btn-primary py-3 text-sm flex items-center justify-between px-6 magnetic-target"
             >
               <span>View Details</span>
-              <Moon className="w-4 h-4 text-gray-500" />
+              <Moon className="w-4 h-4 text-[var(--text-secondary)]" />
             </button>
           </MagneticWrap>
         </div>
       </div>
-    </div>
+    </CleanCard>
   );
 };
 

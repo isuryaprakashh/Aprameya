@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
-import { 
-  FaFacebook, 
-  FaTwitter, 
-  FaLinkedin, 
-  FaWhatsapp, 
-  FaShareAlt 
+import {
+  FaFacebook,
+  FaTwitter,
+  FaLinkedin,
+  FaWhatsapp,
+  FaShareAlt
 } from 'react-icons/fa';
 import { FiArrowUpRight } from 'react-icons/fi';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -30,7 +30,7 @@ const SocialShare: React.FC<SocialShareProps> = ({
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [activeAnimation, setActiveAnimation] = useState<string | null>(null);
-  
+
   const encodedUrl = encodeURIComponent(url);
   const encodedTitle = encodeURIComponent(title);
   const encodedDescription = encodeURIComponent(description);
@@ -99,19 +99,19 @@ const SocialShare: React.FC<SocialShareProps> = ({
       case 'car':
         return {
           hidden: { x: -50, opacity: 0 },
-          visible: { 
-            x: 0, 
+          visible: {
+            x: 0,
             opacity: 1,
-            transition: { 
+            transition: {
               type: 'spring',
               stiffness: 500,
               damping: 15
             }
           },
-          exit: { 
-            x: 50, 
+          exit: {
+            x: 50,
             opacity: 0,
-            transition: { 
+            transition: {
               type: 'spring',
               stiffness: 300,
               damping: 20
@@ -121,19 +121,19 @@ const SocialShare: React.FC<SocialShareProps> = ({
       case 'drone':
         return {
           hidden: { y: 20, opacity: 0 },
-          visible: { 
-            y: 0, 
+          visible: {
+            y: 0,
             opacity: 1,
-            transition: { 
+            transition: {
               type: 'spring',
               stiffness: 400,
               damping: 10
             }
           },
-          exit: { 
-            y: -20, 
+          exit: {
+            y: -20,
             opacity: 0,
-            transition: { 
+            transition: {
               type: 'spring',
               stiffness: 300,
               damping: 15
@@ -143,21 +143,21 @@ const SocialShare: React.FC<SocialShareProps> = ({
       case 'truck':
         return {
           hidden: { x: -30, y: 10, opacity: 0 },
-          visible: { 
-            x: 0, 
+          visible: {
+            x: 0,
             y: 0,
             opacity: 1,
-            transition: { 
+            transition: {
               type: 'spring',
               stiffness: 300,
               damping: 20
             }
           },
-          exit: { 
-            x: 30, 
+          exit: {
+            x: 30,
             y: -10,
             opacity: 0,
-            transition: { 
+            transition: {
               type: 'spring',
               stiffness: 250,
               damping: 15
@@ -167,21 +167,21 @@ const SocialShare: React.FC<SocialShareProps> = ({
       case 'bike':
         return {
           hidden: { x: -20, rotate: -10, opacity: 0 },
-          visible: { 
-            x: 0, 
+          visible: {
+            x: 0,
             rotate: 0,
             opacity: 1,
-            transition: { 
+            transition: {
               type: 'spring',
               stiffness: 600,
               damping: 20
             }
           },
-          exit: { 
-            x: 20, 
+          exit: {
+            x: 20,
             rotate: 10,
             opacity: 0,
-            transition: { 
+            transition: {
               type: 'spring',
               stiffness: 500,
               damping: 15
@@ -212,15 +212,15 @@ const SocialShare: React.FC<SocialShareProps> = ({
   // Handle click on social share buttons
   const handleShareClick = (url: string, animationType: string) => {
     setActiveAnimation(animationType);
-    
+
     // Add a slight delay to allow the animation to play
     setTimeout(() => {
       window.open(url, '_blank', 'width=600,height=400');
-      
+
       // Reset active animation after a bit longer to allow the animation to complete
       setTimeout(() => {
         setActiveAnimation(null);
-      }, 1000); 
+      }, 1000);
     }, 300);
   };
 
@@ -229,15 +229,15 @@ const SocialShare: React.FC<SocialShareProps> = ({
       {/* Animation Stage - Fixed at bottom of screen */}
       <AnimatePresence>
         {activeAnimation && (
-          <motion.div 
+          <motion.div
             className="fixed bottom-20 left-1/2 transform -translate-x-1/2 z-50"
             initial={{ opacity: 0, y: 50 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -50 }}
           >
-            <div className="bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm p-4 rounded-full shadow-xl">
+            <div className="bg-[var(--bg-body)]/80 dark:bg-slate-900/80 backdrop-blur-sm p-4 rounded-full shadow-xl">
               {getVehicleComponent(
-                activeAnimation, 
+                activeAnimation,
                 socials.find(s => s.animation === activeAnimation)?.vehicleColor || '#000'
               )}
             </div>
@@ -265,7 +265,7 @@ const SocialShare: React.FC<SocialShareProps> = ({
                 animate="visible"
                 exit="hidden"
                 variants={containerVariants}
-                className="absolute z-50 mt-2 right-0 bg-white dark:bg-slate-900 p-3 rounded-lg shadow-md flex flex-col items-start gap-3 border border-border min-w-[220px]"
+                className="absolute z-50 mt-2 right-0 bg-[var(--card-bg)] p-3 rounded-lg shadow-md flex flex-col items-start gap-3 border border-[var(--border-color)] min-w-[220px]"
               >
                 <div className="text-sm font-medium mb-1 w-full pb-2 border-b border-border">
                   Share via

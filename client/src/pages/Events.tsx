@@ -122,148 +122,93 @@ const Events = () => {
             transition={{ duration: 0.8 }}
           >
             <div className="flex items-center gap-2 mb-6">
-              <span className="bg-white text-black px-1 text-xs font-bold">02</span>
-              <h2 className="text-lg font-bold text-white">COMMUNITY_EVENTS</h2>
+              <span className="bg-[var(--text-primary)] text-[var(--bg-body)] px-1 text-xs font-bold">03</span>
+              <h2 className="text-lg font-bold text-[var(--text-primary)]">COMMUNITY_HUB</h2>
             </div>
-            <h1 className="font-bold text-5xl md:text-7xl mb-6 leading-[0.9] text-white">
+            <h1 className="font-bold text-5xl md:text-7xl mb-6 leading-[0.9] text-[var(--text-primary)]">
               EVENTS &<br />WORKSHOPS
             </h1>
-            <p className="text-sm text-gray-400 max-w-xl mb-12 font-mono leading-relaxed">
-              Join our vibrant community through workshops, hackathons, and demonstrations
-              focused on cutting-edge autonomous vehicle technology.
+            <p className="text-sm text-[var(--text-secondary)] max-w-xl mb-12 font-mono leading-relaxed">
+              Join our community of innovators. Participate in hackathons, workshops,
+              and tech talks to level up your skills and network with like-minded peers.
             </p>
 
-            {/* Event Stats */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-px bg-[var(--border-color)] border border-[var(--border-color)]">
-              <div className="bg-[var(--card-bg)] p-6">
-                <div className="text-3xl font-bold text-white mb-1">{events.length}+</div>
-                <div className="text-[10px] text-gray-500 uppercase">Events Hosted</div>
+            {/* Upcoming Highlight */}
+            {upcomingEvents.length > 0 && (
+              <div className="inline-flex items-center gap-4 p-4 bg-[var(--card-bg)] border border-[var(--border-color)] rounded-lg max-w-2xl">
+                <div className="w-12 h-12 bg-[hsl(var(--accent))]/10 flex items-center justify-center rounded-md border border-[hsl(var(--accent))]/20 shrink-0">
+                  <Calendar className="w-6 h-6 text-[hsl(var(--accent))]" />
+                </div>
+                <div>
+                  <div className="text-[10px] text-[hsl(var(--accent))] font-bold uppercase tracking-wider mb-1">Next Big Event</div>
+                  <div className="text-[var(--text-primary)] font-bold">{upcomingEvents[0].title}</div>
+                  <div className="text-xs text-gray-400">{upcomingEvents[0].date} • {upcomingEvents[0].location}</div>
+                </div>
+                <Button className="ml-auto btn-primary" size="sm">
+                  Register Now
+                </Button>
               </div>
-              <div className="bg-[var(--card-bg)] p-6">
-                <div className="text-3xl font-bold text-white mb-1">500+</div>
-                <div className="text-[10px] text-gray-500 uppercase">Participants</div>
-              </div>
-              <div className="bg-[var(--card-bg)] p-6">
-                <div className="text-3xl font-bold text-white mb-1">12+</div>
-                <div className="text-[10px] text-gray-500 uppercase">Workshops</div>
-              </div>
-              <div className="bg-[var(--card-bg)] p-6">
-                <div className="text-3xl font-bold text-white mb-1">5+</div>
-                <div className="text-[10px] text-gray-500 uppercase">Hackathons</div>
-              </div>
-            </div>
+            )}
           </motion.div>
         </div>
       </section>
 
-      {/* Filters */}
-      <section className="py-8 px-4 bg-[var(--bg-body)] border-b border-[var(--border-color)]">
-        <div className="container mx-auto">
-          <div className="flex flex-col md:flex-row gap-4 items-center justify-between">
-            <div className="flex flex-col sm:flex-row gap-4 flex-1">
-              <div className="relative flex-1 max-w-md">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
-                <Input
-                  placeholder="Search events..."
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  className="pl-10"
-                />
-              </div>
-              <Select value={filterType} onValueChange={setFilterType}>
-                <SelectTrigger className="w-full sm:w-48">
-                  <Filter className="w-4 h-4 mr-2" />
-                  <SelectValue placeholder="Event Type" />
-                </SelectTrigger>
-                <SelectContent>
-                  {eventTypes.map(type => (
-                    <SelectItem key={type} value={type}>
-                      {type === 'all' ? 'All Events' : type}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Events Content */}
+      {/* Main Content Grid */}
       <section className="py-16 px-4 bg-[var(--bg-body)]">
         <div className="container mx-auto">
-          <div className="grid lg:grid-cols-3 gap-8">
+          {/* Filters */}
+          <div className="flex flex-col md:flex-row justify-between items-center mb-12 gap-6">
+            <div className="flex items-center gap-4 overflow-x-auto w-full md:w-auto pb-2 md:pb-0">
+              <Filter className="w-5 h-5 text-[hsl(var(--accent))]" />
+              {eventTypes.map(type => (
+                <button
+                  key={type}
+                  onClick={() => setFilterType(type)}
+                  className={`px-4 py-2 rounded-full text-sm font-medium transition-all whitespace-nowrap ${filterType === type
+                    ? 'bg-[hsl(var(--accent))] text-[var(--bg-body)]'
+                    : 'bg-[var(--card-bg)] border border-[var(--border-color)] text-[var(--text-secondary)] hover:border-[hsl(var(--accent))]'
+                    }`}
+                >
+                  {type.charAt(0).toUpperCase() + type.slice(1)}
+                </button>
+              ))}
+            </div>
+
+            <div className="relative w-full md:w-72">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--text-secondary)]" />
+              <Input
+                placeholder="Search events..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="pl-10 bg-[var(--card-bg)] border-[var(--border-color)] focus:border-[hsl(var(--accent))]"
+              />
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             {/* Events List */}
-            <div className="lg:col-span-2 space-y-8">
-              {filteredEvents.length === 0 ? (
-                <div className="text-center py-16">
-                  <div className="text-6xl mb-4">📅</div>
-                  <h3 className="text-xl font-semibold mb-2">No events found</h3>
-                  <p className="text-muted-foreground">Try adjusting your search or filter criteria</p>
-                </div>
-              ) : (
+            <div className="lg:col-span-2 space-y-6">
+              {filteredEvents.length > 0 ? (
                 filteredEvents.map((event, index) => (
                   <motion.div
                     key={event.id}
-                    initial={{ opacity: 0, y: 30 }}
+                    initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.6, delay: index * 0.1 }}
+                    transition={{ delay: index * 0.1 }}
                   >
-                    <EventCard
-                      event={event}
-                      onRegisterInterest={handleRegisterInterest}
-                    />
+                    <EventCard event={event} onRegister={() => handleRegisterInterest(event)} />
                   </motion.div>
                 ))
+              ) : (
+                <div className="text-center py-20 bg-[var(--card-bg)]/50 rounded-xl border border-[var(--border-color)] border-dashed">
+                  <Calendar className="w-12 h-12 text-[var(--text-secondary)] mx-auto mb-4 opacity-50" />
+                  <h3 className="text-xl font-bold text-[var(--text-primary)] mb-2">No events found</h3>
+                  <p className="text-[var(--text-secondary)]">Try adjusting your search or filters</p>
+                </div>
               )}
-
-              {/* Upcoming Events */}
-              <motion.div
-                initial={{ opacity: 0, y: 30 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: 0.3 }}
-              >
-                <Card className="border-0 shadow-lg bg-gradient-to-br from-purple-50 to-blue-50 dark:from-purple-900/20 dark:to-blue-900/20">
-                  <CardHeader>
-                    <CardTitle className="flex items-center gap-2">
-                      <Sparkles className="w-5 h-5 text-purple-600" />
-                      Upcoming Events
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="space-y-4">
-                      {upcomingEvents.map((event, index) => (
-                        <motion.div
-                          key={index}
-                          className="flex items-center gap-4 p-3 bg-white/50 dark:bg-slate-800/50 rounded-lg"
-                          initial={{ opacity: 0, x: -20 }}
-                          animate={{ opacity: 1, x: 0 }}
-                          transition={{ duration: 0.6, delay: index * 0.1 }}
-                        >
-                          <div className="flex-shrink-0 w-14 h-14 bg-gradient-to-br from-purple-500 to-blue-500 rounded-xl flex flex-col items-center justify-center text-white">
-                            <span className="text-sm font-bold">{event.day}</span>
-                            <span className="text-xs">{event.month}</span>
-                          </div>
-                          <div className="flex-1">
-                            <h4 className="font-semibold">{event.title}</h4>
-                            <div className="flex items-center gap-4 text-sm text-muted-foreground mt-1">
-                              <div className="flex items-center gap-1">
-                                <MapPin className="w-3 h-3" />
-                                {event.location}
-                              </div>
-                            </div>
-                          </div>
-                          <Badge variant="secondary" className="bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-300">
-                            Soon
-                          </Badge>
-                        </motion.div>
-                      ))}
-                    </div>
-                  </CardContent>
-                </Card>
-              </motion.div>
             </div>
 
-            {/* Registration Form */}
+            {/* Registration Form Sidebar */}
             <div className="lg:col-span-1">
               <motion.div
                 id="registration-form"
@@ -272,40 +217,40 @@ const Events = () => {
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ duration: 0.6, delay: 0.4 }}
               >
-                <Card className="border-0 shadow-xl bg-gradient-to-br from-white to-blue-50 dark:from-slate-800 dark:to-slate-700">
+                <Card className="border-0 shadow-xl bg-[var(--card-bg)] border-[var(--border-color)]">
                   <CardHeader>
-                    <CardTitle className="flex items-center gap-2">
-                      <Users className="w-5 h-5 text-blue-600" />
+                    <CardTitle className="flex items-center gap-2 text-[var(--text-primary)]">
+                      <Users className="w-5 h-5 text-[hsl(var(--accent))]" />
                       Register Interest
                     </CardTitle>
                   </CardHeader>
                   <CardContent>
                     <form onSubmit={handleSubmit} className="space-y-4">
                       <div>
-                        <Label htmlFor="event-name">Selected Event</Label>
+                        <Label htmlFor="event-name" className="text-[var(--text-secondary)]">Selected Event</Label>
                         <Input
                           id="event-name"
                           readOnly
                           value={selectedEvent ? selectedEvent.title : 'Select an event from the list'}
-                          className="bg-slate-50 dark:bg-slate-700"
+                          className="bg-[var(--bg-body)] border-[var(--border-color)] text-[var(--text-primary)]"
                         />
                       </div>
 
                       <div>
-                        <Label htmlFor="message">Why are you interested? (Optional)</Label>
+                        <Label htmlFor="message" className="text-[var(--text-secondary)]">Why are you interested? (Optional)</Label>
                         <Textarea
                           id="message"
                           placeholder="Tell us about your interest in this event..."
                           value={formData.message}
                           onChange={handleInputChange}
-                          className="min-h-[80px]"
+                          className="min-h-[80px] bg-[var(--bg-body)] border-[var(--border-color)] text-[var(--text-primary)]"
                         />
                       </div>
 
                       {user ? (
                         <Button
                           type="submit"
-                          className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
+                          className="w-full bg-[hsl(var(--accent))] hover:bg-[hsl(var(--accent))]/90 text-[var(--bg-body)]"
                           disabled={!selectedEvent}
                         >
                           {selectedEvent ? 'Submit Registration' : 'Select an Event First'}
@@ -313,10 +258,10 @@ const Events = () => {
                         </Button>
                       ) : (
                         <div className="space-y-3">
-                          <p className="text-sm text-muted-foreground text-center">
+                          <p className="text-sm text-[var(--text-secondary)] text-center">
                             Please log in to register for events
                           </p>
-                          <Button asChild className="w-full bg-gradient-to-r from-blue-600 to-purple-600">
+                          <Button asChild className="w-full bg-[hsl(var(--accent))] hover:bg-[hsl(var(--accent))]/90 text-[var(--bg-body)]">
                             <Link href="/login">
                               Login to Register
                               <ArrowRight className="ml-2 w-4 h-4" />
@@ -329,10 +274,10 @@ const Events = () => {
                 </Card>
 
                 {/* Event Benefits */}
-                <Card className="mt-6 border-0 shadow-lg">
+                <Card className="mt-6 border-0 shadow-lg bg-[var(--card-bg)] border-[var(--border-color)]">
                   <CardHeader>
-                    <CardTitle className="flex items-center gap-2 text-lg">
-                      <Trophy className="w-5 h-5 text-yellow-600" />
+                    <CardTitle className="flex items-center gap-2 text-lg text-[var(--text-primary)]">
+                      <Trophy className="w-5 h-5 text-yellow-500" />
                       Event Benefits
                     </CardTitle>
                   </CardHeader>
@@ -345,10 +290,10 @@ const Events = () => {
                         { icon: Sparkles, text: "Industry Exposure" }
                       ].map((benefit, index) => (
                         <div key={index} className="flex items-center gap-3">
-                          <div className="w-8 h-8 bg-blue-100 dark:bg-blue-900/30 rounded-lg flex items-center justify-center">
-                            <benefit.icon className="w-4 h-4 text-blue-600" />
+                          <div className="w-8 h-8 bg-[hsl(var(--accent))]/10 rounded-lg flex items-center justify-center">
+                            <benefit.icon className="w-4 h-4 text-[hsl(var(--accent))]" />
                           </div>
-                          <span className="text-sm">{benefit.text}</span>
+                          <span className="text-sm text-[var(--text-secondary)]">{benefit.text}</span>
                         </div>
                       ))}
                     </div>

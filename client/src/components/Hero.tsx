@@ -145,75 +145,75 @@ export default function Hero() {
 
     return (
         <main className="flex-grow pt-12">
-            <div className="max-w-7xl mx-auto border-l border-r border-[#1a1a1a] min-h-[80vh] grid grid-cols-1 lg:grid-cols-12">
+            <div className="max-w-7xl mx-auto border-l border-r border-[var(--border-color)] min-h-[80vh] grid grid-cols-1 lg:grid-cols-12">
 
                 {/* Left Content */}
-                <div className="lg:col-span-7 p-6 md:p-12 flex flex-col justify-between border-b lg:border-b-0 lg:border-r border-[#1a1a1a] relative overflow-hidden">
+                <div className="lg:col-span-7 p-6 md:p-12 flex flex-col justify-between border-b lg:border-b-0 lg:border-r border-[var(--border-color)] relative overflow-hidden">
                     {/* Background Dither Decoration */}
                     <div className="absolute top-0 right-0 w-32 h-32 dither-bg opacity-50"></div>
 
                     <div className="mt-12 z-10">
                         <div className="flex items-center gap-2 mb-4">
-                            <span className="px-1 bg-[#222] text-[10px] text-gray-300">EST. 2024</span>
-                            <span className="px-1 border border-[#333] text-[10px] text-gray-500">V.1.0.4</span>
+                            <span className="px-1 bg-[var(--card-bg)] text-[10px] text-[var(--text-primary)]/90">EST. 2024</span>
+                            <span className="px-1 border border-[var(--border-color)] text-[10px] text-[var(--text-secondary)]">V.1.0.4</span>
                         </div>
-                        <h1 className="text-5xl md:text-7xl font-bold leading-[0.9] mb-6 text-white">
+                        <h1 className="text-5xl md:text-7xl font-bold leading-[0.9] mb-6 text-[var(--text-primary)]">
                             AUTONOMOUS<br />
                             INTELLIGENCE<br />
                             COLLECTIVE
                         </h1>
-                        <p className="text-xs md:text-sm text-gray-400 max-w-md leading-relaxed mb-8">
+                        <p className="text-xs md:text-sm text-[var(--text-secondary)] max-w-md leading-relaxed mb-8">
                         // APRAMEYA is a student-led research lab focused on the intersection of embodied AI, computer vision, and autonomous systems control. We build machines that think.
                         </p>
 
                         <div className="flex gap-4">
-                            <button className="bg-white text-black px-6 py-3 text-xs font-bold hover:bg-gray-200 transition-colors border border-white flex items-center gap-2">
+                            <button className="bg-[hsl(var(--accent))] text-[var(--bg-body)] px-6 py-3 text-xs font-bold hover:bg-[hsl(var(--accent))]/90 transition-colors border border-[hsl(var(--accent))] flex items-center gap-2">
                                 INITIALIZE_PROTOCOL <ArrowRight className="w-3 h-3" />
                             </button>
-                            <button className="px-6 py-3 text-xs font-bold text-gray-300 hover:text-white border border-[#333] hover:border-white transition-colors">
+                            <button className="px-6 py-3 text-xs font-bold text-[var(--text-secondary)] hover:text-[var(--text-primary)] border border-[var(--border-color)] hover:border-[hsl(var(--accent))] transition-colors">
                                 READ_DOCS
                             </button>
                         </div>
                     </div>
 
-                    <div className="mt-12 grid grid-cols-3 gap-4 text-[10px] text-gray-500 font-mono border-t border-[#1a1a1a] pt-4">
+                    <div className="mt-12 grid grid-cols-3 gap-4 text-[10px] text-[var(--text-secondary)] font-mono border-t border-[var(--border-color)] pt-4">
                         <div>
-                            <span className="block text-white mb-1">01</span>
+                            <span className="block text-[var(--text-primary)] mb-1">01</span>
                             NEURAL NETWORKS
                         </div>
                         <div>
-                            <span className="block text-white mb-1">02</span>
+                            <span className="block text-[var(--text-primary)] mb-1">02</span>
                             ROBOTICS
                         </div>
                         <div>
-                            <span className="block text-white mb-1">03</span>
+                            <span className="block text-[var(--text-primary)] mb-1">03</span>
                             SIMULATION
                         </div>
                     </div>
                 </div>
 
                 {/* Right Content (Canvas Animation) */}
-                <div className="lg:col-span-5 relative bg-[#080808] flex items-center justify-center overflow-hidden">
+                <div className="lg:col-span-5 relative bg-[var(--bg-body)] flex items-center justify-center overflow-hidden">
                     <canvas ref={canvasRef} className="absolute inset-0 w-full h-full z-0 opacity-60"></canvas>
 
                     {/* Overlay Text on Canvas */}
                     <div className="z-10 pointer-events-none text-center mix-blend-difference">
-                        <div className="border border-white/20 p-4 backdrop-blur-[2px]">
-                            <p className="text-[10px] text-white/80 tracking-[0.3em] mb-2">SYSTEM STATUS</p>
-                            <p className="text-2xl font-bold text-white tracking-tighter">LEARNING...</p>
+                        <div className="border border-[var(--border-color)] p-4 backdrop-blur-[2px]">
+                            <p className="text-[10px] text-[var(--text-primary)]/80 tracking-[0.3em] mb-2">SYSTEM STATUS</p>
+                            <p className="text-2xl font-bold text-[var(--text-primary)] tracking-tighter">LEARNING...</p>
                         </div>
                     </div>
 
                     {/* Decorative Corners */}
-                    <div className="absolute top-4 left-4 w-2 h-2 border-t border-l border-white/50"></div>
-                    <div className="absolute top-4 right-4 w-2 h-2 border-t border-r border-white/50"></div>
-                    <div className="absolute bottom-4 left-4 w-2 h-2 border-b border-l border-white/50"></div>
-                    <div className="absolute bottom-4 right-4 w-2 h-2 border-b border-r border-white/50"></div>
+                    <div className="absolute top-4 left-4 w-2 h-2 border-t border-l border-[hsl(var(--accent))]/50"></div>
+                    <div className="absolute top-4 right-4 w-2 h-2 border-t border-r border-[hsl(var(--accent))]/50"></div>
+                    <div className="absolute bottom-4 left-4 w-2 h-2 border-b border-l border-[hsl(var(--accent))]/50"></div>
+                    <div className="absolute bottom-4 right-4 w-2 h-2 border-b border-r border-[hsl(var(--accent))]/50"></div>
                 </div>
             </div>
 
             {/* Scrolling Ticker */}
-            <div className="border-y border-[#222] bg-white text-black py-2 overflow-hidden">
+            <div className="border-y border-[var(--border-color)] bg-[hsl(var(--accent))] text-[var(--bg-body)] py-2 overflow-hidden">
                 <div className="marquee-container">
                     <div className="marquee-content text-xs font-bold tracking-widest uppercase flex gap-12">
                         <span>/// Building the Future</span>

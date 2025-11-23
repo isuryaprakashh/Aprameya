@@ -278,14 +278,14 @@ const CoreTeamDashboard = () => {
 
     const FormField = ({ label, id, type = "text", value, onChange, isTextArea = false, rows = 3 }: any) => (
       <div className="space-y-2">
-        <label htmlFor={id} className="text-sm font-medium text-emerald-400/80 ml-1">{label}</label>
+        <label htmlFor={id} className="text-sm font-medium text-[hsl(var(--accent))]/80 ml-1">{label}</label>
         {isTextArea ? (
           <Textarea
             id={id}
             value={value}
             rows={rows}
             onChange={(e) => onChange(e.target.value)}
-            className="bg-black/40 border-white/10 focus:border-emerald-500/50 text-white placeholder:text-white/20 resize-none"
+            className="bg-[var(--card-bg)]/40 border-[var(--border-color)] focus:border-[hsl(var(--accent))]/50 text-[var(--text-primary)] placeholder:text-[var(--text-secondary)]/50 resize-none"
           />
         ) : (
           <Input
@@ -293,7 +293,7 @@ const CoreTeamDashboard = () => {
             type={type}
             value={value}
             onChange={(e) => onChange(type === 'number' ? (parseInt(e.target.value, 10) || 0) : e.target.value)}
-            className="bg-black/40 border-white/10 focus:border-emerald-500/50 text-white placeholder:text-white/20 h-10"
+            className="bg-[var(--card-bg)]/40 border-[var(--border-color)] focus:border-[hsl(var(--accent))]/50 text-[var(--text-primary)] placeholder:text-[var(--text-secondary)]/50 h-10"
           />
         )}
       </div>
@@ -306,16 +306,16 @@ const CoreTeamDashboard = () => {
         exit={{ opacity: 0, y: -20 }}
         className="w-full mb-8"
       >
-        <div className="glass-panel p-6 border-emerald-500/20 relative overflow-hidden group">
-          <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-emerald-500/0 via-emerald-500/50 to-emerald-500/0 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+        <div className="glass-panel p-6 border-[hsl(var(--accent))]/20 relative overflow-hidden group">
+          <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-[hsl(var(--accent))]/0 via-[hsl(var(--accent))]/50 to-[hsl(var(--accent))]/0 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
 
-          <div className="flex justify-between items-center mb-6 border-b border-white/10 pb-4">
-            <h2 className="text-2xl font-bold text-white flex items-center gap-3">
-              {type === 'project' && <FaProjectDiagram className="text-emerald-400" />}
-              {type === 'blog' && <FaNewspaper className="text-emerald-400" />}
-              {type === 'research' && <FaFlask className="text-emerald-400" />}
-              {type === 'event' && <FaCalendarAlt className="text-emerald-400" />}
-              <span className="bg-clip-text text-transparent bg-gradient-to-r from-white to-emerald-200">
+          <div className="flex justify-between items-center mb-6 border-b border-[var(--border-color)] pb-4">
+            <h2 className="text-2xl font-bold text-[var(--text-primary)] flex items-center gap-3">
+              {type === 'project' && <FaProjectDiagram className="text-[hsl(var(--accent))]" />}
+              {type === 'blog' && <FaNewspaper className="text-[hsl(var(--accent))]" />}
+              {type === 'research' && <FaFlask className="text-[hsl(var(--accent))]" />}
+              {type === 'event' && <FaCalendarAlt className="text-[hsl(var(--accent))]" />}
+              <span className="bg-clip-text text-transparent bg-gradient-to-r from-[var(--text-primary)] to-[hsl(var(--accent))]/50">
                 {selectedItem.id ? `Edit ${type.charAt(0).toUpperCase() + type.slice(1)}` : `New ${type.charAt(0).toUpperCase() + type.slice(1)}`}
               </span>
             </h2>
@@ -323,7 +323,7 @@ const CoreTeamDashboard = () => {
               variant="ghost"
               size="icon"
               onClick={handleCancelEdit}
-              className="text-gray-400 hover:text-white hover:bg-white/10 rounded-full"
+              className="text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-body)]/10 rounded-full"
             >
               <FaTimes />
             </Button>
@@ -403,17 +403,17 @@ const CoreTeamDashboard = () => {
             )}
           </div>
 
-          <div className="flex justify-end gap-3 mt-8 pt-4 border-t border-white/10">
+          <div className="flex justify-end gap-3 mt-8 pt-4 border-t border-[var(--border-color)]">
             <Button
               variant="ghost"
               onClick={handleCancelEdit}
-              className="text-gray-400 hover:text-white hover:bg-white/10"
+              className="text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-body)]/10"
             >
               Cancel
             </Button>
             <Button
               onClick={handleSave}
-              className="bg-emerald-500 hover:bg-emerald-600 text-white border-0"
+              className="bg-[hsl(var(--accent))] hover:bg-[hsl(var(--accent))]/90 text-[var(--bg-body)] border-0"
             >
               <FaSave className="mr-2" /> Save Changes
             </Button>
@@ -424,14 +424,14 @@ const CoreTeamDashboard = () => {
   };
 
   return (
-    <div className="min-h-screen dither-bg text-white font-sans selection:bg-emerald-500/30">
+    <div className="min-h-screen bg-[var(--bg-body)] text-[var(--text-primary)] font-sans selection:bg-[hsl(var(--accent))]/30">
       <div className="container mx-auto py-8 px-4">
-        <div className="glass-panel p-8 mb-8 border-b border-white/10 relative overflow-hidden">
-          <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-emerald-500/0 via-emerald-500/50 to-emerald-500/0" />
-          <h1 className="text-4xl font-bold mb-2 bg-clip-text text-transparent bg-gradient-to-r from-white via-emerald-200 to-emerald-400">
+        <div className="glass-panel p-8 mb-8 border-b border-[var(--border-color)] relative overflow-hidden">
+          <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-[hsl(var(--accent))]/0 via-[hsl(var(--accent))]/50 to-[hsl(var(--accent))]/0" />
+          <h1 className="text-4xl font-bold mb-2 bg-clip-text text-transparent bg-gradient-to-r from-[var(--text-primary)] via-[hsl(var(--accent))]/80 to-[hsl(var(--accent))]">
             Core Team Dashboard
           </h1>
-          <p className="text-gray-400 max-w-2xl">
+          <p className="text-[var(--text-secondary)] max-w-2xl">
             Manage projects, publications, events, and team communications.
           </p>
         </div>
@@ -440,27 +440,27 @@ const CoreTeamDashboard = () => {
           renderForm()
         ) : (
           <Tabs defaultValue="projects" className="space-y-8">
-            <TabsList className="glass-panel p-1 bg-black/40 border-emerald-500/20 w-full justify-start overflow-x-auto">
-              <TabsTrigger value="projects" className="data-[state=active]:bg-emerald-500 data-[state=active]:text-white text-gray-400 hover:text-white transition-all duration-300 px-6 py-2 rounded-lg">Projects</TabsTrigger>
-              <TabsTrigger value="blogs" className="data-[state=active]:bg-emerald-500 data-[state=active]:text-white text-gray-400 hover:text-white transition-all duration-300 px-6 py-2 rounded-lg">Blogs</TabsTrigger>
-              <TabsTrigger value="research" className="data-[state=active]:bg-emerald-500 data-[state=active]:text-white text-gray-400 hover:text-white transition-all duration-300 px-6 py-2 rounded-lg">Research</TabsTrigger>
-              <TabsTrigger value="events" className="data-[state=active]:bg-emerald-500 data-[state=active]:text-white text-gray-400 hover:text-white transition-all duration-300 px-6 py-2 rounded-lg">Events</TabsTrigger>
-              <TabsTrigger value="team-chat" className="data-[state=active]:bg-emerald-500 data-[state=active]:text-white text-gray-400 hover:text-white transition-all duration-300 px-6 py-2 rounded-lg">Team Chat</TabsTrigger>
+            <TabsList className="glass-panel p-1 bg-[var(--card-bg)]/40 border-[hsl(var(--accent))]/20 w-full justify-start overflow-x-auto">
+              <TabsTrigger value="projects" className="data-[state=active]:bg-[hsl(var(--accent))] data-[state=active]:text-[var(--bg-body)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-all duration-300 px-6 py-2 rounded-lg">Projects</TabsTrigger>
+              <TabsTrigger value="blogs" className="data-[state=active]:bg-[hsl(var(--accent))] data-[state=active]:text-[var(--bg-body)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-all duration-300 px-6 py-2 rounded-lg">Blogs</TabsTrigger>
+              <TabsTrigger value="research" className="data-[state=active]:bg-[hsl(var(--accent))] data-[state=active]:text-[var(--bg-body)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-all duration-300 px-6 py-2 rounded-lg">Research</TabsTrigger>
+              <TabsTrigger value="events" className="data-[state=active]:bg-[hsl(var(--accent))] data-[state=active]:text-[var(--bg-body)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-all duration-300 px-6 py-2 rounded-lg">Events</TabsTrigger>
+              <TabsTrigger value="team-chat" className="data-[state=active]:bg-[hsl(var(--accent))] data-[state=active]:text-[var(--bg-body)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-all duration-300 px-6 py-2 rounded-lg">Team Chat</TabsTrigger>
             </TabsList>
 
             <TabsContent value="projects" className="space-y-6">
-              <div className="glass-panel p-6 rounded-xl border border-white/10">
+              <div className="glass-panel p-6 rounded-xl border border-[var(--border-color)]">
                 <div className="flex justify-between items-center mb-6">
                   <div className="flex items-center gap-3">
-                    <div className="p-3 rounded-lg bg-emerald-500/10 border border-emerald-500/20">
-                      <FaProjectDiagram className="text-2xl text-emerald-400" />
+                    <div className="p-3 rounded-lg bg-[hsl(var(--accent))]/10 border border-[hsl(var(--accent))]/20">
+                      <FaProjectDiagram className="text-2xl text-[hsl(var(--accent))]" />
                     </div>
                     <div>
-                      <h2 className="text-2xl font-bold text-white">Projects</h2>
-                      <p className="text-gray-400 text-sm">Manage ongoing and completed projects</p>
+                      <h2 className="text-2xl font-bold text-[var(--text-primary)]">Projects</h2>
+                      <p className="text-[var(--text-secondary)] text-sm">Manage ongoing and completed projects</p>
                     </div>
                   </div>
-                  <Button onClick={() => handleCreate('project')} className="btn-primary bg-emerald-500 hover:bg-emerald-600 text-white border-0 shadow-lg shadow-emerald-500/20">
+                  <Button onClick={() => handleCreate('project')} className="btn-primary bg-[hsl(var(--accent))] hover:bg-[hsl(var(--accent))]/90 text-[var(--bg-body)] border-0 shadow-lg shadow-[hsl(var(--accent))]/20">
                     <FaPlus className="mr-2" /> Add Project
                   </Button>
                 </div>
@@ -476,31 +476,31 @@ const CoreTeamDashboard = () => {
                     >
                       {project.image && (
                         <div className="h-48 overflow-hidden relative">
-                          <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent z-10" />
+                          <div className="absolute inset-0 bg-gradient-to-t from-[var(--bg-body)]/80 to-transparent z-10" />
                           <img
                             src={project.image}
                             alt={project.title}
                             className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 filter brightness-75 group-hover:brightness-100"
                           />
                           <div className="absolute top-4 right-4 z-20">
-                            <span className="px-3 py-1 rounded-full bg-black/70 backdrop-blur-md text-xs font-mono text-emerald-400 border border-emerald-500/30">
+                            <span className="px-3 py-1 rounded-full bg-[var(--bg-body)]/70 backdrop-blur-md text-xs font-mono text-[hsl(var(--accent))] border border-[hsl(var(--accent))]/30">
                               {project.category}
                             </span>
                           </div>
                         </div>
                       )}
                       <CardHeader className="relative z-10">
-                        <CardTitle className="text-xl font-bold text-white group-hover:text-emerald-400 transition-colors">{project.title}</CardTitle>
+                        <CardTitle className="text-xl font-bold text-[var(--text-primary)] group-hover:text-[hsl(var(--accent))] transition-colors">{project.title}</CardTitle>
                       </CardHeader>
                       <CardContent className="flex-grow relative z-10">
-                        <p className="text-gray-400 line-clamp-3 text-sm leading-relaxed">{project.description}</p>
+                        <p className="text-[var(--text-secondary)] line-clamp-3 text-sm leading-relaxed">{project.description}</p>
                       </CardContent>
-                      <CardFooter className="border-t border-white/5 bg-black/20 p-4 flex justify-end relative z-10">
+                      <CardFooter className="border-t border-[var(--border-color)] bg-[var(--card-bg)]/20 p-4 flex justify-end relative z-10">
                         <Button
                           variant="ghost"
                           size="sm"
                           onClick={() => handleEdit(project, 'project')}
-                          className="text-gray-400 hover:text-white hover:bg-white/10 transition-colors"
+                          className="text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-body)]/10 transition-colors"
                         >
                           <FaEdit className="mr-2" /> Edit
                         </Button>
@@ -512,18 +512,18 @@ const CoreTeamDashboard = () => {
             </TabsContent>
 
             <TabsContent value="blogs" className="space-y-6">
-              <div className="glass-panel p-6 rounded-xl border border-white/10">
+              <div className="glass-panel p-6 rounded-xl border border-[var(--border-color)]">
                 <div className="flex justify-between items-center mb-6">
                   <div className="flex items-center gap-3">
-                    <div className="p-3 rounded-lg bg-emerald-500/10 border border-emerald-500/20">
-                      <FaNewspaper className="text-2xl text-emerald-400" />
+                    <div className="p-3 rounded-lg bg-[hsl(var(--accent))]/10 border border-[hsl(var(--accent))]/20">
+                      <FaNewspaper className="text-2xl text-[hsl(var(--accent))]" />
                     </div>
                     <div>
-                      <h2 className="text-2xl font-bold text-white">Blog Posts</h2>
-                      <p className="text-gray-400 text-sm">Manage blog articles and updates</p>
+                      <h2 className="text-2xl font-bold text-[var(--text-primary)]">Blog Posts</h2>
+                      <p className="text-[var(--text-secondary)] text-sm">Manage blog articles and updates</p>
                     </div>
                   </div>
-                  <Button onClick={() => handleCreate('blog')} className="btn-primary bg-emerald-500 hover:bg-emerald-600 text-white border-0 shadow-lg shadow-emerald-500/20">
+                  <Button onClick={() => handleCreate('blog')} className="btn-primary bg-[hsl(var(--accent))] hover:bg-[hsl(var(--accent))]/90 text-[var(--bg-body)] border-0 shadow-lg shadow-[hsl(var(--accent))]/20">
                     <FaPlus className="mr-2" /> Add Post
                   </Button>
                 </div>
@@ -539,31 +539,31 @@ const CoreTeamDashboard = () => {
                     >
                       {blog.image && (
                         <div className="h-48 overflow-hidden relative">
-                          <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent z-10" />
+                          <div className="absolute inset-0 bg-gradient-to-t from-[var(--bg-body)]/80 to-transparent z-10" />
                           <img
                             src={blog.image}
                             alt={blog.title}
                             className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 filter brightness-75 group-hover:brightness-100"
                           />
                           <div className="absolute top-4 right-4 z-20">
-                            <span className="px-3 py-1 rounded-full bg-black/70 backdrop-blur-md text-xs font-mono text-emerald-400 border border-emerald-500/30">
+                            <span className="px-3 py-1 rounded-full bg-[var(--bg-body)]/70 backdrop-blur-md text-xs font-mono text-[hsl(var(--accent))] border border-[hsl(var(--accent))]/30">
                               {blog.category}
                             </span>
                           </div>
                         </div>
                       )}
                       <CardHeader className="relative z-10">
-                        <CardTitle className="text-xl font-bold text-white group-hover:text-emerald-400 transition-colors">{blog.title}</CardTitle>
+                        <CardTitle className="text-xl font-bold text-[var(--text-primary)] group-hover:text-[hsl(var(--accent))] transition-colors">{blog.title}</CardTitle>
                       </CardHeader>
                       <CardContent className="flex-grow relative z-10">
-                        <p className="text-gray-400 line-clamp-3 text-sm leading-relaxed">{blog.excerpt}</p>
+                        <p className="text-[var(--text-secondary)] line-clamp-3 text-sm leading-relaxed">{blog.excerpt}</p>
                       </CardContent>
-                      <CardFooter className="border-t border-white/5 bg-black/20 p-4 flex justify-end relative z-10">
+                      <CardFooter className="border-t border-[var(--border-color)] bg-[var(--card-bg)]/20 p-4 flex justify-end relative z-10">
                         <Button
                           variant="ghost"
                           size="sm"
                           onClick={() => handleEdit(blog, 'blog')}
-                          className="text-gray-400 hover:text-white hover:bg-white/10 transition-colors"
+                          className="text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-body)]/10 transition-colors"
                         >
                           <FaEdit className="mr-2" /> Edit
                         </Button>
@@ -575,18 +575,18 @@ const CoreTeamDashboard = () => {
             </TabsContent>
 
             <TabsContent value="research" className="space-y-6">
-              <div className="glass-panel p-6 rounded-xl border border-white/10">
+              <div className="glass-panel p-6 rounded-xl border border-[var(--border-color)]">
                 <div className="flex justify-between items-center mb-6">
                   <div className="flex items-center gap-3">
-                    <div className="p-3 rounded-lg bg-emerald-500/10 border border-emerald-500/20">
-                      <FaFlask className="text-2xl text-emerald-400" />
+                    <div className="p-3 rounded-lg bg-[hsl(var(--accent))]/10 border border-[hsl(var(--accent))]/20">
+                      <FaFlask className="text-2xl text-[hsl(var(--accent))]" />
                     </div>
                     <div>
-                      <h2 className="text-2xl font-bold text-white">Research</h2>
-                      <p className="text-gray-400 text-sm">Manage research publications and findings</p>
+                      <h2 className="text-2xl font-bold text-[var(--text-primary)]">Research</h2>
+                      <p className="text-[var(--text-secondary)] text-sm">Manage research publications and findings</p>
                     </div>
                   </div>
-                  <Button onClick={() => handleCreate('research')} className="btn-primary bg-emerald-500 hover:bg-emerald-600 text-white border-0 shadow-lg shadow-emerald-500/20">
+                  <Button onClick={() => handleCreate('research')} className="btn-primary bg-[hsl(var(--accent))] hover:bg-[hsl(var(--accent))]/90 text-[var(--bg-body)] border-0 shadow-lg shadow-[hsl(var(--accent))]/20">
                     <FaPlus className="mr-2" /> Add Research
                   </Button>
                 </div>
@@ -602,34 +602,34 @@ const CoreTeamDashboard = () => {
                     >
                       {item.image && (
                         <div className="h-48 overflow-hidden relative">
-                          <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent z-10" />
+                          <div className="absolute inset-0 bg-gradient-to-t from-[var(--bg-body)]/80 to-transparent z-10" />
                           <img
                             src={item.image}
                             alt={item.title}
                             className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 filter brightness-75 group-hover:brightness-100"
                           />
                           <div className="absolute top-4 right-4 z-20">
-                            <span className="px-3 py-1 rounded-full bg-black/70 backdrop-blur-md text-xs font-mono text-emerald-400 border border-emerald-500/30">
+                            <span className="px-3 py-1 rounded-full bg-[var(--bg-body)]/70 backdrop-blur-md text-xs font-mono text-[hsl(var(--accent))] border border-[hsl(var(--accent))]/30">
                               {item.category}
                             </span>
                           </div>
                         </div>
                       )}
                       <CardHeader className="relative z-10">
-                        <CardTitle className="text-xl font-bold text-white group-hover:text-emerald-400 transition-colors">{item.title}</CardTitle>
+                        <CardTitle className="text-xl font-bold text-[var(--text-primary)] group-hover:text-[hsl(var(--accent))] transition-colors">{item.title}</CardTitle>
                       </CardHeader>
                       <CardContent className="flex-grow relative z-10">
-                        <p className="text-gray-400 line-clamp-3 text-sm leading-relaxed mb-4">{item.description}</p>
-                        <div className="flex items-center text-emerald-400/80 text-sm font-mono bg-emerald-500/5 p-2 rounded border border-emerald-500/10 w-fit">
+                        <p className="text-[var(--text-secondary)] line-clamp-3 text-sm leading-relaxed mb-4">{item.description}</p>
+                        <div className="flex items-center text-[hsl(var(--accent))]/80 text-sm font-mono bg-[hsl(var(--accent))]/5 p-2 rounded border border-[hsl(var(--accent))]/10 w-fit">
                           <FaTag className="mr-2" /> Citations: {item.citations}
                         </div>
                       </CardContent>
-                      <CardFooter className="border-t border-white/5 bg-black/20 p-4 flex justify-end relative z-10">
+                      <CardFooter className="border-t border-[var(--border-color)] bg-[var(--card-bg)]/20 p-4 flex justify-end relative z-10">
                         <Button
                           variant="ghost"
                           size="sm"
                           onClick={() => handleEdit(item, 'research')}
-                          className="text-gray-400 hover:text-white hover:bg-white/10 transition-colors"
+                          className="text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-body)]/10 transition-colors"
                         >
                           <FaEdit className="mr-2" /> Edit
                         </Button>
@@ -641,18 +641,18 @@ const CoreTeamDashboard = () => {
             </TabsContent>
 
             <TabsContent value="events" className="space-y-6">
-              <div className="glass-panel p-6 rounded-xl border border-white/10">
+              <div className="glass-panel p-6 rounded-xl border border-[var(--border-color)]">
                 <div className="flex justify-between items-center mb-6">
                   <div className="flex items-center gap-3">
-                    <div className="p-3 rounded-lg bg-emerald-500/10 border border-emerald-500/20">
-                      <FaCalendarAlt className="text-2xl text-emerald-400" />
+                    <div className="p-3 rounded-lg bg-[hsl(var(--accent))]/10 border border-[hsl(var(--accent))]/20">
+                      <FaCalendarAlt className="text-2xl text-[hsl(var(--accent))]" />
                     </div>
                     <div>
-                      <h2 className="text-2xl font-bold text-white">Events</h2>
-                      <p className="text-gray-400 text-sm">Manage upcoming and past events</p>
+                      <h2 className="text-2xl font-bold text-[var(--text-primary)]">Events</h2>
+                      <p className="text-[var(--text-secondary)] text-sm">Manage upcoming and past events</p>
                     </div>
                   </div>
-                  <Button onClick={() => handleCreate('event')} className="btn-primary bg-emerald-500 hover:bg-emerald-600 text-white border-0 shadow-lg shadow-emerald-500/20">
+                  <Button onClick={() => handleCreate('event')} className="btn-primary bg-[hsl(var(--accent))] hover:bg-[hsl(var(--accent))]/90 text-[var(--bg-body)] border-0 shadow-lg shadow-[hsl(var(--accent))]/20">
                     <FaPlus className="mr-2" /> Add Event
                   </Button>
                 </div>
@@ -668,14 +668,14 @@ const CoreTeamDashboard = () => {
                     >
                       {event.image && (
                         <div className="h-48 overflow-hidden relative">
-                          <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent z-10" />
+                          <div className="absolute inset-0 bg-gradient-to-t from-[var(--bg-body)]/80 to-transparent z-10" />
                           <img
                             src={event.image}
                             alt={event.title}
                             className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 filter brightness-75 group-hover:brightness-100"
                           />
                           <div className="absolute top-4 right-4 z-20">
-                            <span className="px-3 py-1 rounded-full bg-black/70 backdrop-blur-md text-xs font-mono text-emerald-400 border border-emerald-500/30">
+                            <span className="px-3 py-1 rounded-full bg-[var(--bg-body)]/70 backdrop-blur-md text-xs font-mono text-[hsl(var(--accent))] border border-[hsl(var(--accent))]/30">
                               {event.type}
                             </span>
                           </div>
@@ -683,24 +683,24 @@ const CoreTeamDashboard = () => {
                       )}
                       <CardHeader className="relative z-10">
                         <div className="flex justify-between items-start">
-                          <CardTitle className="text-xl font-bold text-white group-hover:text-emerald-400 transition-colors">{event.title}</CardTitle>
+                          <CardTitle className="text-xl font-bold text-[var(--text-primary)] group-hover:text-[hsl(var(--accent))] transition-colors">{event.title}</CardTitle>
                         </div>
-                        <CardDescription className="text-emerald-400 font-mono text-xs mt-1 flex items-center">
+                        <CardDescription className="text-[hsl(var(--accent))] font-mono text-xs mt-1 flex items-center">
                           <FaClock className="mr-1" /> {event.date} • {event.time}
                         </CardDescription>
                       </CardHeader>
                       <CardContent className="flex-grow relative z-10">
-                        <p className="text-gray-400 line-clamp-3 text-sm leading-relaxed mb-3">{event.description}</p>
-                        <div className="flex items-center text-gray-500 text-xs">
-                          <FaMapMarkerAlt className="mr-1 text-emerald-500" /> {event.location}
+                        <p className="text-[var(--text-secondary)] line-clamp-3 text-sm leading-relaxed mb-3">{event.description}</p>
+                        <div className="flex items-center text-[var(--text-secondary)]/80 text-xs">
+                          <FaMapMarkerAlt className="mr-1 text-[hsl(var(--accent))]" /> {event.location}
                         </div>
                       </CardContent>
-                      <CardFooter className="border-t border-white/5 bg-black/20 p-4 flex justify-end relative z-10">
+                      <CardFooter className="border-t border-[var(--border-color)] bg-[var(--card-bg)]/20 p-4 flex justify-end relative z-10">
                         <Button
                           variant="ghost"
                           size="sm"
                           onClick={() => handleEdit(event, 'event')}
-                          className="text-gray-400 hover:text-white hover:bg-white/10 transition-colors"
+                          className="text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-body)]/10 transition-colors"
                         >
                           <FaEdit className="mr-2" /> Edit
                         </Button>
@@ -712,30 +712,30 @@ const CoreTeamDashboard = () => {
             </TabsContent>
 
             <TabsContent value="team-chat" className="space-y-6">
-              <div className="glass-panel p-6 rounded-xl border border-white/10 h-[600px] flex flex-col">
-                <div className="flex items-center gap-3 mb-6 pb-4 border-b border-white/10">
-                  <div className="p-3 rounded-lg bg-emerald-500/10 border border-emerald-500/20">
-                    <FaComments className="text-2xl text-emerald-400" />
+              <div className="glass-panel p-6 rounded-xl border border-[var(--border-color)] h-[600px] flex flex-col">
+                <div className="flex items-center gap-3 mb-6 pb-4 border-b border-[var(--border-color)]">
+                  <div className="p-3 rounded-lg bg-[hsl(var(--accent))]/10 border border-[hsl(var(--accent))]/20">
+                    <FaComments className="text-2xl text-[hsl(var(--accent))]" />
                   </div>
                   <div>
-                    <h2 className="text-2xl font-bold text-white">Core Team Chat</h2>
-                    <p className="text-gray-400 text-sm">Private secure channel for core team discussions</p>
+                    <h2 className="text-2xl font-bold text-[var(--text-primary)]">Core Team Chat</h2>
+                    <p className="text-[var(--text-secondary)] text-sm">Private secure channel for core team discussions</p>
                   </div>
                 </div>
 
-                <div className="flex-1 overflow-y-auto mb-4 space-y-4 pr-2 custom-scrollbar bg-black/20 rounded-lg p-4 border border-white/5">
+                <div className="flex-1 overflow-y-auto mb-4 space-y-4 pr-2 custom-scrollbar bg-[var(--card-bg)]/20 rounded-lg p-4 border border-[var(--border-color)]">
                   {(messages as any[]).map((message: any) => (
-                    <div key={message.id} className="flex flex-col bg-white/5 border border-white/10 rounded-lg p-3 hover:border-emerald-500/30 transition-colors">
+                    <div key={message.id} className="flex flex-col bg-[var(--bg-body)]/5 border border-[var(--border-color)] rounded-lg p-3 hover:border-[hsl(var(--accent))]/30 transition-colors">
                       <div className="flex justify-between items-start mb-2">
-                        <span className="font-bold text-emerald-400 text-sm">{message.user?.username || `User ${message.user_id}`}</span>
-                        <span className="text-xs font-mono text-gray-500">{new Date(message.created_at).toLocaleString()}</span>
+                        <span className="font-bold text-[hsl(var(--accent))] text-sm">{message.user?.username || `User ${message.user_id}`}</span>
+                        <span className="text-xs font-mono text-[var(--text-secondary)]">{new Date(message.created_at).toLocaleString()}</span>
                       </div>
-                      <p className="text-gray-300 text-sm leading-relaxed">{message.content}</p>
+                      <p className="text-[var(--text-primary)]/90 text-sm leading-relaxed">{message.content}</p>
                     </div>
                   ))}
                 </div>
 
-                <div className="flex gap-3 pt-4 border-t border-white/10">
+                <div className="flex gap-3 pt-4 border-t border-[var(--border-color)]">
                   <Input
                     placeholder="Type your message..."
                     value={newMessage}
@@ -745,7 +745,7 @@ const CoreTeamDashboard = () => {
                         sendMessage.mutate(newMessage);
                       }
                     }}
-                    className="bg-black/40 border-white/10 focus:border-emerald-500/50 text-white placeholder:text-white/20"
+                    className="bg-[var(--card-bg)]/40 border-[var(--border-color)] focus:border-[hsl(var(--accent))]/50 text-[var(--text-primary)] placeholder:text-[var(--text-secondary)]/50"
                   />
                   <Button
                     onClick={() => {
@@ -753,7 +753,7 @@ const CoreTeamDashboard = () => {
                         sendMessage.mutate(newMessage);
                       }
                     }}
-                    className="bg-emerald-500 hover:bg-emerald-600 text-white border-0 shadow-lg shadow-emerald-500/20"
+                    className="bg-[hsl(var(--accent))] hover:bg-[hsl(var(--accent))]/90 text-[var(--bg-body)] border-0 shadow-lg shadow-[hsl(var(--accent))]/20"
                   >
                     <FaPaperPlane className="mr-2" /> Send
                   </Button>

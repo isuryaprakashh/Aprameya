@@ -16,6 +16,7 @@ import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import UserProfile from "./pages/UserProfile";
 import NotFound from "./pages/not-found";
+import DesignSystem from "./pages/DesignSystem";
 
 // Protected route component
 interface ProtectedRouteProps {
@@ -61,6 +62,7 @@ function App() {
             <Route path="/about" component={About} />
             <Route path="/login" component={Login} />
             <Route path="/signup" component={Signup} />
+            <Route path="/design" component={DesignSystem} />
 
             {/* Dashboard routes - will route to the appropriate dashboard based on user role */}
             <Route path="/dashboard">

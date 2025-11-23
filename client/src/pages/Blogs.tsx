@@ -20,14 +20,14 @@ const Blogs = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
           >
-            <div className="inline-flex items-center gap-2 mb-6 border border-[var(--border-color)] px-3 py-1 bg-black">
-              <span className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></span>
-              <span className="text-xs font-bold text-white tracking-widest">KNOWLEDGE_BASE</span>
+            <div className="inline-flex items-center gap-2 mb-6 border border-[var(--border-color)] px-3 py-1 bg-[var(--bg-body)]">
+              <span className="w-2 h-2 bg-[hsl(var(--accent))] rounded-full animate-pulse"></span>
+              <span className="text-xs font-bold text-[var(--text-primary)] tracking-widest">KNOWLEDGE_BASE</span>
             </div>
-            <h1 className="font-bold text-5xl md:text-7xl mb-6 leading-[0.9] text-white">
+            <h1 className="font-bold text-5xl md:text-7xl mb-6 leading-[0.9] text-[var(--text-primary)]">
               BLOG &<br />INSIGHTS
             </h1>
-            <p className="text-sm text-gray-400 max-w-2xl mx-auto mb-12 font-mono">
+            <p className="text-sm text-[var(--text-secondary)] max-w-2xl mx-auto mb-12 font-mono">
               Stay updated with the latest trends, technologies, and breakthroughs in autonomous systems
               from our engineering team.
             </p>
@@ -51,28 +51,28 @@ const Blogs = () => {
               <div className="sticky top-24 space-y-8">
                 {/* Search */}
                 <div className="glass-panel p-6 rounded-xl border border-[var(--border-color)]">
-                  <h3 className="font-mono font-bold text-white mb-4 uppercase tracking-wider text-sm">Search</h3>
+                  <h3 className="font-mono font-bold text-[var(--text-primary)] mb-4 uppercase tracking-wider text-sm">Search</h3>
                   <div className="relative">
-                    <FaSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500 w-3 h-3" />
+                    <FaSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-[var(--text-secondary)] w-3 h-3" />
                     <Input
                       placeholder="Search articles..."
-                      className="pl-9 bg-[var(--card-bg)] border-[var(--border-color)] text-white h-10 text-xs"
+                      className="pl-9 bg-[var(--card-bg)] border-[var(--border-color)] text-[var(--text-primary)] h-10 text-xs"
                     />
                   </div>
                 </div>
 
                 {/* Categories */}
                 <div className="glass-panel p-6 rounded-xl border border-[var(--border-color)]">
-                  <h3 className="font-mono font-bold text-white mb-4 uppercase tracking-wider text-sm">Categories</h3>
+                  <h3 className="font-mono font-bold text-[var(--text-primary)] mb-4 uppercase tracking-wider text-sm">Categories</h3>
                   <ul className="space-y-2">
                     {blogCategories.map((category, index) => (
                       <li key={index}>
-                        <a href="#" className="group flex items-center justify-between text-gray-400 hover:text-emerald-400 transition-colors text-sm">
+                        <a href="#" className="group flex items-center justify-between text-[var(--text-secondary)] hover:text-[hsl(var(--accent))] transition-colors text-sm">
                           <span className="flex items-center">
                             <FaTag className="w-3 h-3 mr-2 opacity-50 group-hover:opacity-100" />
                             {category}
                           </span>
-                          <span className="bg-[var(--card-bg)] px-2 py-0.5 rounded text-[10px] border border-[var(--border-color)] group-hover:border-emerald-500/30">
+                          <span className="bg-[var(--card-bg)] px-2 py-0.5 rounded text-[10px] border border-[var(--border-color)] group-hover:border-[hsl(var(--accent))]/30">
                             {/* Count not available in string array, using placeholder or removing */}
                             +
                           </span>
@@ -84,7 +84,7 @@ const Blogs = () => {
 
                 {/* Recent Posts */}
                 <div className="glass-panel p-6 rounded-xl border border-[var(--border-color)]">
-                  <h3 className="font-mono font-bold text-white mb-4 uppercase tracking-wider text-sm">Recent Posts</h3>
+                  <h3 className="font-mono font-bold text-[var(--text-primary)] mb-4 uppercase tracking-wider text-sm">Recent Posts</h3>
                   <div className="space-y-4">
                     {blogPosts.slice(0, 3).map((post) => (
                       <div key={post.id} className="flex gap-3 group cursor-pointer">
@@ -96,8 +96,8 @@ const Blogs = () => {
                           />
                         </div>
                         <div>
-                          <h4 className="font-medium text-white text-sm line-clamp-2 mb-1 group-hover:text-emerald-400 transition-colors">{post.title}</h4>
-                          <p className="text-gray-500 text-[10px] font-mono">{post.date}</p>
+                          <h4 className="font-medium text-[var(--text-primary)] text-sm line-clamp-2 mb-1 group-hover:text-[hsl(var(--accent))] transition-colors">{post.title}</h4>
+                          <p className="text-[var(--text-secondary)] text-[10px] font-mono">{post.date}</p>
                         </div>
                       </div>
                     ))}

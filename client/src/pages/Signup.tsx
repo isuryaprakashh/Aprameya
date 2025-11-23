@@ -9,6 +9,7 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Eye, EyeOff, User, Mail, Lock, ArrowRight, Shield, Users, Zap } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { GlassPanel } from '@/components/ui/v6-card';
 
 const Signup = () => {
   const [formData, setFormData] = useState({
@@ -101,18 +102,18 @@ const Signup = () => {
               <Logo size="xl" />
             </Link>
             <div className="mb-6">
-              <p className="text-xs font-mono text-gray-500 mb-2">/// NEW USER REGISTRATION</p>
-              <h1 className="font-bold text-5xl lg:text-6xl leading-none text-white">
+              <p className="text-xs font-mono text-[var(--text-secondary)] mb-2">/// NEW USER REGISTRATION</p>
+              <h1 className="font-bold text-5xl lg:text-6xl leading-none text-[var(--text-primary)]">
                 JOIN THE<br />FUTURE
               </h1>
             </div>
-            <p className="text-sm text-gray-400 mb-12 max-w-lg font-mono leading-relaxed">
+            <p className="text-sm text-[var(--text-secondary)] mb-12 max-w-lg font-mono leading-relaxed">
               Become part of our vibrant community of innovators, researchers, and engineers
               shaping the future of autonomous vehicle technology.
             </p>
 
             {/* Benefits */}
-            <div className="space-y-4 border-l border-[#333] pl-6">
+            <div className="space-y-4 border-l border-[var(--border-color)] pl-6">
               {[
                 { icon: Users, text: "Join 200+ passionate members" },
                 { icon: Zap, text: "Access cutting-edge projects" },
@@ -125,10 +126,10 @@ const Signup = () => {
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ duration: 0.6, delay: 0.2 + index * 0.1 }}
                 >
-                  <div className="w-8 h-8 bg-[#111] border border-[#333] flex items-center justify-center">
-                    <benefit.icon className="w-4 h-4 text-white" />
+                  <div className="w-8 h-8 bg-[var(--card-bg)] border border-[var(--border-color)] flex items-center justify-center">
+                    <benefit.icon className="w-4 h-4 text-[var(--text-primary)]" />
                   </div>
-                  <span className="text-xs text-gray-400 uppercase tracking-wider">{benefit.text}</span>
+                  <span className="text-xs text-[var(--text-secondary)] uppercase tracking-wider">{benefit.text}</span>
                 </motion.div>
               ))}
             </div>
@@ -141,18 +142,18 @@ const Signup = () => {
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.8, delay: 0.2 }}
         >
-          <Card className="border-0 shadow-2xl bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm">
-            <CardHeader className="text-center pb-6">
+          <GlassPanel className="border-0 shadow-2xl backdrop-blur-sm p-0">
+            <div className="p-6 text-center pb-6">
               <div className="lg:hidden mb-4">
                 <Link href="/" className="inline-flex items-center justify-center">
                   <Logo size="lg" />
                 </Link>
               </div>
-              <CardTitle className="text-2xl font-bold">Create Account</CardTitle>
-              <p className="text-muted-foreground">Join Aprameya and start your innovation journey</p>
-            </CardHeader>
+              <h2 className="text-2xl font-bold text-[var(--text-primary)]">Create Account</h2>
+              <p className="text-[var(--text-secondary)]">Join Aprameya and start your innovation journey</p>
+            </div>
 
-            <CardContent className="space-y-6">
+            <div className="p-6 pt-0 space-y-6">
               {error && (
                 <Alert variant="destructive">
                   <AlertDescription>{error}</AlertDescription>
@@ -161,67 +162,67 @@ const Signup = () => {
 
               <form onSubmit={handleSubmit} className="space-y-4">
                 <div className="space-y-2">
-                  <Label htmlFor="username">Username</Label>
+                  <Label htmlFor="username" className="text-[var(--text-primary)]">Username</Label>
                   <div className="relative">
-                    <User className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
+                    <User className="absolute left-3 top-1/2 transform -translate-y-1/2 text-[var(--text-secondary)] w-4 h-4" />
                     <Input
                       type="text"
                       id="username"
                       placeholder="Choose a username"
                       value={formData.username}
                       onChange={handleInputChange}
-                      className="pl-10"
+                      className="pl-10 bg-[var(--bg-body)] border-[var(--border-color)] text-[var(--text-primary)]"
                       required
                     />
                   </div>
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="email">Email Address</Label>
+                  <Label htmlFor="email" className="text-[var(--text-primary)]">Email Address</Label>
                   <div className="relative">
-                    <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
+                    <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-[var(--text-secondary)] w-4 h-4" />
                     <Input
                       type="email"
                       id="email"
                       placeholder="Enter your email"
                       value={formData.email}
                       onChange={handleInputChange}
-                      className="pl-10"
+                      className="pl-10 bg-[var(--bg-body)] border-[var(--border-color)] text-[var(--text-primary)]"
                       required
                     />
                   </div>
                 </div>
 
                 <div className="space-y-2">
-                  <Label>Role</Label>
-                  <div className="p-3 bg-muted/50 rounded-lg border">
+                  <Label className="text-[var(--text-primary)]">Role</Label>
+                  <div className="p-3 bg-[var(--card-bg)] rounded-lg border border-[var(--border-color)]">
                     <div className="flex items-center gap-2 mb-1">
-                      <Shield className="w-4 h-4 text-primary" />
-                      <span className="font-medium">Aspirant</span>
+                      <Shield className="w-4 h-4 text-[hsl(var(--accent))]" />
+                      <span className="font-medium text-[var(--text-primary)]">Aspirant</span>
                     </div>
-                    <p className="text-sm text-muted-foreground">
+                    <p className="text-sm text-[var(--text-secondary)]">
                       New members start as Aspirants. You can be promoted to Core Team by admins later.
                     </p>
                   </div>
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="password">Password</Label>
+                  <Label htmlFor="password" className="text-[var(--text-primary)]">Password</Label>
                   <div className="relative">
-                    <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
+                    <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-[var(--text-secondary)] w-4 h-4" />
                     <Input
                       type={showPassword ? "text" : "password"}
                       id="password"
                       placeholder="Create a password"
                       value={formData.password}
                       onChange={handleInputChange}
-                      className="pl-10 pr-10"
+                      className="pl-10 pr-10 bg-[var(--bg-body)] border-[var(--border-color)] text-[var(--text-primary)]"
                       required
                     />
                     <button
                       type="button"
                       onClick={() => setShowPassword(!showPassword)}
-                      className="absolute right-3 top-1/2 transform -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                      className="absolute right-3 top-1/2 transform -translate-y-1/2 text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
                     >
                       {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                     </button>
@@ -229,22 +230,22 @@ const Signup = () => {
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="confirmPassword">Confirm Password</Label>
+                  <Label htmlFor="confirmPassword" className="text-[var(--text-primary)]">Confirm Password</Label>
                   <div className="relative">
-                    <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
+                    <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-[var(--text-secondary)] w-4 h-4" />
                     <Input
                       type={showConfirmPassword ? "text" : "password"}
                       id="confirmPassword"
                       placeholder="Confirm your password"
                       value={formData.confirmPassword}
                       onChange={handleInputChange}
-                      className="pl-10 pr-10"
+                      className="pl-10 pr-10 bg-[var(--bg-body)] border-[var(--border-color)] text-[var(--text-primary)]"
                       required
                     />
                     <button
                       type="button"
                       onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                      className="absolute right-3 top-1/2 transform -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                      className="absolute right-3 top-1/2 transform -translate-y-1/2 text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
                     >
                       {showConfirmPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                     </button>
@@ -258,15 +259,15 @@ const Signup = () => {
                     onCheckedChange={(checked) =>
                       setFormData(prev => ({ ...prev, agreeToTerms: checked as boolean }))
                     }
-                    className="mt-1"
+                    className="mt-1 border-[var(--border-color)] data-[state=checked]:bg-[hsl(var(--accent))] data-[state=checked]:text-[var(--bg-body)]"
                   />
-                  <Label htmlFor="agreeToTerms" className="text-sm leading-relaxed">
+                  <Label htmlFor="agreeToTerms" className="text-sm leading-relaxed text-[var(--text-secondary)]">
                     I agree to the{' '}
-                    <Link href="#" className="text-primary hover:text-primary/80 hover:underline">
+                    <Link href="#" className="text-[hsl(var(--accent))] hover:text-[hsl(var(--accent))]/80 hover:underline">
                       Terms of Service
                     </Link>{' '}
                     and{' '}
-                    <Link href="#" className="text-primary hover:text-primary/80 hover:underline">
+                    <Link href="#" className="text-[hsl(var(--accent))] hover:text-[hsl(var(--accent))]/80 hover:underline">
                       Privacy Policy
                     </Link>
                   </Label>
@@ -274,7 +275,7 @@ const Signup = () => {
 
                 <Button
                   type="submit"
-                  className="w-full bg-gradient-to-r from-primary to-secondary hover:from-primary/90 hover:to-secondary/90"
+                  className="w-full bg-[hsl(var(--accent))] text-[var(--bg-body)] hover:bg-[hsl(var(--accent))]/90"
                   disabled={isLoading}
                   size="lg"
                 >
@@ -283,16 +284,16 @@ const Signup = () => {
                 </Button>
               </form>
 
-              <div className="text-center pt-4 border-t border-slate-200 dark:border-slate-700">
-                <p className="text-muted-foreground">
+              <div className="text-center pt-4 border-t border-[var(--border-color)]">
+                <p className="text-[var(--text-secondary)]">
                   Already have an account?{' '}
-                  <Link href="/login" className="text-primary hover:text-primary/80 font-medium hover:underline">
+                  <Link href="/login" className="text-[hsl(var(--accent))] hover:text-[hsl(var(--accent))]/80 font-medium hover:underline">
                     Sign in here
                   </Link>
                 </p>
               </div>
-            </CardContent>
-          </Card>
+            </div>
+          </GlassPanel>
         </motion.div>
       </div>
     </div>

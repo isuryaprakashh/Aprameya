@@ -9,6 +9,7 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Eye, EyeOff, Lock, User, ArrowRight, Shield } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { GlassPanel } from '@/components/ui/v6-card';
 
 const Login = () => {
   const [formData, setFormData] = useState({
@@ -77,12 +78,12 @@ const Login = () => {
               <Logo size="xl" />
             </Link>
             <div className="mb-6">
-              <p className="text-xs font-mono text-emerald-400 mb-2 tracking-widest">/// ACCESS CONTROL</p>
-              <h1 className="font-bold text-5xl lg:text-6xl leading-none text-white">
+              <p className="text-xs font-mono text-[hsl(var(--accent))] mb-2 tracking-widest">/// ACCESS CONTROL</p>
+              <h1 className="font-bold text-5xl lg:text-6xl leading-none text-[var(--text-primary)]">
                 WELCOME<br />BACK
               </h1>
             </div>
-            <p className="text-sm text-gray-400 mb-12 max-w-lg font-mono leading-relaxed">
+            <p className="text-sm text-[var(--text-secondary)] mb-12 max-w-lg font-mono leading-relaxed">
               Continue your journey in autonomous vehicle innovation.
               Access your dashboard and connect with the community.
             </p>
@@ -101,10 +102,10 @@ const Login = () => {
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ duration: 0.6, delay: 0.2 + index * 0.1 }}
                 >
-                  <div className="w-8 h-8 bg-[#111] border border-[#333] flex items-center justify-center">
-                    <feature.icon className="w-4 h-4 text-white" />
+                  <div className="w-8 h-8 bg-[var(--card-bg)] border border-[var(--border-color)] flex items-center justify-center">
+                    <feature.icon className="w-4 h-4 text-[var(--text-primary)]" />
                   </div>
-                  <span className="text-xs text-gray-400 uppercase tracking-wider">{feature.text}</span>
+                  <span className="text-xs text-[var(--text-secondary)] uppercase tracking-wider">{feature.text}</span>
                 </motion.div>
               ))}
             </div>
@@ -117,18 +118,18 @@ const Login = () => {
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.8, delay: 0.2 }}
         >
-          <Card className="border-0 shadow-2xl bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm">
-            <CardHeader className="text-center pb-6">
+          <GlassPanel className="border-0 shadow-2xl backdrop-blur-sm p-0">
+            <div className="p-6 text-center pb-6">
               <div className="lg:hidden mb-4">
                 <Link href="/" className="inline-flex items-center justify-center">
                   <Logo size="lg" />
                 </Link>
               </div>
-              <CardTitle className="text-2xl font-bold">Sign In</CardTitle>
-              <p className="text-muted-foreground">Enter your credentials to access your account</p>
-            </CardHeader>
+              <h2 className="text-2xl font-bold text-[var(--text-primary)]">Sign In</h2>
+              <p className="text-[var(--text-secondary)]">Enter your credentials to access your account</p>
+            </div>
 
-            <CardContent className="space-y-6">
+            <div className="p-6 pt-0 space-y-6">
               {error && (
                 <Alert variant="destructive">
                   <AlertDescription>{error}</AlertDescription>
@@ -137,38 +138,38 @@ const Login = () => {
 
               <form onSubmit={handleSubmit} className="space-y-4">
                 <div className="space-y-2">
-                  <Label htmlFor="username">Username</Label>
+                  <Label htmlFor="username" className="text-[var(--text-primary)]">Username</Label>
                   <div className="relative">
-                    <User className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
+                    <User className="absolute left-3 top-1/2 transform -translate-y-1/2 text-[var(--text-secondary)] w-4 h-4" />
                     <Input
                       type="text"
                       id="username"
                       placeholder="Enter your username"
                       value={formData.username}
                       onChange={handleInputChange}
-                      className="pl-10"
+                      className="pl-10 bg-[var(--bg-body)] border-[var(--border-color)] text-[var(--text-primary)]"
                       required
                     />
                   </div>
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="password">Password</Label>
+                  <Label htmlFor="password" className="text-[var(--text-primary)]">Password</Label>
                   <div className="relative">
-                    <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
+                    <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-[var(--text-secondary)] w-4 h-4" />
                     <Input
                       type={showPassword ? "text" : "password"}
                       id="password"
                       placeholder="Enter your password"
                       value={formData.password}
                       onChange={handleInputChange}
-                      className="pl-10 pr-10"
+                      className="pl-10 pr-10 bg-[var(--bg-body)] border-[var(--border-color)] text-[var(--text-primary)]"
                       required
                     />
                     <button
                       type="button"
                       onClick={() => setShowPassword(!showPassword)}
-                      className="absolute right-3 top-1/2 transform -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                      className="absolute right-3 top-1/2 transform -translate-y-1/2 text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
                     >
                       {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                     </button>
@@ -183,17 +184,18 @@ const Login = () => {
                       onCheckedChange={(checked) =>
                         setFormData(prev => ({ ...prev, rememberMe: checked as boolean }))
                       }
+                      className="border-[var(--border-color)] data-[state=checked]:bg-[hsl(var(--accent))] data-[state=checked]:text-[var(--bg-body)]"
                     />
-                    <Label htmlFor="rememberMe" className="text-sm">Remember me</Label>
+                    <Label htmlFor="rememberMe" className="text-sm text-[var(--text-secondary)]">Remember me</Label>
                   </div>
-                  <Link href="#" className="text-sm text-primary hover:text-primary/80 hover:underline">
+                  <Link href="#" className="text-sm text-[hsl(var(--accent))] hover:text-[hsl(var(--accent))]/80 hover:underline">
                     Forgot password?
                   </Link>
                 </div>
 
                 <Button
                   type="submit"
-                  className="w-full bg-gradient-to-r from-primary to-secondary hover:from-primary/90 hover:to-secondary/90"
+                  className="w-full bg-[hsl(var(--accent))] text-[var(--bg-body)] hover:bg-[hsl(var(--accent))]/90"
                   disabled={isLoading}
                 >
                   {isLoading ? 'Signing In...' : 'Sign In'}
@@ -201,16 +203,16 @@ const Login = () => {
                 </Button>
               </form>
 
-              <div className="text-center pt-4 border-t border-slate-200 dark:border-slate-700">
-                <p className="text-muted-foreground">
+              <div className="text-center pt-4 border-t border-[var(--border-color)]">
+                <p className="text-[var(--text-secondary)]">
                   New to Aprameya?{' '}
-                  <Link href="/signup" className="text-primary hover:text-primary/80 font-medium hover:underline">
+                  <Link href="/signup" className="text-[hsl(var(--accent))] hover:text-[hsl(var(--accent))]/80 font-medium hover:underline">
                     Create an account
                   </Link>
                 </p>
               </div>
-            </CardContent>
-          </Card>
+            </div>
+          </GlassPanel>
         </motion.div>
       </div>
     </div>

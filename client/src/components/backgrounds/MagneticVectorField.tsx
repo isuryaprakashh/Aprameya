@@ -45,7 +45,10 @@ const MagneticVectorField = () => {
 
                     // Color variation based on angle
                     const intensity = (Math.sin(angle * 2) + 1) / 2;
-                    ctx.strokeStyle = `rgba(52, 211, 153, ${0.1 + intensity * 0.3})`;
+                    // Get accent color from CSS variable
+                    const accentHSL = getComputedStyle(document.documentElement).getPropertyValue('--accent').trim();
+                    const [h, s, l] = accentHSL.split(' ').map(v => parseFloat(v));
+                    ctx.strokeStyle = `hsla(${h}, ${s}%, ${l}%, ${0.1 + intensity * 0.3})`;
                     ctx.stroke();
 
                     ctx.restore();
@@ -66,9 +69,9 @@ const MagneticVectorField = () => {
     }, []);
 
     return (
-        <div ref={containerRef} className="absolute inset-0 w-full h-full bg-black overflow-hidden">
+        <div ref={containerRef} className="absolute inset-0 w-full h-full bg-[var(--bg-body)] overflow-hidden">
             <canvas ref={canvasRef} className="w-full h-full block" />
-            <div className="absolute bottom-2.5 left-2.5 bg-black/70 border border-[#333] px-2 py-1 rounded text-[10px] text-[#aaa] z-20 font-mono pointer-events-none">
+            <div className="absolute bottom-2.5 left-2.5 bg-[var(--bg-body)]/70 border border-[var(--border-color)] px-2 py-1 rounded text-[10px] text-[var(--text-secondary)] z-20 font-mono pointer-events-none">
                 VISUAL: FLOW FIELD
             </div>
         </div>

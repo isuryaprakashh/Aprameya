@@ -165,7 +165,7 @@ const UserProfile = () => {
     return (
       <div className="min-h-screen flex items-center justify-center bg-[var(--bg-body)]">
         <div className="glass-panel p-8 rounded-xl text-center">
-          <p className="text-white">Please login to view your profile</p>
+          <p className="text-[var(--text-primary)]">Please login to view your profile</p>
         </div>
       </div>
     );
@@ -183,7 +183,7 @@ const UserProfile = () => {
       case 'CORE_TEAM':
         return 'bg-blue-500/20 text-blue-400 border-blue-500/50';
       default:
-        return 'bg-emerald-500/20 text-emerald-400 border-emerald-500/50';
+        return 'bg-[hsl(var(--accent))]/20 text-[hsl(var(--accent))] border-[hsl(var(--accent))]/50';
     }
   };
 
@@ -198,11 +198,11 @@ const UserProfile = () => {
           className="mb-8 flex items-center justify-between"
         >
           <div>
-            <div className="inline-flex items-center gap-2 mb-2 border border-[var(--border-color)] px-3 py-1 bg-black/50 rounded-full">
-              <span className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></span>
-              <span className="text-[10px] font-bold text-white tracking-widest uppercase">User Dashboard</span>
+            <div className="inline-flex items-center gap-2 mb-2 border border-[var(--border-color)] px-3 py-1 bg-[var(--card-bg)]/50 rounded-full">
+              <span className="w-2 h-2 bg-[hsl(var(--accent))] rounded-full animate-pulse"></span>
+              <span className="text-[10px] font-bold text-[var(--text-primary)] tracking-widest uppercase">User Dashboard</span>
             </div>
-            <h1 className="text-4xl font-bold text-white font-mono">PROFILE_SETTINGS</h1>
+            <h1 className="text-4xl font-bold text-[var(--text-primary)] font-mono">PROFILE_SETTINGS</h1>
           </div>
         </motion.div>
 
@@ -216,14 +216,14 @@ const UserProfile = () => {
           >
             <div className="glass-panel p-6 rounded-xl border border-[var(--border-color)] sticky top-24">
               <div className="flex flex-col items-center text-center mb-6">
-                <Avatar className="h-24 w-24 mb-4 border-2 border-emerald-500/30">
+                <Avatar className="h-24 w-24 mb-4 border-2 border-[hsl(var(--accent))]/30">
                   <AvatarImage src="" alt={currentUser.username} />
-                  <AvatarFallback className="bg-[var(--card-bg)] text-2xl font-mono text-emerald-400">
+                  <AvatarFallback className="bg-[var(--card-bg)] text-2xl font-mono text-[hsl(var(--accent))]">
                     {getInitials(currentUser.username)}
                   </AvatarFallback>
                 </Avatar>
-                <h2 className="text-2xl font-bold text-white mb-1">{currentUser.username}</h2>
-                <p className="text-gray-400 text-sm mb-3">{currentUser.email}</p>
+                <h2 className="text-2xl font-bold text-[var(--text-primary)] mb-1">{currentUser.username}</h2>
+                <p className="text-[var(--text-secondary)] text-sm mb-3">{currentUser.email}</p>
                 <Badge className={`border ${getRoleBadgeColor(currentUser.role)}`}>
                   {currentUser.role}
                 </Badge>
@@ -233,16 +233,16 @@ const UserProfile = () => {
 
               <div className="space-y-4">
                 <div className="flex items-center justify-between text-sm">
-                  <span className="text-gray-500 flex items-center"><FaHistory className="mr-2" /> Member Since</span>
-                  <span className="text-white font-mono">{new Date(currentUser.created_at).toLocaleDateString()}</span>
+                  <span className="text-[var(--text-secondary)] flex items-center"><FaHistory className="mr-2" /> Member Since</span>
+                  <span className="text-[var(--text-primary)] font-mono">{new Date(currentUser.created_at).toLocaleDateString()}</span>
                 </div>
                 <div className="flex items-center justify-between text-sm">
-                  <span className="text-gray-500 flex items-center"><FaCalendar className="mr-2" /> Events</span>
-                  <span className="text-white font-mono">{userEventRegistrations.length}</span>
+                  <span className="text-[var(--text-secondary)] flex items-center"><FaCalendar className="mr-2" /> Events</span>
+                  <span className="text-[var(--text-primary)] font-mono">{userEventRegistrations.length}</span>
                 </div>
                 <div className="flex items-center justify-between text-sm">
-                  <span className="text-gray-500 flex items-center"><FaComment className="mr-2" /> Comments</span>
-                  <span className="text-white font-mono">{userComments.length}</span>
+                  <span className="text-[var(--text-secondary)] flex items-center"><FaComment className="mr-2" /> Comments</span>
+                  <span className="text-[var(--text-primary)] font-mono">{userComments.length}</span>
                 </div>
               </div>
 
@@ -266,38 +266,38 @@ const UserProfile = () => {
           >
             {isEditing ? (
               <div className="glass-panel p-6 rounded-xl border border-[var(--border-color)]">
-                <h3 className="text-xl font-bold text-white mb-6 flex items-center">
-                  <FaUser className="mr-2 text-emerald-400" /> Edit Profile
+                <h3 className="text-xl font-bold text-[var(--text-primary)] mb-6 flex items-center">
+                  <FaUser className="mr-2 text-[hsl(var(--accent))]" /> Edit Profile
                 </h3>
                 <div className="space-y-4">
                   <div>
-                    <label htmlFor="email" className="text-xs font-mono text-gray-400 mb-2 block uppercase">Email Address</label>
+                    <label htmlFor="email" className="text-xs font-mono text-[var(--text-secondary)] mb-2 block uppercase">Email Address</label>
                     <Input
                       id="email"
                       value={profileData.email}
                       onChange={(e) => handleInputChange('email', e.target.value)}
-                      className="bg-[var(--card-bg)] border-[var(--border-color)] text-white"
+                      className="bg-[var(--card-bg)] border-[var(--border-color)] text-[var(--text-primary)]"
                     />
                   </div>
                   <div className="grid md:grid-cols-2 gap-4">
                     <div>
-                      <label htmlFor="newPassword" className="text-xs font-mono text-gray-400 mb-2 block uppercase">New Password</label>
+                      <label htmlFor="newPassword" className="text-xs font-mono text-[var(--text-secondary)] mb-2 block uppercase">New Password</label>
                       <Input
                         id="newPassword"
                         type="password"
                         value={profileData.newPassword}
                         onChange={(e) => handleInputChange('newPassword', e.target.value)}
-                        className="bg-[var(--card-bg)] border-[var(--border-color)] text-white"
+                        className="bg-[var(--card-bg)] border-[var(--border-color)] text-[var(--text-primary)]"
                       />
                     </div>
                     <div>
-                      <label htmlFor="confirmPassword" className="text-xs font-mono text-gray-400 mb-2 block uppercase">Confirm Password</label>
+                      <label htmlFor="confirmPassword" className="text-xs font-mono text-[var(--text-secondary)] mb-2 block uppercase">Confirm Password</label>
                       <Input
                         id="confirmPassword"
                         type="password"
                         value={profileData.confirmPassword}
                         onChange={(e) => handleInputChange('confirmPassword', e.target.value)}
-                        className="bg-[var(--card-bg)] border-[var(--border-color)] text-white"
+                        className="bg-[var(--card-bg)] border-[var(--border-color)] text-[var(--text-primary)]"
                       />
                     </div>
                   </div>
@@ -312,8 +312,8 @@ const UserProfile = () => {
               <>
                 {/* Access & Permissions */}
                 <div className="glass-panel p-6 rounded-xl border border-[var(--border-color)]">
-                  <h3 className="text-lg font-bold text-white mb-4 flex items-center">
-                    <FaShieldAlt className="mr-2 text-emerald-400" /> Access Level
+                  <h3 className="text-lg font-bold text-[var(--text-primary)] mb-4 flex items-center">
+                    <FaShieldAlt className="mr-2 text-[hsl(var(--accent))]" /> Access Level
                   </h3>
                   <div className="grid sm:grid-cols-2 gap-4">
                     {currentUser.role === 'ADMIN' && (
@@ -328,9 +328,9 @@ const UserProfile = () => {
                         <div className="text-xs text-gray-400">Can create and edit content</div>
                       </div>
                     )}
-                    <div className="clean-card p-4 rounded-lg border border-emerald-500/30 bg-emerald-500/5">
-                      <div className="font-bold text-emerald-400 mb-1">Event Registration</div>
-                      <div className="text-xs text-gray-400">Can register for events</div>
+                    <div className="clean-card p-4 rounded-lg border border-[hsl(var(--accent))]/30 bg-[hsl(var(--accent))]/5">
+                      <div className="font-bold text-[hsl(var(--accent))] mb-1">Event Registration</div>
+                      <div className="text-xs text-[var(--text-secondary)]">Can register for events</div>
                     </div>
                     <div className="clean-card p-4 rounded-lg border border-amber-500/30 bg-amber-500/5">
                       <div className="font-bold text-amber-400 mb-1">Comment Access</div>
@@ -342,25 +342,25 @@ const UserProfile = () => {
                 {/* Tabs for Registrations & Comments */}
                 <Tabs defaultValue="registrations" className="w-full">
                   <TabsList className="w-full bg-[var(--card-bg)] border border-[var(--border-color)] p-1 rounded-lg">
-                    <TabsTrigger value="registrations" className="flex-1 data-[state=active]:bg-emerald-500/20 data-[state=active]:text-emerald-400">Event Registrations</TabsTrigger>
-                    <TabsTrigger value="comments" className="flex-1 data-[state=active]:bg-emerald-500/20 data-[state=active]:text-emerald-400">Your Comments</TabsTrigger>
+                    <TabsTrigger value="registrations" className="flex-1 data-[state=active]:bg-[hsl(var(--accent))]/20 data-[state=active]:text-[hsl(var(--accent))]">Event Registrations</TabsTrigger>
+                    <TabsTrigger value="comments" className="flex-1 data-[state=active]:bg-[hsl(var(--accent))]/20 data-[state=active]:text-[hsl(var(--accent))]">Your Comments</TabsTrigger>
                   </TabsList>
 
                   <TabsContent value="registrations" className="space-y-4 mt-6">
                     {userEventRegistrations.length === 0 ? (
                       <div className="text-center py-12 border border-dashed border-[var(--border-color)] rounded-xl">
-                        <p className="text-gray-500">You haven't registered for any events yet.</p>
+                        <p className="text-[var(--text-secondary)]">You haven't registered for any events yet.</p>
                       </div>
                     ) : (
                       <div className="grid gap-4">
                         {userEventRegistrations.map((registration: any) => (
                           <div key={registration.id} className="clean-card p-4 rounded-lg flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                             <div>
-                              <h4 className="font-bold text-white text-lg">{registration.event?.title || 'Event'}</h4>
-                              <p className="text-sm text-gray-400 mb-1">
+                              <h4 className="font-bold text-[var(--text-primary)] text-lg">{registration.event?.title || 'Event'}</h4>
+                              <p className="text-sm text-[var(--text-secondary)] mb-1">
                                 {registration.event?.date || 'Date TBA'} | {registration.event?.location || 'Location TBA'}
                               </p>
-                              <p className="text-xs text-gray-500 line-clamp-1">{registration.event?.description}</p>
+                              <p className="text-xs text-[var(--text-secondary)]/70 line-clamp-1">{registration.event?.description}</p>
                             </div>
                             <Button
                               variant="destructive"
@@ -379,14 +379,14 @@ const UserProfile = () => {
                   <TabsContent value="comments" className="space-y-4 mt-6">
                     {userComments.length === 0 ? (
                       <div className="text-center py-12 border border-dashed border-[var(--border-color)] rounded-xl">
-                        <p className="text-gray-500">You haven't made any comments yet.</p>
+                        <p className="text-[var(--text-secondary)]">You haven't made any comments yet.</p>
                       </div>
                     ) : (
                       <div className="space-y-4">
                         {userComments.map((comment: any) => (
                           <div key={comment.id} className="clean-card p-4 rounded-lg">
                             <div className="flex justify-between items-start mb-2">
-                              <h4 className="font-bold text-white text-sm">
+                              <h4 className="font-bold text-[var(--text-primary)] text-sm">
                                 {comment.project_id
                                   ? `On Project: ${comment.project?.title || 'Unknown Project'}`
                                   : comment.blog_id
@@ -394,9 +394,9 @@ const UserProfile = () => {
                                     : `On Research: ${comment.research?.title || 'Unknown Research'}`
                                 }
                               </h4>
-                              <span className="text-xs text-gray-500 font-mono">{new Date(comment.created_at).toLocaleString()}</span>
+                              <span className="text-xs text-[var(--text-secondary)] font-mono">{new Date(comment.created_at).toLocaleString()}</span>
                             </div>
-                            <p className="text-gray-300 text-sm mb-4 bg-black/30 p-3 rounded border border-[var(--border-color)]">
+                            <p className="text-[var(--text-primary)]/90 text-sm mb-4 bg-[var(--bg-body)]/30 p-3 rounded border border-[var(--border-color)]">
                               "{comment.content}"
                             </p>
                             <div className="flex justify-end">

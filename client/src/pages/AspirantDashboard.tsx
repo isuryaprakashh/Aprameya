@@ -127,14 +127,14 @@ const AspirantDashboard = () => {
   };
 
   return (
-    <div className="min-h-screen dither-bg text-foreground font-sans selection:bg-accent/30">
+    <div className="min-h-screen bg-[var(--bg-body)] text-[var(--text-primary)] font-sans selection:bg-[hsl(var(--accent))]/30">
       <div className="container mx-auto py-8 px-4">
-        <div className="glass-panel p-8 mb-8 border-b border-white/10 relative overflow-hidden">
-          <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-accent/0 via-accent/50 to-accent/0" />
-          <h1 className="text-4xl font-bold mb-2 bg-clip-text text-transparent bg-gradient-to-r from-foreground via-emerald-200 to-emerald-400">
+        <div className="glass-panel p-8 mb-8 border-b border-[var(--border-color)] relative overflow-hidden">
+          <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-[hsl(var(--accent))]/0 via-[hsl(var(--accent))]/50 to-[hsl(var(--accent))]/0" />
+          <h1 className="text-4xl font-bold mb-2 bg-clip-text text-transparent bg-gradient-to-r from-[var(--text-primary)] via-[hsl(var(--accent))]/80 to-[hsl(var(--accent))]">
             Aspirant Dashboard
           </h1>
-          <p className="text-muted-foreground max-w-2xl">
+          <p className="text-[var(--text-secondary)] max-w-2xl">
             Track your journey, manage registrations, and explore opportunities.
           </p>
         </div>
@@ -143,75 +143,75 @@ const AspirantDashboard = () => {
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="glass-panel p-6 mb-8 border border-border rounded-xl relative overflow-hidden"
+          className="glass-panel p-6 mb-8 border border-[var(--border-color)] rounded-xl relative overflow-hidden"
         >
-          <div className="absolute top-0 right-0 w-64 h-64 bg-accent/10 rounded-full blur-3xl -mr-32 -mt-32 pointer-events-none" />
+          <div className="absolute top-0 right-0 w-64 h-64 bg-[hsl(var(--accent))]/10 rounded-full blur-3xl -mr-32 -mt-32 pointer-events-none" />
 
           <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 relative z-10">
             <div>
-              <h2 className="text-2xl font-bold text-foreground mb-1 flex items-center gap-2">
-                Welcome, <span className="text-accent">{currentUser?.username || 'Aspirant'}</span>!
+              <h2 className="text-2xl font-bold text-[var(--text-primary)] mb-1 flex items-center gap-2">
+                Welcome, <span className="text-[hsl(var(--accent))]">{currentUser?.username || 'Aspirant'}</span>!
               </h2>
-              <p className="text-muted-foreground text-sm">
+              <p className="text-[var(--text-secondary)] text-sm">
                 Explore events, track your registrations, and engage with our community
               </p>
             </div>
-            <Badge className="mt-2 md:mt-0 bg-accent/20 text-accent border-accent/30 px-3 py-1">
+            <Badge className="mt-2 md:mt-0 bg-[hsl(var(--accent))]/20 text-[hsl(var(--accent))] border-[hsl(var(--accent))]/30 px-3 py-1">
               <FaUserShield className="mr-2" /> {currentUser?.role || 'ASPIRANT'}
             </Badge>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 relative z-10">
-            <div className="bg-card/40 border border-border p-4 rounded-lg flex items-center gap-4 group hover:border-accent/30 transition-colors">
-              <div className="p-3 rounded-full bg-blue-500/10 text-blue-400 group-hover:bg-blue-500/20 transition-colors">
+            <div className="bg-[var(--card-bg)]/40 border border-[var(--border-color)] p-4 rounded-lg flex items-center gap-4 group hover:border-[hsl(var(--accent))]/30 transition-colors">
+              <div className="p-3 rounded-full bg-[hsl(var(--accent))]/10 text-[hsl(var(--accent))] group-hover:bg-[hsl(var(--accent))]/20 transition-colors">
                 <FaClipboardList className="text-xl" />
               </div>
               <div>
-                <p className="text-muted-foreground text-xs uppercase tracking-wider">Registered Events</p>
-                <p className="text-2xl font-bold text-foreground">{userEventRegistrations.length}</p>
+                <p className="text-[var(--text-secondary)] text-xs uppercase tracking-wider">Registered Events</p>
+                <p className="text-2xl font-bold text-[var(--text-primary)]">{userEventRegistrations.length}</p>
               </div>
             </div>
 
-            <div className="bg-card/40 border border-border p-4 rounded-lg flex items-center gap-4 group hover:border-accent/30 transition-colors">
-              <div className="p-3 rounded-full bg-accent/10 text-accent group-hover:bg-accent/20 transition-colors">
+            <div className="bg-[var(--card-bg)]/40 border border-[var(--border-color)] p-4 rounded-lg flex items-center gap-4 group hover:border-[hsl(var(--accent))]/30 transition-colors">
+              <div className="p-3 rounded-full bg-[hsl(var(--accent))]/10 text-[hsl(var(--accent))] group-hover:bg-[hsl(var(--accent))]/20 transition-colors">
                 <FaCommentDots className="text-xl" />
               </div>
               <div>
-                <p className="text-muted-foreground text-xs uppercase tracking-wider">Comments Posted</p>
-                <p className="text-2xl font-bold text-foreground">{userComments.length}</p>
+                <p className="text-[var(--text-secondary)] text-xs uppercase tracking-wider">Comments Posted</p>
+                <p className="text-2xl font-bold text-[var(--text-primary)]">{userComments.length}</p>
               </div>
             </div>
 
-            <div className="bg-card/40 border border-border p-4 rounded-lg flex items-center gap-4 group hover:border-accent/30 transition-colors">
-              <div className="p-3 rounded-full bg-purple-500/10 text-purple-400 group-hover:bg-purple-500/20 transition-colors">
+            <div className="bg-[var(--card-bg)]/40 border border-[var(--border-color)] p-4 rounded-lg flex items-center gap-4 group hover:border-[hsl(var(--accent))]/30 transition-colors">
+              <div className="p-3 rounded-full bg-[hsl(var(--accent))]/10 text-[hsl(var(--accent))] group-hover:bg-[hsl(var(--accent))]/20 transition-colors">
                 <FaCheckCircle className="text-xl" />
               </div>
               <div>
-                <p className="text-muted-foreground text-xs uppercase tracking-wider">Account Status</p>
-                <p className="text-lg font-bold text-foreground capitalize">Active</p>
+                <p className="text-[var(--text-secondary)] text-xs uppercase tracking-wider">Account Status</p>
+                <p className="text-lg font-bold text-[var(--text-primary)] capitalize">Active</p>
               </div>
             </div>
           </div>
         </motion.div>
 
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-8">
-          <TabsList className="glass-panel p-1 bg-card/40 border-accent/20 w-full justify-start overflow-x-auto">
-            <TabsTrigger value="events" className="data-[state=active]:bg-accent data-[state=active]:text-white text-muted-foreground hover:text-foreground transition-all duration-300 px-6 py-2 rounded-lg">Upcoming Events</TabsTrigger>
-            <TabsTrigger value="registrations" className="data-[state=active]:bg-accent data-[state=active]:text-white text-muted-foreground hover:text-foreground transition-all duration-300 px-6 py-2 rounded-lg">My Registrations</TabsTrigger>
-            <TabsTrigger value="projects" className="data-[state=active]:bg-accent data-[state=active]:text-white text-muted-foreground hover:text-foreground transition-all duration-300 px-6 py-2 rounded-lg">Projects</TabsTrigger>
-            <TabsTrigger value="blogs" className="data-[state=active]:bg-accent data-[state=active]:text-white text-muted-foreground hover:text-foreground transition-all duration-300 px-6 py-2 rounded-lg">Blogs</TabsTrigger>
-            <TabsTrigger value="research" className="data-[state=active]:bg-accent data-[state=active]:text-white text-muted-foreground hover:text-foreground transition-all duration-300 px-6 py-2 rounded-lg">Research</TabsTrigger>
+          <TabsList className="glass-panel p-1 bg-[var(--card-bg)]/40 border-[hsl(var(--accent))]/20 w-full justify-start overflow-x-auto">
+            <TabsTrigger value="events" className="data-[state=active]:bg-[hsl(var(--accent))] data-[state=active]:text-[var(--bg-body)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-all duration-300 px-6 py-2 rounded-lg">Upcoming Events</TabsTrigger>
+            <TabsTrigger value="registrations" className="data-[state=active]:bg-[hsl(var(--accent))] data-[state=active]:text-[var(--bg-body)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-all duration-300 px-6 py-2 rounded-lg">My Registrations</TabsTrigger>
+            <TabsTrigger value="projects" className="data-[state=active]:bg-[hsl(var(--accent))] data-[state=active]:text-[var(--bg-body)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-all duration-300 px-6 py-2 rounded-lg">Projects</TabsTrigger>
+            <TabsTrigger value="blogs" className="data-[state=active]:bg-[hsl(var(--accent))] data-[state=active]:text-[var(--bg-body)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-all duration-300 px-6 py-2 rounded-lg">Blogs</TabsTrigger>
+            <TabsTrigger value="research" className="data-[state=active]:bg-[hsl(var(--accent))] data-[state=active]:text-[var(--bg-body)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-all duration-300 px-6 py-2 rounded-lg">Research</TabsTrigger>
           </TabsList>
 
           <TabsContent value="events" className="space-y-6">
-            <div className="glass-panel p-6 rounded-xl border border-border">
+            <div className="glass-panel p-6 rounded-xl border border-[var(--border-color)]">
               <div className="flex items-center gap-3 mb-6">
-                <div className="p-3 rounded-lg bg-accent/10 border border-accent/20">
-                  <FaCalendarAlt className="text-2xl text-accent" />
+                <div className="p-3 rounded-lg bg-[hsl(var(--accent))]/10 border border-[hsl(var(--accent))]/20">
+                  <FaCalendarAlt className="text-2xl text-[hsl(var(--accent))]" />
                 </div>
                 <div>
-                  <h2 className="text-2xl font-bold text-foreground">Upcoming Events</h2>
-                  <p className="text-muted-foreground text-sm">Discover and register for upcoming workshops and seminars</p>
+                  <h2 className="text-2xl font-bold text-[var(--text-primary)]">Upcoming Events</h2>
+                  <p className="text-[var(--text-secondary)] text-sm">Discover and register for upcoming workshops and seminars</p>
                 </div>
               </div>
 
@@ -230,10 +230,10 @@ const AspirantDashboard = () => {
                     >
                       {event.image && (
                         <div className="h-48 overflow-hidden relative">
-                          <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent z-10" />
+                          <div className="absolute inset-0 bg-gradient-to-t from-[var(--bg-body)]/80 to-transparent z-10" />
                           <img src={event.image} alt={event.title} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 filter brightness-75 group-hover:brightness-100" />
                           <div className="absolute top-4 right-4 z-20">
-                            <span className="px-3 py-1 rounded-full bg-black/70 backdrop-blur-md text-xs font-mono text-accent border border-accent/30">
+                            <span className="px-3 py-1 rounded-full bg-[var(--bg-body)]/70 backdrop-blur-md text-xs font-mono text-[hsl(var(--accent))] border border-[hsl(var(--accent))]/30">
                               {event.type}
                             </span>
                           </div>
@@ -241,19 +241,19 @@ const AspirantDashboard = () => {
                       )}
                       <CardHeader className="relative z-10">
                         <div className="flex justify-between items-start">
-                          <CardTitle className="text-xl font-bold text-foreground group-hover:text-accent transition-colors">{event.title}</CardTitle>
+                          <CardTitle className="text-xl font-bold text-[var(--text-primary)] group-hover:text-[hsl(var(--accent))] transition-colors">{event.title}</CardTitle>
                         </div>
-                        <CardDescription className="text-accent font-mono text-xs mt-1 flex items-center">
+                        <CardDescription className="text-[hsl(var(--accent))] font-mono text-xs mt-1 flex items-center">
                           <FaClock className="mr-1" /> {event.date} • {event.time}
                         </CardDescription>
                       </CardHeader>
                       <CardContent className="flex-grow relative z-10">
-                        <p className="text-muted-foreground line-clamp-3 text-sm leading-relaxed mb-3">{event.description}</p>
-                        <div className="flex items-center text-muted-foreground text-xs">
-                          <FaMapMarkerAlt className="mr-1 text-accent" /> {event.location}
+                        <p className="text-[var(--text-secondary)] line-clamp-3 text-sm leading-relaxed mb-3">{event.description}</p>
+                        <div className="flex items-center text-[var(--text-secondary)] text-xs">
+                          <FaMapMarkerAlt className="mr-1 text-[hsl(var(--accent))]" /> {event.location}
                         </div>
                       </CardContent>
-                      <CardFooter className="border-t border-border bg-card/20 p-4 flex justify-end relative z-10">
+                      <CardFooter className="border-t border-[var(--border-color)] bg-[var(--card-bg)]/20 p-4 flex justify-end relative z-10">
                         {isRegistered ? (
                           <Button
                             variant="destructive"
@@ -265,7 +265,7 @@ const AspirantDashboard = () => {
                         ) : (
                           <Button
                             onClick={() => handleRegisterForEvent(event.id)}
-                            className="bg-accent hover:bg-accent/90 text-white border-0 shadow-lg shadow-accent/20"
+                            className="bg-[hsl(var(--accent))] hover:bg-[hsl(var(--accent))]/90 text-[var(--bg-body)] border-0 shadow-lg shadow-[hsl(var(--accent))]/20"
                           >
                             Register Now
                           </Button>
@@ -279,24 +279,24 @@ const AspirantDashboard = () => {
           </TabsContent>
 
           <TabsContent value="registrations" className="space-y-6">
-            <div className="glass-panel p-6 rounded-xl border border-border">
+            <div className="glass-panel p-6 rounded-xl border border-[var(--border-color)]">
               <div className="flex items-center gap-3 mb-6">
-                <div className="p-3 rounded-lg bg-accent/10 border border-accent/20">
-                  <FaClipboardList className="text-2xl text-accent" />
+                <div className="p-3 rounded-lg bg-[hsl(var(--accent))]/10 border border-[hsl(var(--accent))]/20">
+                  <FaClipboardList className="text-2xl text-[hsl(var(--accent))]" />
                 </div>
                 <div>
-                  <h2 className="text-2xl font-bold text-foreground">My Event Registrations</h2>
-                  <p className="text-muted-foreground text-sm">Manage your event participation</p>
+                  <h2 className="text-2xl font-bold text-[var(--text-primary)]">My Event Registrations</h2>
+                  <p className="text-[var(--text-secondary)] text-sm">Manage your event participation</p>
                 </div>
               </div>
 
               {userEventRegistrations.length === 0 ? (
-                <div className="text-center py-12 border border-dashed border-border rounded-xl bg-card/20">
-                  <FaCalendarAlt className="mx-auto text-4xl text-muted-foreground mb-4" />
-                  <p className="text-muted-foreground text-lg">You haven't registered for any events yet.</p>
+                <div className="text-center py-12 border border-dashed border-[var(--border-color)] rounded-xl bg-[var(--card-bg)]/20">
+                  <FaCalendarAlt className="mx-auto text-4xl text-[var(--text-secondary)] mb-4" />
+                  <p className="text-[var(--text-secondary)] text-lg">You haven't registered for any events yet.</p>
                   <Button
                     variant="link"
-                    className="text-accent mt-2"
+                    className="text-[hsl(var(--accent))] mt-2"
                     onClick={() => setActiveTab('events')}
                   >
                     Browse Events
@@ -313,15 +313,15 @@ const AspirantDashboard = () => {
                       className="clean-card group"
                     >
                       <CardHeader>
-                        <CardTitle className="text-foreground group-hover:text-accent transition-colors">{registration.event?.title || 'Event'}</CardTitle>
-                        <CardDescription className="text-muted-foreground font-mono text-xs">
+                        <CardTitle className="text-[var(--text-primary)] group-hover:text-[hsl(var(--accent))] transition-colors">{registration.event?.title || 'Event'}</CardTitle>
+                        <CardDescription className="text-[var(--text-secondary)] font-mono text-xs">
                           {registration.event?.date || 'Date TBA'} | {registration.event?.location || 'Location TBA'}
                         </CardDescription>
                       </CardHeader>
                       <CardContent>
-                        <p className="text-muted-foreground line-clamp-2 text-sm">{registration.event?.description || 'No description available'}</p>
+                        <p className="text-[var(--text-secondary)] line-clamp-2 text-sm">{registration.event?.description || 'No description available'}</p>
                       </CardContent>
-                      <CardFooter className="border-t border-border bg-card/20 p-4 flex justify-end">
+                      <CardFooter className="border-t border-[var(--border-color)] bg-[var(--card-bg)]/20 p-4 flex justify-end">
                         <Button
                           variant="ghost"
                           size="sm"
@@ -339,14 +339,14 @@ const AspirantDashboard = () => {
           </TabsContent>
 
           <TabsContent value="projects" className="space-y-6">
-            <div className="glass-panel p-6 rounded-xl border border-border">
+            <div className="glass-panel p-6 rounded-xl border border-[var(--border-color)]">
               <div className="flex items-center gap-3 mb-6">
-                <div className="p-3 rounded-lg bg-accent/10 border border-accent/20">
-                  <FaProjectDiagram className="text-2xl text-accent" />
+                <div className="p-3 rounded-lg bg-[hsl(var(--accent))]/10 border border-[hsl(var(--accent))]/20">
+                  <FaProjectDiagram className="text-2xl text-[hsl(var(--accent))]" />
                 </div>
                 <div>
-                  <h2 className="text-2xl font-bold text-foreground">Explore Our Projects</h2>
-                  <p className="text-muted-foreground text-sm">Discover innovative projects by our community</p>
+                  <h2 className="text-2xl font-bold text-[var(--text-primary)]">Explore Our Projects</h2>
+                  <p className="text-[var(--text-secondary)] text-sm">Discover innovative projects by our community</p>
                 </div>
               </div>
 
@@ -361,30 +361,30 @@ const AspirantDashboard = () => {
                   >
                     {project.image && (
                       <div className="h-48 overflow-hidden relative">
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent z-10" />
+                        <div className="absolute inset-0 bg-gradient-to-t from-[var(--bg-body)]/80 to-transparent z-10" />
                         <img src={project.image} alt={project.title} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 filter brightness-75 group-hover:brightness-100" />
                         <div className="absolute top-4 right-4 z-20">
-                          <span className="px-3 py-1 rounded-full bg-black/70 backdrop-blur-md text-xs font-mono text-accent border border-accent/30">
+                          <span className="px-3 py-1 rounded-full bg-[var(--bg-body)]/70 backdrop-blur-md text-xs font-mono text-[hsl(var(--accent))] border border-[hsl(var(--accent))]/30">
                             {project.category}
                           </span>
                         </div>
                       </div>
                     )}
                     <CardHeader className="relative z-10">
-                      <CardTitle className="text-xl font-bold text-foreground group-hover:text-accent transition-colors">{project.title}</CardTitle>
+                      <CardTitle className="text-xl font-bold text-[var(--text-primary)] group-hover:text-[hsl(var(--accent))] transition-colors">{project.title}</CardTitle>
                     </CardHeader>
                     <CardContent className="flex-grow relative z-10">
-                      <p className="text-muted-foreground line-clamp-3 text-sm leading-relaxed mb-4">{project.description}</p>
+                      <p className="text-[var(--text-secondary)] line-clamp-3 text-sm leading-relaxed mb-4">{project.description}</p>
                       <div className="flex flex-wrap gap-2">
                         {project.technologies.map((tech: string, idx: number) => (
-                          <span key={idx} className="px-2 py-1 rounded bg-accent/10 border border-accent/20 text-accent text-xs font-mono">
+                          <span key={idx} className="px-2 py-1 rounded bg-[hsl(var(--accent))]/10 border border-[hsl(var(--accent))]/20 text-[hsl(var(--accent))] text-xs font-mono">
                             {tech.trim()}
                           </span>
                         ))}
                       </div>
                     </CardContent>
-                    <CardFooter className="border-t border-border bg-card/20 p-4 relative z-10">
-                      <Button variant="ghost" className="w-full text-accent hover:text-accent/80 hover:bg-accent/10 group-hover:translate-x-1 transition-all">
+                    <CardFooter className="border-t border-[var(--border-color)] bg-[var(--card-bg)]/20 p-4 relative z-10">
+                      <Button variant="ghost" className="w-full text-[hsl(var(--accent))] hover:text-[hsl(var(--accent))]/80 hover:bg-[hsl(var(--accent))]/10 group-hover:translate-x-1 transition-all">
                         View Details <FaArrowRight className="ml-2" />
                       </Button>
                     </CardFooter>
@@ -395,14 +395,14 @@ const AspirantDashboard = () => {
           </TabsContent>
 
           <TabsContent value="blogs" className="space-y-6">
-            <div className="glass-panel p-6 rounded-xl border border-border">
+            <div className="glass-panel p-6 rounded-xl border border-[var(--border-color)]">
               <div className="flex items-center gap-3 mb-6">
-                <div className="p-3 rounded-lg bg-accent/10 border border-accent/20">
-                  <FaNewspaper className="text-2xl text-accent" />
+                <div className="p-3 rounded-lg bg-[hsl(var(--accent))]/10 border border-[hsl(var(--accent))]/20">
+                  <FaNewspaper className="text-2xl text-[hsl(var(--accent))]" />
                 </div>
                 <div>
-                  <h2 className="text-2xl font-bold text-foreground">Latest Blogs</h2>
-                  <p className="text-muted-foreground text-sm">Read articles and updates from our team</p>
+                  <h2 className="text-2xl font-bold text-[var(--text-primary)]">Latest Blogs</h2>
+                  <p className="text-[var(--text-secondary)] text-sm">Read articles and updates from our team</p>
                 </div>
               </div>
 
@@ -417,23 +417,23 @@ const AspirantDashboard = () => {
                   >
                     {blog.image && (
                       <div className="h-48 overflow-hidden relative">
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent z-10" />
+                        <div className="absolute inset-0 bg-gradient-to-t from-[var(--bg-body)]/80 to-transparent z-10" />
                         <img src={blog.image} alt={blog.title} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 filter brightness-75 group-hover:brightness-100" />
                         <div className="absolute top-4 right-4 z-20">
-                          <span className="px-3 py-1 rounded-full bg-black/70 backdrop-blur-md text-xs font-mono text-accent border border-accent/30">
+                          <span className="px-3 py-1 rounded-full bg-[var(--bg-body)]/70 backdrop-blur-md text-xs font-mono text-[hsl(var(--accent))] border border-[hsl(var(--accent))]/30">
                             {blog.category}
                           </span>
                         </div>
                       </div>
                     )}
                     <CardHeader className="relative z-10">
-                      <CardTitle className="text-xl font-bold text-foreground group-hover:text-accent transition-colors">{blog.title}</CardTitle>
+                      <CardTitle className="text-xl font-bold text-[var(--text-primary)] group-hover:text-[hsl(var(--accent))] transition-colors">{blog.title}</CardTitle>
                     </CardHeader>
                     <CardContent className="flex-grow relative z-10">
-                      <p className="text-muted-foreground line-clamp-3 text-sm leading-relaxed">{blog.excerpt}</p>
+                      <p className="text-[var(--text-secondary)] line-clamp-3 text-sm leading-relaxed">{blog.excerpt}</p>
                     </CardContent>
-                    <CardFooter className="border-t border-border bg-card/20 p-4 relative z-10">
-                      <Button variant="ghost" className="w-full text-accent hover:text-accent/80 hover:bg-accent/10 group-hover:translate-x-1 transition-all">
+                    <CardFooter className="border-t border-[var(--border-color)] bg-[var(--card-bg)]/20 p-4 relative z-10">
+                      <Button variant="ghost" className="w-full text-[hsl(var(--accent))] hover:text-[hsl(var(--accent))]/80 hover:bg-[hsl(var(--accent))]/10 group-hover:translate-x-1 transition-all">
                         Read More <FaArrowRight className="ml-2" />
                       </Button>
                     </CardFooter>
@@ -444,14 +444,14 @@ const AspirantDashboard = () => {
           </TabsContent>
 
           <TabsContent value="research" className="space-y-6">
-            <div className="glass-panel p-6 rounded-xl border border-border">
+            <div className="glass-panel p-6 rounded-xl border border-[var(--border-color)]">
               <div className="flex items-center gap-3 mb-6">
-                <div className="p-3 rounded-lg bg-accent/10 border border-accent/20">
-                  <FaFlask className="text-2xl text-accent" />
+                <div className="p-3 rounded-lg bg-[hsl(var(--accent))]/10 border border-[hsl(var(--accent))]/20">
+                  <FaFlask className="text-2xl text-[hsl(var(--accent))]" />
                 </div>
                 <div>
-                  <h2 className="text-2xl font-bold text-foreground">Research Publications</h2>
-                  <p className="text-muted-foreground text-sm">Explore our latest research findings</p>
+                  <h2 className="text-2xl font-bold text-[var(--text-primary)]">Research Publications</h2>
+                  <p className="text-[var(--text-secondary)] text-sm">Explore our latest research findings</p>
                 </div>
               </div>
 
@@ -466,27 +466,27 @@ const AspirantDashboard = () => {
                   >
                     {item.image && (
                       <div className="h-48 overflow-hidden relative">
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent z-10" />
+                        <div className="absolute inset-0 bg-gradient-to-t from-[var(--bg-body)]/80 to-transparent z-10" />
                         <img src={item.image} alt={item.title} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 filter brightness-75 group-hover:brightness-100" />
                         <div className="absolute top-4 right-4 z-20">
-                          <span className="px-3 py-1 rounded-full bg-black/70 backdrop-blur-md text-xs font-mono text-accent border border-accent/30">
+                          <span className="px-3 py-1 rounded-full bg-[var(--bg-body)]/70 backdrop-blur-md text-xs font-mono text-[hsl(var(--accent))] border border-[hsl(var(--accent))]/30">
                             {item.category}
                           </span>
                         </div>
                       </div>
                     )}
                     <CardHeader className="relative z-10">
-                      <CardTitle className="text-xl font-bold text-foreground group-hover:text-accent transition-colors">{item.title}</CardTitle>
+                      <CardTitle className="text-xl font-bold text-[var(--text-primary)] group-hover:text-[hsl(var(--accent))] transition-colors">{item.title}</CardTitle>
                     </CardHeader>
                     <CardContent className="flex-grow relative z-10">
-                      <p className="text-muted-foreground line-clamp-3 text-sm leading-relaxed mb-4">{item.description}</p>
-                      <div className="flex items-center text-accent/80 text-sm font-mono bg-accent/5 p-2 rounded border border-accent/10 w-fit">
+                      <p className="text-[var(--text-secondary)] line-clamp-3 text-sm leading-relaxed mb-4">{item.description}</p>
+                      <div className="flex items-center text-[hsl(var(--accent))]/80 text-sm font-mono bg-[hsl(var(--accent))]/5 p-2 rounded border border-[hsl(var(--accent))]/10 w-fit">
                         <FaTag className="mr-2" /> Citations: {item.citations}
                       </div>
-                      <p className="text-xs text-muted-foreground mt-3">Authors: {Array.isArray(item.authors) ? item.authors.join(', ') : item.authors}</p>
+                      <p className="text-xs text-[var(--text-secondary)] mt-3">Authors: {Array.isArray(item.authors) ? item.authors.join(', ') : item.authors}</p>
                     </CardContent>
-                    <CardFooter className="border-t border-border bg-card/20 p-4 relative z-10">
-                      <Button variant="ghost" className="w-full text-accent hover:text-accent/80 hover:bg-accent/10 group-hover:translate-x-1 transition-all">
+                    <CardFooter className="border-t border-[var(--border-color)] bg-[var(--card-bg)]/20 p-4 relative z-10">
+                      <Button variant="ghost" className="w-full text-[hsl(var(--accent))] hover:text-[hsl(var(--accent))]/80 hover:bg-[hsl(var(--accent))]/10 group-hover:translate-x-1 transition-all">
                         View Publication <FaArrowRight className="ml-2" />
                       </Button>
                     </CardFooter>

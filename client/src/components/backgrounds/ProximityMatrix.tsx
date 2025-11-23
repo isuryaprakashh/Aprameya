@@ -42,7 +42,10 @@ const ProximityMatrix = () => {
 
                     if (d < 150) { // Increased range slightly for better visibility
                         radius = 1.5 + (1 - d / 150) * 2.5;
-                        color = `rgba(52, 211, 153, ${0.2 + (1 - d / 150) * 0.8})`;
+                        // Get accent color from CSS variable
+                        const accentHSL = getComputedStyle(document.documentElement).getPropertyValue('--accent').trim();
+                        const [h, s, l] = accentHSL.split(' ').map(v => parseFloat(v));
+                        color = `hsla(${h}, ${s}%, ${l}%, ${0.2 + (1 - d / 150) * 0.8})`;
                     }
 
                     ctx.beginPath();
@@ -65,9 +68,9 @@ const ProximityMatrix = () => {
     }, []);
 
     return (
-        <div ref={containerRef} className="absolute inset-0 w-full h-full bg-black overflow-hidden">
+        <div ref={containerRef} className="absolute inset-0 w-full h-full bg-[var(--bg-body)] overflow-hidden">
             <canvas ref={canvasRef} className="w-full h-full block" />
-            <div className="absolute bottom-2.5 left-2.5 bg-black/70 border border-[#333] px-2 py-1 rounded text-[10px] text-[#aaa] z-20 font-mono pointer-events-none">
+            <div className="absolute bottom-2.5 left-2.5 bg-[var(--bg-body)]/70 border border-[var(--border-color)] px-2 py-1 rounded text-[10px] text-[var(--text-secondary)] z-20 font-mono pointer-events-none">
                 SYSTEM: AUTO SCANNING
             </div>
         </div>

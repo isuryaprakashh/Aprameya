@@ -31,19 +31,19 @@ const About = () => {
         <div className="absolute inset-0 dither-bg opacity-30 pointer-events-none"></div>
         <div className="container mx-auto relative z-10">
           <motion.div
-            className="text-center text-white"
+            className="text-center text-[var(--text-primary)]"
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
           >
-            <div className="inline-flex items-center gap-2 mb-6 border border-[var(--border-color)] px-3 py-1 bg-black">
-              <Users className="w-3 h-3 text-white" />
-              <span className="text-xs font-bold text-white tracking-widest">OUR_STORY</span>
+            <div className="inline-flex items-center gap-2 mb-6 border border-[var(--border-color)] px-3 py-1 bg-[var(--bg-body)]">
+              <Users className="w-3 h-3 text-[var(--text-primary)]" />
+              <span className="text-xs font-bold text-[var(--text-primary)] tracking-widest">OUR_STORY</span>
             </div>
             <h1 className="font-bold text-5xl md:text-7xl mb-6 leading-[0.9]">
               ABOUT<br />APRAMEYA
             </h1>
-            <p className="text-sm text-gray-400 max-w-2xl mx-auto mb-12 font-mono">
+            <p className="text-sm text-[var(--text-secondary)] max-w-2xl mx-auto mb-12 font-mono">
               Discover our journey, mission, and the passionate team driving innovation
               in autonomous vehicle technology at KL University.
             </p>
@@ -51,20 +51,20 @@ const About = () => {
             {/* Achievement Stats */}
             <div className="grid grid-cols-2 md:grid-cols-4 gap-px bg-[var(--border-color)] border border-[var(--border-color)] max-w-4xl mx-auto">
               <div className="bg-[var(--card-bg)] p-6">
-                <div className="text-3xl font-bold text-white mb-1">2019</div>
-                <div className="text-[10px] text-gray-500 uppercase">Founded</div>
+                <div className="text-3xl font-bold text-[var(--text-primary)] mb-1">2019</div>
+                <div className="text-[10px] text-[var(--text-secondary)] uppercase">Founded</div>
               </div>
               <div className="bg-[var(--card-bg)] p-6">
-                <div className="text-3xl font-bold text-white mb-1">200+</div>
-                <div className="text-[10px] text-gray-500 uppercase">Members</div>
+                <div className="text-3xl font-bold text-[var(--text-primary)] mb-1">200+</div>
+                <div className="text-[10px] text-[var(--text-secondary)] uppercase">Members</div>
               </div>
               <div className="bg-[var(--card-bg)] p-6">
-                <div className="text-3xl font-bold text-white mb-1">50+</div>
-                <div className="text-[10px] text-gray-500 uppercase">Projects</div>
+                <div className="text-3xl font-bold text-[var(--text-primary)] mb-1">50+</div>
+                <div className="text-[10px] text-[var(--text-secondary)] uppercase">Projects</div>
               </div>
               <div className="bg-[var(--card-bg)] p-6">
-                <div className="text-3xl font-bold text-white mb-1">15+</div>
-                <div className="text-[10px] text-gray-500 uppercase">Awards</div>
+                <div className="text-3xl font-bold text-[var(--text-primary)] mb-1">15+</div>
+                <div className="text-[10px] text-[var(--text-secondary)] uppercase">Awards</div>
               </div>
             </div>
           </motion.div>
@@ -72,7 +72,7 @@ const About = () => {
       </section>
 
       {/* Mission Section */}
-      <section className="py-24 px-4 bg-gradient-to-b from-slate-50 to-white dark:from-slate-900 dark:to-slate-800">
+      <section className="py-24 px-4 bg-[var(--bg-body)]">
         <div className="container mx-auto max-w-6xl">
           <motion.div
             className="text-center mb-16"
@@ -81,12 +81,12 @@ const About = () => {
             transition={{ duration: 0.6 }}
             viewport={{ once: true }}
           >
-            <Badge variant="outline" className="mb-4">
+            <Badge variant="outline" className="mb-4 text-[var(--text-primary)] border-[var(--border-color)]">
               <Target className="w-3 h-3 mr-1" />
               Our Purpose
             </Badge>
-            <h2 className="font-bold text-3xl md:text-5xl mb-6">
-              <span className="bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
+            <h2 className="font-bold text-3xl md:text-5xl mb-6 text-[var(--text-primary)]">
+              <span className="bg-gradient-to-r from-[hsl(var(--accent))] to-[hsl(var(--accent))]/70 bg-clip-text text-transparent">
                 Our Mission
               </span>
             </h2>
@@ -98,15 +98,15 @@ const About = () => {
             transition={{ duration: 0.6, delay: 0.2 }}
             viewport={{ once: true }}
           >
-            <Card className="bg-gradient-to-br from-primary/5 to-secondary/5 dark:from-primary/10 dark:to-secondary/10 border-0 shadow-xl">
+            <Card className="bg-[var(--card-bg)] border border-[var(--border-color)] shadow-xl">
               <CardContent className="p-8 md:p-12">
                 <div className="grid lg:grid-cols-2 gap-12 items-center">
                   <div>
-                    <div className="w-16 h-16 bg-primary rounded-2xl flex items-center justify-center mb-6">
-                      <Lightbulb className="w-8 h-8 text-white" />
+                    <div className="w-16 h-16 bg-[hsl(var(--accent))] rounded-2xl flex items-center justify-center mb-6">
+                      <Lightbulb className="w-8 h-8 text-[var(--bg-body)]" />
                     </div>
-                    <h3 className="font-bold text-2xl mb-4">Driving Innovation Forward</h3>
-                    <p className="text-lg text-muted-foreground leading-relaxed">
+                    <h3 className="font-bold text-2xl mb-4 text-[var(--text-primary)]">Driving Innovation Forward</h3>
+                    <p className="text-lg text-[var(--text-secondary)] leading-relaxed">
                       We are a student-led community at KL University dedicated to advancing autonomous
                       vehicle technology through hands-on projects, cutting-edge research, and collaborative
                       innovation. Our mission is to bridge the gap between academic learning and real-world
@@ -119,7 +119,7 @@ const About = () => {
                       alt="Team collaboration"
                       className="rounded-2xl shadow-2xl w-full"
                     />
-                    <div className="absolute inset-0 bg-gradient-to-tr from-primary/20 to-secondary/20 rounded-2xl"></div>
+                    <div className="absolute inset-0 bg-gradient-to-tr from-[hsl(var(--accent))]/20 to-[hsl(var(--accent))]/20 rounded-2xl"></div>
                   </div>
                 </div>
               </CardContent>
@@ -129,7 +129,7 @@ const About = () => {
       </section>
 
       {/* Vision & Values */}
-      <section className="py-24 px-4 bg-white dark:bg-slate-900">
+      <section className="py-24 px-4 bg-[var(--bg-body)]">
         <div className="container mx-auto max-w-6xl">
           <div className="grid lg:grid-cols-2 gap-16">
             {/* Vision */}
@@ -139,20 +139,20 @@ const About = () => {
               transition={{ duration: 0.6 }}
               viewport={{ once: true }}
             >
-              <Card className="h-full border-0 shadow-xl bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-900/20 dark:to-blue-800/20">
+              <Card className="h-full border border-[var(--border-color)] shadow-xl bg-[var(--card-bg)]">
                 <CardContent className="p-8">
                   <div className="flex items-center mb-6">
-                    <div className="w-14 h-14 rounded-2xl bg-blue-600 flex items-center justify-center mr-4">
-                      <Eye className="w-7 h-7 text-white" />
+                    <div className="w-14 h-14 rounded-2xl bg-[hsl(var(--accent))] flex items-center justify-center mr-4">
+                      <Eye className="w-7 h-7 text-[var(--bg-body)]" />
                     </div>
-                    <h3 className="font-bold text-2xl">Our Vision</h3>
+                    <h3 className="font-bold text-2xl text-[var(--text-primary)]">Our Vision</h3>
                   </div>
-                  <p className="text-lg text-muted-foreground leading-relaxed mb-6">
+                  <p className="text-lg text-[var(--text-secondary)] leading-relaxed mb-6">
                     To become a leading student community in autonomous vehicle technology,
                     recognized globally for innovative solutions and producing industry-ready
                     professionals who shape the future of transportation and robotics.
                   </p>
-                  <div className="flex items-center text-blue-600 font-medium">
+                  <div className="flex items-center text-[hsl(var(--accent))] font-medium">
                     <Globe className="w-5 h-5 mr-2" />
                     Global Impact Through Innovation
                   </div>
@@ -167,13 +167,13 @@ const About = () => {
               transition={{ duration: 0.6 }}
               viewport={{ once: true }}
             >
-              <Card className="h-full border-0 shadow-xl bg-gradient-to-br from-cyan-50 to-cyan-100 dark:from-cyan-900/20 dark:to-cyan-800/20">
+              <Card className="h-full border border-[var(--border-color)] shadow-xl bg-[var(--card-bg)]">
                 <CardContent className="p-8">
                   <div className="flex items-center mb-6">
-                    <div className="w-14 h-14 rounded-2xl bg-cyan-600 flex items-center justify-center mr-4">
-                      <Heart className="w-7 h-7 text-white" />
+                    <div className="w-14 h-14 rounded-2xl bg-[hsl(var(--accent))] flex items-center justify-center mr-4">
+                      <Heart className="w-7 h-7 text-[var(--bg-body)]" />
                     </div>
-                    <h3 className="font-bold text-2xl">Our Values</h3>
+                    <h3 className="font-bold text-2xl text-[var(--text-primary)]">Our Values</h3>
                   </div>
                   <div className="space-y-4">
                     {[
@@ -206,12 +206,12 @@ const About = () => {
                         transition={{ duration: 0.6, delay: index * 0.1 }}
                         viewport={{ once: true }}
                       >
-                        <div className="flex-shrink-0 w-8 h-8 bg-cyan-100 dark:bg-cyan-900/30 rounded-lg flex items-center justify-center mt-1">
-                          <value.icon className="w-4 h-4 text-cyan-600" />
+                        <div className="flex-shrink-0 w-8 h-8 bg-[hsl(var(--accent))]/10 rounded-lg flex items-center justify-center mt-1">
+                          <value.icon className="w-4 h-4 text-[hsl(var(--accent))]" />
                         </div>
                         <div>
-                          <h4 className="font-semibold mb-1">{value.title}</h4>
-                          <p className="text-sm text-muted-foreground">{value.description}</p>
+                          <h4 className="font-semibold mb-1 text-[var(--text-primary)]">{value.title}</h4>
+                          <p className="text-sm text-[var(--text-secondary)]">{value.description}</p>
                         </div>
                       </motion.div>
                     ))}
@@ -224,16 +224,18 @@ const About = () => {
       </section>
 
       {/* Team Section */}
-      <section className="py-24 px-4 bg-gradient-to-b from-slate-50 to-white dark:from-slate-900 dark:to-slate-800">
+      <section className="py-24 px-4 bg-[var(--bg-body)]">
         <div className="container mx-auto max-w-6xl">
           {/* Operative Roster */}
           <div className="mb-16">
             <OperativeRoster />
           </div>
+        </div>
+      </section>
 
-
-
-          {/* Join Team CTA */}
+      {/* Join Team CTA */}
+      <section className="py-16 bg-[var(--bg-body)]">
+        <div className="container mx-auto px-4">
           <motion.div
             className="text-center"
             initial={{ opacity: 0, y: 30 }}
@@ -241,25 +243,26 @@ const About = () => {
             transition={{ duration: 0.6 }}
             viewport={{ once: true }}
           >
-            <Card className="bg-gradient-to-r from-blue-600 to-cyan-600 border-0 text-white">
+            <Card className="bg-gradient-to-r from-[hsl(var(--accent))] to-[hsl(var(--accent))]/80 border-0 text-[var(--bg-body)]">
               <CardContent className="p-8 md:p-12">
-                <h3 className="font-bold text-2xl md:text-3xl mb-4">Want to Join Our Team?</h3>
-                <p className="text-blue-100 mb-8 max-w-2xl mx-auto text-lg">
-                  We're always looking for passionate students who want to make a difference
-                  in autonomous vehicle technology. Join us and be part of something amazing!
-                </p>
-                <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                  <Button asChild size="lg" className="bg-white text-blue-600 hover:bg-blue-50 font-semibold">
-                    <Link href="/signup">
-                      Join Aprameya
-                      <ArrowRight className="ml-2 w-5 h-5" />
-                    </Link>
-                  </Button>
-                  <Button asChild variant="outline" size="lg" className="border-white/30 text-white hover:bg-white/10">
-                    <Link href="/events">
-                      Upcoming Events
-                    </Link>
-                  </Button>
+                <div className="max-w-4xl mx-auto text-center">
+                  <h3 className="font-bold text-2xl md:text-3xl mb-4 text-[var(--text-primary)]">Want to Join Our Team?</h3>
+                  <p className="text-[var(--text-primary)]/90 mb-8 max-w-2xl mx-auto text-lg">
+                    We're always looking for passionate individuals who want to make a difference in autonomous systems.
+                  </p>
+                  <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                    <Button asChild size="lg" className="bg-[var(--card-bg)] text-[hsl(var(--accent))] hover:bg-[var(--card-bg)]/90 font-semibold">
+                      <Link href="/signup">
+                        <Users className="mr-2 h-5 w-5" />
+                        Join Now
+                      </Link>
+                    </Button>
+                    <Button asChild variant="outline" size="lg" className="border-[var(--border-color)] text-[var(--text-primary)] hover:bg-[var(--bg-body)]/10">
+                      <Link href="/events">
+                        Upcoming Events
+                      </Link>
+                    </Button>
+                  </div>
                 </div>
               </CardContent>
             </Card>
@@ -268,7 +271,7 @@ const About = () => {
       </section>
 
       {/* Contact Section */}
-      <section className="py-24 px-4 bg-white dark:bg-slate-900">
+      <section className="py-24 px-4 bg-[var(--bg-body)]">
         <div className="container mx-auto max-w-4xl">
           <motion.div
             className="text-center mb-12"
@@ -277,12 +280,12 @@ const About = () => {
             transition={{ duration: 0.6 }}
             viewport={{ once: true }}
           >
-            <Badge variant="outline" className="mb-4">
+            <Badge variant="outline" className="mb-4 text-[var(--text-primary)] border-[var(--border-color)]">
               <Mail className="w-3 h-3 mr-1" />
               Get in Touch
             </Badge>
-            <h2 className="font-bold text-3xl md:text-4xl mb-4">Contact Us</h2>
-            <p className="text-xl text-muted-foreground">
+            <h2 className="font-bold text-3xl md:text-4xl mb-4 text-[var(--text-primary)]">Contact Us</h2>
+            <p className="text-xl text-[var(--text-secondary)]">
               Have questions or want to get involved? We'd love to hear from you!
             </p>
           </motion.div>
@@ -294,20 +297,20 @@ const About = () => {
               transition={{ duration: 0.6 }}
               viewport={{ once: true }}
             >
-              <Card className="h-full border-0 shadow-lg">
+              <Card className="h-full border border-[var(--border-color)] shadow-lg bg-[var(--card-bg)]">
                 <CardContent className="p-8">
                   <div className="flex items-center mb-6">
-                    <div className="w-12 h-12 bg-blue-100 dark:bg-blue-900/30 rounded-xl flex items-center justify-center mr-4">
-                      <Mail className="w-6 h-6 text-blue-600" />
+                    <div className="w-12 h-12 bg-[hsl(var(--accent))]/10 rounded-xl flex items-center justify-center mr-4">
+                      <Mail className="w-6 h-6 text-[hsl(var(--accent))]" />
                     </div>
                     <div>
-                      <h3 className="font-semibold text-lg">Email Us</h3>
-                      <p className="text-muted-foreground">Send us a message anytime</p>
+                      <h3 className="font-semibold text-lg text-[var(--text-primary)]">Email Us</h3>
+                      <p className="text-[var(--text-secondary)]">Send us a message anytime</p>
                     </div>
                   </div>
                   <a
                     href="mailto:contact@aprameya.com"
-                    className="text-blue-600 hover:text-blue-700 font-medium text-lg"
+                    className="text-[hsl(var(--accent))] hover:underline font-medium text-lg"
                   >
                     contact@aprameya.com
                   </a>
@@ -321,18 +324,18 @@ const About = () => {
               transition={{ duration: 0.6 }}
               viewport={{ once: true }}
             >
-              <Card className="h-full border-0 shadow-lg">
+              <Card className="h-full border border-[var(--border-color)] shadow-lg bg-[var(--card-bg)]">
                 <CardContent className="p-8">
                   <div className="flex items-center mb-6">
-                    <div className="w-12 h-12 bg-cyan-100 dark:bg-cyan-900/30 rounded-xl flex items-center justify-center mr-4">
-                      <MapPin className="w-6 h-6 text-cyan-600" />
+                    <div className="w-12 h-12 bg-[hsl(var(--accent))]/10 rounded-xl flex items-center justify-center mr-4">
+                      <MapPin className="w-6 h-6 text-[hsl(var(--accent))]" />
                     </div>
                     <div>
-                      <h3 className="font-semibold text-lg">Visit Us</h3>
-                      <p className="text-muted-foreground">Find us on campus</p>
+                      <h3 className="font-semibold text-lg text-[var(--text-primary)]">Visit Us</h3>
+                      <p className="text-[var(--text-secondary)]">Find us on campus</p>
                     </div>
                   </div>
-                  <p className="text-lg">
+                  <p className="text-lg text-[var(--text-primary)]">
                     Tech Hub, Innovation Center<br />
                     KL University Campus<br />
                     Vaddeswaram, Guntur

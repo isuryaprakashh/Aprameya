@@ -37,7 +37,7 @@ const VoidAurora = () => {
     }, []);
 
     return (
-        <div ref={containerRef} className="absolute inset-0 w-full h-full bg-[#050505] overflow-hidden">
+        <div ref={containerRef} className="absolute inset-0 w-full h-full bg-[var(--bg-body)] overflow-hidden">
             <div
                 className="absolute inset-0 opacity-[0.05] pointer-events-none z-10"
                 style={{
@@ -48,13 +48,13 @@ const VoidAurora = () => {
                 ref={orbRef}
                 className="absolute w-[300px] h-[300px] rounded-full pointer-events-none blur-[40px]"
                 style={{
-                    background: 'radial-gradient(circle, rgba(52, 211, 153, 0.4) 0%, rgba(0,0,0,0) 70%)',
+                    background: `radial-gradient(circle, hsl(var(--accent) / 0.4) 0%, rgba(0,0,0,0) 70%)`,
                     transform: 'translate(50%, 50%) translate(-50%, -50%)',
                     top: 0,
                     left: 0
                 }}
             />
-            <div className="absolute bottom-2.5 left-2.5 bg-black/70 border border-[#333] px-2 py-1 rounded text-[10px] text-[#aaa] z-20 font-mono pointer-events-none">
+            <div className="absolute bottom-2.5 left-2.5 bg-[var(--bg-body)]/70 border border-[var(--border-color)] px-2 py-1 rounded text-[10px] text-[var(--text-secondary)] z-20 font-mono pointer-events-none">
                 VISUAL: ETHEREAL DRIFT
             </div>
         </div>
