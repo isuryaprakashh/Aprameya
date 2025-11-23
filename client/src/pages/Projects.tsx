@@ -41,28 +41,45 @@ const Projects = () => {
   return (
     <div className="fadeIn">
       {/* Header Section */}
-      <section className="relative py-24 bg-[var(--bg-body)] border-b border-[var(--border-color)] overflow-hidden">
-        <div className="absolute inset-0">
-          <ProximityMatrix />
-        </div>
+      <section className="relative py-24 px-4 bg-[var(--bg-body)] border-b border-[var(--border-color)] overflow-hidden">
+        <ProximityMatrix />
         <div className="absolute inset-0 dither-bg opacity-30 pointer-events-none"></div>
-        <div className="max-w-7xl mx-auto px-8 relative z-10">
+        <div className="container mx-auto relative z-10">
           <motion.div
             className="text-left"
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
+            transition={{ duration: 0.8 }}
           >
-            <Badge variant="outline" className="mb-4 border-[hsl(var(--accent))] text-[hsl(var(--accent))]">
-              Our Work
-            </Badge>
-            <h1 className="text-4xl md:text-6xl font-bold mb-6 text-[var(--text-primary)]">
-              Innovative Projects
+            <div className="flex items-center gap-2 mb-6">
+              <span className="bg-[var(--text-primary)] text-[var(--bg-body)] px-1 text-xs font-bold">02</span>
+              <h2 className="text-lg font-bold text-[var(--text-primary)]">INNOVATION_LAB</h2>
+            </div>
+            <h1 className="font-bold text-5xl md:text-7xl mb-6 leading-[0.9] text-[var(--text-primary)]">
+              INNOVATIVE<br />PROJECTS
             </h1>
-            <p className="text-lg text-[var(--text-secondary)] max-w-2xl">
+            <p className="text-sm text-[var(--text-secondary)] max-w-xl mb-12 font-mono leading-relaxed">
               Explore our cutting-edge autonomous vehicle projects and research initiatives
-              that are shaping the future of transportation.
+              that are shaping the future of transportation. From neural networks to hardware integration.
             </p>
+
+            {/* Featured Project Highlight */}
+            <div className="inline-flex items-center gap-4 p-4 bg-[var(--card-bg)] border border-[var(--border-color)] rounded-lg max-w-2xl">
+              <div className="w-12 h-12 bg-[hsl(var(--accent))]/10 flex items-center justify-center rounded-md border border-[hsl(var(--accent))]/20 shrink-0">
+                <Users className="w-6 h-6 text-[hsl(var(--accent))]" />
+              </div>
+              <div>
+                <div className="text-[10px] text-[hsl(var(--accent))] font-bold uppercase tracking-wider mb-1">Featured Project</div>
+                <div className="text-[var(--text-primary)] font-bold">Autonomous Navigation System v2.0</div>
+                <div className="text-xs text-gray-400">AI/ML • Active Development</div>
+              </div>
+              <Button className="ml-auto btn-primary" size="sm" onClick={() => {
+                const project = projects.find(p => p.id === '1');
+                if (project) handleViewDetails(project);
+              }}>
+                View Details
+              </Button>
+            </div>
           </motion.div>
         </div>
       </section>
