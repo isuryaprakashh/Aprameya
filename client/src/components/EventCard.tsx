@@ -5,10 +5,10 @@ import { CleanCard } from './ui/v6-card';
 
 interface EventCardProps {
   event: Event;
-  onRegisterInterest: (event: Event) => void;
+  onRegister: () => void;
 }
 
-const EventCard = ({ event, onRegisterInterest }: EventCardProps) => {
+const EventCard = ({ event, onRegister }: EventCardProps) => {
   const [isConnected, setIsConnected] = useState(false);
   const [buttonText, setButtonText] = useState("Initialize Connection");
 
@@ -19,7 +19,7 @@ const EventCard = ({ event, onRegisterInterest }: EventCardProps) => {
       setTimeout(() => {
         setIsConnected(true);
         setButtonText("Connection Secure");
-        onRegisterInterest(event);
+        onRegister();
       }, 1500);
     } else {
       setIsConnected(false);

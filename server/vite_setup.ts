@@ -6,7 +6,7 @@ import { createServer as createViteServer, createLogger } from "vite";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 import { type Server } from "http";
-import viteConfig from "../vite.config";
+
 import { nanoid } from "nanoid";
 
 const viteLogger = createLogger();
@@ -22,6 +22,8 @@ export function log(message: string, source = "express") {
   console.log(`${formattedTime} [${source}] ${message}`);
 }
 
+import react from "@vitejs/plugin-react";
+
 export async function setupVite(app: Express, server: Server) {
   const serverOptions = {
     middlewareMode: true,
@@ -30,7 +32,14 @@ export async function setupVite(app: Express, server: Server) {
   };
 
   const vite = await createViteServer({
-    ...viteConfig,
+    plugins: [react()],
+    resolve: {
+      alias: {
+        "@": path.resolve(__dirname, "..", "client", "src"),
+        "@shared": path.resolve(__dirname, "shared"),
+      },
+    },
+    root: path.resolve(__dirname, "..", "client"),
     configFile: false,
     customLogger: {
       ...viteLogger,

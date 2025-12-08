@@ -1,400 +1,357 @@
-import { 
-  users, 
-  projects, 
-  blogs, 
-  researchItems, 
-  events, 
-  eventRegistrations, 
-  comments, 
-  messages,
-  type User, 
-  type InsertUser, 
+import {
+  User,
+  Project,
+  Blog,
+  Research,
+  Event,
+  EventRegistration,
+  Comment,
+  Message
+} from "./models";
+import {
+  type User as UserType,
+  type InsertUser,
   type UpdateUserProfile,
-  type Project,
+  type Project as ProjectType,
   type InsertProject,
-  type Blog,
+  type Blog as BlogType,
   type InsertBlog,
-  type Research,
+  type Research as ResearchType,
   type InsertResearch,
-  type Event,
+  type Event as EventType,
   type InsertEvent,
-  type EventRegistration,
+  type EventRegistration as EventRegistrationType,
   type InsertEventRegistration,
-  type Comment,
+  type Comment as CommentType,
   type InsertComment,
-  type Message,
+  type Message as MessageType,
   type InsertMessage,
-  UserRole, 
-  type UserRoleType 
-} from "@shared/schema";
-import { db } from "./db";
-import { and, eq, or } from "drizzle-orm";
+  UserRole,
+  type UserRoleType
+} from "./shared/schema";
 
 export interface IStorage {
   // User Operations
-  getUser(id: number): Promise<User | undefined>;
-  getUserByUsername(username: string): Promise<User | undefined>;
-  createUser(user: InsertUser): Promise<User>;
-  updateUserRole(userId: number, newRole: UserRoleType): Promise<User | undefined>;
-  updateUserProfile(userId: number, profileData: UpdateUserProfile): Promise<User | undefined>;
-  getAllUsers(): Promise<User[]>;
-  getUsersByRole(role: UserRoleType): Promise<User[]>;
-  
+  getUser(id: string): Promise<UserType | undefined>;
+  getUserByUsername(username: string): Promise<UserType | undefined>;
+  createUser(user: InsertUser): Promise<UserType>;
+  updateUserRole(userId: string, newRole: UserRoleType): Promise<UserType | undefined>;
+  updateUserProfile(userId: string, profileData: UpdateUserProfile): Promise<UserType | undefined>;
+  getAllUsers(): Promise<UserType[]>;
+  getUsersByRole(role: UserRoleType): Promise<UserType[]>;
+
   // Project Operations
-  getProject(id: number): Promise<Project | undefined>;
-  getAllProjects(): Promise<Project[]>;
-  createProject(project: InsertProject): Promise<Project>;
-  updateProject(id: number, project: Partial<InsertProject>): Promise<Project | undefined>;
-  deleteProject(id: number): Promise<boolean>;
-  
+  getProject(id: string): Promise<ProjectType | undefined>;
+  getAllProjects(): Promise<ProjectType[]>;
+  createProject(project: InsertProject): Promise<ProjectType>;
+  updateProject(id: string, project: Partial<InsertProject>): Promise<ProjectType | undefined>;
+  deleteProject(id: string): Promise<boolean>;
+
   // Blog Operations
-  getBlog(id: number): Promise<Blog | undefined>;
-  getAllBlogs(): Promise<Blog[]>;
-  createBlog(blog: InsertBlog): Promise<Blog>;
-  updateBlog(id: number, blog: Partial<InsertBlog>): Promise<Blog | undefined>;
-  deleteBlog(id: number): Promise<boolean>;
-  
+  getBlog(id: string): Promise<BlogType | undefined>;
+  getAllBlogs(): Promise<BlogType[]>;
+  createBlog(blog: InsertBlog): Promise<BlogType>;
+  updateBlog(id: string, blog: Partial<InsertBlog>): Promise<BlogType | undefined>;
+  deleteBlog(id: string): Promise<boolean>;
+
   // Research Operations
-  getResearch(id: number): Promise<Research | undefined>;
-  getAllResearch(): Promise<Research[]>;
-  createResearch(research: InsertResearch): Promise<Research>;
-  updateResearch(id: number, research: Partial<InsertResearch>): Promise<Research | undefined>;
-  deleteResearch(id: number): Promise<boolean>;
-  
+  getResearch(id: string): Promise<ResearchType | undefined>;
+  getAllResearch(): Promise<ResearchType[]>;
+  createResearch(research: InsertResearch): Promise<ResearchType>;
+  updateResearch(id: string, research: Partial<InsertResearch>): Promise<ResearchType | undefined>;
+  deleteResearch(id: string): Promise<boolean>;
+
   // Event Operations
-  getEvent(id: number): Promise<Event | undefined>;
-  getAllEvents(): Promise<Event[]>;
-  createEvent(event: InsertEvent): Promise<Event>;
-  updateEvent(id: number, event: Partial<InsertEvent>): Promise<Event | undefined>;
-  deleteEvent(id: number): Promise<boolean>;
-  
+  getEvent(id: string): Promise<EventType | undefined>;
+  getAllEvents(): Promise<EventType[]>;
+  createEvent(event: InsertEvent): Promise<EventType>;
+  updateEvent(id: string, event: Partial<InsertEvent>): Promise<EventType | undefined>;
+  deleteEvent(id: string): Promise<boolean>;
+
   // EventRegistration Operations
-  getEventRegistration(id: number): Promise<EventRegistration | undefined>;
-  getEventRegistrationByUserAndEvent(userId: number, eventId: number): Promise<EventRegistration | undefined>;
-  getAllEventRegistrations(): Promise<EventRegistration[]>;
-  getEventRegistrationsByUser(userId: number): Promise<EventRegistration[]>;
-  getEventRegistrationsByEvent(eventId: number): Promise<EventRegistration[]>;
-  createEventRegistration(registration: InsertEventRegistration): Promise<EventRegistration>;
-  deleteEventRegistration(id: number): Promise<boolean>;
-  
+  getEventRegistration(id: string): Promise<EventRegistrationType | undefined>;
+  getEventRegistrationByUserAndEvent(userId: string, eventId: string): Promise<EventRegistrationType | undefined>;
+  getAllEventRegistrations(): Promise<EventRegistrationType[]>;
+  getEventRegistrationsByUser(userId: string): Promise<EventRegistrationType[]>;
+  getEventRegistrationsByEvent(eventId: string): Promise<EventRegistrationType[]>;
+  createEventRegistration(registration: InsertEventRegistration): Promise<EventRegistrationType>;
+  deleteEventRegistration(id: string): Promise<boolean>;
+
   // Comment Operations
-  getComment(id: number): Promise<Comment | undefined>;
-  getCommentsByUser(userId: number): Promise<Comment[]>;
-  getCommentsByProject(projectId: number): Promise<Comment[]>;
-  getCommentsByBlog(blogId: number): Promise<Comment[]>;
-  getCommentsByResearch(researchId: number): Promise<Comment[]>;
-  createComment(comment: InsertComment): Promise<Comment>;
-  updateComment(id: number, comment: Partial<InsertComment>): Promise<Comment | undefined>;
-  deleteComment(id: number): Promise<boolean>;
-  
+  getComment(id: string): Promise<CommentType | undefined>;
+  getCommentsByUser(userId: string): Promise<CommentType[]>;
+  getCommentsByProject(projectId: string): Promise<CommentType[]>;
+  getCommentsByBlog(blogId: string): Promise<CommentType[]>;
+  getCommentsByResearch(researchId: string): Promise<CommentType[]>;
+  createComment(comment: InsertComment): Promise<CommentType>;
+  updateComment(id: string, comment: Partial<InsertComment>): Promise<CommentType | undefined>;
+  deleteComment(id: string): Promise<boolean>;
+
   // Message Operations (Core Team Chat)
-  getMessage(id: number): Promise<Message | undefined>;
-  getAllMessages(): Promise<Message[]>;
-  createMessage(message: InsertMessage): Promise<Message>;
-  deleteMessage(id: number): Promise<boolean>;
+  getMessage(id: string): Promise<MessageType | undefined>;
+  getAllMessages(): Promise<MessageType[]>;
+  createMessage(message: InsertMessage): Promise<MessageType>;
+  deleteMessage(id: string): Promise<boolean>;
 }
 
-export class DatabaseStorage implements IStorage {
+export class MongoStorage implements IStorage {
+  // Helper to map Mongo document to interface
+  private mapDoc<T>(doc: any): T {
+    if (!doc) return doc;
+    const obj = doc.toObject ? doc.toObject() : doc;
+    obj.id = obj._id.toString();
+    obj._id = obj._id.toString();
+    return obj as T;
+  }
+
   // User Operations
-  async getUser(id: number): Promise<User | undefined> {
-    const [user] = await db.select().from(users).where(eq(users.id, id));
-    return user || undefined;
+  async getUser(id: string): Promise<UserType | undefined> {
+    const user = await User.findById(id);
+    return user ? this.mapDoc<UserType>(user) : undefined;
   }
 
-  async getUserByUsername(username: string): Promise<User | undefined> {
-    const [user] = await db.select().from(users).where(eq(users.username, username));
-    return user || undefined;
+  async getUserByUsername(username: string): Promise<UserType | undefined> {
+    const user = await User.findOne({ username });
+    return user ? this.mapDoc<UserType>(user) : undefined;
   }
 
-  async getUsersByRole(role: UserRoleType): Promise<User[]> {
-    return await db.select().from(users).where(eq(users.role, role));
+  async getUsersByRole(role: UserRoleType): Promise<UserType[]> {
+    const users = await User.find({ role });
+    return users.map(u => this.mapDoc<UserType>(u));
   }
 
-  async createUser(insertUser: InsertUser): Promise<User> {
-    // Always create users as ASPIRANT role
-    const [user] = await db
-      .insert(users)
-      .values({
-        ...insertUser,
-        role: UserRole.ASPIRANT,
-        created_at: new Date().toISOString()
-      })
-      .returning();
-    return user;
+  async createUser(insertUser: InsertUser): Promise<UserType> {
+    const user = new User({
+      ...insertUser,
+      role: UserRole.ASPIRANT
+    });
+    await user.save();
+    return this.mapDoc<UserType>(user);
   }
 
-  async updateUserRole(userId: number, newRole: UserRoleType): Promise<User | undefined> {
-    const [updatedUser] = await db
-      .update(users)
-      .set({ role: newRole })
-      .where(eq(users.id, userId))
-      .returning();
-    
-    return updatedUser;
+  async updateUserRole(userId: string, newRole: UserRoleType): Promise<UserType | undefined> {
+    const user = await User.findByIdAndUpdate(userId, { role: newRole }, { new: true });
+    return user ? this.mapDoc<UserType>(user) : undefined;
   }
-  
-  async updateUserProfile(userId: number, profileData: UpdateUserProfile): Promise<User | undefined> {
-    const [updatedUser] = await db
-      .update(users)
-      .set(profileData)
-      .where(eq(users.id, userId))
-      .returning();
-    
-    return updatedUser;
+
+  async updateUserProfile(userId: string, profileData: UpdateUserProfile): Promise<UserType | undefined> {
+    const user = await User.findByIdAndUpdate(userId, profileData, { new: true });
+    return user ? this.mapDoc<UserType>(user) : undefined;
   }
-  
-  async getAllUsers(): Promise<User[]> {
-    return await db.select().from(users);
+
+  async getAllUsers(): Promise<UserType[]> {
+    const users = await User.find();
+    return users.map(u => this.mapDoc<UserType>(u));
   }
-  
+
   // Project Operations
-  async getProject(id: number): Promise<Project | undefined> {
-    const [project] = await db.select().from(projects).where(eq(projects.id, id));
-    return project || undefined;
+  async getProject(id: string): Promise<ProjectType | undefined> {
+    const project = await Project.findById(id);
+    return project ? this.mapDoc<ProjectType>(project) : undefined;
   }
-  
-  async getAllProjects(): Promise<Project[]> {
-    return await db.select().from(projects);
+
+  async getAllProjects(): Promise<ProjectType[]> {
+    const projects = await Project.find();
+    return projects.map(p => this.mapDoc<ProjectType>(p));
   }
-  
-  async createProject(project: InsertProject): Promise<Project> {
-    const [newProject] = await db
-      .insert(projects)
-      .values(project)
-      .returning();
-    return newProject;
+
+  async createProject(project: InsertProject): Promise<ProjectType> {
+    const newProject = new Project(project);
+    await newProject.save();
+    return this.mapDoc<ProjectType>(newProject);
   }
-  
-  async updateProject(id: number, project: Partial<InsertProject>): Promise<Project | undefined> {
-    const [updatedProject] = await db
-      .update(projects)
-      .set(project)
-      .where(eq(projects.id, id))
-      .returning();
-    return updatedProject || undefined;
+
+  async updateProject(id: string, project: Partial<InsertProject>): Promise<ProjectType | undefined> {
+    const updatedProject = await Project.findByIdAndUpdate(id, project, { new: true });
+    return updatedProject ? this.mapDoc<ProjectType>(updatedProject) : undefined;
   }
-  
-  async deleteProject(id: number): Promise<boolean> {
-    await db
-      .delete(projects)
-      .where(eq(projects.id, id));
-    return true;
+
+  async deleteProject(id: string): Promise<boolean> {
+    const result = await Project.findByIdAndDelete(id);
+    return !!result;
   }
-  
+
   // Blog Operations
-  async getBlog(id: number): Promise<Blog | undefined> {
-    const [blog] = await db.select().from(blogs).where(eq(blogs.id, id));
-    return blog || undefined;
+  async getBlog(id: string): Promise<BlogType | undefined> {
+    const blog = await Blog.findById(id);
+    return blog ? this.mapDoc<BlogType>(blog) : undefined;
   }
-  
-  async getAllBlogs(): Promise<Blog[]> {
-    return await db.select().from(blogs);
+
+  async getAllBlogs(): Promise<BlogType[]> {
+    const blogs = await Blog.find();
+    return blogs.map(b => this.mapDoc<BlogType>(b));
   }
-  
-  async createBlog(blog: InsertBlog): Promise<Blog> {
-    const [newBlog] = await db
-      .insert(blogs)
-      .values(blog)
-      .returning();
-    return newBlog;
+
+  async createBlog(blog: InsertBlog): Promise<BlogType> {
+    const newBlog = new Blog(blog);
+    await newBlog.save();
+    return this.mapDoc<BlogType>(newBlog);
   }
-  
-  async updateBlog(id: number, blog: Partial<InsertBlog>): Promise<Blog | undefined> {
-    const [updatedBlog] = await db
-      .update(blogs)
-      .set(blog)
-      .where(eq(blogs.id, id))
-      .returning();
-    return updatedBlog || undefined;
+
+  async updateBlog(id: string, blog: Partial<InsertBlog>): Promise<BlogType | undefined> {
+    const updatedBlog = await Blog.findByIdAndUpdate(id, blog, { new: true });
+    return updatedBlog ? this.mapDoc<BlogType>(updatedBlog) : undefined;
   }
-  
-  async deleteBlog(id: number): Promise<boolean> {
-    await db
-      .delete(blogs)
-      .where(eq(blogs.id, id));
-    return true;
+
+  async deleteBlog(id: string): Promise<boolean> {
+    const result = await Blog.findByIdAndDelete(id);
+    return !!result;
   }
-  
+
   // Research Operations
-  async getResearch(id: number): Promise<Research | undefined> {
-    const [research] = await db.select().from(researchItems).where(eq(researchItems.id, id));
-    return research || undefined;
+  async getResearch(id: string): Promise<ResearchType | undefined> {
+    const research = await Research.findById(id);
+    return research ? this.mapDoc<ResearchType>(research) : undefined;
   }
-  
-  async getAllResearch(): Promise<Research[]> {
-    return await db.select().from(researchItems);
+
+  async getAllResearch(): Promise<ResearchType[]> {
+    const research = await Research.find();
+    return research.map(r => this.mapDoc<ResearchType>(r));
   }
-  
-  async createResearch(research: InsertResearch): Promise<Research> {
-    const [newResearch] = await db
-      .insert(researchItems)
-      .values(research)
-      .returning();
-    return newResearch;
+
+  async createResearch(research: InsertResearch): Promise<ResearchType> {
+    const newResearch = new Research(research);
+    await newResearch.save();
+    return this.mapDoc<ResearchType>(newResearch);
   }
-  
-  async updateResearch(id: number, research: Partial<InsertResearch>): Promise<Research | undefined> {
-    const [updatedResearch] = await db
-      .update(researchItems)
-      .set(research)
-      .where(eq(researchItems.id, id))
-      .returning();
-    return updatedResearch || undefined;
+
+  async updateResearch(id: string, research: Partial<InsertResearch>): Promise<ResearchType | undefined> {
+    const updatedResearch = await Research.findByIdAndUpdate(id, research, { new: true });
+    return updatedResearch ? this.mapDoc<ResearchType>(updatedResearch) : undefined;
   }
-  
-  async deleteResearch(id: number): Promise<boolean> {
-    await db
-      .delete(researchItems)
-      .where(eq(researchItems.id, id));
-    return true;
+
+  async deleteResearch(id: string): Promise<boolean> {
+    const result = await Research.findByIdAndDelete(id);
+    return !!result;
   }
-  
+
   // Event Operations
-  async getEvent(id: number): Promise<Event | undefined> {
-    const [event] = await db.select().from(events).where(eq(events.id, id));
-    return event || undefined;
+  async getEvent(id: string): Promise<EventType | undefined> {
+    const event = await Event.findById(id);
+    return event ? this.mapDoc<EventType>(event) : undefined;
   }
-  
-  async getAllEvents(): Promise<Event[]> {
-    return await db.select().from(events);
+
+  async getAllEvents(): Promise<EventType[]> {
+    const events = await Event.find();
+    return events.map(e => this.mapDoc<EventType>(e));
   }
-  
-  async createEvent(event: InsertEvent): Promise<Event> {
-    const [newEvent] = await db
-      .insert(events)
-      .values(event)
-      .returning();
-    return newEvent;
+
+  async createEvent(event: InsertEvent): Promise<EventType> {
+    const newEvent = new Event(event);
+    await newEvent.save();
+    return this.mapDoc<EventType>(newEvent);
   }
-  
-  async updateEvent(id: number, event: Partial<InsertEvent>): Promise<Event | undefined> {
-    const [updatedEvent] = await db
-      .update(events)
-      .set(event)
-      .where(eq(events.id, id))
-      .returning();
-    return updatedEvent || undefined;
+
+  async updateEvent(id: string, event: Partial<InsertEvent>): Promise<EventType | undefined> {
+    const updatedEvent = await Event.findByIdAndUpdate(id, event, { new: true });
+    return updatedEvent ? this.mapDoc<EventType>(updatedEvent) : undefined;
   }
-  
-  async deleteEvent(id: number): Promise<boolean> {
-    await db
-      .delete(events)
-      .where(eq(events.id, id));
-    return true;
+
+  async deleteEvent(id: string): Promise<boolean> {
+    const result = await Event.findByIdAndDelete(id);
+    return !!result;
   }
-  
+
   // EventRegistration Operations
-  async getEventRegistration(id: number): Promise<EventRegistration | undefined> {
-    const [registration] = await db.select().from(eventRegistrations).where(eq(eventRegistrations.id, id));
-    return registration || undefined;
+  async getEventRegistration(id: string): Promise<EventRegistrationType | undefined> {
+    const registration = await EventRegistration.findById(id);
+    return registration ? this.mapDoc<EventRegistrationType>(registration) : undefined;
   }
-  
-  async getEventRegistrationByUserAndEvent(userId: number, eventId: number): Promise<EventRegistration | undefined> {
-    const [registration] = await db.select().from(eventRegistrations)
-      .where(and(
-        eq(eventRegistrations.user_id, userId),
-        eq(eventRegistrations.event_id, eventId)
-      ));
-    return registration || undefined;
+
+  async getEventRegistrationByUserAndEvent(userId: string, eventId: string): Promise<EventRegistrationType | undefined> {
+    const registration = await EventRegistration.findOne({ user_id: userId, event_id: eventId });
+    return registration ? this.mapDoc<EventRegistrationType>(registration) : undefined;
   }
-  
-  async getAllEventRegistrations(): Promise<EventRegistration[]> {
-    return await db.select().from(eventRegistrations);
+
+  async getAllEventRegistrations(): Promise<EventRegistrationType[]> {
+    const registrations = await EventRegistration.find();
+    return registrations.map(r => this.mapDoc<EventRegistrationType>(r));
   }
-  
-  async getEventRegistrationsByUser(userId: number): Promise<EventRegistration[]> {
-    return await db.select().from(eventRegistrations).where(eq(eventRegistrations.user_id, userId));
+
+  async getEventRegistrationsByUser(userId: string): Promise<EventRegistrationType[]> {
+    const registrations = await EventRegistration.find({ user_id: userId });
+    return registrations.map(r => this.mapDoc<EventRegistrationType>(r));
   }
-  
-  async getEventRegistrationsByEvent(eventId: number): Promise<EventRegistration[]> {
-    return await db.select().from(eventRegistrations).where(eq(eventRegistrations.event_id, eventId));
+
+  async getEventRegistrationsByEvent(eventId: string): Promise<EventRegistrationType[]> {
+    const registrations = await EventRegistration.find({ event_id: eventId });
+    return registrations.map(r => this.mapDoc<EventRegistrationType>(r));
   }
-  
-  async createEventRegistration(registration: InsertEventRegistration): Promise<EventRegistration> {
-    const [newRegistration] = await db
-      .insert(eventRegistrations)
-      .values(registration)
-      .returning();
-    return newRegistration;
+
+  async createEventRegistration(registration: InsertEventRegistration): Promise<EventRegistrationType> {
+    const newRegistration = new EventRegistration(registration);
+    await newRegistration.save();
+    return this.mapDoc<EventRegistrationType>(newRegistration);
   }
-  
-  async deleteEventRegistration(id: number): Promise<boolean> {
-    await db
-      .delete(eventRegistrations)
-      .where(eq(eventRegistrations.id, id));
-    return true;
+
+  async deleteEventRegistration(id: string): Promise<boolean> {
+    const result = await EventRegistration.findByIdAndDelete(id);
+    return !!result;
   }
-  
+
   // Comment Operations
-  async getComment(id: number): Promise<Comment | undefined> {
-    const [comment] = await db.select().from(comments).where(eq(comments.id, id));
-    return comment || undefined;
+  async getComment(id: string): Promise<CommentType | undefined> {
+    const comment = await Comment.findById(id);
+    return comment ? this.mapDoc<CommentType>(comment) : undefined;
   }
-  
-  async getCommentsByUser(userId: number): Promise<Comment[]> {
-    return await db.select().from(comments).where(eq(comments.user_id, userId));
+
+  async getCommentsByUser(userId: string): Promise<CommentType[]> {
+    const comments = await Comment.find({ user_id: userId });
+    return comments.map(c => this.mapDoc<CommentType>(c));
   }
-  
-  async getCommentsByProject(projectId: number): Promise<Comment[]> {
-    return await db.select().from(comments).where(eq(comments.project_id, projectId));
+
+  async getCommentsByProject(projectId: string): Promise<CommentType[]> {
+    const comments = await Comment.find({ project_id: projectId });
+    return comments.map(c => this.mapDoc<CommentType>(c));
   }
-  
-  async getCommentsByBlog(blogId: number): Promise<Comment[]> {
-    return await db.select().from(comments).where(eq(comments.blog_id, blogId));
+
+  async getCommentsByBlog(blogId: string): Promise<CommentType[]> {
+    const comments = await Comment.find({ blog_id: blogId });
+    return comments.map(c => this.mapDoc<CommentType>(c));
   }
-  
-  async getCommentsByResearch(researchId: number): Promise<Comment[]> {
-    return await db.select().from(comments).where(eq(comments.research_id, researchId));
+
+  async getCommentsByResearch(researchId: string): Promise<CommentType[]> {
+    const comments = await Comment.find({ research_id: researchId });
+    return comments.map(c => this.mapDoc<CommentType>(c));
   }
-  
-  async createComment(comment: InsertComment): Promise<Comment> {
-    const [newComment] = await db
-      .insert(comments)
-      .values(comment)
-      .returning();
-    return newComment;
+
+  async createComment(comment: InsertComment): Promise<CommentType> {
+    const newComment = new Comment(comment);
+    await newComment.save();
+    return this.mapDoc<CommentType>(newComment);
   }
-  
-  async updateComment(id: number, comment: Partial<InsertComment>): Promise<Comment | undefined> {
-    const [updatedComment] = await db
-      .update(comments)
-      .set(comment)
-      .where(eq(comments.id, id))
-      .returning();
-    return updatedComment || undefined;
+
+  async updateComment(id: string, comment: Partial<InsertComment>): Promise<CommentType | undefined> {
+    const updatedComment = await Comment.findByIdAndUpdate(id, comment, { new: true });
+    return updatedComment ? this.mapDoc<CommentType>(updatedComment) : undefined;
   }
-  
-  async deleteComment(id: number): Promise<boolean> {
-    await db
-      .delete(comments)
-      .where(eq(comments.id, id));
-    return true;
+
+  async deleteComment(id: string): Promise<boolean> {
+    const result = await Comment.findByIdAndDelete(id);
+    return !!result;
   }
-  
+
   // Message Operations (Core Team Chat)
-  async getMessage(id: number): Promise<Message | undefined> {
-    const [message] = await db.select().from(messages).where(eq(messages.id, id));
-    return message || undefined;
+  async getMessage(id: string): Promise<MessageType | undefined> {
+    const message = await Message.findById(id);
+    return message ? this.mapDoc<MessageType>(message) : undefined;
   }
-  
-  async getAllMessages(): Promise<Message[]> {
-    return await db.select().from(messages);
+
+  async getAllMessages(): Promise<MessageType[]> {
+    const messages = await Message.find();
+    return messages.map(m => this.mapDoc<MessageType>(m));
   }
-  
-  async createMessage(message: InsertMessage): Promise<Message> {
-    const [newMessage] = await db
-      .insert(messages)
-      .values(message)
-      .returning();
-    return newMessage;
+
+  async createMessage(message: InsertMessage): Promise<MessageType> {
+    const newMessage = new Message(message);
+    await newMessage.save();
+    return this.mapDoc<MessageType>(newMessage);
   }
-  
-  async deleteMessage(id: number): Promise<boolean> {
-    await db
-      .delete(messages)
-      .where(eq(messages.id, id));
-    return true;
+
+  async deleteMessage(id: string): Promise<boolean> {
+    const result = await Message.findByIdAndDelete(id);
+    return !!result;
   }
 }
 
-export const storage = new DatabaseStorage();
+export const storage = new MongoStorage();

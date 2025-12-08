@@ -12,7 +12,7 @@ import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import Logo from './icons/Logo';
 import { motion } from 'framer-motion';
 import { Menu, X, User, LogOut, ChevronRight } from 'lucide-react';
-import { ThemeToggle } from '@/components/theme-toggle';
+import { ThemeCustomizer } from './ThemeCustomizer';
 import { useTheme } from '@/components/theme-provider';
 
 const Navbar = () => {
@@ -99,7 +99,7 @@ const Navbar = () => {
             </Link>
 
             <div className="mr-2">
-              <ThemeToggle />
+              <ThemeCustomizer />
             </div>
 
             {!user ? (
@@ -154,7 +154,7 @@ const Navbar = () => {
 
           {/* Mobile menu button */}
           <div className="md:hidden flex items-center gap-2">
-            <ThemeToggle />
+            <ThemeCustomizer />
             <motion.button
               onClick={toggleMobileMenu}
               className="text-[var(--text-primary)] focus:outline-none p-2 rounded-full hover:bg-[var(--text-primary)]/5 transition-colors"

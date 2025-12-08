@@ -11,11 +11,19 @@ type ThemeProviderProps = {
 type ThemeProviderState = {
     theme: Theme
     setTheme: (theme: Theme) => void
+    accent: string
+    setAccent: (accent: string) => void
+    radius: number
+    setRadius: (radius: number) => void
 }
 
 const initialState: ThemeProviderState = {
     theme: "system",
     setTheme: () => null,
+    accent: "emerald",
+    setAccent: () => null,
+    radius: 1,
+    setRadius: () => null,
 }
 
 const ThemeProviderContext = createContext<ThemeProviderState>(initialState)
@@ -25,13 +33,25 @@ export function ThemeProvider({
     defaultTheme = "system",
     storageKey = "vite-ui-theme",
 }: ThemeProviderProps) {
+    // Theme Mode
     const [theme, setTheme] = useState<Theme>(
         () => (localStorage.getItem(storageKey) as Theme) || defaultTheme
+    )
+
+    // Accent Color
+    const [accent, setAccent] = useState<string>(
+        () => localStorage.getItem("vite-ui-accent") || "emerald"
+    )
+
+    // Radius
+    const [radius, setRadius] = useState<number>(
+        () => parseFloat(localStorage.getItem("vite-ui-radius") || "1")
     )
 
     useEffect(() => {
         const root = window.document.documentElement
 
+        // Mode
         root.classList.remove("light", "dark")
 
         if (theme === "system") {
@@ -42,12 +62,18 @@ export function ThemeProvider({
 
             root.classList.add(systemTheme)
             root.setAttribute("data-theme", systemTheme)
-            return
+        } else {
+            root.classList.add(theme)
+            root.setAttribute("data-theme", theme)
         }
 
-        root.classList.add(theme)
-        root.setAttribute("data-theme", theme)
-    }, [theme])
+        // Accent
+        root.setAttribute("data-accent", accent)
+
+        // Radius
+        root.setAttribute("data-radius", radius.toString())
+
+    }, [theme, accent, radius])
 
     const value = {
         theme,
@@ -55,6 +81,16 @@ export function ThemeProvider({
             localStorage.setItem(storageKey, theme)
             setTheme(theme)
         },
+        accent,
+        setAccent: (accent: string) => {
+            localStorage.setItem("vite-ui-accent", accent)
+            setAccent(accent)
+        },
+        radius,
+        setRadius: (radius: number) => {
+            localStorage.setItem("vite-ui-radius", radius.toString())
+            setRadius(radius)
+        }
     }
 
     return (

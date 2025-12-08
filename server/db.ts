@@ -1,14 +1,19 @@
-import Database from 'better-sqlite3';
-import { drizzle } from 'drizzle-orm/better-sqlite3';
-import * as schema from "@shared/schema";
+import mongoose from 'mongoose';
 
-if (!process.env.DATABASE_URL) {
-  throw new Error(
-    "DATABASE_URL must be set. Did you forget to provision a database?",
-  );
+if (!process.env.MONGODB_URI) {
+  // Default to a local MongoDB instance if not provided, or warn
+  console.warn("MONGODB_URI must be set. Defaulting to local instance.");
 }
 
-// Extract the file path from the DATABASE_URL
-const dbPath = process.env.DATABASE_URL.replace('file:', '');
-const sqlite = new Database(dbPath);
-export const db = drizzle({ client: sqlite, schema });
+const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://0.0.0.0:27017/aprameya';
+
+export const connectDB = async () => {
+  try {
+    await mongoose.connect(MONGODB_URI);
+    console.log('Connected to MongoDB');
+  } catch (error) {
+    console.error('Error connecting to MongoDB:', error);
+    process.exit(1);
+  }
+};
+

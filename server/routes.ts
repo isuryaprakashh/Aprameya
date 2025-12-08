@@ -13,9 +13,15 @@ import {
   insertMessageSchema,
   UserRole,
   type UpdateUserProfile
-} from "@shared/schema";
+} from "./shared/schema";
 import { z } from "zod";
 import 'express-session';
+
+declare module 'express-session' {
+  interface SessionData {
+    userId?: string;
+  }
+}
 
 // Middleware to check if user is admin
 const isAdmin = async (req: Request, res: Response, next: Function) => {
@@ -195,7 +201,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Admin route: Update user role
   app.patch("/api/users/:userId/role", isAdmin, async (req, res) => {
     try {
-      const userId = parseInt(req.params.userId);
+      const userId = req.params.userId;
       const { role } = req.body;
 
       if (!role || !Object.values(UserRole).includes(role)) {
@@ -258,7 +264,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.get("/api/projects/:id", async (req, res) => {
     try {
-      const projectId = parseInt(req.params.id);
+      const projectId = req.params.id;
       const project = await storage.getProject(projectId);
 
       if (!project) {
@@ -298,7 +304,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.put("/api/projects/:id", isAdminOrCore, async (req, res) => {
     try {
-      const projectId = parseInt(req.params.id);
+      const projectId = req.params.id;
       const project = await storage.getProject(projectId);
 
       if (!project) {
@@ -323,7 +329,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.delete("/api/projects/:id", isAdminOrCore, async (req, res) => {
     try {
-      const projectId = parseInt(req.params.id);
+      const projectId = req.params.id;
       const project = await storage.getProject(projectId);
 
       if (!project) {
@@ -359,7 +365,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.get("/api/blogs/:id", async (req, res) => {
     try {
-      const blogId = parseInt(req.params.id);
+      const blogId = req.params.id;
       const blog = await storage.getBlog(blogId);
 
       if (!blog) {
@@ -399,7 +405,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.put("/api/blogs/:id", isAdminOrCore, async (req, res) => {
     try {
-      const blogId = parseInt(req.params.id);
+      const blogId = req.params.id;
       const blog = await storage.getBlog(blogId);
 
       if (!blog) {
@@ -424,7 +430,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.delete("/api/blogs/:id", isAdminOrCore, async (req, res) => {
     try {
-      const blogId = parseInt(req.params.id);
+      const blogId = req.params.id;
       const blog = await storage.getBlog(blogId);
 
       if (!blog) {
@@ -460,7 +466,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.get("/api/research/:id", async (req, res) => {
     try {
-      const researchId = parseInt(req.params.id);
+      const researchId = req.params.id;
       const research = await storage.getResearch(researchId);
 
       if (!research) {
@@ -500,7 +506,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.put("/api/research/:id", isAdminOrCore, async (req, res) => {
     try {
-      const researchId = parseInt(req.params.id);
+      const researchId = req.params.id;
       const research = await storage.getResearch(researchId);
 
       if (!research) {
@@ -525,7 +531,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.delete("/api/research/:id", isAdminOrCore, async (req, res) => {
     try {
-      const researchId = parseInt(req.params.id);
+      const researchId = req.params.id;
       const research = await storage.getResearch(researchId);
 
       if (!research) {
@@ -561,7 +567,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.get("/api/events/:id", async (req, res) => {
     try {
-      const eventId = parseInt(req.params.id);
+      const eventId = req.params.id;
       const event = await storage.getEvent(eventId);
 
       if (!event) {
@@ -601,7 +607,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.put("/api/events/:id", isAdminOrCore, async (req, res) => {
     try {
-      const eventId = parseInt(req.params.id);
+      const eventId = req.params.id;
       const event = await storage.getEvent(eventId);
 
       if (!event) {
@@ -626,7 +632,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.delete("/api/events/:id", isAdminOrCore, async (req, res) => {
     try {
-      const eventId = parseInt(req.params.id);
+      const eventId = req.params.id;
       const event = await storage.getEvent(eventId);
 
       if (!event) {
@@ -652,7 +658,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // User role update endpoint to be used from admin dashboard
   app.put("/api/users/:userId/role", isAdmin, async (req, res) => {
     try {
-      const userId = parseInt(req.params.userId);
+      const userId = req.params.userId;
       const { role } = req.body;
 
       if (!role || !Object.values(UserRole).includes(role)) {
@@ -696,7 +702,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.get("/api/db/projects/:id", async (req, res) => {
     try {
-      const projectId = parseInt(req.params.id);
+      const projectId = req.params.id;
       const project = await storage.getProject(projectId);
 
       if (!project) {
@@ -736,7 +742,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.put("/api/db/projects/:id", isAdminOrCore, async (req, res) => {
     try {
-      const projectId = parseInt(req.params.id);
+      const projectId = req.params.id;
       const project = await storage.getProject(projectId);
 
       if (!project) {
@@ -761,7 +767,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.delete("/api/db/projects/:id", isAdminOrCore, async (req, res) => {
     try {
-      const projectId = parseInt(req.params.id);
+      const projectId = req.params.id;
       const project = await storage.getProject(projectId);
 
       if (!project) {
@@ -797,7 +803,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.get("/api/db/blogs/:id", async (req, res) => {
     try {
-      const blogId = parseInt(req.params.id);
+      const blogId = req.params.id;
       const blog = await storage.getBlog(blogId);
 
       if (!blog) {
@@ -837,7 +843,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.put("/api/db/blogs/:id", isAdminOrCore, async (req, res) => {
     try {
-      const blogId = parseInt(req.params.id);
+      const blogId = req.params.id;
       const blog = await storage.getBlog(blogId);
 
       if (!blog) {
@@ -862,7 +868,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.delete("/api/db/blogs/:id", isAdminOrCore, async (req, res) => {
     try {
-      const blogId = parseInt(req.params.id);
+      const blogId = req.params.id;
       const blog = await storage.getBlog(blogId);
 
       if (!blog) {
@@ -898,7 +904,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.get("/api/db/research/:id", async (req, res) => {
     try {
-      const researchId = parseInt(req.params.id);
+      const researchId = req.params.id;
       const research = await storage.getResearch(researchId);
 
       if (!research) {
@@ -938,7 +944,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.put("/api/db/research/:id", isAdminOrCore, async (req, res) => {
     try {
-      const researchId = parseInt(req.params.id);
+      const researchId = req.params.id;
       const research = await storage.getResearch(researchId);
 
       if (!research) {
@@ -963,7 +969,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.delete("/api/db/research/:id", isAdminOrCore, async (req, res) => {
     try {
-      const researchId = parseInt(req.params.id);
+      const researchId = req.params.id;
       const research = await storage.getResearch(researchId);
 
       if (!research) {
@@ -999,7 +1005,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.get("/api/db/events/:id", async (req, res) => {
     try {
-      const eventId = parseInt(req.params.id);
+      const eventId = req.params.id;
       const event = await storage.getEvent(eventId);
 
       if (!event) {
@@ -1039,7 +1045,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.put("/api/db/events/:id", isAdminOrCore, async (req, res) => {
     try {
-      const eventId = parseInt(req.params.id);
+      const eventId = req.params.id;
       const event = await storage.getEvent(eventId);
 
       if (!event) {
@@ -1064,7 +1070,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.delete("/api/db/events/:id", isAdminOrCore, async (req, res) => {
     try {
-      const eventId = parseInt(req.params.id);
+      const eventId = req.params.id;
       const event = await storage.getEvent(eventId);
 
       if (!event) {
@@ -1141,7 +1147,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.get("/api/db/event-registrations/event/:eventId", isAdminOrCore, async (req, res) => {
     try {
-      const eventId = parseInt(req.params.eventId);
+      const eventId = req.params.eventId;
       const registrations = await storage.getEventRegistrationsByEvent(eventId);
       res.json(registrations);
     } catch (error) {
@@ -1152,7 +1158,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.delete("/api/db/event-registrations/:id", async (req, res) => {
     try {
-      const registrationId = parseInt(req.params.id);
+      const registrationId = req.params.id;
       const registration = await storage.getEventRegistration(registrationId);
 
       if (!registration) {
@@ -1202,7 +1208,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.get("/api/db/comments/project/:projectId", async (req, res) => {
     try {
-      const projectId = parseInt(req.params.projectId);
+      const projectId = req.params.projectId;
       const comments = await storage.getCommentsByProject(projectId);
       res.json(comments);
     } catch (error) {
@@ -1213,7 +1219,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.get("/api/db/comments/blog/:blogId", async (req, res) => {
     try {
-      const blogId = parseInt(req.params.blogId);
+      const blogId = req.params.blogId;
       const comments = await storage.getCommentsByBlog(blogId);
       res.json(comments);
     } catch (error) {
@@ -1224,7 +1230,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.get("/api/db/comments/research/:researchId", async (req, res) => {
     try {
-      const researchId = parseInt(req.params.researchId);
+      const researchId = req.params.researchId;
       const comments = await storage.getCommentsByResearch(researchId);
       res.json(comments);
     } catch (error) {
@@ -1235,7 +1241,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.put("/api/db/comments/:id", async (req, res) => {
     try {
-      const commentId = parseInt(req.params.id);
+      const commentId = req.params.id;
       const comment = await storage.getComment(commentId);
 
       if (!comment) {
@@ -1260,7 +1266,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.delete("/api/db/comments/:id", async (req, res) => {
     try {
-      const commentId = parseInt(req.params.id);
+      const commentId = req.params.id;
       const comment = await storage.getComment(commentId);
 
       if (!comment) {
@@ -1352,7 +1358,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.delete("/api/db/messages/:id", async (req, res) => {
     try {
-      const messageId = parseInt(req.params.id);
+      const messageId = req.params.id;
       const message = await storage.getMessage(messageId);
 
       if (!message) {
@@ -1571,7 +1577,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(401).json({ error: "Not authenticated" });
       }
 
-      const registrationId = parseInt(req.params.registrationId);
+      const registrationId = req.params.registrationId;
       const registration = await storage.getEventRegistration(registrationId);
 
       if (!registration) {
@@ -1613,7 +1619,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Admin: Get all registrations for an event
   app.get("/api/events/:eventId/registrations", isAdminOrCore, async (req, res) => {
     try {
-      const eventId = parseInt(req.params.eventId);
+      const eventId = req.params.eventId;
 
       // Check if event exists
       const event = await storage.getEvent(eventId);

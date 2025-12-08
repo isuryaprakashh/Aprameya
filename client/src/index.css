@@ -6,14 +6,27 @@
 
 @layer base {
   :root {
-    /* --- DARK THEME (DEFAULT: CYBER VOID) --- */
+    /* --- Base Variables (Defaults) --- */
+    --radius: 0.5rem;
+
+    /* Default Accent: Emerald */
+    --accent: 158 64% 52%;
+    --accent-foreground: 0 0% 0%;
+    --ring: 158 64% 52%;
+    --accent-glow: rgba(52, 211, 153, 0.2);
+  }
+
+  /* --- THEME MODES --- */
+
+  [data-theme="dark"] {
+    /* Dark Theme (Cyber Void) */
     --bg-body: #050505;
     --card-bg: #0a0a0a;
     --border-color: rgba(255, 255, 255, 0.08);
 
-    /* Shadcn/Tailwind Mappings (Synced with V6.0) */
     --background: 0 0% 2%;
     --foreground: 0 0% 90%;
+
     --card: 0 0% 4%;
     --card-foreground: 0 0% 90%;
     --popover: 0 0% 4%;
@@ -24,42 +37,33 @@
     --secondary-foreground: 0 0% 90%;
     --muted: 0 0% 20%;
     --muted-foreground: 0 0% 45%;
-
-    /* Accent - Emerald 400 (#34d399) -> HSL 158 64% 52% */
-    --accent: 158 64% 52%;
-    --accent-foreground: 0 0% 0%;
-
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 0 0% 98%;
     --border: 0 0% 10%;
     --input: 0 0% 10%;
-    --ring: 158 64% 52%;
-    --radius: 1rem;
 
-    /* Custom V6.0 Variables */
-    --accent-glow: rgba(52, 211, 153, 0.2);
     --text-primary: #e5e5e5;
     --text-secondary: #737373;
     --glass-panel: rgba(10, 10, 10, 0.6);
     --canvas-node: rgba(255, 255, 255, 0.15);
     --canvas-link: rgba(255, 255, 255, 0.05);
-    --hero-glow-start: rgba(52, 211, 153, 0.15);
+    --hero-glow-start: rgba(var(--accent-rgb), 0.15);
+    /* Dynamic based on accent */
     --hero-glow-end: rgba(0, 0, 0, 0);
     --btn-bg: #1a1a1a;
-    --btn-bg-hover: rgba(52, 211, 153, 0.1);
+    --btn-bg-hover: rgba(var(--accent-rgb), 0.1);
     --marquee-mask: linear-gradient(to right, transparent 0%, #050505 10%, #050505 90%, transparent 100%);
   }
 
   [data-theme="light"] {
-    /* --- LIGHT THEME (CLEAN LAB) --- */
+    /* Light Theme (Clean Lab) */
     --bg-body: #F0F2F5;
     --card-bg: #FFFFFF;
     --border-color: #E2E8F0;
-    /* Slate 200 */
 
-    /* Shadcn/Tailwind Mappings */
     --background: 210 20% 95%;
     --foreground: 222 47% 11%;
+
     --card: 0 0% 100%;
     --card-foreground: 222 47% 11%;
     --popover: 0 0% 100%;
@@ -70,31 +74,120 @@
     --secondary-foreground: 222 47% 11%;
     --muted: 210 40% 96.1%;
     --muted-foreground: 215.4 16.3% 46.9%;
-
-    /* Accent - Emerald 600 (#059669) -> HSL 161 94% 30% */
-    --accent: 161 94% 30%;
-    --accent-foreground: 222 47% 11%;
-
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 210 40% 98%;
     --border: 214.3 31.8% 91.4%;
     --input: 214.3 31.8% 91.4%;
-    --ring: 161 94% 30%;
 
-    /* Custom V6.0 Variables */
-    --accent-glow: rgba(5, 150, 105, 0.15);
     --text-primary: #111827;
-    /* Gray 900 */
     --text-secondary: #64748B;
-    /* Slate 500 */
     --glass-panel: rgba(255, 255, 255, 0.75);
     --canvas-node: rgba(0, 0, 0, 0.1);
     --canvas-link: rgba(0, 0, 0, 0.05);
-    --hero-glow-start: rgba(5, 150, 105, 0.08);
+    --hero-glow-start: rgba(var(--accent-rgb), 0.08);
+    /* Dynamic */
     --hero-glow-end: rgba(255, 255, 255, 0);
     --btn-bg: #FFFFFF;
     --btn-bg-hover: #F3F4F6;
     --marquee-mask: linear-gradient(to right, transparent 0%, #F0F2F5 10%, #F0F2F5 90%, transparent 100%);
+  }
+
+  /* --- ACCENT COLORS --- */
+
+  [data-accent="emerald"] {
+    --accent: 158 64% 52%;
+    --accent-foreground: 0 0% 0%;
+    --ring: 158 64% 52%;
+    --accent-rgb: 52, 211, 153;
+    --accent-glow: rgba(52, 211, 153, 0.2);
+  }
+
+  [data-theme="light"][data-accent="emerald"] {
+    --accent: 161 94% 30%;
+    --accent-foreground: 222 47% 11%;
+    --ring: 161 94% 30%;
+    --accent-rgb: 5, 150, 105;
+    --accent-glow: rgba(5, 150, 105, 0.15);
+  }
+
+  [data-accent="blue"] {
+    --accent: 217 91% 60%;
+    --accent-foreground: 0 0% 100%;
+    --ring: 217 91% 60%;
+    --accent-rgb: 59, 130, 246;
+    --accent-glow: rgba(59, 130, 246, 0.2);
+  }
+
+  [data-theme="light"][data-accent="blue"] {
+    --accent: 221 83% 53%;
+    --accent-foreground: 210 40% 98%;
+    --ring: 221 83% 53%;
+    --accent-rgb: 37, 99, 235;
+    --accent-glow: rgba(37, 99, 235, 0.15);
+  }
+
+  [data-accent="violet"] {
+    --accent: 263 70% 50%;
+    --accent-foreground: 210 40% 98%;
+    --ring: 263 70% 50%;
+    --accent-rgb: 124, 58, 237;
+    --accent-glow: rgba(124, 58, 237, 0.2);
+  }
+
+  [data-theme="light"][data-accent="violet"] {
+    --accent: 262 83% 58%;
+    --accent-foreground: 210 40% 98%;
+    --ring: 262 83% 58%;
+    --accent-rgb: 139, 92, 246;
+    --accent-glow: rgba(139, 92, 246, 0.15);
+  }
+
+  [data-accent="amber"] {
+    --accent: 38 92% 50%;
+    --accent-foreground: 0 0% 0%;
+    --ring: 38 92% 50%;
+    --accent-rgb: 245, 158, 11;
+    --accent-glow: rgba(245, 158, 11, 0.2);
+  }
+
+  [data-theme="light"][data-accent="amber"] {
+    --accent: 32 95% 44%;
+    /* Orange 600 for contrast */
+    --accent-foreground: 210 40% 98%;
+    --ring: 32 95% 44%;
+    --accent-rgb: 234, 88, 12;
+    --accent-glow: rgba(234, 88, 12, 0.15);
+  }
+
+  [data-accent="rose"] {
+    --accent: 343 88% 66%;
+    /* Rose 400 */
+    --accent-foreground: 0 0% 0%;
+    --ring: 343 88% 66%;
+    --accent-rgb: 251, 113, 133;
+    --accent-glow: rgba(251, 113, 133, 0.2);
+  }
+
+  [data-theme="light"][data-accent="rose"] {
+    --accent: 344 87% 43%;
+    /* Rose 600 */
+    --accent-foreground: 210 40% 98%;
+    --ring: 344 87% 43%;
+    --accent-rgb: 225, 29, 72;
+    --accent-glow: rgba(225, 29, 72, 0.15);
+  }
+
+  /* --- RADIUS --- */
+  [data-radius="0"] {
+    --radius: 0rem;
+  }
+
+  [data-radius="0.5"] {
+    --radius: 0.5rem;
+  }
+
+  [data-radius="1"] {
+    --radius: 1rem;
   }
 
   body {

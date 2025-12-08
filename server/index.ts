@@ -1,14 +1,15 @@
 import 'dotenv/config';
 import express, { type Request, Response, NextFunction } from "express";
 import { registerRoutes } from "./routes";
-import { setupVite, serveStatic, log } from "./vite";
+import { setupVite, serveStatic, log } from "./vite_setup";
+import { connectDB } from "./db";
 import session from 'express-session';
 import memorystore from 'memorystore';
 import { fileURLToPath } from 'url';
 
 declare module 'express-session' {
   interface SessionData {
-    userId?: number;
+    userId?: string;
   }
 }
 
@@ -68,6 +69,7 @@ export { app, registerRoutes };
 // Only start server if run directly
 if (process.env.NODE_ENV !== 'production' || process.argv[1] === fileURLToPath(import.meta.url)) {
   (async () => {
+    await connectDB();
     const server = await registerRoutes(app);
 
     app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
