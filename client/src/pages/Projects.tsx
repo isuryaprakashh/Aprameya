@@ -1,18 +1,31 @@
 import { useState } from 'react';
-import { Link } from 'wouter';
-import { projects } from '../lib/data';
+import { Link, useLocation } from 'wouter';
+// import { projects } from '../lib/data'; // Removed static import
+import { useQuery } from '@tanstack/react-query';
+import { Loader2 } from 'lucide-react';
 import ProjectCard from '../components/ProjectCard';
 import ProjectModal from '../components/ProjectModal';
 import { Project } from '../lib/types';
 import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Search, Filter, Users } from 'lucide-react';
 import ProximityMatrix from '../components/backgrounds/ProximityMatrix';
 import { motion } from 'framer-motion';
+import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from '@/components/ui/breadcrumb';
+import { EmptyState } from '../components/EmptyState';
+import { FolderOpen } from 'lucide-react';
+
+
+
 
 const Projects = () => {
+  const { data: projects = [], isLoading, error } = useQuery<Project[]>({
+    queryKey: ['/api/projects'],
+  });
+  const { data: user } = useQuery<any>({ queryKey: ['/api/me'] });
+  const [, setLocation] = useLocation();
+
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
@@ -38,6 +51,24 @@ const Projects = () => {
   // Get unique categories
   const categories = ['all', ...Array.from(new Set(projects.map(p => p.category)))];
 
+  const featuredProject = projects.find(p => p.is_featured) || projects[0];
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-[var(--bg-body)] flex items-center justify-center">
+        <Loader2 className="w-8 h-8 animate-spin text-[hsl(var(--accent))]" />
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen bg-[var(--bg-body)] flex items-center justify-center text-[var(--text-secondary)]">
+        Error loading projects. Please try again later.
+      </div>
+    );
+  }
+
   return (
     <div className="fadeIn">
       {/* Header Section */}
@@ -47,10 +78,21 @@ const Projects = () => {
         <div className="container mx-auto relative z-10">
           <motion.div
             className="text-left"
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
           >
+            <div className="mb-6">
+              <Breadcrumb>
+                <BreadcrumbList>
+                  <BreadcrumbItem>
+                    <BreadcrumbLink href="/">Home</BreadcrumbLink>
+                  </BreadcrumbItem>
+                  <BreadcrumbSeparator />
+                  <BreadcrumbItem>
+                    <BreadcrumbPage className="text-[hsl(var(--accent))]">Projects</BreadcrumbPage>
+                  </BreadcrumbItem>
+                </BreadcrumbList>
+              </Breadcrumb>
+            </div>
             <div className="flex items-center gap-2 mb-6">
               <span className="bg-[var(--text-primary)] text-[var(--bg-body)] px-1 text-xs font-bold">02</span>
               <h2 className="text-lg font-bold text-[var(--text-primary)]">INNOVATION_LAB</h2>
@@ -64,22 +106,28 @@ const Projects = () => {
             </p>
 
             {/* Featured Project Highlight */}
-            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 p-4 bg-[var(--card-bg)] border border-[var(--border-color)] rounded-lg max-w-2xl">
-              <div className="w-12 h-12 bg-[hsl(var(--accent))]/10 flex items-center justify-center rounded-md border border-[hsl(var(--accent))]/20 shrink-0">
-                <Users className="w-6 h-6 text-[hsl(var(--accent))]" />
+            {featuredProject && (
+              <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 p-4 bg-[var(--card-bg)] border border-[var(--border-color)] rounded-lg max-w-2xl">
+                <div className="w-12 h-12 bg-[hsl(var(--accent))]/10 flex items-center justify-center rounded-md border border-[hsl(var(--accent))]/20 shrink-0">
+                  <Users className="w-6 h-6 text-[hsl(var(--accent))]" />
+                </div>
+                <div className="flex-1">
+                  <div className="text-[10px] text-[hsl(var(--accent))] font-bold uppercase tracking-wider mb-1">Featured Project</div>
+                  <div className="text-[var(--text-primary)] font-bold">{featuredProject.title}</div>
+                  <div className="text-xs text-gray-400">{featuredProject.category} • Active Development</div>
+                </div>
+                <div className="flex gap-2 ml-auto w-full sm:w-auto">
+                  {user?.role === 'ADMIN' && (
+                    <Button variant="secondary" size="sm" onClick={() => setLocation(`/dashboard?view=projects&editId=${featuredProject.id}&type=project`)}>
+                      Edit
+                    </Button>
+                  )}
+                  <Button className="btn-primary flex-1 sm:flex-none" size="sm" onClick={() => handleViewDetails(featuredProject)}>
+                    View Details
+                  </Button>
+                </div>
               </div>
-              <div className="flex-1">
-                <div className="text-[10px] text-[hsl(var(--accent))] font-bold uppercase tracking-wider mb-1">Featured Project</div>
-                <div className="text-[var(--text-primary)] font-bold">Autonomous Navigation System v2.0</div>
-                <div className="text-xs text-gray-400">AI/ML • Active Development</div>
-              </div>
-              <Button className="w-full sm:w-auto ml-auto btn-primary" size="sm" onClick={() => {
-                const project = projects.find(p => p.id === '1');
-                if (project) handleViewDetails(project);
-              }}>
-                View Details
-              </Button>
-            </div>
+            )}
           </motion.div>
         </div>
       </section>
@@ -98,19 +146,38 @@ const Projects = () => {
                 className="pl-10 bg-[var(--card-bg)] border-[var(--border-color)] text-[var(--text-primary)] focus:border-[hsl(var(--accent))]/50"
               />
             </div>
-            <Select value={selectedCategory} onValueChange={setSelectedCategory}>
-              <SelectTrigger className="w-full md:w-[200px] bg-[var(--card-bg)] border-[var(--border-color)] text-[var(--text-primary)]">
-                <Filter className="w-4 h-4 mr-2" />
-                <SelectValue placeholder="Category" />
-              </SelectTrigger>
-              <SelectContent>
-                {categories.map((category) => (
-                  <SelectItem key={category} value={category}>
-                    {category === 'all' ? 'All Categories' : category}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+            {/* Desktop Filters (Chips) */}
+            <div className="hidden md:flex flex-wrap gap-2">
+              {categories.map((category) => (
+                <button
+                  key={category}
+                  onClick={() => setSelectedCategory(category)}
+                  className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 ${selectedCategory === category
+                    ? 'bg-[hsl(var(--accent))] text-[var(--bg-body)] shadow-[0_0_15px_hsl(var(--accent))/30]'
+                    : 'bg-[var(--card-bg)] border border-[var(--border-color)] text-[var(--text-secondary)] hover:border-[hsl(var(--accent))/50] hover:text-[var(--text-primary)]'
+                    }`}
+                >
+                  {category === 'all' ? 'All Projects' : category}
+                </button>
+              ))}
+            </div>
+
+            {/* Mobile Filter (Select) */}
+            <div className="md:hidden w-full">
+              <Select value={selectedCategory} onValueChange={setSelectedCategory}>
+                <SelectTrigger className="w-full bg-[var(--card-bg)] border-[var(--border-color)] text-[var(--text-primary)]">
+                  <Filter className="w-4 h-4 mr-2" />
+                  <SelectValue placeholder="Category" />
+                </SelectTrigger>
+                <SelectContent>
+                  {categories.map((category) => (
+                    <SelectItem key={category} value={category}>
+                      {category === 'all' ? 'All Categories' : category}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
           </div>
 
           {/* Projects Grid */}
@@ -126,12 +193,25 @@ const Projects = () => {
                   <ProjectCard
                     project={project}
                     onViewDetails={handleViewDetails}
+                    isAdmin={user?.role === 'ADMIN'}
+                    onEdit={() => setLocation(`/dashboard?view=projects&editId=${project.id}&type=project`)}
                   />
                 </motion.div>
               ))
             ) : (
-              <div className="col-span-full text-center py-12">
-                <p className="text-[var(--text-secondary)]">No projects found matching your criteria.</p>
+              <div className="col-span-full">
+                <EmptyState
+                  icon={FolderOpen}
+                  title="No projects found"
+                  description={`We couldn't find any projects matching "${searchTerm}" in the ${selectedCategory} category.`}
+                  action={{
+                    label: "Clear filters",
+                    onClick: () => {
+                      setSearchTerm('');
+                      setSelectedCategory('all');
+                    }
+                  }}
+                />
               </div>
             )}
           </div>

@@ -1,48 +1,31 @@
 import React from 'react';
-import { useLocation, Redirect } from 'wouter';
-import { Loader2 } from "lucide-react";
-import { useQuery } from '@tanstack/react-query';
-import AdminDashboard from '@/pages/AdminDashboard';
-import CoreTeamDashboard from '@/pages/CoreTeamDashboard';
-import AspirantDashboard from '@/pages/AspirantDashboard';
-import { getQueryFn } from '@/lib/queryClient';
+import { useAuth } from '@/context/AuthContext';
+import UserProfile from '@/pages/UserProfile'; // Import UserProfile
 
 const DashboardRouter: React.FC = () => {
-  const [, setLocation] = useLocation();
-  
-  const { 
-    data: user, 
-    isLoading, 
-    error 
-  } = useQuery({
-    queryKey: ['/api/users/me'],
-    queryFn: getQueryFn({ on401: 'returnNull' }),
-  });
+  const { user } = useAuth();
 
-  if (isLoading) {
-    return (
-      <div className="flex items-center justify-center min-h-[60vh]">
-        <Loader2 className="h-8 w-8 animate-spin text-primary" />
-      </div>
-    );
-  }
+  // Debug logging
+  console.log('DashboardRouter rendering, user:', user);
 
-  if (error || !user) {
-    setLocation('/auth');
+  if (!user) {
+    // This should not happen since ProtectedRoute handles auth
+    console.warn('DashboardRouter: No user found');
     return null;
   }
 
   // Route to the appropriate dashboard based on user role
+  console.log('DashboardRouter: Routing to dashboard for role:', user.role);
+
   switch (user.role) {
     case 'ADMIN':
-      return <AdminDashboard />;
     case 'CORE':
-      return <CoreTeamDashboard />;
+    case 'CORE_TEAM':
     case 'ASPIRANT':
-      return <AspirantDashboard />;
+      return <UserProfile />;
     default:
-      console.error(`Unknown user role: ${user.role}`);
-      return <AspirantDashboard />;
+      console.warn(`Unknown user role: ${user.role}, defaulting to UserProfile`);
+      return <UserProfile />;
   }
 };
 

@@ -40,7 +40,7 @@ export async function setupVite(app: Express, server: Server) {
       },
     },
     root: path.resolve(__dirname, "..", "client"),
-    configFile: false,
+    configFile: path.resolve(__dirname, "..", "client", "vite.config.ts"),
     customLogger: {
       ...viteLogger,
       error: (msg, options) => {

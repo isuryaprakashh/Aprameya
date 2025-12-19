@@ -138,6 +138,35 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Update user profile
+  app.patch("/api/user/profile", async (req, res) => {
+    const userId = req.session?.userId;
+    if (!userId) {
+      return res.status(401).json({ error: "Not authenticated" });
+    }
+
+    try {
+      // Validate with schema including email/password
+      const updateData = updateUserProfileSchema.parse(req.body);
+
+      const user = await storage.updateUserProfile(userId, updateData);
+
+      if (!user) {
+        return res.status(404).json({ error: "User not found" });
+      }
+
+      // Don't send password back to client
+      const { password, ...userWithoutPassword } = user;
+      res.json(userWithoutPassword);
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        return res.status(400).json({ error: error.errors });
+      }
+      console.error("Error updating profile:", error);
+      res.status(500).json({ error: "Failed to update profile" });
+    }
+  });
+
   // Admin route: Get all users
   // Get current user role
   app.get("/api/user/role", async (req, res) => {
@@ -324,6 +353,23 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Error updating project:", error);
       res.status(500).json({ error: "Failed to update project" });
+    }
+  });
+
+  app.post("/api/projects/:id/feature", isAdminOrCore, async (req, res) => {
+    try {
+      const projectId = req.params.id;
+      const project = await storage.getProject(projectId);
+
+      if (!project) {
+        return res.status(404).json({ error: "Project not found" });
+      }
+
+      await storage.setFeaturedProject(projectId);
+      res.json({ success: true });
+    } catch (error) {
+      console.error("Error setting featured project:", error);
+      res.status(500).json({ error: "Failed to set featured project" });
     }
   });
 
@@ -1181,113 +1227,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Comment API endpoints
-  app.post("/api/db/comments", async (req, res) => {
-    try {
-      const userId = req.session?.userId;
-      if (!userId) {
-        return res.status(401).json({ error: "Not authenticated" });
-      }
 
-      const commentInput = insertCommentSchema.safeParse({
-        ...req.body,
-        user_id: userId
-      });
-
-      if (!commentInput.success) {
-        return res.status(400).json({ error: commentInput.error });
-      }
-
-      const comment = await storage.createComment(commentInput.data);
-      res.status(201).json(comment);
-    } catch (error) {
-      console.error("Error creating comment:", error);
-      res.status(500).json({ error: "Failed to create comment" });
-    }
-  });
-
-  app.get("/api/db/comments/project/:projectId", async (req, res) => {
-    try {
-      const projectId = req.params.projectId;
-      const comments = await storage.getCommentsByProject(projectId);
-      res.json(comments);
-    } catch (error) {
-      console.error("Error fetching project comments:", error);
-      res.status(500).json({ error: "Failed to fetch project comments" });
-    }
-  });
-
-  app.get("/api/db/comments/blog/:blogId", async (req, res) => {
-    try {
-      const blogId = req.params.blogId;
-      const comments = await storage.getCommentsByBlog(blogId);
-      res.json(comments);
-    } catch (error) {
-      console.error("Error fetching blog comments:", error);
-      res.status(500).json({ error: "Failed to fetch blog comments" });
-    }
-  });
-
-  app.get("/api/db/comments/research/:researchId", async (req, res) => {
-    try {
-      const researchId = req.params.researchId;
-      const comments = await storage.getCommentsByResearch(researchId);
-      res.json(comments);
-    } catch (error) {
-      console.error("Error fetching research comments:", error);
-      res.status(500).json({ error: "Failed to fetch research comments" });
-    }
-  });
-
-  app.put("/api/db/comments/:id", async (req, res) => {
-    try {
-      const commentId = req.params.id;
-      const comment = await storage.getComment(commentId);
-
-      if (!comment) {
-        return res.status(404).json({ error: "Comment not found" });
-      }
-
-      // Only allow the commenter or admin to update
-      const userId = req.session?.userId;
-      const user = await storage.getUser(userId!);
-
-      if (comment.user_id !== userId && user?.role !== UserRole.ADMIN) {
-        return res.status(403).json({ error: "Not authorized to update this comment" });
-      }
-
-      const updatedComment = await storage.updateComment(commentId, { content: req.body.content });
-      res.json(updatedComment);
-    } catch (error) {
-      console.error("Error updating comment:", error);
-      res.status(500).json({ error: "Failed to update comment" });
-    }
-  });
-
-  app.delete("/api/db/comments/:id", async (req, res) => {
-    try {
-      const commentId = req.params.id;
-      const comment = await storage.getComment(commentId);
-
-      if (!comment) {
-        return res.status(404).json({ error: "Comment not found" });
-      }
-
-      // Only allow the commenter or admin to delete
-      const userId = req.session?.userId;
-      const user = await storage.getUser(userId!);
-
-      if (comment.user_id !== userId && user?.role !== UserRole.ADMIN) {
-        return res.status(403).json({ error: "Not authorized to delete this comment" });
-      }
-
-      await storage.deleteComment(commentId);
-      res.json({ success: true });
-    } catch (error) {
-      console.error("Error deleting comment:", error);
-      res.status(500).json({ error: "Failed to delete comment" });
-    }
-  });
 
   // Core Team Private Messages (only for core team and admin)
   app.post("/api/db/messages", async (req, res) => {
@@ -1548,8 +1488,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
         registrations.map(async (registration) => {
           const event = await storage.getEvent(registration.event_id);
           return {
-            id: registration.id,
-            registeredAt: registration.created_at,
+            ...registration,
+            registered_at: registration.created_at, // Map for frontend compatibility
+            registeredAt: registration.created_at, // Keep existing just in case
             event: event ? {
               id: event.id,
               title: event.title,
@@ -1636,13 +1577,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
           return {
             id: registration.id,
             registeredAt: registration.created_at,
-            user: user ? {
-              id: user.id,
-              username: user.username,
-              email: user.email,
-              role: user.role,
-              display_name: user.display_name
-            } : null
+            user: user ? (() => {
+              const { password, ...userWithoutPassword } = user;
+              return userWithoutPassword;
+            })() : null
           };
         })
       );
@@ -1676,6 +1614,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
             storage.getEvent(registration.event_id),
             storage.getUser(registration.user_id)
           ]);
+          // Debug log
+          if (user) console.log(`Processing registration for user: ${user.username}, Roll: ${user.rollNumber}`);
 
           return {
             id: registration.id,
@@ -1687,13 +1627,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
               time: event.time,
               location: event.location
             } : null,
-            user: user ? {
-              id: user.id,
-              username: user.username,
-              email: user.email,
-              role: user.role,
-              display_name: user.display_name
-            } : null
+            user: user ? (() => {
+              const { password, ...userWithoutPassword } = user;
+              return userWithoutPassword;
+            })() : null
           };
         })
       );

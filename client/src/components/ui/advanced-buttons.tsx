@@ -9,7 +9,7 @@ interface AdvancedButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 export const TraceButton = ({ children, className = '', ...props }: Omit<AdvancedButtonProps, 'variant'>) => (
     <button className={`btn-trace w-full h-12 flex items-center justify-center text-sm font-mono tracking-wider relative ${className}`} {...props}>
         <svg className="absolute inset-0 w-full h-full pointer-events-none">
-            <rect x="0" y="0" width="100%" height="100%" rx="8" />
+            <rect x="0" y="0" width="100%" height="100%" rx="12" />
         </svg>
         <span className="relative z-10">{children}</span>
     </button>
@@ -36,7 +36,7 @@ export const HoldButton = ({ children, className = '', ...props }: Omit<Advanced
 
     return (
         <button
-            className={`btn-hold w-full h-12 flex items-center justify-center text-sm font-mono tracking-wider rounded-lg relative ${className}`}
+            className={`btn-hold w-full h-12 flex items-center justify-center text-sm font-mono tracking-wider rounded-xl relative ${className}`}
             onMouseDown={handleMouseDown}
             onMouseUp={handleMouseUp}
             onMouseLeave={handleMouseUp}
@@ -70,7 +70,7 @@ export const ScrambleButton = ({ children, className = '', ...props }: Omit<Adva
 
     return (
         <button
-            className={`btn-scramble w-full h-12 rounded-lg text-sm ${className}`}
+            className={`btn-scramble w-full h-12 rounded-xl text-sm ${className}`}
             onMouseEnter={handleMouseEnter}
             data-original={children?.toString()}
             {...props}
@@ -81,19 +81,19 @@ export const ScrambleButton = ({ children, className = '', ...props }: Omit<Adva
 };
 
 export const PrismButton = ({ children, className = '', ...props }: Omit<AdvancedButtonProps, 'variant'>) => (
-    <button className={`btn-prism w-full h-12 rounded-lg text-sm flex items-center justify-center gap-2 ${className}`} {...props}>
+    <button className={`btn-prism w-full h-12 rounded-xl text-sm flex items-center justify-center gap-2 ${className}`} {...props}>
         {children}
     </button>
 );
 
 export const SonarButton = ({ children, className = '', ...props }: Omit<AdvancedButtonProps, 'variant'>) => (
-    <button className={`btn-sonar w-full h-12 rounded-lg text-sm font-bold tracking-widest uppercase ${className}`} {...props}>
+    <button className={`btn-sonar w-full h-12 rounded-xl text-sm font-bold tracking-widest uppercase ${className}`} {...props}>
         {children}
     </button>
 );
 
 export const ScanButton = ({ children, className = '', ...props }: Omit<AdvancedButtonProps, 'variant'>) => (
-    <button className={`btn-scan px-8 py-4 text-sm rounded-lg ${className}`} {...props}>
+    <button className={`btn-scan px-8 py-4 text-sm rounded-xl ${className}`} {...props}>
         <span className="scan-line"></span>
         {children}
     </button>

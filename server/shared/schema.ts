@@ -13,6 +13,7 @@ export const insertUserSchema = z.object({
   username: z.string().min(1, "Username is required"),
   password: z.string().min(1, "Password is required"),
   email: z.string().email("Invalid email address"),
+  rollNumber: z.string().length(10, "Roll number must be exactly 10 digits").regex(/^\d{10}$/, "Roll number must contain only digits"),
 });
 
 export const updateUserProfileSchema = z.object({
@@ -25,6 +26,9 @@ export const updateUserProfileSchema = z.object({
   linkedin: z.string().optional(),
   github: z.string().optional(),
   bio: z.string().optional(),
+  // Add these for profile updates
+  email: z.string().email("Invalid email address").optional(),
+  password: z.string().min(1, "Password cannot be empty").optional(),
 });
 
 export const insertProjectSchema = z.object({
@@ -35,6 +39,7 @@ export const insertProjectSchema = z.object({
   technologies: z.string().min(1, "Technologies are required"),
   team: z.string().min(1, "Team is required"),
   user_id: z.string().optional(), // Handled by backend
+  is_featured: z.boolean().default(false).optional(),
 });
 
 export const insertBlogSchema = z.object({
@@ -97,6 +102,7 @@ export interface User {
   username: string;
   password?: string;
   email: string;
+  rollNumber: string;
   role: string;
   created_at: Date | string;
   display_name?: string | null;
@@ -122,6 +128,7 @@ export interface Project {
   team: string;
   created_at: Date | string;
   user_id: string;
+  is_featured?: boolean;
 }
 
 export type InsertBlog = z.infer<typeof insertBlogSchema>;

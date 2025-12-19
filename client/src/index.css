@@ -283,7 +283,7 @@
     color: var(--bg-body);
     /* Inverted for high contrast */
     font-weight: 600;
-    border-radius: 8px;
+    border-radius: 12px;
     transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), background 0.2s;
     position: relative;
     overflow: hidden;
@@ -297,7 +297,7 @@
     background: var(--btn-bg);
     color: var(--text-primary);
     border: 1px solid var(--border-color);
-    border-radius: 8px;
+    border-radius: 12px;
     transition: all 0.3s ease;
   }
 
@@ -314,6 +314,7 @@
     position: relative;
     overflow: hidden;
     transition: color 0.3s;
+    border-radius: 12px;
   }
 
   .btn-scan:hover {
@@ -344,6 +345,7 @@
     position: relative;
     overflow: visible;
     transition: all 0.3s;
+    border-radius: 12px;
   }
 
   .btn-trace:hover {
@@ -384,6 +386,7 @@
     background: var(--card-bg);
     color: var(--text-secondary);
     border: 1px solid var(--border-color);
+    border-radius: 12px;
     overflow: hidden;
     user-select: none;
   }
@@ -423,6 +426,7 @@
     color: var(--text-primary);
     font-family: 'Space Mono', monospace;
     letter-spacing: -0.5px;
+    border-radius: 12px;
   }
 
   .btn-scramble:hover {
@@ -436,6 +440,7 @@
     border: 1px solid var(--border-color);
     color: var(--text-primary);
     transition: all 0.3s ease;
+    border-radius: 12px;
   }
 
   .btn-prism:hover {
@@ -450,6 +455,7 @@
     border: 1px solid hsl(var(--accent));
     color: hsl(var(--accent));
     overflow: visible;
+    border-radius: 12px;
   }
 
   .btn-sonar::before,
@@ -462,7 +468,7 @@
     width: 100%;
     height: 100%;
     border: 1px solid hsl(var(--accent));
-    border-radius: 8px;
+    border-radius: 12px;
     opacity: 0;
     pointer-events: none;
   }
@@ -504,9 +510,10 @@
 
   .input-clean {
     background: transparent;
-    border-bottom: 1px solid var(--border-color);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
     color: var(--text-primary);
-    padding: 0.75rem 0;
+    padding: 0.75rem 1rem;
     width: 100%;
     transition: border-color 0.3s ease;
     font-family: 'Space Mono', monospace;
@@ -528,7 +535,7 @@
   .input-label {
     position: absolute;
     top: 0.75rem;
-    left: 0;
+    left: 1rem;
     color: var(--text-secondary);
     font-size: 0.875rem;
     pointer-events: none;
@@ -598,7 +605,7 @@
   .bg-preview-container {
     width: 100%;
     height: 250px;
-    border-radius: 12px;
+    border-radius: 16px;
     border: 1px solid var(--border-color);
     overflow: hidden;
     position: relative;
@@ -686,7 +693,7 @@
     height: 380px;
     background: var(--card-bg);
     border: 1px solid var(--border-color);
-    border-radius: 12px;
+    border-radius: 16px;
     overflow: hidden;
     position: relative;
     transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);

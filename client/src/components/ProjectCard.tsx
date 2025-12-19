@@ -1,104 +1,81 @@
-import { useState } from 'react';
+
 import { Project } from '../lib/types';
-import { ChevronLeft, ChevronRight, Moon } from 'lucide-react';
-import MagneticWrap from './ui/MagneticWrap';
+import { ChevronRight } from 'lucide-react';
 import { CleanCard } from './ui/v6-card';
 
 interface ProjectCardProps {
   project: Project;
   onViewDetails: (project: Project) => void;
-  viewMode?: 'grid' | 'list';
+  onEdit?: (project: Project) => void;
+  isAdmin?: boolean;
 }
 
-const ProjectCard = ({ project, onViewDetails, viewMode = 'grid' }: ProjectCardProps) => {
-  const [currentSlide, setCurrentSlide] = useState(0);
-
-  // Use project image and some placeholders for the slider
-  const slides = [
-    project.image,
-    "https://images.unsplash.com/photo-1501854140884-074bf6b243e7?q=80&w=800&auto=format&fit=crop",
-    "https://images.unsplash.com/photo-1441974231531-c6227db76b6e?q=80&w=800&auto=format&fit=crop"
-  ];
-
-  const moveSlide = (direction: number) => {
-    setCurrentSlide((prev) => (prev + direction + slides.length) % slides.length);
-  };
+const ProjectCard = ({ project, onViewDetails, onEdit, isAdmin }: ProjectCardProps) => {
+  // Minimal card design - no slider, just the main image and details
 
   return (
-    <CleanCard className="group h-full flex flex-col p-0 overflow-hidden">
-      <div className="shimmer pointer-events-none"></div>
+    <CleanCard
+      className="group h-full flex flex-col p-0 overflow-hidden cursor-pointer border border-[var(--border-color)] bg-[var(--card-bg)] hover:border-[hsl(var(--accent))]/30 transition-all duration-300"
+      onClick={() => onViewDetails(project)}
+    >
+      {/* Main Image - Fixed aspect ratio */}
+      <div className="relative aspect-video w-full overflow-hidden">
+        <img
+          src={project.image}
+          alt={project.title}
+          className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+        />
 
-      {/* Image Slider */}
-      <div className="relative h-[320px] w-full overflow-hidden">
-        <div
-          className="slide-track h-full"
-          style={{ transform: `translateX(-${currentSlide * 100}%)` }}
-        >
-          {slides.map((slide, index) => (
-            <div key={index} className="slide-item">
-              <img
-                src={slide}
-                alt={`Slide ${index + 1}`}
-                className="w-full h-full object-cover brightness-75 group-hover:brightness-100 transition-all duration-700"
-              />
-            </div>
-          ))}
-        </div>
+        {/* Gradient Overlay for text readability if needed, though mostly visual enhancement here */}
+        <div className="absolute inset-0 bg-gradient-to-t from-[var(--bg-body)]/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
 
-        {/* Gradient Overlay */}
-        <div className="absolute inset-0 bg-gradient-to-t from-[var(--bg-body)]/80 to-transparent pointer-events-none"></div>
-
-        {/* Controls */}
-        <div className="absolute bottom-6 right-6 flex gap-2 z-20">
-          <button
-            onClick={(e) => { e.stopPropagation(); moveSlide(-1); }}
-            className="w-10 h-10 flex items-center justify-center rounded-full bg-[var(--text-primary)]/10 backdrop-blur-md border border-[var(--text-primary)]/10 hover:bg-[var(--text-primary)]/20 text-[var(--text-primary)] transition-all"
-          >
-            <ChevronLeft className="w-4 h-4" />
-          </button>
-          <button
-            onClick={(e) => { e.stopPropagation(); moveSlide(1); }}
-            className="w-10 h-10 flex items-center justify-center rounded-full bg-[var(--text-primary)]/10 backdrop-blur-md border border-[var(--text-primary)]/10 hover:bg-[var(--text-primary)]/20 text-[var(--text-primary)] transition-all"
-          >
-            <ChevronRight className="w-4 h-4" />
-          </button>
-        </div>
-
-        {/* Category Badge */}
-        <div className="absolute top-6 left-6 z-20">
-          <span className="px-3 py-1 rounded-full bg-[var(--bg-body)]/50 backdrop-blur-md border border-[var(--text-primary)]/10 text-[10px] font-medium uppercase tracking-wider text-[var(--text-primary)]">
+        {/* Category Badge - Absolute top left */}
+        <div className="absolute top-3 left-3 z-10">
+          <span className="px-2 py-1 rounded inline-flex bg-[var(--bg-body)]/80 backdrop-blur-sm border border-[var(--border-color)] text-[10px] font-bold uppercase tracking-wider text-[var(--text-secondary)] shadow-sm">
             {project.category}
           </span>
         </div>
       </div>
 
-      {/* Content */}
-      <div className="p-8 flex flex-col grow">
-        <h3 className="text-2xl font-medium text-[var(--text-primary)] mb-2">{project.title}</h3>
-        <p className="text-sm text-[var(--text-secondary)] mb-6 leading-relaxed line-clamp-3 grow">
+      {/* Content Section */}
+      <div className="p-5 flex flex-col grow">
+        <div className="mb-3">
+          <h3 className="text-xl font-bold text-[var(--text-primary)] leading-tight group-hover:text-[hsl(var(--accent))] transition-colors">
+            {project.title}
+          </h3>
+        </div>
+
+        <p className="text-sm text-[var(--text-secondary)] mb-4 leading-relaxed line-clamp-2 grow">
           {project.description}
         </p>
 
-        {/* Tags */}
-        <div className="flex flex-wrap gap-2 mb-6">
-          {project.technologies.slice(0, 3).map((tech, index) => (
-            <span key={index} className="text-xs px-2 py-1 bg-[var(--text-primary)]/5 border border-[var(--text-primary)]/10 rounded text-[var(--text-secondary)]">
-              {tech}
-            </span>
-          ))}
+        {/* Tags - Minimal */}
+        <div className="flex flex-wrap gap-2 mb-4">
+          {(Array.isArray(project.technologies) ? project.technologies : (typeof project.technologies === 'string' ? (project.technologies as string).split(',') : []))
+            .slice(0, 3)
+            .map((tech, index) => (
+              <span key={index} className="text-[10px] px-1.5 py-0.5 bg-[var(--text-primary)]/5 rounded text-[var(--text-secondary)] border border-transparent hover:border-[var(--text-primary)]/10 transition-colors">
+                {tech.trim()}
+              </span>
+            ))}
         </div>
 
-        {/* Action Button */}
-        <div className="mt-auto">
-          <MagneticWrap>
-            <button
-              onClick={() => onViewDetails(project)}
-              className="w-full btn-primary py-3 text-sm flex items-center justify-between px-6 magnetic-target"
-            >
-              <span>View Details</span>
-              <Moon className="w-4 h-4 text-[var(--text-secondary)]" />
-            </button>
-          </MagneticWrap>
+        {/* Minimal Action Footer */}
+        <div className="mt-auto flex items-center justify-between pt-3 border-t border-[var(--border-color)]/50">
+          <span className="text-xs text-[hsl(var(--accent))] font-medium opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-1 transform translate-x-[-10px] group-hover:translate-x-0 duration-300">
+            View Details <ChevronRight className="w-3 h-3" />
+          </span>
+
+          <div className="flex gap-2">
+            {isAdmin && onEdit && (
+              <button
+                onClick={(e) => { e.stopPropagation(); onEdit(project); }}
+                className="text-xs px-2 py-1 rounded bg-[var(--text-primary)]/5 hover:bg-[var(--text-primary)]/10 text-[var(--text-secondary)] transition-colors"
+              >
+                Edit
+              </button>
+            )}
+          </div>
         </div>
       </div>
     </CleanCard>

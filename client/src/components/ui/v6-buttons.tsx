@@ -12,7 +12,7 @@ export const ButtonPrimary = ({ className, children, ...props }: ButtonPrimaryPr
         <button
             className={cn(
                 "btn-primary relative overflow-hidden transition-all duration-200 ease-[cubic-bezier(0.16,1,0.3,1)]",
-                "bg-[var(--text-primary)] text-[var(--bg-body)] font-semibold rounded-lg",
+                "bg-[var(--text-primary)] text-[var(--bg-body)] font-semibold rounded-xl",
                 "hover:opacity-90",
                 className
             )}
@@ -33,7 +33,7 @@ export const ButtonSecondary = ({ className, children, ...props }: ButtonSeconda
         <button
             className={cn(
                 "btn-secondary transition-all duration-300 ease-out",
-                "bg-[var(--btn-bg)] text-[var(--text-primary)] border border-[var(--border-color)] rounded-lg",
+                "bg-[var(--btn-bg)] text-[var(--text-primary)] border border-[var(--border-color)] rounded-xl",
                 "hover:bg-[var(--btn-bg-hover)] hover:border-[hsl(var(--accent))] hover:text-[hsl(var(--accent))]",
                 className
             )}
@@ -66,7 +66,7 @@ export const ButtonTrace = ({ className, children, ...props }: ButtonTraceProps)
                     y="0"
                     width="100%"
                     height="100%"
-                    rx="8"
+                    rx="12"
                     fill="none"
                     stroke="hsl(var(--accent))"
                     strokeWidth="2"
@@ -98,7 +98,7 @@ export const ButtonHold = ({
 }: ButtonHoldProps) => {
     const [isHeld, setIsHeld] = useState(false);
     const [isComplete, setIsComplete] = useState(false);
-    const timerRef = useRef<NodeJS.Timeout | null>(null);
+    const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
     const startHold = () => {
         if (isComplete) return;
@@ -159,7 +159,7 @@ export const ButtonScramble = ({
 }: ButtonScrambleProps) => {
     const [text, setText] = useState(children);
     const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%&';
-    const intervalRef = useRef<NodeJS.Timeout | null>(null);
+    const intervalRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
     const scramble = () => {
         let iterations = 0;
@@ -262,6 +262,62 @@ export const ButtonScan = ({ className, children, ...props }: ButtonScanProps) =
         >
             <span className="scan-line absolute top-0 left-0 w-0.5 h-full bg-[hsl(var(--accent))] -translate-x-full transition-transform duration-0 group-hover:translate-x-[200px] group-hover:duration-600 group-hover:ease-in-out" />
             {children}
+        </button>
+    );
+};
+
+// --- 2. Violet 3D Button (Explore Projects) ---
+interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+    children: React.ReactNode;
+}
+
+export const ButtonViolet3D = ({ className, children, ...props }: ButtonProps) => {
+    return (
+        <button
+            className={cn(
+                "relative rounded-xl font-medium transition-all duration-200",
+                "bg-[hsl(var(--accent))] text-[var(--bg-body)] overflow-hidden group", // Flexible theme color
+                "shadow-[0_10px_20px_-5px_hsl(var(--accent))]/50", // Flexible shadow
+                className
+            )}
+            {...props}
+        >
+            {/* 3D Bevel/Highlight Effects */}
+            <div className="absolute inset-0 rounded-xl ring-1 ring-white/20 inset-shadow"></div>
+            <div className="absolute inset-x-0 top-0 h-[50%] bg-gradient-to-b from-white/20 to-transparent opacity-80"></div>
+            <div className="absolute inset-x-0 bottom-0 h-[50%] bg-gradient-to-t from-black/20 to-transparent opacity-50"></div>
+
+            {/* Content */}
+            <span className="relative z-10 flex items-center justify-center gap-2">
+                {children}
+            </span>
+        </button>
+    );
+};
+
+// --- 3. Dark Spec Button (Join Us) ---
+export const ButtonDarkSpec = ({ className, children, ...props }: ButtonProps) => {
+    return (
+        <button
+            className={cn(
+                "relative rounded-xl font-medium transition-all duration-200 active:scale-95 text-white",
+                className
+            )}
+            style={{
+                background: 'radial-gradient(100% 100% at 50% -0%, #636886 0%, #282839 100%)',
+                boxShadow: `
+          0px -1px 2px 0px rgba(123, 123, 154, 0.80), 
+          0px 2px 3px 0px rgba(0, 0, 0, 0.70), 
+          inset 0px 4px 5px 0px #181822, 
+          inset 0px -2px 0px 0px #43465C
+        `,
+                border: '1px solid #282839'
+            }}
+            {...props}
+        >
+            <span className="relative z-10 flex items-center justify-center gap-2 text-shadow-sm">
+                {children}
+            </span>
         </button>
     );
 };

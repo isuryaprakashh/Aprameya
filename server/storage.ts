@@ -45,6 +45,7 @@ export interface IStorage {
   getAllProjects(): Promise<ProjectType[]>;
   createProject(project: InsertProject): Promise<ProjectType>;
   updateProject(id: string, project: Partial<InsertProject>): Promise<ProjectType | undefined>;
+  setFeaturedProject(id: string): Promise<void>;
   deleteProject(id: string): Promise<boolean>;
 
   // Blog Operations
@@ -156,7 +157,7 @@ export class MongoStorage implements IStorage {
   }
 
   async createProject(project: InsertProject): Promise<ProjectType> {
-    const newProject = new Project(project);
+    const newProject = new Project({ ...project, is_featured: false });
     await newProject.save();
     return this.mapDoc<ProjectType>(newProject);
   }
@@ -164,6 +165,13 @@ export class MongoStorage implements IStorage {
   async updateProject(id: string, project: Partial<InsertProject>): Promise<ProjectType | undefined> {
     const updatedProject = await Project.findByIdAndUpdate(id, project, { new: true });
     return updatedProject ? this.mapDoc<ProjectType>(updatedProject) : undefined;
+  }
+
+  async setFeaturedProject(id: string): Promise<void> {
+    // Unset featured for all projects
+    await Project.updateMany({}, { is_featured: false });
+    // Set featured for the specified project
+    await Project.findByIdAndUpdate(id, { is_featured: true });
   }
 
   async deleteProject(id: string): Promise<boolean> {

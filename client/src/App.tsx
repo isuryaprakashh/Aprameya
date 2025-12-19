@@ -1,5 +1,6 @@
 import { Route, Switch, useLocation, Redirect } from "wouter";
 import { Toaster } from "@/components/ui/toaster";
+
 import { ThemeProvider } from "@/components/theme-provider";
 import { AuthProvider, useAuth } from "@/context/AuthContext";
 import Navbar from "./components/Navbar";
@@ -27,7 +28,7 @@ interface ProtectedRouteProps {
 
 const ProtectedRoute = ({ component: Component, roles, ...rest }: ProtectedRouteProps) => {
   const { user, isLoading } = useAuth();
-  const [, navigate] = useLocation();
+
 
   if (isLoading) {
     return <div className="flex justify-center items-center h-64">Loading...</div>;

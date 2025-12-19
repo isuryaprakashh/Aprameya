@@ -1,12 +1,40 @@
-import { Link } from 'wouter';
-import { FaArrowRight, FaSearch, FaTag } from 'react-icons/fa';
-import { blogPosts, blogCategories } from '../lib/data';
-import BlogPostComponent from '../components/BlogPost';
+import { Link, useLocation } from 'wouter';
+import { blogCategories } from '../lib/data';
+import { useQuery } from '@tanstack/react-query';
+import { BlogPost } from '@/lib/types';
+import { Loader2 } from 'lucide-react';
 import { motion } from 'framer-motion';
 import MagneticVectorField from '../components/backgrounds/MagneticVectorField';
 import { Input } from '@/components/ui/input';
+import { CleanCard } from '../components/ui/v6-card';
+import { Badge } from '@/components/ui/badge';
+import { Calendar, User, ArrowRight, Search, Tag, FileText } from 'lucide-react';
+import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from '@/components/ui/breadcrumb';
+import { EmptyState } from '@/components/EmptyState';
 
 const Blogs = () => {
+  const { data: blogPosts, isLoading, error } = useQuery<BlogPost[]>({
+    queryKey: ['/api/blogs'],
+  });
+  const { data: user } = useQuery<any>({ queryKey: ['/api/me'] });
+  const [, setLocation] = useLocation();
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-[var(--bg-body)] flex items-center justify-center">
+        <Loader2 className="w-8 h-8 animate-spin text-[hsl(var(--accent))]" />
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen bg-[var(--bg-body)] flex items-center justify-center text-[var(--text-secondary)]">
+        Error loading blogs. Please try again later.
+      </div>
+    );
+  }
+
   return (
     <div className="fadeIn min-h-screen bg-[var(--bg-body)]">
       {/* Header Section */}
@@ -20,6 +48,19 @@ const Blogs = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
           >
+            <div className="mb-6 flex justify-center">
+              <Breadcrumb>
+                <BreadcrumbList>
+                  <BreadcrumbItem>
+                    <BreadcrumbLink href="/">Home</BreadcrumbLink>
+                  </BreadcrumbItem>
+                  <BreadcrumbSeparator />
+                  <BreadcrumbItem>
+                    <BreadcrumbPage className="text-[hsl(var(--accent))]">Blogs</BreadcrumbPage>
+                  </BreadcrumbItem>
+                </BreadcrumbList>
+              </Breadcrumb>
+            </div>
             <div className="inline-flex items-center gap-2 mb-6 border border-[var(--border-color)] px-3 py-1 bg-[var(--bg-body)]">
               <span className="w-2 h-2 bg-[hsl(var(--accent))] rounded-full animate-pulse"></span>
               <span className="text-xs font-bold text-[var(--text-primary)] tracking-widest">KNOWLEDGE_BASE</span>
@@ -40,10 +81,79 @@ const Blogs = () => {
         <div className="container mx-auto">
           <div className="grid lg:grid-cols-4 gap-8">
             {/* Blog Posts Column */}
-            <div className="lg:col-span-3 space-y-10">
-              {blogPosts.map((post) => (
-                <BlogPostComponent key={post.id} post={post} />
+            <div className="lg:col-span-3 grid md:grid-cols-2 gap-8">
+              {blogPosts?.map((post, index) => (
+                <motion.div
+                  key={post.id || (post as any)._id}
+                  initial={{ opacity: 0, scale: 0.95 }}
+                  whileInView={{ opacity: 1, scale: 1 }}
+                  transition={{ delay: index * 0.1, duration: 0.4 }}
+                  viewport={{ once: true }}
+                >
+                  <Link href={`/blogs/${post.id || (post as any)._id}`} className="block h-full">
+                    <CleanCard className="h-full flex flex-col group overflow-hidden cursor-pointer transition-transform duration-300 hover:-translate-y-1">
+                      <div className="relative h-48 overflow-hidden border-b border-[var(--border-color)]">
+                        <div className="absolute inset-0 bg-[hsl(var(--accent))] opacity-0 group-hover:opacity-10 transition-opacity z-10"></div>
+                        <img
+                          src={post.image}
+                          alt={post.title}
+                          className="w-full h-full object-cover brightness-90 group-hover:brightness-100 transition-transform duration-700 group-hover:scale-110"
+                        />
+                        <div className="absolute bottom-3 left-3 flex gap-2 z-20">
+                          <Badge variant="secondary" className="bg-[var(--bg-body)]/90 backdrop-blur border border-[var(--border-color)] text-[var(--text-primary)] text-[10px] uppercase tracking-wider">
+                            {post.category}
+                          </Badge>
+                          {user?.role === 'ADMIN' && (
+                            <Badge
+                              variant="default"
+                              className="cursor-pointer bg-[var(--text-primary)] text-[var(--bg-body)] hover:bg-[hsl(var(--accent))]"
+                              onClick={(e) => {
+                                e.preventDefault();
+                                setLocation(`/dashboard?view=blogs&editId=${post.id || (post as any)._id}&type=blog`);
+                              }}
+                            >
+                              Edit
+                            </Badge>
+                          )}
+                        </div>
+                      </div>
+
+                      <div className="p-6 flex-1 flex flex-col">
+                        <div className="flex items-center gap-2 mb-3 text-xs text-[var(--text-secondary)] font-mono">
+                          <Calendar className="w-3 h-3" />
+                          <span>{new Date(post.date).toLocaleDateString()}</span>
+                          <span className="w-1 h-1 bg-[var(--text-secondary)] rounded-full"></span>
+                          <User className="w-3 h-3" />
+                          <span>{post.author || 'Team Aprameya'}</span>
+                        </div>
+
+                        <h2 className="text-xl font-bold text-[var(--text-primary)] mb-3 leading-tight group-hover:text-[hsl(var(--accent))] transition-colors">
+                          {post.title}
+                        </h2>
+
+                        <p className="text-sm text-[var(--text-secondary)] mb-6 line-clamp-3">
+                          {post.excerpt}
+                        </p>
+
+                        <div className="mt-auto pt-4 border-t border-[var(--border-color)] flex justify-between items-center">
+                          <div className="text-xs font-bold text-[hsl(var(--accent))] uppercase tracking-widest flex items-center gap-2 group-hover:gap-3 transition-all">
+                            Read Article <ArrowRight className="w-3 h-3" />
+                          </div>
+                        </div>
+                      </div>
+                    </CleanCard>
+                  </Link>
+                </motion.div>
               ))}
+              {blogPosts?.length === 0 && (
+                <div className="col-span-full">
+                  <EmptyState
+                    icon={FileText}
+                    title="No blog posts found"
+                    description="We currently don't have any blog posts published. Please check back later."
+                  />
+                </div>
+              )}
             </div>
 
             {/* Sidebar */}
@@ -53,7 +163,7 @@ const Blogs = () => {
                 <div className="glass-panel p-6 rounded-xl border border-[var(--border-color)]">
                   <h3 className="font-mono font-bold text-[var(--text-primary)] mb-4 uppercase tracking-wider text-sm">Search</h3>
                   <div className="relative">
-                    <FaSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-[var(--text-secondary)] w-3 h-3" />
+                    <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-[var(--text-secondary)] w-3 h-3" />
                     <Input
                       placeholder="Search articles..."
                       className="pl-9 bg-[var(--card-bg)] border-[var(--border-color)] text-[var(--text-primary)] h-10 text-xs"
@@ -69,11 +179,10 @@ const Blogs = () => {
                       <li key={index}>
                         <a href="#" className="group flex items-center justify-between text-[var(--text-secondary)] hover:text-[hsl(var(--accent))] transition-colors text-sm">
                           <span className="flex items-center">
-                            <FaTag className="w-3 h-3 mr-2 opacity-50 group-hover:opacity-100" />
+                            <Tag className="w-3 h-3 mr-2 opacity-50 group-hover:opacity-100" />
                             {category}
                           </span>
                           <span className="bg-[var(--card-bg)] px-2 py-0.5 rounded text-[10px] border border-[var(--border-color)] group-hover:border-[hsl(var(--accent))]/30">
-                            {/* Count not available in string array, using placeholder or removing */}
                             +
                           </span>
                         </a>
@@ -86,8 +195,8 @@ const Blogs = () => {
                 <div className="glass-panel p-6 rounded-xl border border-[var(--border-color)]">
                   <h3 className="font-mono font-bold text-[var(--text-primary)] mb-4 uppercase tracking-wider text-sm">Recent Posts</h3>
                   <div className="space-y-4">
-                    {blogPosts.slice(0, 3).map((post) => (
-                      <div key={post.id} className="flex gap-3 group cursor-pointer">
+                    {blogPosts?.slice(0, 3).map((post) => (
+                      <div key={post.id || (post as any)._id} className="flex gap-3 group cursor-pointer">
                         <div className="w-16 h-16 flex-shrink-0 rounded overflow-hidden border border-[var(--border-color)]">
                           <img
                             src={post.image}
@@ -97,7 +206,7 @@ const Blogs = () => {
                         </div>
                         <div>
                           <h4 className="font-medium text-[var(--text-primary)] text-sm line-clamp-2 mb-1 group-hover:text-[hsl(var(--accent))] transition-colors">{post.title}</h4>
-                          <p className="text-[var(--text-secondary)] text-[10px] font-mono">{post.date}</p>
+                          <p className="text-[var(--text-secondary)] text-[10px] font-mono">{new Date(post.date).toLocaleDateString()}</p>
                         </div>
                       </div>
                     ))}

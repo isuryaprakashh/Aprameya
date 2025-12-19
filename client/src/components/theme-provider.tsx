@@ -11,8 +11,6 @@ type ThemeProviderProps = {
 type ThemeProviderState = {
     theme: Theme
     setTheme: (theme: Theme) => void
-    accent: string
-    setAccent: (accent: string) => void
     radius: number
     setRadius: (radius: number) => void
 }
@@ -20,8 +18,6 @@ type ThemeProviderState = {
 const initialState: ThemeProviderState = {
     theme: "system",
     setTheme: () => null,
-    accent: "emerald",
-    setAccent: () => null,
     radius: 1,
     setRadius: () => null,
 }
@@ -36,11 +32,6 @@ export function ThemeProvider({
     // Theme Mode
     const [theme, setTheme] = useState<Theme>(
         () => (localStorage.getItem(storageKey) as Theme) || defaultTheme
-    )
-
-    // Accent Color
-    const [accent, setAccent] = useState<string>(
-        () => localStorage.getItem("vite-ui-accent") || "emerald"
     )
 
     // Radius
@@ -67,24 +58,19 @@ export function ThemeProvider({
             root.setAttribute("data-theme", theme)
         }
 
-        // Accent
-        root.setAttribute("data-accent", accent)
+        // Enforce Emerald Accent
+        root.setAttribute("data-accent", "emerald")
 
         // Radius
         root.setAttribute("data-radius", radius.toString())
 
-    }, [theme, accent, radius])
+    }, [theme, radius])
 
     const value = {
         theme,
         setTheme: (theme: Theme) => {
             localStorage.setItem(storageKey, theme)
             setTheme(theme)
-        },
-        accent,
-        setAccent: (accent: string) => {
-            localStorage.setItem("vite-ui-accent", accent)
-            setAccent(accent)
         },
         radius,
         setRadius: (radius: number) => {

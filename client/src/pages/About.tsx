@@ -1,6 +1,4 @@
 import { Link } from 'wouter';
-import { teamMembers } from '../lib/data';
-import TeamMemberCard from '../components/TeamMemberCard';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
@@ -309,10 +307,10 @@ const About = () => {
                     </div>
                   </div>
                   <a
-                    href="mailto:contact@aprameya.com"
+                    href="mailto:aprameya.techclub@kluniversity.in"
                     className="text-[hsl(var(--accent))] hover:underline font-medium text-lg"
                   >
-                    contact@aprameya.com
+                    aprameya.techclub@kluniversity.in
                   </a>
                 </CardContent>
               </Card>
@@ -336,8 +334,8 @@ const About = () => {
                     </div>
                   </div>
                   <p className="text-lg text-[var(--text-primary)]">
-                    Tech Hub, Innovation Center<br />
-                    KL University Campus<br />
+                    R609<br />
+                    KL University<br />
                     Vaddeswaram, Guntur
                   </p>
                 </CardContent>

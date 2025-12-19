@@ -40,7 +40,8 @@ const Logo = ({ size = "xl", color = "dark", showText = true }: LogoProps) => {
       </div>
       {showText && (
         <div className="flex flex-col ml-1">
-          <span className="text-lg leading-tight tracking-tight text-primary">
+          <span className={`text-lg leading-tight tracking-tight font-bold ${color === "light" ? "text-white" : "text-[var(--text-primary)]"
+            }`}>
             APRAMEYA
           </span>
           {/* <span className="text-xs font-medium text-gray-600 leading-tight">

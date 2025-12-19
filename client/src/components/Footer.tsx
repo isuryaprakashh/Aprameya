@@ -1,4 +1,4 @@
-import { Github, Twitter, Linkedin, Mail, MapPin } from 'lucide-react';
+import { Github, Twitter, Linkedin, Mail, MapPin, Instagram as InstagramIcon, Youtube } from 'lucide-react';
 import { Link } from "wouter";
 
 export default function Footer() {
@@ -21,7 +21,7 @@ export default function Footer() {
               </div>
               <div>
                 <h3 className="text-[var(--text-primary)] font-bold text-xl tracking-tight">APRAMEYA</h3>
-                <p className="text-[hsl(var(--accent))] text-xs font-mono">Autonomous Systems Research</p>
+                <p className="text-[hsl(var(--accent))] text-xs font-mono">AI & Autonomous Club</p>
               </div>
             </div>
             <p className="text-[var(--text-secondary)] text-sm leading-relaxed max-w-md mb-6">
@@ -32,28 +32,42 @@ export default function Footer() {
             {/* Social links */}
             <div className="flex gap-3">
               <a
-                href="#"
+                href="https://github.com/KL-Aprameya"
                 className="w-10 h-10 rounded-lg bg-[var(--text-primary)]/5 border border-[var(--border-color)] flex items-center justify-center text-[var(--text-secondary)] hover:text-[hsl(var(--accent))] hover:border-[hsl(var(--accent))]/50 hover:bg-[hsl(var(--accent))]/10 transition-all duration-300"
                 aria-label="GitHub"
               >
                 <Github className="w-4 h-4" />
               </a>
               <a
-                href="#"
+                href="https://instagram.com/aprameya_klu"
                 className="w-10 h-10 rounded-lg bg-[var(--text-primary)]/5 border border-[var(--border-color)] flex items-center justify-center text-[var(--text-secondary)] hover:text-[hsl(var(--accent))] hover:border-[hsl(var(--accent))]/50 hover:bg-[hsl(var(--accent))]/10 transition-all duration-300"
-                aria-label="Twitter"
+                aria-label="Instagram"
               >
-                <Twitter className="w-4 h-4" />
+                <InstagramIcon className="w-4 h-4" />
               </a>
               <a
-                href="#"
+                href="https://www.linkedin.com/company/aprameyaclub/posts/?feedView=all"
                 className="w-10 h-10 rounded-lg bg-[var(--text-primary)]/5 border border-[var(--border-color)] flex items-center justify-center text-[var(--text-secondary)] hover:text-[hsl(var(--accent))] hover:border-[hsl(var(--accent))]/50 hover:bg-[hsl(var(--accent))]/10 transition-all duration-300"
                 aria-label="LinkedIn"
               >
                 <Linkedin className="w-4 h-4" />
               </a>
               <a
-                href="mailto:contact@aprameya.ai"
+                href="https://x.com/aprameya_klu"
+                className="w-10 h-10 rounded-lg bg-[var(--text-primary)]/5 border border-[var(--border-color)] flex items-center justify-center text-[var(--text-secondary)] hover:text-[hsl(var(--accent))] hover:border-[hsl(var(--accent))]/50 hover:bg-[hsl(var(--accent))]/10 transition-all duration-300"
+                aria-label="X"
+              >
+                <Twitter className="w-4 h-4" />
+              </a>
+              <a
+                href="https://www.youtube.com/@aprameya_klu"
+                className="w-10 h-10 rounded-lg bg-[var(--text-primary)]/5 border border-[var(--border-color)] flex items-center justify-center text-[var(--text-secondary)] hover:text-[hsl(var(--accent))] hover:border-[hsl(var(--accent))]/50 hover:bg-[hsl(var(--accent))]/10 transition-all duration-300"
+                aria-label="YouTube"
+              >
+                <Youtube className="w-4 h-4" />
+              </a>
+              <a
+                href="mailto:aprameya.techclub@kluniversity.in"
                 className="w-10 h-10 rounded-lg bg-[var(--text-primary)]/5 border border-[var(--border-color)] flex items-center justify-center text-[var(--text-secondary)] hover:text-[hsl(var(--accent))] hover:border-[hsl(var(--accent))]/50 hover:bg-[hsl(var(--accent))]/10 transition-all duration-300"
                 aria-label="Email"
               >
@@ -89,11 +103,20 @@ export default function Footer() {
               </li>
               <li>
                 <Link
-                  href="/team"
+                  href="/blogs"
                   className="text-[var(--text-secondary)] hover:text-[hsl(var(--accent))] text-sm transition-colors duration-200 flex items-center gap-2 group"
                 >
                   <span className="w-0 h-px bg-[hsl(var(--accent))] group-hover:w-4 transition-all duration-300"></span>
-                  Team
+                  Blogs
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="/research"
+                  className="text-[var(--text-secondary)] hover:text-[hsl(var(--accent))] text-sm transition-colors duration-200 flex items-center gap-2 group"
+                >
+                  <span className="w-0 h-px bg-[hsl(var(--accent))] group-hover:w-4 transition-all duration-300"></span>
+                  Research
                 </Link>
               </li>
               <li>
@@ -107,11 +130,11 @@ export default function Footer() {
               </li>
               <li>
                 <Link
-                  href="/blogs"
+                  href="/about"
                   className="text-[var(--text-secondary)] hover:text-[hsl(var(--accent))] text-sm transition-colors duration-200 flex items-center gap-2 group"
                 >
                   <span className="w-0 h-px bg-[hsl(var(--accent))] group-hover:w-4 transition-all duration-300"></span>
-                  Blog
+                  About
                 </Link>
               </li>
             </ul>
@@ -126,16 +149,7 @@ export default function Footer() {
             <ul className="space-y-3">
               <li>
                 <Link
-                  href="/research"
-                  className="text-[var(--text-secondary)] hover:text-[hsl(var(--accent))] text-sm transition-colors duration-200 flex items-center gap-2 group"
-                >
-                  <span className="w-0 h-px bg-[hsl(var(--accent))] group-hover:w-4 transition-all duration-300"></span>
-                  Research
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/privacy"
+                  href="#"
                   className="text-[var(--text-secondary)] hover:text-[hsl(var(--accent))] text-sm transition-colors duration-200 flex items-center gap-2 group"
                 >
                   <span className="w-0 h-px bg-[hsl(var(--accent))] group-hover:w-4 transition-all duration-300"></span>
@@ -144,7 +158,7 @@ export default function Footer() {
               </li>
               <li>
                 <a
-                  href="/code-of-conduct"
+                  href="#"
                   className="text-[var(--text-secondary)] hover:text-[hsl(var(--accent))] text-sm transition-colors duration-200 flex items-center gap-2 group"
                 >
                   <span className="w-0 h-px bg-[hsl(var(--accent))] group-hover:w-4 transition-all duration-300"></span>
@@ -176,14 +190,7 @@ export default function Footer() {
               </span>
             </div>
 
-            {/* Status indicator */}
-            <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-[hsl(var(--accent))]/10 border border-[hsl(var(--accent))]/20">
-              <span className="relative flex h-2 w-2">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[hsl(var(--accent))] opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-2 w-2 bg-[hsl(var(--accent))]"></span>
-              </span>
-              <span className="text-[hsl(var(--accent))] text-xs font-mono font-medium">All Systems Operational</span>
-            </div>
+
           </div>
         </div>
       </div>

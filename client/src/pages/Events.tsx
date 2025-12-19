@@ -1,21 +1,20 @@
 import { useState } from 'react';
-import { Link } from 'wouter';
-import { events, upcomingEvents } from '../lib/data';
-import EventCard from '../components/EventCard';
+import { Link, useLocation } from 'wouter';
+// import { events, upcomingEvents } from '../lib/data'; // Removed static import
 import { Event } from '../lib/types';
 import { useQuery } from '@tanstack/react-query';
 import { User } from '@shared/schema';
+import { Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import {
   Calendar,
-  Clock,
-  MapPin,
+  Clock as ResultClockIcon,
+  MapPin as ResultMapIcon,
   Users,
   Filter,
   Search,
@@ -26,8 +25,20 @@ import {
 } from 'lucide-react';
 import { motion } from 'framer-motion';
 import ProximityMatrix from '../components/backgrounds/ProximityMatrix';
+import { CleanCard } from '../components/ui/v6-card';
+
+import { useToast } from "@/hooks/use-toast";
+import { cn } from "@/lib/utils";
+import { useAuth } from '@/context/AuthContext';
 
 const Events = () => {
+  const { toast } = useToast();
+  const { data: events = [], isLoading, error } = useQuery<Event[]>({
+    queryKey: ['/api/events'],
+  });
+  const { user } = useAuth();
+  const [, setLocation] = useLocation();
+
   const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
   const [filterType, setFilterType] = useState('all');
   const [searchTerm, setSearchTerm] = useState('');
@@ -35,11 +46,24 @@ const Events = () => {
     message: ''
   });
 
-  // Get current user for authentication check
-  const { data: user } = useQuery<User>({
-    queryKey: ['/api/me'],
-    staleTime: 5000,
-  });
+  // Sort events to find upcoming ones
+  const upcomingEvents = [...events].sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()).filter(e => new Date(e.date) > new Date()).slice(0, 1);
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-[var(--bg-body)] flex items-center justify-center">
+        <Loader2 className="w-8 h-8 animate-spin text-[hsl(var(--accent))]" />
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen bg-[var(--bg-body)] flex items-center justify-center text-[var(--text-secondary)]">
+        Error loading events. Please try again later.
+      </div>
+    );
+  }
 
   const handleRegisterInterest = (event: Event) => {
     setSelectedEvent(event);
@@ -64,18 +88,22 @@ const Events = () => {
     e.preventDefault();
 
     if (!selectedEvent) {
-      alert('Please select an event first');
+      toast({
+        title: "Selection Required",
+        description: "Please select an event from the list first.",
+        variant: "destructive",
+      });
       return;
     }
 
     try {
-      const response = await fetch('/api/event-registrations', {
+      const response = await fetch('/api/db/event-registrations', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          eventId: parseInt(selectedEvent.id),
+          eventId: selectedEvent.id,
           message: formData.message
         }),
       });
@@ -83,18 +111,29 @@ const Events = () => {
       const result = await response.json();
 
       if (response.ok) {
-        alert(`✅ Successfully registered for "${selectedEvent.title}"!\n\nYou will receive a confirmation email shortly.`);
+        toast({
+          title: "Successfully Registered!",
+          description: `You have registered for "${selectedEvent.title}". Check your email for confirmation.`,
+        });
         // Reset form
         setFormData({
           message: ''
         });
         setSelectedEvent(null);
       } else {
-        alert(`❌ Registration failed: ${result.error}`);
+        toast({
+          title: "Registration Failed",
+          description: result.error || "Something went wrong.",
+          variant: "destructive",
+        });
       }
     } catch (error) {
       console.error('Error registering for event:', error);
-      alert('❌ Network error. Please try again.');
+      toast({
+        title: "Network Error",
+        description: "Please try again later.",
+        variant: "destructive",
+      });
     }
   };
 
@@ -144,7 +183,7 @@ const Events = () => {
                   <div className="text-[var(--text-primary)] font-bold">{upcomingEvents[0].title}</div>
                   <div className="text-xs text-gray-400">{upcomingEvents[0].date} • {upcomingEvents[0].location}</div>
                 </div>
-                <Button className="ml-auto btn-primary" size="sm">
+                <Button className="ml-auto btn-primary" size="sm" onClick={() => handleRegisterInterest(upcomingEvents[0])}>
                   Register Now
                 </Button>
               </div>
@@ -186,26 +225,130 @@ const Events = () => {
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            {/* Events List */}
-            <div className="lg:col-span-2 space-y-6">
-              {filteredEvents.length > 0 ? (
-                filteredEvents.map((event, index) => (
-                  <motion.div
-                    key={event.id}
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: index * 0.1 }}
-                  >
-                    <EventCard event={event} onRegister={() => handleRegisterInterest(event)} />
-                  </motion.div>
-                ))
-              ) : (
-                <div className="text-center py-20 bg-[var(--card-bg)]/50 rounded-xl border border-[var(--border-color)] border-dashed">
-                  <Calendar className="w-12 h-12 text-[var(--text-secondary)] mx-auto mb-4 opacity-50" />
-                  <h3 className="text-xl font-bold text-[var(--text-primary)] mb-2">No events found</h3>
-                  <p className="text-[var(--text-secondary)]">Try adjusting your search or filters</p>
-                </div>
-              )}
+            {/* Events Timeline */}
+            <div className="lg:col-span-2 relative">
+              {/* Timeline Line */}
+              <div className="absolute left-8 top-0 bottom-0 w-px bg-[var(--border-color)]"></div>
+
+              <div className="space-y-12">
+                {filteredEvents.length > 0 ? (
+                  filteredEvents.map((event, index) => (
+                    <motion.div
+                      key={event.id}
+                      initial={{ opacity: 0, x: -20 }}
+                      whileInView={{ opacity: 1, x: 0 }}
+                      transition={{ delay: index * 0.1 }}
+                      viewport={{ once: true }}
+                      className="relative pl-20"
+                    >
+                      {/* Timeline Dot */}
+                      <div className={cn(
+                        "absolute left-[30px] top-6 w-3 h-3 rounded-full shadow-[0_0_10px_hsl(var(--accent))] z-10 transition-colors duration-300",
+                        selectedEvent?.id === event.id ? "bg-[hsl(var(--accent))]" : "bg-[var(--border-color)]"
+                      )}></div>
+                      {selectedEvent?.id === event.id && (
+                        <div className="absolute left-[31px] top-6 w-3 h-3 rounded-full bg-[hsl(var(--accent))] animate-ping opacity-50"></div>
+                      )}
+
+                      <CleanCard
+                        className={cn(
+                          "flex flex-col md:flex-row overflow-hidden group transition-all duration-300",
+                          selectedEvent?.id === event.id ? "border-[hsl(var(--accent))] shadow-[0_0_20px_hsl(var(--accent))/10]" : ""
+                        )}
+                        onClick={() => handleRegisterInterest(event)}
+                      >
+                        {/* Event Image */}
+                        <div className="md:w-1/3 relative h-48 md:h-auto overflow-hidden">
+                          <div className="absolute inset-0 bg-gradient-to-r from-[var(--bg-body)]/80 to-transparent z-10 md:hidden"></div>
+                          <img
+                            src={event.image || '/assets/event_symposium.png'}
+                            alt={event.title}
+                            className="w-full h-full object-cover brightness-90 group-hover:brightness-100 transition-all duration-700 group-hover:scale-105"
+                          />
+                          <div className="absolute top-4 left-4 md:hidden z-20">
+                            <Badge variant="outline" className="bg-[var(--bg-body)]/80 backdrop-blur-sm border-[hsl(var(--accent))]/30 text-[hsl(var(--accent))]">
+                              {event.type}
+                            </Badge>
+                          </div>
+                        </div>
+
+                        {/* Event Details */}
+                        <div className="flex-1 p-6 flex flex-col justify-between relative">
+                          {user?.role === 'ADMIN' && (
+                            <Button
+                              size="sm"
+                              variant="secondary"
+                              className="absolute top-4 right-4 z-20"
+                              onClick={(e) => {
+                                e.stopPropagation(); // Prevent CleanCard's onClick from firing
+                                setLocation(`/dashboard?view=events&editId=${event.id}&type=event`);
+                              }}
+                            >
+                              Edit
+                            </Button>
+                          )}
+                          <div className="flex justify-between items-start mb-4">
+                            <div>
+                              <div className="hidden md:flex items-center gap-2 mb-2">
+                                <Badge variant="outline" className="bg-[hsl(var(--accent))]/5 border-[hsl(var(--accent))]/20 text-[hsl(var(--accent))] hover:bg-[hsl(var(--accent))]/10">
+                                  {event.type}
+                                </Badge>
+                                <span className="text-xs text-[var(--text-secondary)] font-mono">{event.year}</span>
+                              </div>
+                              <h3 className="text-xl font-bold text-[var(--text-primary)] mb-2 group-hover:text-[hsl(var(--accent))] transition-colors">
+                                {event.title}
+                              </h3>
+                            </div>
+                            <div className="text-center bg-[var(--card-bg)] border border-[var(--border-color)] rounded-lg p-2 min-w-[60px]">
+                              <div className="text-xs text-[var(--text-secondary)] uppercase">{event.month}</div>
+                              <div className="text-xl font-bold text-[var(--text-primary)]">{event.day}</div>
+                            </div>
+                          </div>
+
+                          <div className="space-y-2 mb-6">
+                            <div className="flex items-center text-sm text-[var(--text-secondary)]">
+                              <ResultClockIcon className="w-4 h-4 mr-2 text-[hsl(var(--accent))]" />
+                              {event.time}
+                            </div>
+                            <div className="flex items-center text-sm text-[var(--text-secondary)]">
+                              <ResultMapIcon className="w-4 h-4 mr-2 text-[hsl(var(--accent))]" />
+                              {event.location}
+                            </div>
+                          </div>
+
+                          <p className="text-sm text-[var(--text-secondary)] mb-6 line-clamp-2">
+                            {event.description}
+                          </p>
+
+                          <div className="flex gap-3">
+                            <Button
+                              size="sm"
+                              className={cn(
+                                "text-xs font-bold uppercase tracking-wider transition-all",
+                                selectedEvent?.id === event.id
+                                  ? "bg-[hsl(var(--accent))] text-[var(--bg-body)] hover:bg-[hsl(var(--accent))]/90"
+                                  : "bg-[var(--card-bg)] border border-[var(--border-color)] text-[var(--text-primary)] hover:border-[hsl(var(--accent))]"
+                              )}
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleRegisterInterest(event);
+                              }}
+                            >
+                              {selectedEvent?.id === event.id ? "Selected" : "Select Event"}
+                            </Button>
+                          </div>
+                        </div>
+                      </CleanCard>
+                    </motion.div>
+                  ))
+                ) : (
+                  <div className="text-center py-20 bg-[var(--card-bg)]/50 rounded-xl border border-[var(--border-color)] border-dashed ml-8">
+                    <Calendar className="w-12 h-12 text-[var(--text-secondary)] mx-auto mb-4 opacity-50" />
+                    <h3 className="text-xl font-bold text-[var(--text-primary)] mb-2">No events found</h3>
+                    <p className="text-[var(--text-secondary)]">Try adjusting your search or filters</p>
+                  </div>
+                )}
+              </div>
             </div>
 
             {/* Registration Form Sidebar */}

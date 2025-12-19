@@ -17,7 +17,9 @@ export async function apiRequest(
   url: string,
   options?: RequestOptions
 ): Promise<Response> {
-  const res = await fetch(url, {
+  const baseUrl = import.meta.env.VITE_API_URL || "";
+  const fullUrl = url.startsWith("/") ? `${baseUrl}${url}` : url;
+  const res = await fetch(fullUrl, {
     method: options?.method || 'GET',
     headers: {
       'Content-Type': 'application/json',
@@ -36,18 +38,21 @@ export const getQueryFn: <T>(options: {
   on401: UnauthorizedBehavior;
 }) => QueryFunction<T> =
   ({ on401: unauthorizedBehavior }) =>
-  async ({ queryKey }) => {
-    const res = await fetch(queryKey[0] as string, {
-      credentials: "include",
-    });
+    async ({ queryKey }) => {
+      const baseUrl = import.meta.env.VITE_API_URL || "";
+      const url = queryKey[0] as string;
+      const fullUrl = url.startsWith("/") ? `${baseUrl}${url}` : url;
+      const res = await fetch(fullUrl, {
+        credentials: "include",
+      });
 
-    if (unauthorizedBehavior === "returnNull" && res.status === 401) {
-      return null;
-    }
+      if (unauthorizedBehavior === "returnNull" && res.status === 401) {
+        return null;
+      }
 
-    await throwIfResNotOk(res);
-    return await res.json();
-  };
+      await throwIfResNotOk(res);
+      return await res.json();
+    };
 
 export const queryClient = new QueryClient({
   defaultOptions: {

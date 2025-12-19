@@ -41,10 +41,10 @@ const ProjectModal = ({ project, isOpen, onClose }: ProjectModalProps) => {
             <CleanCard className="p-6 rounded-lg">
               <h4 className="font-mono font-bold text-sm text-[var(--text-primary)] mb-4 uppercase tracking-wider">Technologies Used</h4>
               <ul className="space-y-2">
-                {project.technologies.map((tech, index) => (
+                {(Array.isArray(project.technologies) ? project.technologies : (typeof project.technologies === 'string' ? (project.technologies as string).split(',') : [])).map((tech, index) => (
                   <li key={index} className="text-sm text-[var(--text-secondary)] flex items-center">
                     <span className="w-1.5 h-1.5 bg-[hsl(var(--accent))] rounded-full mr-2"></span>
-                    {tech}
+                    {tech.trim()}
                   </li>
                 ))}
               </ul>
@@ -52,10 +52,10 @@ const ProjectModal = ({ project, isOpen, onClose }: ProjectModalProps) => {
             <CleanCard className="p-6 rounded-lg">
               <h4 className="font-mono font-bold text-sm text-[var(--text-primary)] mb-4 uppercase tracking-wider">Team Members</h4>
               <ul className="space-y-2">
-                {project.team.map((member, index) => (
+                {(Array.isArray(project.team) ? project.team : (typeof project.team === 'string' ? (project.team as string).split(',') : [])).map((member, index) => (
                   <li key={index} className="text-sm text-[var(--text-secondary)] flex items-center">
                     <span className="w-1.5 h-1.5 bg-[hsl(var(--accent))] rounded-full mr-2"></span>
-                    {member}
+                    {member.trim()}
                   </li>
                 ))}
               </ul>

@@ -35,7 +35,7 @@ export const OperativeCard = ({ className, children, image, name, role, clearanc
     return (
         <div
             className={cn(
-                "operative-card w-[280px] h-[380px] shrink-0 relative overflow-hidden rounded-xl transition-all duration-300",
+                "operative-card w-[280px] h-[380px] shrink-0 relative overflow-hidden rounded-2xl transition-all duration-300",
                 "bg-[var(--card-bg)] border border-[var(--border-color)]",
                 "hover:-translate-y-2.5 hover:scale-[1.02] hover:border-[hsl(var(--accent))] hover:bg-[var(--btn-bg-hover)] hover:shadow-[0_15px_40px_-10px_rgba(0,0,0,0.1)] hover:z-10",
                 className

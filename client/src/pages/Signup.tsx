@@ -7,7 +7,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import { Eye, EyeOff, User, Mail, Lock, ArrowRight, Shield, Users, Zap } from 'lucide-react';
+import { Eye, EyeOff, User, Mail, Lock, ArrowRight, Shield, Users, Zap, Hash } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { GlassPanel } from '@/components/ui/v6-card';
 
@@ -15,6 +15,7 @@ const Signup = () => {
   const [formData, setFormData] = useState({
     username: '',
     email: '',
+    rollNumber: '',
     password: '',
     confirmPassword: '',
     agreeToTerms: false
@@ -57,6 +58,12 @@ const Signup = () => {
       return;
     }
 
+    if (!/^\d{10}$/.test(formData.rollNumber)) {
+      setError('Roll number must be exactly 10 digits');
+      setIsLoading(false);
+      return;
+    }
+
     try {
       const response = await fetch('/api/register', {
         method: 'POST',
@@ -66,6 +73,7 @@ const Signup = () => {
         body: JSON.stringify({
           username: formData.username,
           email: formData.email,
+          rollNumber: formData.rollNumber,
           password: formData.password
         }),
       });
@@ -115,7 +123,7 @@ const Signup = () => {
             {/* Benefits */}
             <div className="space-y-4 border-l border-[var(--border-color)] pl-6">
               {[
-                { icon: Users, text: "Join 200+ passionate members" },
+                { icon: Users, text: "Join 50+ passionate members" },
                 { icon: Zap, text: "Access cutting-edge projects" },
                 { icon: Shield, text: "Learn from industry experts" }
               ].map((benefit, index) => (
@@ -191,6 +199,25 @@ const Signup = () => {
                       required
                     />
                   </div>
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="rollNumber" className="text-[var(--text-primary)]">Roll Number</Label>
+                  <div className="relative">
+                    <Hash className="absolute left-3 top-1/2 transform -translate-y-1/2 text-[var(--text-secondary)] w-4 h-4" />
+                    <Input
+                      type="text"
+                      id="rollNumber"
+                      placeholder="Enter 10-digit roll number"
+                      value={formData.rollNumber}
+                      onChange={handleInputChange}
+                      maxLength={10}
+                      pattern="\d{10}"
+                      className="pl-10 bg-[var(--bg-body)] border-[var(--border-color)] text-[var(--text-primary)]"
+                      required
+                    />
+                  </div>
+                  <p className="text-xs text-[var(--text-secondary)]">Must be exactly 10 digits</p>
                 </div>
 
                 <div className="space-y-2">

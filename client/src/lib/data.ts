@@ -7,7 +7,7 @@ export const projects: Project[] = [
     title: "Autonomous Navigation System",
     description: "Developed an advanced navigation system using computer vision and deep learning for real-world autonomous vehicle applications.",
     category: "Autonomous Driving",
-    image: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80",
+    image: "/assets/feature_navigation.png",
     technologies: ["Python", "TensorFlow", "ROS", "OpenCV"],
     team: ["John Doe", "Jane Smith", "Robert Johnson"]
   },
@@ -16,7 +16,7 @@ export const projects: Project[] = [
     title: "Smart Traffic Management",
     description: "AI-powered traffic management system to reduce congestion and improve road safety using real-time data analysis.",
     category: "Smart City",
-    image: "https://images.unsplash.com/photo-1449824913935-59a10b8d2000?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80",
+    image: "/assets/project_traffic_mgmt.png",
     technologies: ["Python", "Computer Vision", "IoT", "Machine Learning"],
     team: ["Michael Brown", "Sarah Williams", "David Miller"]
   },
@@ -25,7 +25,7 @@ export const projects: Project[] = [
     title: "Drone Delivery System",
     description: "Autonomous drone system for efficient package delivery in urban environments with obstacle avoidance.",
     category: "Drones",
-    image: "https://images.unsplash.com/photo-1473968512647-3e447244af8f?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80",
+    image: "/assets/project_drone_delivery.png",
     technologies: ["C++", "ROS", "Flight Control", "GPS Navigation"],
     team: ["Emily Johnson", "Mark Wilson", "Lisa Chen"]
   },
@@ -34,7 +34,7 @@ export const projects: Project[] = [
     title: "Vehicle-to-Vehicle Communication",
     description: "Developing V2V communication protocols for coordinated autonomous vehicle movement in traffic scenarios.",
     category: "Connected Vehicles",
-    image: "https://images.unsplash.com/photo-1485827404703-89b55fcc595e?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80",
+    image: "/assets/project_v2v_comm.png",
     technologies: ["C++", "Networking", "Protocol Design", "Real-time Systems"],
     team: ["Alex Turner", "Maria Garcia", "James Wilson"]
   },
@@ -43,7 +43,7 @@ export const projects: Project[] = [
     title: "Autonomous Parking Assistant",
     description: "Smart parking system that automatically finds and navigates to available parking spaces using sensor fusion.",
     category: "Parking Solutions",
-    image: "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80",
+    image: "/assets/project_smart_parking.png",
     technologies: ["Python", "Sensor Fusion", "Path Planning", "Computer Vision"],
     team: ["Sophie Chen", "Ryan Martinez", "Emma Thompson"]
   },
@@ -52,7 +52,7 @@ export const projects: Project[] = [
     title: "Predictive Maintenance System",
     description: "AI-driven system for predicting vehicle maintenance needs to ensure optimal performance and safety.",
     category: "Maintenance",
-    image: "https://images.unsplash.com/photo-1581092160562-40aa08e78837?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80",
+    image: "/assets/project_predictive_maint.png",
     technologies: ["Machine Learning", "Data Analytics", "IoT Sensors", "Python"],
     team: ["Daniel Kim", "Isabella Rodriguez", "Lucas Anderson"]
   }
@@ -67,7 +67,7 @@ export const blogPosts: BlogPost[] = [
     content: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam auctor, nisl eget ultricies tincidunt, nisl nisl aliquam nisl, eget aliquam nisl nisl sit amet nisl. Nullam auctor, nisl eget ultricies tincidunt, nisl nisl aliquam nisl, eget aliquam nisl nisl sit amet nisl.",
     category: "Technology",
     date: "2023-04-15",
-    image: "/images/blog1.jpg",
+    image: "/assets/feature_vehicle.png",
     author: "John Doe"
   },
   {
@@ -77,7 +77,7 @@ export const blogPosts: BlogPost[] = [
     content: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam auctor, nisl eget ultricies tincidunt, nisl nisl aliquam nisl, eget aliquam nisl nisl sit amet nisl. Nullam auctor, nisl eget ultricies tincidunt, nisl nisl aliquam nisl, eget aliquam nisl nisl sit amet nisl.",
     category: "AI",
     date: "2023-05-22",
-    image: "/images/blog2.jpg",
+    image: "/assets/blog_ml_nav.png",
     author: "Jane Smith"
   },
   {
@@ -87,7 +87,7 @@ export const blogPosts: BlogPost[] = [
     content: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam auctor, nisl eget ultricies tincidunt, nisl nisl aliquam nisl, eget aliquam nisl nisl sit amet nisl. Nullam auctor, nisl eget ultricies tincidunt, nisl nisl aliquam nisl, eget aliquam nisl nisl sit amet nisl.",
     category: "Ethics",
     date: "2023-06-10",
-    image: "/images/blog3.jpg",
+    image: "/assets/blog_ethics.png",
     author: "Robert Johnson"
   }
 ];
@@ -100,7 +100,7 @@ export const researchItems: ResearchItem[] = [
     description: "Research on improving computer vision systems for adverse weather conditions.",
     category: "Computer Vision",
     date: "2023-03-15",
-    image: "/images/research1.jpg",
+    image: "/assets/feature_perception.png",
     authors: ["Dr. John Doe", "Dr. Sarah Williams"],
     citations: 42
   },
@@ -110,7 +110,7 @@ export const researchItems: ResearchItem[] = [
     description: "Novel approaches to teaching autonomous vehicles to navigate complex urban environments.",
     category: "Machine Learning",
     date: "2023-04-20",
-    image: "/images/research2.jpg",
+    image: "/assets/research_rl.png",
     authors: ["Dr. Michael Brown", "Dr. Lisa Chen"],
     citations: 28
   },
@@ -120,7 +120,7 @@ export const researchItems: ResearchItem[] = [
     description: "Research on vehicle-to-vehicle communication for coordinated movement in traffic.",
     category: "Connected Vehicles",
     date: "2023-05-10",
-    image: "/images/research3.jpg",
+    image: "/assets/research_cooperative.png",
     authors: ["Dr. David Miller", "Dr. Emily Johnson"],
     citations: 35
   }
@@ -139,7 +139,7 @@ export const events: Event[] = [
     time: "9:00 AM - 5:00 PM",
     location: "Main Auditorium, KLU Campus",
     description: "Join us for our annual symposium showcasing the latest advancements in autonomous vehicle technology with industry experts and researchers.",
-    image: "https://images.unsplash.com/photo-1540575467063-178a50c2df87?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80"
+    image: "/assets/event_symposium.png"
   },
   {
     id: "2",
@@ -152,7 +152,7 @@ export const events: Event[] = [
     time: "10:00 AM - 8:00 PM",
     location: "Innovation Hub, Engineering Block",
     description: "A 10-hour hackathon challenging participants to develop innovative solutions for future mobility challenges with exciting prizes.",
-    image: "https://images.unsplash.com/photo-1522071820081-009f0129c71c?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80"
+    image: "/assets/event_hackathon.png"
   },
   {
     id: "3",
@@ -165,7 +165,7 @@ export const events: Event[] = [
     time: "2:00 PM - 5:00 PM",
     location: "Lab 201, Technology Building",
     description: "Hands-on workshop on integrating multiple sensors for robust autonomous navigation systems with practical demonstrations.",
-    image: "https://images.unsplash.com/photo-1581092160562-40aa08e78837?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80"
+    image: "/assets/event_workshop.png"
   },
   {
     id: "4",
@@ -178,7 +178,7 @@ export const events: Event[] = [
     time: "3:00 PM - 5:00 PM",
     location: "Virtual Event",
     description: "Panel discussion with industry leaders discussing the future of autonomous transportation and career opportunities.",
-    image: "https://images.unsplash.com/photo-1559136555-9303baea8ebd?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80"
+    image: "/assets/event_panel.png"
   }
 ];
 
@@ -190,7 +190,7 @@ export const teamMembers: TeamMember[] = [
     role: "Faculty Advisor",
     department: "Computer Science",
     year: "Professor",
-    image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-1.2.1&auto=format&fit=crop&w=300&q=80",
+    image: "/assets/team_avatar_1.png",
     socialLinks: {
       linkedin: "https://linkedin.com/in/johndoe",
       github: "https://github.com/johndoe",
@@ -203,7 +203,7 @@ export const teamMembers: TeamMember[] = [
     role: "President",
     department: "Electrical Engineering",
     year: "4th Year",
-    image: "https://images.unsplash.com/photo-1494790108755-2616b612b786?ixlib=rb-1.2.1&auto=format&fit=crop&w=300&q=80",
+    image: "/assets/team_avatar_2.png",
     socialLinks: {
       linkedin: "https://linkedin.com/in/janesmith",
       github: "https://github.com/janesmith",
@@ -216,7 +216,7 @@ export const teamMembers: TeamMember[] = [
     role: "Technical Lead",
     department: "Mechanical Engineering",
     year: "3rd Year",
-    image: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&auto=format&fit=crop&w=300&q=80",
+    image: "/assets/team_avatar_3.png",
     socialLinks: {
       linkedin: "https://linkedin.com/in/robertjohnson",
       github: "https://github.com/robertjohnson",
@@ -229,7 +229,7 @@ export const teamMembers: TeamMember[] = [
     role: "Research Coordinator",
     department: "Computer Science",
     year: "4th Year",
-    image: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixlib=rb-1.2.1&auto=format&fit=crop&w=300&q=80",
+    image: "/assets/team_avatar_4.png",
     socialLinks: {
       linkedin: "https://linkedin.com/in/sarahwilliams",
       github: "https://github.com/sarahwilliams",
@@ -308,7 +308,7 @@ export const upcomingEvents = [
     id: "6",
     title: "Winter Project Showcase",
     day: "20",
-    month: "Dec", 
+    month: "Dec",
     date: "2024-12-20",
     location: "Main Auditorium"
   },
@@ -330,7 +330,7 @@ export const featuredItems = [
     title: "Autonomous Navigation System",
     description: "Developed an advanced navigation system using computer vision and deep learning for real-world autonomous vehicle applications.",
     category: "Autonomous Driving",
-    image: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80",
+    image: "/assets/feature_navigation.png",
     link: "/projects"
   },
   {
@@ -339,7 +339,7 @@ export const featuredItems = [
     title: "The Future of Autonomous Vehicles",
     description: "Exploring the potential impact of self-driving cars on urban transportation and the challenges ahead.",
     category: "Technology",
-    image: "https://images.unsplash.com/photo-1555353540-64580b51c258?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80",
+    image: "/assets/feature_vehicle.png",
     link: "/blogs"
   },
   {
@@ -348,7 +348,7 @@ export const featuredItems = [
     title: "Advanced Perception Systems",
     description: "Research on improving computer vision systems for adverse weather conditions in autonomous vehicles.",
     category: "Computer Vision",
-    image: "https://images.unsplash.com/photo-1485827404703-89b55fcc595e?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80",
+    image: "/assets/feature_perception.png",
     link: "/research"
   }
 ];

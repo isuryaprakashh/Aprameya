@@ -12,9 +12,9 @@ const buttonVariants = cva(
         default: "btn-primary px-8 py-4 text-sm",
         secondary: "btn-secondary px-8 py-4 text-sm",
         destructive:
-          "bg-red-600 text-white rounded-lg hover:bg-red-700",
+          "bg-red-600 text-white rounded-xl hover:bg-red-700",
         outline:
-          "border border-white/10 bg-transparent text-white rounded-lg hover:bg-white/5",
+          "border border-white/10 bg-transparent text-white rounded-xl hover:bg-white/5",
         ghost: "hover:bg-white/5 text-white",
         link: "text-emerald-400 underline-offset-4 hover:underline",
         icon: "btn-icon",

@@ -6,6 +6,7 @@ export interface Project {
   image: string;
   technologies: string[];
   team: string[];
+  is_featured?: boolean;
 }
 
 export interface BlogPost {
@@ -64,27 +65,19 @@ export interface StatItem {
 }
 
 export interface User {
-  id: number;
+  id: string;
   username: string;
   email: string;
   role: string;
+  rollNumber?: string;
   created_at?: string;
 }
 
 export interface EventRegistration {
-  id: number;
-  event_id: number;
-  user_id: number;
+  id: string;
+  event_id: string;
+  user_id: string;
   registered_at?: string;
   event?: Event;
-}
-
-export interface Comment {
-  id: number;
-  content: string;
-  user_id: number;
-  project_id?: number;
-  blog_id?: number;
-  research_id?: number;
-  created_at?: string;
+  user?: User;
 }

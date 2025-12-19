@@ -1,4 +1,5 @@
 import React from 'react';
+import { teamMembers } from '../lib/data';
 
 const OperativeRoster = () => {
     return (
@@ -114,43 +115,53 @@ const OperativeRoster = () => {
             {/* Marquee Component */}
             <div className="marquee-container relative">
                 <div className="marquee-track">
-
                     {/* Original Set */}
-                    <div className="operative-card">
-                        <div className="operative-img-container"><img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=600&auto=format&fit=crop" className="operative-img" alt="Alex Kai" /></div>
-                        <div className="operative-data"><div className="operative-status-dot"></div><h3 className="text-lg font-bold text-white mb-1">ALEX_KAI</h3><p className="text-xs text-emerald-500 font-mono mb-4">LEAD_ARCHITECT</p><div className="space-y-2 border-t border-white/10 pt-4"><div className="flex justify-between text-[10px] text-gray-500 font-mono"><span>CLEARANCE</span><span className="text-white">L5</span></div></div></div>
-                    </div>
-                    <div className="operative-card">
-                        <div className="operative-img-container"><img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=600&auto=format&fit=crop" className="operative-img" alt="Sarah Jin" /></div>
-                        <div className="operative-data"><div className="operative-status-dot"></div><h3 className="text-lg font-bold text-white mb-1">SARAH_JIN</h3><p className="text-xs text-emerald-500 font-mono mb-4">NEURAL_OPS</p><div className="space-y-2 border-t border-white/10 pt-4"><div className="flex justify-between text-[10px] text-gray-500 font-mono"><span>CLEARANCE</span><span className="text-white">L4</span></div></div></div>
-                    </div>
-                    <div className="operative-card">
-                        <div className="operative-img-container"><img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=600&auto=format&fit=crop" className="operative-img" alt="Marcus V" /></div>
-                        <div className="operative-data"><div className="operative-status-dot"></div><h3 className="text-lg font-bold text-white mb-1">MARCUS_V</h3><p className="text-xs text-emerald-500 font-mono mb-4">SYS_SECURITY</p><div className="space-y-2 border-t border-white/10 pt-4"><div className="flex justify-between text-[10px] text-gray-500 font-mono"><span>CLEARANCE</span><span className="text-white">L5</span></div></div></div>
-                    </div>
-                    <div className="operative-card">
-                        <div className="operative-img-container"><img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=600&auto=format&fit=crop" className="operative-img" alt="Elena R" /></div>
-                        <div className="operative-data"><div className="operative-status-dot"></div><h3 className="text-lg font-bold text-white mb-1">ELENA_R</h3><p className="text-xs text-emerald-500 font-mono mb-4">DATA_SCIENCE</p><div className="space-y-2 border-t border-white/10 pt-4"><div className="flex justify-between text-[10px] text-gray-500 font-mono"><span>CLEARANCE</span><span className="text-white">L3</span></div></div></div>
-                    </div>
+                    {teamMembers.map((member) => (
+                        <div key={member.id} className="operative-card">
+                            <div className="operative-img-container">
+                                <img src={member.image} className="operative-img" alt={member.name} />
+                            </div>
+                            <div className="operative-data">
+                                <div className="operative-status-dot"></div>
+                                <h3 className="text-lg font-bold text-white mb-1 uppercase tracking-tighter">{member.name.split(' ').slice(-1)[0]}_{member.name.split(' ')[0].charAt(0)}</h3>
+                                <p className="text-xs text-emerald-500 font-mono mb-4 uppercase">{member.role.replace(' ', '_')}</p>
+                                <div className="space-y-2 border-t border-white/10 pt-4">
+                                    <div className="flex justify-between text-[10px] text-gray-500 font-mono">
+                                        <span>DEPARTMENT</span>
+                                        <span className="text-white uppercase truncate max-w-[100px]">{member.department}</span>
+                                    </div>
+                                    <div className="flex justify-between text-[10px] text-gray-500 font-mono">
+                                        <span>YEAR</span>
+                                        <span className="text-white uppercase">{member.year}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    ))}
 
-                    {/* Duplicate Set (Required for seamless loop) */}
-                    <div className="operative-card">
-                        <div className="operative-img-container"><img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=600&auto=format&fit=crop" className="operative-img" alt="Alex Kai" /></div>
-                        <div className="operative-data"><div className="operative-status-dot"></div><h3 className="text-lg font-bold text-white mb-1">ALEX_KAI</h3><p className="text-xs text-emerald-500 font-mono mb-4">LEAD_ARCHITECT</p><div className="space-y-2 border-t border-white/10 pt-4"><div className="flex justify-between text-[10px] text-gray-500 font-mono"><span>CLEARANCE</span><span className="text-white">L5</span></div></div></div>
-                    </div>
-                    <div className="operative-card">
-                        <div className="operative-img-container"><img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=600&auto=format&fit=crop" className="operative-img" alt="Sarah Jin" /></div>
-                        <div className="operative-data"><div className="operative-status-dot"></div><h3 className="text-lg font-bold text-white mb-1">SARAH_JIN</h3><p className="text-xs text-emerald-500 font-mono mb-4">NEURAL_OPS</p><div className="space-y-2 border-t border-white/10 pt-4"><div className="flex justify-between text-[10px] text-gray-500 font-mono"><span>CLEARANCE</span><span className="text-white">L4</span></div></div></div>
-                    </div>
-                    <div className="operative-card">
-                        <div className="operative-img-container"><img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=600&auto=format&fit=crop" className="operative-img" alt="Marcus V" /></div>
-                        <div className="operative-data"><div className="operative-status-dot"></div><h3 className="text-lg font-bold text-white mb-1">MARCUS_V</h3><p className="text-xs text-emerald-500 font-mono mb-4">SYS_SECURITY</p><div className="space-y-2 border-t border-white/10 pt-4"><div className="flex justify-between text-[10px] text-gray-500 font-mono"><span>CLEARANCE</span><span className="text-white">L5</span></div></div></div>
-                    </div>
-                    <div className="operative-card">
-                        <div className="operative-img-container"><img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=600&auto=format&fit=crop" className="operative-img" alt="Elena R" /></div>
-                        <div className="operative-data"><div className="operative-status-dot"></div><h3 className="text-lg font-bold text-white mb-1">ELENA_R</h3><p className="text-xs text-emerald-500 font-mono mb-4">DATA_SCIENCE</p><div className="space-y-2 border-t border-white/10 pt-4"><div className="flex justify-between text-[10px] text-gray-500 font-mono"><span>CLEARANCE</span><span className="text-white">L3</span></div></div></div>
-                    </div>
-
+                    {/* Duplicate Set for Loop */}
+                    {teamMembers.map((member) => (
+                        <div key={`dup-${member.id}`} className="operative-card">
+                            <div className="operative-img-container">
+                                <img src={member.image} className="operative-img" alt={member.name} />
+                            </div>
+                            <div className="operative-data">
+                                <div className="operative-status-dot"></div>
+                                <h3 className="text-lg font-bold text-white mb-1 uppercase tracking-tighter">{member.name.split(' ').slice(-1)[0]}_{member.name.split(' ')[0].charAt(0)}</h3>
+                                <p className="text-xs text-emerald-500 font-mono mb-4 uppercase">{member.role.replace(' ', '_')}</p>
+                                <div className="space-y-2 border-t border-white/10 pt-4">
+                                    <div className="flex justify-between text-[10px] text-gray-500 font-mono">
+                                        <span>DEPARTMENT</span>
+                                        <span className="text-white uppercase truncate max-w-[100px]">{member.department}</span>
+                                    </div>
+                                    <div className="flex justify-between text-[10px] text-gray-500 font-mono">
+                                        <span>YEAR</span>
+                                        <span className="text-white uppercase">{member.year}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    ))}
                 </div>
             </div>
         </section>

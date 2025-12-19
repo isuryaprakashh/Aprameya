@@ -4,6 +4,7 @@ const userSchema = new mongoose.Schema({
     username: { type: String, required: true, unique: true },
     password: { type: String, required: true },
     email: { type: String, required: true, unique: true },
+    rollNumber: { type: String, required: true, unique: true, length: 10 },
     role: { type: String, default: 'ASPIRANT', enum: ['ASPIRANT', 'CORE', 'ADMIN'] },
     created_at: { type: Date, default: Date.now },
     display_name: String,
