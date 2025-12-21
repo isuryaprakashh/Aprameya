@@ -71,7 +71,7 @@ export interface User {
   role: string;
   rollNumber?: string;
   password?: string;
-  created_at?: string;
+  created_at: string;
 }
 
 export interface EventRegistration {

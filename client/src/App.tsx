@@ -1,5 +1,4 @@
-// @ts-ignore
-import { Route, Switch, useLocation, Redirect } from "wouter";
+import { Route, Switch, Redirect } from "wouter";
 import { Toaster } from "@/components/ui/toaster";
 
 import { ThemeProvider } from "@/components/theme-provider";
