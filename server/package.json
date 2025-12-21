@@ -4,9 +4,9 @@
   "type": "module",
   "license": "MIT",
   "scripts": {
-    "dev": "ts-node index.ts",
+    "dev": "tsx index.ts",
     "build": "npm install --prefix ../client && npm run build --prefix ../client",
-    "start": "cross-env NODE_ENV=production ts-node index.ts",
+    "start": "cross-env NODE_ENV=production tsx index.ts",
     "check": "tsc"
   },
   "dependencies": {
