@@ -1,6 +1,7 @@
 import { useState, useMemo } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { apiRequest } from '@/lib/queryClient';
+import { useAuth } from "@/context/AuthContext";
 import { useToast } from '@/hooks/use-toast';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -12,10 +13,20 @@ import { motion } from 'framer-motion';
 import { Sheet, SheetContent } from '@/components/ui/sheet';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import ProjectModal from '@/components/ProjectModal';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogTrigger } from '@/components/ui/dialog';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import {
   AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
   PieChart, Pie, Cell, Legend
@@ -37,7 +48,7 @@ import {
   FaBars,
   FaTimes,
   FaCog,
-  FaEdit,
+
   FaTrash,
   FaPlus,
   FaSave,
@@ -46,7 +57,7 @@ import {
   FaFileCsv,
   FaBlog
 } from 'react-icons/fa';
-import { useAuth } from '@/context/AuthContext';
+
 
 // Interfaces for Admin
 
@@ -203,13 +214,26 @@ const UserProfile = () => {
     enabled: currentUser?.role === 'ADMIN',
     staleTime: 5000
   });
-  console.log("Admin Registrations Data:", eventRegistrations);
 
   // Admin Mutations
   const updateUserRole = useMutation({
     mutationFn: ({ userId, role }: { userId: string, role: string }) => apiRequest(`/api/users/${userId}/role`, { method: 'PATCH', body: JSON.stringify({ role }) }),
     onSuccess: () => { queryClient.invalidateQueries({ queryKey: ['/api/users'] }); toast({ title: 'Success', description: 'User role updated' }); },
   });
+
+  const deleteUser = useMutation({
+    mutationFn: (userId: string) => apiRequest(`/api/users/${userId}`, { method: 'DELETE' }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/users'] });
+      toast({ title: 'Success', description: 'User deleted successfully' });
+      setUserToDelete(null);
+    },
+    onError: (error: any) => {
+      toast({ title: 'Error', description: error.message || 'Failed to delete user', variant: 'destructive' });
+    }
+  });
+
+  const [userToDelete, setUserToDelete] = useState<User | null>(null);
 
   const createProject = useMutation({ mutationFn: (d: any) => apiRequest('/api/projects', { method: 'POST', body: JSON.stringify(d) }), onSuccess: () => { queryClient.invalidateQueries({ queryKey: ['/api/projects'] }); setIsDialogOpen(false); toast({ title: 'Success', description: 'Project created' }); } });
   const updateProject = useMutation({ mutationFn: (d: any) => apiRequest(`/api/projects/${d.id}`, { method: 'PUT', body: JSON.stringify(d) }), onSuccess: () => { queryClient.invalidateQueries({ queryKey: ['/api/projects'] }); setIsDialogOpen(false); toast({ title: 'Success', description: 'Project updated' }); } });
@@ -386,12 +410,7 @@ const UserProfile = () => {
     return Object.entries(monthCounts).map(([name, count]) => ({ name, count })).sort((a, b) => new Date(Date.parse(a.name)).getTime() - new Date(Date.parse(b.name)).getTime());
   }, [users]);
 
-  const eventPopularityData = useMemo(() => {
-    return events.map(event => ({
-      name: event.title,
-      registrations: eventRegistrations.registrations?.filter((r: any) => r.event?.id === event.id).length || 0
-    })).sort((a, b) => b.registrations - a.registrations).slice(0, 5);
-  }, [events, eventRegistrations]);
+
 
   const contentDistributionData = useMemo(() => [
     { name: 'Projects', value: projects.length, color: '#10b981' },
@@ -535,6 +554,98 @@ const UserProfile = () => {
       </div>
     );
   }
+
+  const renderUserOverview = () => (
+    <div className="space-y-6 animate-in fade-in duration-500">
+      <div className="glass-panel p-6 rounded-xl border border-[var(--border-color)]">
+        <div className="flex flex-col md:flex-row gap-6 items-start md:items-center">
+          <Avatar className="w-20 h-20 border-2 border-[hsl(var(--accent))]">
+            <AvatarFallback className="bg-[hsl(var(--accent))]/10 text-[hsl(var(--accent))] text-2xl font-bold">
+              {getInitials(currentUser.username)}
+            </AvatarFallback>
+          </Avatar>
+
+          <div className="flex-1 space-y-2">
+            <div className="flex flex-col md:flex-row md:items-center gap-3">
+              <h2 className="text-2xl font-bold text-[var(--text-primary)]">{currentUser.username}</h2>
+              <Badge variant="outline" className={`${getRoleBadgeColor(currentUser.role)} px-3 py-1 text-xs`}>
+                {currentUser.role} ACCESS
+              </Badge>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-2 text-sm">
+              <div className="flex items-center text-[var(--text-secondary)]">
+                <FaUser className="mr-2 opacity-70" /> {currentUser.rollNumber || "No Roll Number"}
+              </div>
+              <div className="flex items-center text-[var(--text-secondary)]">
+                <FaTag className="mr-2 opacity-70" /> {currentUser.email}
+              </div>
+              <div className="flex items-center text-[var(--text-secondary)]">
+                <FaClock className="mr-2 opacity-70" /> Member since {new Date(currentUser.created_at || Date.now()).toLocaleDateString()}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className="space-y-4">
+        <div className="flex items-center gap-2">
+          <FaShieldAlt className="text-[hsl(var(--accent))]" />
+          <h3 className="text-lg font-bold text-[var(--text-primary)]">Access Level</h3>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {/* Content Management Card - Admin/Core Only */}
+          {(currentUser.role === 'ADMIN' || currentUser.role === 'CORE') && (
+            <div className="group relative overflow-hidden p-0 rounded-xl border border-blue-500/20 bg-[#0f172a]">
+              <div className="absolute inset-0 bg-blue-500/5 group-hover:bg-blue-500/10 transition-colors duration-300" />
+              <div className="relative p-5">
+                <h4 className="text-blue-400 font-bold mb-1">Content Management</h4>
+                <p className="text-xs text-blue-300/60">Can create and edit content</p>
+              </div>
+            </div>
+          )}
+
+          {/* Event Registration Card - Everyone */}
+          <div className="group relative overflow-hidden p-0 rounded-xl border border-emerald-500/20 bg-[#0f172a]">
+            <div className="absolute inset-0 bg-emerald-500/5 group-hover:bg-emerald-500/10 transition-colors duration-300" />
+            <div className="relative p-5">
+              <h4 className="text-emerald-400 font-bold mb-1">Event Registration</h4>
+              <p className="text-xs text-emerald-300/60">Can register for events</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <Card className="bg-[var(--card-bg)] border-[var(--border-color)]">
+          <CardHeader className="pb-2">
+            <CardTitle className="text-sm font-medium text-[var(--text-secondary)] flex items-center">
+              <FaClipboardList className="mr-2 text-amber-500" /> My Registrations
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold text-[var(--text-primary)]">{userEventRegistrations.length}</div>
+            <p className="text-xs text-[var(--text-secondary)]">Active Event Signups</p>
+          </CardContent>
+        </Card>
+
+        <Card className="bg-[var(--card-bg)] border-[var(--border-color)]">
+          <CardHeader className="pb-2">
+            <CardTitle className="text-sm font-medium text-[var(--text-secondary)] flex items-center">
+              <FaCalendarAlt className="mr-2 text-emerald-500" /> Days Active
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold text-[var(--text-primary)]">
+              {Math.floor((Date.now() - new Date(currentUser.created_at || Date.now()).getTime()) / (1000 * 60 * 60 * 24))}
+            </div>
+            <p className="text-xs text-[var(--text-secondary)]">Days since registration</p>
+          </CardContent>
+        </Card>
+      </div>
+    </div>
+  );
 
   const renderContent = () => {
     switch (activeView) {
@@ -684,6 +795,8 @@ const UserProfile = () => {
           );
         }
 
+        return renderUserOverview();
+
       case 'users':
         if (currentUser.role !== 'ADMIN') return null;
         return (
@@ -704,7 +817,7 @@ const UserProfile = () => {
                       <TableHead>Roll No.</TableHead>
                       <TableHead>Email</TableHead>
                       <TableHead>Role</TableHead>
-                      <TableHead>Actions</TableHead>
+                      <TableHead className="text-right">Actions</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
@@ -723,12 +836,89 @@ const UserProfile = () => {
                             </SelectContent>
                           </Select>
                         </TableCell>
-                        <TableCell><Button variant="ghost" size="sm" className="text-[hsl(var(--accent))] h-8">Details</Button></TableCell>
+                        <TableCell className="text-right">
+                          <div className="flex items-center justify-end gap-2">
+                            <Dialog>
+                              <DialogTrigger asChild>
+                                <Button variant="outline" size="sm" className="h-8 text-[var(--text-secondary)] hover:text-[hsl(var(--accent))] hover:border-[hsl(var(--accent))]">
+                                  Details
+                                </Button>
+                              </DialogTrigger>
+                              <DialogContent className="bg-[var(--card-bg)] border-[var(--border-color)]">
+                                <DialogHeader>
+                                  <DialogTitle>User Details: {user.username}</DialogTitle>
+                                  <DialogDescription>
+                                    Member since {user.created_at ? new Date(user.created_at).toLocaleDateString() : 'N/A'}
+                                  </DialogDescription>
+                                </DialogHeader>
+                                <div className="space-y-4 py-4">
+                                  <div className="grid grid-cols-2 gap-4">
+                                    <div>
+                                      <label className="text-xs font-mono text-[var(--text-secondary)] uppercase">Roll No.</label>
+                                      <p className="text-[var(--text-primary)] font-bold">{user.rollNumber || "N/A"}</p>
+                                    </div>
+                                    <div>
+                                      <label className="text-xs font-mono text-[var(--text-secondary)] uppercase">Role</label>
+                                      <Badge variant="outline" className={getRoleBadgeColor(user.role)}>{user.role}</Badge>
+                                    </div>
+                                    <div>
+                                      <label className="text-xs font-mono text-[var(--text-secondary)] uppercase">Registered</label>
+                                      <p className="text-[var(--text-primary)]">{user.created_at ? new Date(user.created_at).toLocaleString() : 'N/A'}</p>
+                                    </div>
+                                    <div>
+                                      <label className="text-xs font-mono text-[var(--text-secondary)] uppercase">Days as Member</label>
+                                      <p className="text-[var(--text-primary)]">
+                                        {user.created_at ? Math.floor((new Date().getTime() - new Date(user.created_at).getTime()) / (1000 * 3600 * 24)) : 0} Days
+                                      </p>
+                                    </div>
+                                  </div>
+                                  <div className="p-3 bg-[var(--bg-body)] rounded-md border border-[var(--border-color)]">
+                                    <label className="text-xs font-mono text-[var(--text-secondary)] uppercase block mb-1">Password (Hash)</label>
+                                    <code className="text-xs text-[hsl(var(--accent))] break-all">
+                                      {user.password || "N/A"}
+                                    </code>
+                                  </div>
+                                </div>
+                              </DialogContent>
+                            </Dialog>
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              className="h-8 text-red-500 hover:text-red-400 hover:bg-red-500/10"
+                              onClick={() => {
+                                console.log("Deleting user:", user);
+                                setUserToDelete(user);
+                              }}
+                            >
+                              <FaTrash className="h-3 w-3" />
+                            </Button>
+                          </div>
+                        </TableCell>
                       </TableRow>
                     ))}
                   </TableBody>
                 </Table>
               </div>
+
+              <AlertDialog open={!!userToDelete} onOpenChange={(open) => !open && setUserToDelete(null)}>
+                <AlertDialogContent className="bg-[var(--card-bg)] border-[var(--border-color)]">
+                  <AlertDialogHeader>
+                    <AlertDialogTitle className="text-[var(--text-primary)]">Delete User?</AlertDialogTitle>
+                    <AlertDialogDescription className="text-[var(--text-secondary)]">
+                      Are you sure you want to delete <strong>{userToDelete?.username}</strong>? This action cannot be undone.
+                    </AlertDialogDescription>
+                  </AlertDialogHeader>
+                  <AlertDialogFooter>
+                    <AlertDialogCancel className="bg-transparent text-[var(--text-secondary)] hover:bg-[var(--text-primary)]/10">Cancel</AlertDialogCancel>
+                    <AlertDialogAction
+                      className="bg-red-500 hover:bg-red-600 text-white"
+                      onClick={() => userToDelete && deleteUser.mutate(userToDelete.id)}
+                    >
+                      Delete User
+                    </AlertDialogAction>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
             </CardContent>
           </Card>
         );

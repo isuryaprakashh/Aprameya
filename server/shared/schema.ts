@@ -77,13 +77,7 @@ export const insertEventRegistrationSchema = z.object({
   user_id: z.string().optional(), // Handled by backend
 });
 
-export const insertCommentSchema = z.object({
-  content: z.string().min(1, "Content is required"),
-  project_id: z.string().optional(),
-  blog_id: z.string().optional(),
-  research_id: z.string().optional(),
-  user_id: z.string().optional(), // Handled by backend
-});
+
 
 export const insertMessageSchema = z.object({
   content: z.string().min(1, "Content is required"),
@@ -182,17 +176,7 @@ export interface EventRegistration {
   created_at: Date | string;
 }
 
-export type InsertComment = z.infer<typeof insertCommentSchema>;
-export interface Comment {
-  _id: string;
-  id: string;
-  content: string;
-  created_at: Date | string;
-  user_id: string;
-  project_id?: string | null;
-  blog_id?: string | null;
-  research_id?: string | null;
-}
+
 
 export type InsertMessage = z.infer<typeof insertMessageSchema>;
 export interface Message {

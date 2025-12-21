@@ -19,13 +19,36 @@ app.use(express.urlencoded({ extended: false }));
 
 // Configure CORS
 app.use(cors({
-  origin: [
-    "http://localhost:5173",
-    "http://127.0.0.1:5173",
-    "https://aprameya-asc.vercel.app",
-    "http://10.123.59.93:5173",
-    "https://aprameya-p40k.onrender.com"
-  ],
+  origin: (origin, callback) => {
+    // A list of exact allowed origins
+    const allowedOrigins = [
+      "http://localhost:5173",
+      "http://127.0.0.1:5173",
+      "https://aprameya-asc.vercel.app",
+      "https://aprameya-p40k.onrender.com",
+    ];
+
+    // Allow requests with no origin (like mobile apps or curl requests)
+    if (!origin) return callback(null, true);
+
+    // Check against allowed origins list
+    if (allowedOrigins.indexOf(origin) !== -1) {
+      return callback(null, true);
+    }
+
+    // Check for Vercel preview deployments (e.g. https://aprameya-git-main-isuryaprakashhs-projects.vercel.app)
+    if (origin.endsWith('.vercel.app')) {
+      return callback(null, true);
+    }
+
+    // Check for custom CLIENT_ORIGIN from env
+    if (process.env.CLIENT_ORIGIN && origin === process.env.CLIENT_ORIGIN) {
+      return callback(null, true);
+    }
+
+    const msg = 'The CORS policy for this site does not allow access from the specified Origin.';
+    return callback(new Error(msg), false);
+  },
   credentials: true,
   methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
   allowedHeaders: ["Content-Type", "Authorization", "Cookie"]

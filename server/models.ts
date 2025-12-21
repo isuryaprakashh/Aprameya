@@ -80,16 +80,7 @@ const eventRegistrationSchema = new mongoose.Schema({
 
 export const EventRegistration = mongoose.model('EventRegistration', eventRegistrationSchema);
 
-const commentSchema = new mongoose.Schema({
-    content: { type: String, required: true },
-    created_at: { type: Date, default: Date.now },
-    user_id: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
-    project_id: { type: mongoose.Schema.Types.ObjectId, ref: 'Project' },
-    blog_id: { type: mongoose.Schema.Types.ObjectId, ref: 'Blog' },
-    research_id: { type: mongoose.Schema.Types.ObjectId, ref: 'Research' },
-});
 
-export const Comment = mongoose.model('Comment', commentSchema);
 
 const messageSchema = new mongoose.Schema({
     content: { type: String, required: true },

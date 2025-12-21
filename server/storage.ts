@@ -5,7 +5,7 @@ import {
   Research,
   Event,
   EventRegistration,
-  Comment,
+
   Message
 } from "./models";
 import {
@@ -22,8 +22,7 @@ import {
   type InsertEvent,
   type EventRegistration as EventRegistrationType,
   type InsertEventRegistration,
-  type Comment as CommentType,
-  type InsertComment,
+
   type Message as MessageType,
   type InsertMessage,
   UserRole,
@@ -39,6 +38,7 @@ export interface IStorage {
   updateUserProfile(userId: string, profileData: UpdateUserProfile): Promise<UserType | undefined>;
   getAllUsers(): Promise<UserType[]>;
   getUsersByRole(role: UserRoleType): Promise<UserType[]>;
+  deleteUser(userId: string): Promise<boolean>;
 
   // Project Operations
   getProject(id: string): Promise<ProjectType | undefined>;
@@ -78,15 +78,7 @@ export interface IStorage {
   createEventRegistration(registration: InsertEventRegistration): Promise<EventRegistrationType>;
   deleteEventRegistration(id: string): Promise<boolean>;
 
-  // Comment Operations
-  getComment(id: string): Promise<CommentType | undefined>;
-  getCommentsByUser(userId: string): Promise<CommentType[]>;
-  getCommentsByProject(projectId: string): Promise<CommentType[]>;
-  getCommentsByBlog(blogId: string): Promise<CommentType[]>;
-  getCommentsByResearch(researchId: string): Promise<CommentType[]>;
-  createComment(comment: InsertComment): Promise<CommentType>;
-  updateComment(id: string, comment: Partial<InsertComment>): Promise<CommentType | undefined>;
-  deleteComment(id: string): Promise<boolean>;
+
 
   // Message Operations (Core Team Chat)
   getMessage(id: string): Promise<MessageType | undefined>;
@@ -143,6 +135,11 @@ export class MongoStorage implements IStorage {
   async getAllUsers(): Promise<UserType[]> {
     const users = await User.find();
     return users.map(u => this.mapDoc<UserType>(u));
+  }
+
+  async deleteUser(userId: string): Promise<boolean> {
+    const result = await User.findByIdAndDelete(userId);
+    return !!result;
   }
 
   // Project Operations
@@ -297,47 +294,7 @@ export class MongoStorage implements IStorage {
     return !!result;
   }
 
-  // Comment Operations
-  async getComment(id: string): Promise<CommentType | undefined> {
-    const comment = await Comment.findById(id);
-    return comment ? this.mapDoc<CommentType>(comment) : undefined;
-  }
 
-  async getCommentsByUser(userId: string): Promise<CommentType[]> {
-    const comments = await Comment.find({ user_id: userId });
-    return comments.map(c => this.mapDoc<CommentType>(c));
-  }
-
-  async getCommentsByProject(projectId: string): Promise<CommentType[]> {
-    const comments = await Comment.find({ project_id: projectId });
-    return comments.map(c => this.mapDoc<CommentType>(c));
-  }
-
-  async getCommentsByBlog(blogId: string): Promise<CommentType[]> {
-    const comments = await Comment.find({ blog_id: blogId });
-    return comments.map(c => this.mapDoc<CommentType>(c));
-  }
-
-  async getCommentsByResearch(researchId: string): Promise<CommentType[]> {
-    const comments = await Comment.find({ research_id: researchId });
-    return comments.map(c => this.mapDoc<CommentType>(c));
-  }
-
-  async createComment(comment: InsertComment): Promise<CommentType> {
-    const newComment = new Comment(comment);
-    await newComment.save();
-    return this.mapDoc<CommentType>(newComment);
-  }
-
-  async updateComment(id: string, comment: Partial<InsertComment>): Promise<CommentType | undefined> {
-    const updatedComment = await Comment.findByIdAndUpdate(id, comment, { new: true });
-    return updatedComment ? this.mapDoc<CommentType>(updatedComment) : undefined;
-  }
-
-  async deleteComment(id: string): Promise<boolean> {
-    const result = await Comment.findByIdAndDelete(id);
-    return !!result;
-  }
 
   // Message Operations (Core Team Chat)
   async getMessage(id: string): Promise<MessageType | undefined> {

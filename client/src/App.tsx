@@ -1,3 +1,4 @@
+// @ts-ignore
 import { Route, Switch, useLocation, Redirect } from "wouter";
 import { Toaster } from "@/components/ui/toaster";
 

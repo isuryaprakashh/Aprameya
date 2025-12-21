@@ -10,11 +10,12 @@ export const CleanCard = ({ className, children, ...props }: CleanCardProps) => 
     return (
         <div
             className={cn(
-                "clean-card relative overflow-hidden rounded-2xl transition-all duration-400 ease-[cubic-bezier(0.16,1,0.3,1)]",
+                "clean-card relative overflow-hidden rounded-2xl transition-all duration-400",
                 "bg-[var(--card-bg)] border border-[var(--border-color)]",
                 "hover:border-[hsl(var(--accent))] hover:-translate-y-0.5 hover:shadow-[0_20px_40px_-10px_rgba(0,0,0,0.1)] dark:hover:shadow-[0_20px_40px_-10px_rgba(0,0,0,0.5)]",
                 className
             )}
+            style={{ transitionTimingFunction: 'cubic-bezier(0.16, 1, 0.3, 1)' }}
             {...props}
         >
             {children}

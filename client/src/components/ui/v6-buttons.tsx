@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef } from 'react';
 import { cn } from '@/lib/utils';
 import { LucideIcon } from 'lucide-react';
 
@@ -11,11 +11,12 @@ export const ButtonPrimary = ({ className, children, ...props }: ButtonPrimaryPr
     return (
         <button
             className={cn(
-                "btn-primary relative overflow-hidden transition-all duration-200 ease-[cubic-bezier(0.16,1,0.3,1)]",
+                "btn-primary relative overflow-hidden transition-all duration-200",
                 "bg-[var(--text-primary)] text-[var(--bg-body)] font-semibold rounded-xl",
                 "hover:opacity-90",
                 className
             )}
+            style={{ transitionTimingFunction: 'cubic-bezier(0.16, 1, 0.3, 1)' }}
             {...props}
         >
             {children}
@@ -133,7 +134,7 @@ export const ButtonHold = ({
             <div
                 className={cn(
                     "progress-fill absolute top-0 left-0 h-full bg-[hsl(var(--accent))] opacity-20 transition-[width] duration-100 ease-linear",
-                    isHeld ? `w-full transition-[width] duration-[${holdDuration}ms] opacity-100` : "w-0",
+                    isHeld ? `w-full opacity-100` : "w-0",
                     isComplete && "w-full opacity-10"
                 )}
                 style={{ transitionDuration: isHeld ? `${holdDuration}ms` : '100ms' }}

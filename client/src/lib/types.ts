@@ -70,6 +70,7 @@ export interface User {
   email: string;
   role: string;
   rollNumber?: string;
+  password?: string;
   created_at?: string;
 }
 

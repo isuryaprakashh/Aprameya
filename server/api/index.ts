@@ -1,13 +1,14 @@
-import { app, registerRoutes } from '../server/index';
+import type { IncomingMessage, ServerResponse } from 'http';
+import { app, registerRoutes } from '../index';
 
 // Initialize routes once
 let routesRegistered = false;
 
-export default async function handler(req: any, res: any) {
+export default async function handler(req: IncomingMessage, res: ServerResponse) {
     if (!routesRegistered) {
         await registerRoutes(app);
         routesRegistered = true;
     }
 
-    app(req, res);
+    app(req as any, res as any);
 }
