@@ -65,11 +65,13 @@ const Signup = () => {
     }
 
     try {
-      const response = await fetch('/api/register', {
+      const baseUrl = import.meta.env.VITE_API_URL || "";
+      const response = await fetch(`${baseUrl}/api/register`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
+        credentials: 'include',
         body: JSON.stringify({
           username: formData.username,
           email: formData.email,
