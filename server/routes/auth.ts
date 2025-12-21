@@ -29,6 +29,15 @@ router.post("/login", async (req, res) => {
         }
 
         req.session.userId = user.id;
+
+        // Debug: Log session ID after setting userId
+        console.log('🔐 Login successful:', {
+            userId: user.id,
+            username: user.username,
+            sessionID: req.sessionID,
+            hasSession: !!req.session
+        });
+
         res.json(user);
     } catch (error) {
         res.status(500).json({ error: "Login failed" });
@@ -45,6 +54,14 @@ router.post("/logout", (req, res) => {
 });
 
 router.get("/me", async (req, res) => {
+    // Debug: Log session state
+    console.log('👤 /api/me called:', {
+        sessionID: req.sessionID,
+        userId: req.session?.userId,
+        hasSession: !!req.session,
+        hasCookie: !!req.headers.cookie
+    });
+
     if (!req.session.userId) {
         return res.status(401).json({ error: "Not authenticated" });
     }
