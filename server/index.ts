@@ -1,7 +1,6 @@
 import 'dotenv/config';
 import express, { type Request, Response, NextFunction } from "express";
 import { registerRoutes } from "./routes";
-import { setupVite, serveStatic, log } from "./vite_setup";
 import { connectDB } from "./db";
 import session from 'express-session';
 import memorystore from 'memorystore';
@@ -20,7 +19,13 @@ app.use(express.urlencoded({ extended: false }));
 
 // Configure CORS
 app.use(cors({
-  origin: ["http://localhost:5173", "http://127.0.0.1:5173", "https://aprameya-asc.vercel.app", "http://10.123.59.93:5173"],
+  origin: [
+    "http://localhost:5173",
+    "http://127.0.0.1:5173",
+    "https://aprameya-asc.vercel.app",
+    "http://10.123.59.93:5173",
+    "https://aprameya-p40k.onrender.com"
+  ],
   credentials: true,
   methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
   allowedHeaders: ["Content-Type", "Authorization", "Cookie"]
@@ -39,9 +44,11 @@ app.use(session({
     maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days
     secure: process.env.NODE_ENV === 'production',
     httpOnly: true,
+    sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax'
   },
 }));
 
+// Logging middleware
 app.use((req, res, next) => {
   const start = Date.now();
   const path = req.path;
@@ -65,7 +72,7 @@ app.use((req, res, next) => {
         logLine = logLine.slice(0, 79) + "…";
       }
 
-      log(logLine);
+      console.log(logLine);
     }
   });
 
@@ -75,29 +82,23 @@ app.use((req, res, next) => {
 // Export app and registerRoutes for Vercel
 export { app, registerRoutes };
 
-// Only start server if run directly
-if (process.env.NODE_ENV !== 'production' || process.argv[1] === fileURLToPath(import.meta.url)) {
-  (async () => {
+// Start server
+(async () => {
+  // Only connect to DB and start listener if running directly (not imported as Vercel function)
+  if (process.env.NODE_ENV !== 'production' || process.argv[1] === fileURLToPath(import.meta.url)) {
     await connectDB();
     const server = await registerRoutes(app);
 
     app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
       const status = err.status || err.statusCode || 500;
       const message = err.message || "Internal Server Error";
-
       res.status(status).json({ message });
       throw err;
     });
 
-    if (app.get("env") === "development") {
-      await setupVite(app, server);
-    } else {
-      serveStatic(app);
-    }
-
-    const port = 5000;
+    const port = process.env.PORT || 5000;
     server.listen(port, () => {
-      log(`serving on port ${port}`);
+      console.log(`serving on port ${port}`);
     });
-  })();
-}
+  }
+})();
