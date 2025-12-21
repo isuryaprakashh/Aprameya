@@ -42,6 +42,19 @@ const isAdmin = async (req: Request, res: Response, next: Function) => {
 };
 
 export async function registerRoutes(app: Express): Promise<Server> {
+  // Welcome route
+  app.get("/api", (_req, res) => {
+    res.json({ message: "Welcome to Aprameya Backend, server running successfully" });
+  });
+
+  // Health check route
+  app.get("/api/health", (_req, res) => {
+    res.json({ 
+      status: "ok", 
+      timestamp: new Date().toISOString(),
+      uptime: process.uptime() 
+    });
+  });
   // User registration
   app.post("/api/register", async (req, res) => {
     try {
