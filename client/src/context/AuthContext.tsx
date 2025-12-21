@@ -27,7 +27,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         queryFn: async () => {
             try {
                 const baseUrl = import.meta.env.VITE_API_URL || "";
-                const res = await fetch(`${baseUrl}/api/me`);
+                const res = await fetch(`${baseUrl}/api/me`, { credentials: "include" });
                 if (res.status === 401) return null;
                 if (!res.ok) throw new Error("Failed to fetch user");
                 return await res.json();
