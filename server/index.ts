@@ -56,6 +56,11 @@ app.use(cors({
 
 // Set up in-memory session store
 const MemoryStore = memorystore(session);
+// Determine if we're in production (deployed environment)
+const isProduction = process.env.NODE_ENV === 'production' ||
+  process.env.RENDER === 'true' ||
+  !process.env.NODE_ENV?.includes('dev');
+
 app.use(session({
   store: new MemoryStore({
     checkPeriod: 86400000 // prune expired entries every 24h
@@ -65,9 +70,10 @@ app.use(session({
   saveUninitialized: false,
   cookie: {
     maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days
-    secure: process.env.NODE_ENV === 'production',
+    secure: isProduction, // true for HTTPS
     httpOnly: true,
-    sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax'
+    sameSite: isProduction ? 'none' : 'lax', // 'none' for cross-origin
+    // Don't set domain - let browser handle it
   },
 }));
 
