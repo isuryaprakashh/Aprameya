@@ -14,6 +14,11 @@ declare module 'express-session' {
 }
 
 const app = express();
+
+// Trust proxy - CRITICAL for secure cookies behind Render's reverse proxy
+// Without this, Express thinks requests are HTTP and rejects secure cookies
+app.set('trust proxy', 1);
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
