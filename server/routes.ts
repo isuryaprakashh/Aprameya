@@ -17,6 +17,21 @@ declare module 'express-session' {
 }
 
 export async function registerRoutes(app: Express): Promise<Server> {
+  // Root endpoint
+  app.get("/", (req, res) => {
+    res.json({ message: "Backend server running" });
+  });
+
+  // Health check endpoint
+  app.get("/api/health", (req, res) => {
+    res.json({
+      status: "healthy",
+      message: "Server is running",
+      timestamp: new Date().toISOString(),
+      uptime: process.uptime()
+    });
+  });
+
   // Mount routers
   app.use("/api", authRouter);
   app.use("/api", usersRouter);
