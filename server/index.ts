@@ -88,11 +88,11 @@ app.use(session({
   proxy: true, // Always trust proxy for Render
   cookie: {
     maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days
-    secure: true, // Always true for Render/Vercel (Note: breaks localhost http)
+    secure: isProduction, // True in Prod, False in Dev (allows local IP testing on mobile)
     httpOnly: true,
-    sameSite: 'none', // Always none for cross-domain
-    domain: undefined, // Let browser handle domain
-    path: '/', // Ensure cookie is sent for all paths
+    sameSite: isProduction ? 'none' : 'lax', // None for Cross-Site (Prod), Lax for Same-Site (Dev)
+    domain: undefined,
+    path: '/',
   },
 }));
 
