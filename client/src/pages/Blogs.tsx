@@ -157,7 +157,7 @@ const Blogs = () => {
                   </Link>
                 </motion.div>
               ))}
-              ))}
+
               {filteredBlogs.length === 0 && (
                 <div className="col-span-full">
                   <EmptyState
