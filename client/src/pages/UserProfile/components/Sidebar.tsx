@@ -58,14 +58,14 @@ const SidebarContent = ({ activeView, setActiveView, isMobile, closeMobile }: Si
     };
 
     return (
-        <div className="flex flex-col h-full bg-[var(--card-bg)] text-[var(--text-primary)] border-r border-[var(--border-color)]">
+        <div className="flex flex-col h-full bg-gradient-to-b from-[var(--card-bg)] to-[var(--bg-body)] text-[var(--text-primary)] border-r border-[var(--border-color)] backdrop-blur-md">
             <div className="p-6 border-b border-[var(--border-color)] flex items-center justify-between">
                 <div className="flex items-center gap-2">
                     <div className="w-8 h-8 rounded-lg bg-[hsl(var(--accent))] flex items-center justify-center">
                         <span className="font-bold text-[var(--bg-body)]">A</span>
                     </div>
-                    <h1 className="text-xl font-bold tracking-tight">
-                        {isAdmin ? 'Admin' : 'User'}<span className="text-[hsl(var(--accent))]">Profile</span>
+                    <h1 className="text-xl font-bold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-[var(--text-primary)] to-[hsl(var(--accent))]">
+                        {isAdmin ? 'Admin' : 'User'}Profile
                     </h1>
                 </div>
                 {isMobile && (
@@ -81,9 +81,9 @@ const SidebarContent = ({ activeView, setActiveView, isMobile, closeMobile }: Si
                         <button
                             key={item.id}
                             onClick={() => handleNavigation(item.id)}
-                            className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 ${activeView === item.id
-                                ? 'bg-[hsl(var(--accent))]/10 text-[hsl(var(--accent))]'
-                                : 'text-[var(--text-secondary)] hover:bg-[var(--text-primary)]/5 hover:text-[var(--text-primary)]'
+                            className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-300 relative overflow-hidden group ${activeView === item.id
+                                ? 'bg-[hsl(var(--accent))]/10 text-[hsl(var(--accent))] shadow-[0_0_20px_-5px_hsl(var(--accent)/0.3)]'
+                                : 'text-[var(--text-secondary)] hover:text-[hsl(var(--accent))] hover:bg-[hsl(var(--accent))]/5'
                                 }`}
                         >
                             <item.icon className={`w-4 h-4 ${activeView === item.id ? 'text-[hsl(var(--accent))]' : 'text-[var(--text-secondary)]'}`} />

@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Link, useLocation } from 'wouter';
 // import { events, upcomingEvents } from '../lib/data'; // Removed static import
-import { Event } from '../lib/types';
+import { Event, EventRegistration } from '../lib/types';
 import { useQuery } from '@tanstack/react-query';
 import { User } from '@shared/schema';
 import { Loader2 } from 'lucide-react';
@@ -37,6 +37,12 @@ const Events = () => {
     queryKey: ['/api/events'],
   });
   const { user } = useAuth();
+  const { data: userRegistrations = [] } = useQuery<EventRegistration[]>({
+    queryKey: ['/api/event-registrations/my'],
+    enabled: !!user,
+  });
+  const registeredEventIds = new Set(userRegistrations.map(r => r.event_id));
+
   const [, setLocation] = useLocation();
 
   const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
@@ -98,7 +104,7 @@ const Events = () => {
 
     try {
       const baseUrl = import.meta.env.VITE_API_URL || "";
-      const response = await fetch(`${baseUrl}/api/db/event-registrations`, {
+      const response = await fetch(`${baseUrl}/api/event-registrations`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -176,18 +182,25 @@ const Events = () => {
 
             {/* Upcoming Highlight */}
             {upcomingEvents.length > 0 && (
-              <div className="inline-flex items-center gap-4 p-4 bg-[var(--card-bg)] border border-[var(--border-color)] rounded-lg max-w-2xl">
+              <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 p-4 bg-[var(--card-bg)] border border-[var(--border-color)] rounded-lg max-w-2xl w-full sm:w-auto">
                 <div className="w-12 h-12 bg-[hsl(var(--accent))]/10 flex items-center justify-center rounded-md border border-[hsl(var(--accent))]/20 shrink-0">
                   <Calendar className="w-6 h-6 text-[hsl(var(--accent))]" />
                 </div>
-                <div>
+                <div className="flex-1">
                   <div className="text-[10px] text-[hsl(var(--accent))] font-bold uppercase tracking-wider mb-1">Next Big Event</div>
                   <div className="text-[var(--text-primary)] font-bold">{upcomingEvents[0].title}</div>
                   <div className="text-xs text-gray-400">{upcomingEvents[0].date} • {upcomingEvents[0].location}</div>
                 </div>
-                <Button className="ml-auto btn-primary" size="sm" onClick={() => handleRegisterInterest(upcomingEvents[0])}>
-                  Register Now
-                </Button>
+                {/* Register Button - Highlight */}
+                {user && registeredEventIds.has(upcomingEvents[0].id) ? (
+                  <Button className="w-full sm:w-auto ml-0 sm:ml-auto bg-green-600 hover:bg-green-700 text-white cursor-default" size="sm">
+                    Already Registered
+                  </Button>
+                ) : (
+                  <Button className="w-full sm:w-auto ml-0 sm:ml-auto btn-primary" size="sm" onClick={() => handleRegisterInterest(upcomingEvents[0])}>
+                    Register Now
+                  </Button>
+                )}
               </div>
             )}
           </motion.div>
@@ -338,6 +351,12 @@ const Events = () => {
                             >
                               {selectedEvent?.id === event.id ? "Selected" : "Select Event"}
                             </Button>
+                            {/* Status Badge for list items */}
+                            {user && registeredEventIds.has(event.id) && (
+                              <Badge variant="outline" className="bg-green-500/10 text-green-500 border-green-500/20">
+                                Registered
+                              </Badge>
+                            )}
                           </div>
                         </div>
                       </CleanCard>
@@ -398,7 +417,7 @@ const Events = () => {
                           className="w-full bg-[hsl(var(--accent))] hover:bg-[hsl(var(--accent))]/90 text-[var(--bg-body)]"
                           disabled={!selectedEvent}
                         >
-                          {selectedEvent ? 'Submit Registration' : 'Select an Event First'}
+                          {selectedEvent ? (registeredEventIds.has(selectedEvent.id) ? 'Already Registered' : 'Submit Registration') : 'Select an Event First'}
                           <ArrowRight className="ml-2 w-4 h-4" />
                         </Button>
                       ) : (

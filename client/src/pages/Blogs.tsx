@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { Link, useLocation } from 'wouter';
 import { blogCategories } from '../lib/data';
 import { useQuery } from '@tanstack/react-query';
@@ -13,11 +14,22 @@ import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbP
 import { EmptyState } from '@/components/EmptyState';
 
 const Blogs = () => {
-  const { data: blogPosts, isLoading, error } = useQuery<BlogPost[]>({
+  const { data: blogPosts = [], isLoading, error } = useQuery<BlogPost[]>({
     queryKey: ['/api/blogs'],
   });
   const { data: user } = useQuery<any>({ queryKey: ['/api/me'] });
   const [, setLocation] = useLocation();
+  const [searchTerm, setSearchTerm] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState('all');
+
+  // Filter blogs based on search and category
+  const filteredBlogs = blogPosts.filter(post => {
+    const matchesSearch = post.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      post.excerpt.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesCategory = selectedCategory === 'all' || post.category === selectedCategory;
+    return matchesSearch && matchesCategory;
+  });
+
 
   if (isLoading) {
     return (
@@ -82,7 +94,7 @@ const Blogs = () => {
           <div className="grid lg:grid-cols-4 gap-8">
             {/* Blog Posts Column */}
             <div className="lg:col-span-3 grid md:grid-cols-2 gap-8">
-              {blogPosts?.map((post, index) => (
+              {filteredBlogs.map((post, index) => (
                 <motion.div
                   key={post.id || (post as any)._id}
                   initial={{ opacity: 0, scale: 0.95 }}
@@ -145,7 +157,8 @@ const Blogs = () => {
                   </Link>
                 </motion.div>
               ))}
-              {blogPosts?.length === 0 && (
+              ))}
+              {filteredBlogs.length === 0 && (
                 <div className="col-span-full">
                   <EmptyState
                     icon={FileText}
@@ -167,6 +180,8 @@ const Blogs = () => {
                     <Input
                       placeholder="Search articles..."
                       className="pl-9 bg-[var(--card-bg)] border-[var(--border-color)] text-[var(--text-primary)] h-10 text-xs"
+                      value={searchTerm}
+                      onChange={(e) => setSearchTerm(e.target.value)}
                     />
                   </div>
                 </div>
@@ -177,15 +192,18 @@ const Blogs = () => {
                   <ul className="space-y-2">
                     {blogCategories.map((category, index) => (
                       <li key={index}>
-                        <a href="#" className="group flex items-center justify-between text-[var(--text-secondary)] hover:text-[hsl(var(--accent))] transition-colors text-sm">
+                        <button
+                          onClick={() => setSelectedCategory(category)}
+                          className={`group flex items-center justify-between w-full text-sm transition-colors ${selectedCategory === category ? 'text-[hsl(var(--accent))] font-medium' : 'text-[var(--text-secondary)] hover:text-[hsl(var(--accent))]'}`}
+                        >
                           <span className="flex items-center">
                             <Tag className="w-3 h-3 mr-2 opacity-50 group-hover:opacity-100" />
                             {category}
                           </span>
-                          <span className="bg-[var(--card-bg)] px-2 py-0.5 rounded text-[10px] border border-[var(--border-color)] group-hover:border-[hsl(var(--accent))]/30">
-                            +
+                          <span className={`px-2 py-0.5 rounded text-[10px] border ${selectedCategory === category ? 'bg-[hsl(var(--accent))]/10 border-[hsl(var(--accent))]' : 'bg-[var(--card-bg)] border-[var(--border-color)] group-hover:border-[hsl(var(--accent))]/30'}`}>
+                            {category === 'all' ? blogPosts.length : blogPosts.filter(p => p.category === category).length}
                           </span>
-                        </a>
+                        </button>
                       </li>
                     ))}
                   </ul>

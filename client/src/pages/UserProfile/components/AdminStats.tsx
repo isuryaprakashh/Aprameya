@@ -31,12 +31,13 @@ export const AdminStats = ({
         <div className="space-y-6 animate-in fade-in duration-500">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                 {stats.map((stat, i) => (
-                    <Card key={i} className="bg-[var(--card-bg)] border-[var(--border-color)]">
-                        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                    <Card key={i} className="bg-[var(--card-bg)] border-[var(--border-color)] overflow-hidden relative group hover:border-[hsl(var(--accent))]/50 transition-colors duration-300">
+                        <div className={`absolute inset-0 opacity-0 group-hover:opacity-5 transition-opacity duration-300 ${stat.color.replace('text-', 'bg-')}`} />
+                        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 relative z-10">
                             <CardTitle className="text-sm font-medium text-[var(--text-secondary)]">{stat.label}</CardTitle>
                             <stat.icon className={`h-4 w-4 ${stat.color}`} />
                         </CardHeader>
-                        <CardContent>
+                        <CardContent className="relative z-10">
                             <div className="text-2xl font-bold text-[var(--text-primary)]">{stat.value}</div>
                         </CardContent>
                     </Card>

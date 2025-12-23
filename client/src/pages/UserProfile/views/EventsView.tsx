@@ -26,7 +26,7 @@ export default function EventsView() {
 
     const registerForEvent = useMutation({
         mutationFn: (eventId: string) =>
-            apiRequest('/api/db/event-registrations', {
+            apiRequest('/api/event-registrations', {
                 method: 'POST',
                 body: JSON.stringify({ event_id: eventId })
             }),
@@ -41,7 +41,7 @@ export default function EventsView() {
 
     const cancelEventRegistration = useMutation({
         mutationFn: (registrationId: string) =>
-            apiRequest(`/api/db/event-registrations/${registrationId}`, { method: 'DELETE' }),
+            apiRequest(`/api/event-registrations/${registrationId}`, { method: 'DELETE' }),
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['/api/event-registrations/my'] });
             toast({

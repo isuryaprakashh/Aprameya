@@ -87,64 +87,17 @@ router.delete("/events/:id", isAdminOrCore, async (req, res) => {
     }
 });
 
-// --- Event Registrations (DB direct) ---
-router.post("/db/event-registrations", async (req, res) => {
-    try {
-        const userId = req.session?.userId;
-        if (!userId) return res.status(401).json({ error: "Not authenticated" });
-
-        const { event_id } = req.body;
-        if (!event_id) return res.status(400).json({ error: "Event ID is required" });
-
-        const existingRegistration = await storage.getEventRegistrationByUserAndEvent(userId, event_id);
-        if (existingRegistration) {
-            return res.status(400).json({ error: "You have already registered for this event" });
-        }
-
-        const registrationInput = insertEventRegistrationSchema.safeParse({
-            event_id,
-            user_id: userId
-        });
-
-        if (!registrationInput.success) {
-            return res.status(400).json({ error: registrationInput.error });
-        }
-
-        const registration = await storage.createEventRegistration(registrationInput.data);
-        res.status(201).json(registration);
-    } catch (error) {
-        res.status(500).json({ error: "Failed to register for event" });
-    }
-});
-
-router.get("/db/event-registrations/user", async (req, res) => {
-    try {
-        const userId = req.session?.userId;
-        if (!userId) return res.status(401).json({ error: "Not authenticated" });
-        const registrations = await storage.getEventRegistrationsByUser(userId);
-        res.json(registrations);
-    } catch (error) {
-        res.status(500).json({ error: "Failed to fetch user event registrations" });
-    }
-});
-
-router.get("/db/event-registrations/event/:eventId", isAdminOrCore, async (req, res) => {
-    try {
-        const registrations = await storage.getEventRegistrationsByEvent(req.params.eventId);
-        res.json(registrations);
-    } catch (error) {
-        res.status(500).json({ error: "Failed to fetch event registrations" });
-    }
-});
-
-// --- Event Registrations (Service/Public) ---
+// --- Event Registrations ---
 
 router.post("/event-registrations", async (req, res) => {
     try {
         const userId = req.session?.userId;
         if (!userId) return res.status(401).json({ error: "Not authenticated" });
 
-        const { eventId, message } = req.body;
+        // Support both camelCase (frontend) and snake_case (legacy/db)
+        const eventId = req.body.eventId || req.body.event_id;
+        const message = req.body.message;
+
         if (!eventId) return res.status(400).json({ error: "Event ID is required" });
 
         const event = await storage.getEvent(eventId);
@@ -155,15 +108,20 @@ router.post("/event-registrations", async (req, res) => {
             return res.status(400).json({ error: "You have already registered for this event" });
         }
 
-        const registrationData = {
+        // Create registration
+        const registrationInput = {
             event_id: eventId,
             user_id: userId,
-            ...(message && { message })
+            ...(message && { message }) // Optional message
         };
 
-        const registration = await storage.createEventRegistration(registrationData);
+        // Validate with schema just in case, though structure is simple
+        const result = insertEventRegistrationSchema.safeParse(registrationInput);
+        if (!result.success) {
+            return res.status(400).json({ error: result.error });
+        }
 
-        // Email service commented out in original file, keeping pattern
+        const registration = await storage.createEventRegistration(result.data);
 
         res.status(201).json({
             success: true,

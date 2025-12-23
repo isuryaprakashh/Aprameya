@@ -10,6 +10,7 @@ import DashboardRouter from "./components/DashboardRouter";
 import Home from "./pages/Home";
 import Projects from "./pages/Projects";
 import Blogs from "./pages/Blogs";
+import BlogDetails from "./pages/BlogDetails";
 import Research from "./pages/Research";
 import Events from "./pages/Events";
 import About from "./pages/About";
@@ -58,6 +59,7 @@ function App() {
             <Route path="/" component={Home} />
             <Route path="/projects" component={Projects} />
             <Route path="/blogs" component={Blogs} />
+            <Route path="/blogs/:id" component={BlogDetails} />
             <Route path="/research" component={Research} />
             <Route path="/events" component={Events} />
             <Route path="/about" component={About} />

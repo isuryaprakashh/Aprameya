@@ -5,7 +5,7 @@ import { isAdminOrCore } from "../middleware/auth";
 
 const router = Router();
 
-console.log()
+
 router.get("/blogs", async (req, res) => {
     try {
         const blogs = await storage.getAllBlogs();
