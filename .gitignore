@@ -6,5 +6,7 @@ vite.config.ts.*
 *.tar.gz
 .env
 
+!.env.production
 .env.local
 .env.*
+!.env.production
