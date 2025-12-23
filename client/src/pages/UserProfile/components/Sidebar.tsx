@@ -43,7 +43,12 @@ const SidebarContent = ({ activeView, setActiveView, isMobile, closeMobile }: Si
         { id: 'blogs', label: 'Blogs', icon: FaNewspaper },
         { id: 'research', label: 'Research', icon: FaFlask },
         { id: 'settings', label: 'Settings', icon: FaCog },
-    ];
+    ].filter(item => {
+        if (user?.role === 'ASPIRANT') {
+            return !['projects', 'blogs', 'research'].includes(item.id);
+        }
+        return true;
+    });
 
     const handleNavigation = (viewId: string) => {
         setActiveView(viewId);
