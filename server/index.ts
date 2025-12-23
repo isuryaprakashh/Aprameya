@@ -69,13 +69,13 @@ app.use(session({
   secret: process.env.SESSION_SECRET || 'aprameya-session-secret',
   resave: false,
   saveUninitialized: false,
-  proxy: isProduction, // Trust proxy in production
+  proxy: true, // Always trust proxy for Render
   cookie: {
     maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days
-    secure: isProduction, // true for HTTPS on Render
+    secure: true, // Always true for Render/Vercel (Note: breaks localhost http)
     httpOnly: true,
-    sameSite: isProduction ? 'none' : 'lax', // 'none' REQUIRED for cross-domain
-    domain: isProduction ? undefined : undefined, // Let browser handle domain
+    sameSite: 'none', // Always none for cross-domain
+    domain: undefined, // Let browser handle domain
     path: '/', // Ensure cookie is sent for all paths
   },
 }));
