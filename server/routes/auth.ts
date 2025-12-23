@@ -15,7 +15,9 @@ router.post("/register", async (req, res) => {
         const user = await storage.createUser(userData);
 
         req.session.userId = user.id;
-        res.status(201).json(user);
+        req.session.save(() => {
+            res.status(201).json(user);
+        });
     } catch (error) {
         res.status(400).json({ error: "Invalid registration data" });
     }
@@ -38,7 +40,9 @@ router.post("/login", async (req, res) => {
             hasSession: !!req.session
         });
 
-        res.json(user);
+        req.session.save(() => {
+            res.json(user);
+        });
     } catch (error) {
         res.status(500).json({ error: "Login failed" });
     }
@@ -61,6 +65,7 @@ router.get("/me", async (req, res) => {
         hasSession: !!req.session,
         hasCookie: !!req.headers.cookie
     });
+    console.log("SESSION:", req.session);
 
     if (!req.session.userId) {
         return res.status(401).json({ error: "Not authenticated" });
