@@ -25,7 +25,6 @@ app.use(express.urlencoded({ extended: false }));
 // Configure CORS
 app.use(cors({
   origin: (origin, callback) => {
-    // A list of exact allowed origins
     const allowedOrigins = [
       "http://localhost:5173",
       "http://127.0.0.1:5173",
@@ -36,18 +35,12 @@ app.use(cors({
     // Allow requests with no origin (like mobile apps or curl requests)
     if (!origin) return callback(null, true);
 
-    // Check against allowed origins list
     if (allowedOrigins.indexOf(origin) !== -1) {
       return callback(null, true);
     }
 
-    // Check for Vercel preview deployments (e.g. https://aprameya-git-main-isuryaprakashhs-projects.vercel.app)
+    // Check for Vercel preview deployments
     if (origin.endsWith('.vercel.app')) {
-      return callback(null, true);
-    }
-
-    // Check for custom CLIENT_ORIGIN from env
-    if (process.env.CLIENT_ORIGIN && origin === process.env.CLIENT_ORIGIN) {
       return callback(null, true);
     }
 
@@ -61,12 +54,12 @@ app.use(cors({
 
 // Set up in-memory session store
 const MemoryStore = memorystore(session);
-// Determine if we're in production (deployed environment)
-const isProduction = process.env.NODE_ENV === 'production' ||
-  process.env.RENDER === 'true' ||
-  !process.env.NODE_ENV?.includes('dev');
+
+// Robust production check for Render
+const isProduction = process.env.NODE_ENV === 'production' || process.env.RENDER === 'true';
 
 app.use(session({
+  name: "aprameya.sid", // Explicit cookie name
   store: new MemoryStore({
     checkPeriod: 86400000 // prune expired entries every 24h
   }),
@@ -75,10 +68,9 @@ app.use(session({
   saveUninitialized: false,
   cookie: {
     maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days
-    secure: isProduction, // true for HTTPS
+    secure: isProduction, // true for HTTPS on Render
     httpOnly: true,
-    sameSite: isProduction ? 'none' : 'lax', // 'none' for cross-origin
-    // Don't set domain - let browser handle it
+    sameSite: isProduction ? 'none' : 'lax', // 'none' REQUIRED for cross-domain (Vercel -> Render)
   },
 }));
 
