@@ -97,7 +97,8 @@ const Events = () => {
     }
 
     try {
-      const response = await fetch('/api/db/event-registrations', {
+      const baseUrl = import.meta.env.VITE_API_URL || "";
+      const response = await fetch(`${baseUrl}/api/db/event-registrations`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
