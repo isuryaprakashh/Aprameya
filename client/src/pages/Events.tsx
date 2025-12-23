@@ -102,6 +102,7 @@ const Events = () => {
         headers: {
           'Content-Type': 'application/json',
         },
+        credentials: 'include',
         body: JSON.stringify({
           eventId: selectedEvent.id,
           message: formData.message
