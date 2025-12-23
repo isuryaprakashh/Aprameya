@@ -19,8 +19,11 @@ const app = express();
 // Without this, Express thinks requests are HTTP and rejects secure cookies
 app.set('trust proxy', 1);
 
+import cookieParser from 'cookie-parser';
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
+app.use(cookieParser());
 
 // Configure CORS
 app.use(cors({
@@ -66,13 +69,29 @@ app.use(session({
   secret: process.env.SESSION_SECRET || 'aprameya-session-secret',
   resave: false,
   saveUninitialized: false,
+  proxy: isProduction, // Trust proxy in production
   cookie: {
     maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days
     secure: isProduction, // true for HTTPS on Render
     httpOnly: true,
-    sameSite: isProduction ? 'none' : 'lax', // 'none' REQUIRED for cross-domain (Vercel -> Render)
+    sameSite: isProduction ? 'none' : 'lax', // 'none' REQUIRED for cross-domain
+    domain: isProduction ? undefined : undefined, // Let browser handle domain
+    path: '/', // Ensure cookie is sent for all paths
   },
 }));
+
+// IMPORTANT: Add this logging middleware AFTER session middleware
+app.use((req, res, next) => {
+  console.log('📍 Request:', {
+    method: req.method,
+    path: req.path,
+    sessionID: req.sessionID,
+    userId: req.session?.userId,
+    hasCookie: !!req.headers.cookie,
+    cookies: req.headers.cookie,
+  });
+  next();
+});
 
 // Logging middleware
 app.use((req, res, next) => {
