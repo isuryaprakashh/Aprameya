@@ -41,6 +41,9 @@ const About = () => {
             <h1 className="font-bold text-5xl md:text-7xl mb-6 leading-[0.9]">
               ABOUT<br />APRAMEYA
             </h1>
+            <p className="text-xl text-[hsl(var(--accent))] font-medium mb-6">
+              Engineering Tomorrow's Autonomy Today
+            </p>
             <p className="text-sm text-[var(--text-secondary)] max-w-2xl mx-auto mb-12 font-mono">
               Discover our journey, mission, and the passionate team driving innovation
               in autonomous vehicle technology at KL University.
@@ -53,15 +56,15 @@ const About = () => {
                 <div className="text-[10px] text-[var(--text-secondary)] uppercase">Founded</div>
               </div>
               <div className="bg-[var(--card-bg)] p-6">
-                <div className="text-3xl font-bold text-[var(--text-primary)] mb-1">200+</div>
+                <div className="text-3xl font-bold text-[var(--text-primary)] mb-1">50+</div>
                 <div className="text-[10px] text-[var(--text-secondary)] uppercase">Members</div>
               </div>
               <div className="bg-[var(--card-bg)] p-6">
-                <div className="text-3xl font-bold text-[var(--text-primary)] mb-1">50+</div>
+                <div className="text-3xl font-bold text-[var(--text-primary)] mb-1">15+</div>
                 <div className="text-[10px] text-[var(--text-secondary)] uppercase">Projects</div>
               </div>
               <div className="bg-[var(--card-bg)] p-6">
-                <div className="text-3xl font-bold text-[var(--text-primary)] mb-1">15+</div>
+                <div className="text-3xl font-bold text-[var(--text-primary)] mb-1">10+</div>
                 <div className="text-[10px] text-[var(--text-secondary)] uppercase">Awards</div>
               </div>
             </div>
@@ -104,11 +107,19 @@ const About = () => {
                       <Lightbulb className="w-8 h-8 text-[var(--bg-body)]" />
                     </div>
                     <h3 className="font-bold text-2xl mb-4 text-[var(--text-primary)]">Driving Innovation Forward</h3>
-                    <p className="text-lg text-[var(--text-secondary)] leading-relaxed">
-                      We are a student-led community at KL University dedicated to advancing autonomous
-                      vehicle technology through hands-on projects, cutting-edge research, and collaborative
-                      innovation. Our mission is to bridge the gap between academic learning and real-world
-                      application in the rapidly evolving field of autonomous systems.
+
+
+                    <p className="text-lg text-[var(--text-secondary)] leading-relaxed mt-4">
+                      Aprameya Club is dedicated to building a collaborative community of enthusiasts in
+                      autonomous systems, where members can share knowledge, inspire each other, and work
+                      together towards common goals. Through hands-on experience, members engage in real-world
+                      projects focused on advancing autonomous technology, gaining practical insights into the field.
+                    </p>
+                    <p className="text-lg text-[var(--text-secondary)] leading-relaxed mt-4">
+                      The club prioritizes deepening expertise in critical areas like AI, Machine Learning,
+                      and the Internet of Things (IoT) to empower members with in-demand skills. Mastery of
+                      essential tools and frameworks, including ROS, TensorFlow, OpenCV, and various simulation
+                      environments, is a cornerstone of Aprameya’s learning approach.
                     </p>
                   </div>
                   <div className="relative">
@@ -146,9 +157,8 @@ const About = () => {
                     <h3 className="font-bold text-2xl text-[var(--text-primary)]">Our Vision</h3>
                   </div>
                   <p className="text-lg text-[var(--text-secondary)] leading-relaxed mb-6">
-                    To become a leading student community in autonomous vehicle technology,
-                    recognized globally for innovative solutions and producing industry-ready
-                    professionals who shape the future of transportation and robotics.
+                    To harness autonomous technologies, AI, and advanced computing to shape a smarter, safer,
+                    and more efficient world.
                   </p>
                   <div className="flex items-center text-[hsl(var(--accent))] font-medium">
                     <Globe className="w-5 h-5 mr-2" />
@@ -218,6 +228,48 @@ const About = () => {
               </Card>
             </motion.div>
           </div>
+        </div>
+
+      </section>
+
+      {/* Club Structure Section */}
+      <section className="py-24 px-4 bg-[var(--bg-body)] border-y border-[var(--border-color)]">
+        <div className="container mx-auto max-w-4xl">
+          <motion.div
+            className="text-center mb-12"
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            viewport={{ once: true }}
+          >
+            <div className="inline-flex items-center gap-2 mb-4 border border-[var(--border-color)] px-3 py-1 bg-[var(--card-bg)] rounded-full">
+              <Shield className="w-3 h-3 text-[hsl(var(--accent))]" />
+              <span className="text-xs font-bold text-[var(--text-primary)] tracking-widest uppercase">Collaborative Ecosystem</span>
+            </div>
+            <h2 className="font-bold text-3xl md:text-4xl mb-6 text-[var(--text-primary)]">Club Structure</h2>
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+            viewport={{ once: true }}
+          >
+            <Card className="bg-[var(--card-bg)] border border-[var(--border-color)]">
+              <CardContent className="p-8 md:p-12">
+                <p className="text-lg text-[var(--text-secondary)] leading-relaxed mb-6">
+                  Aprameya - The Autonomous Systems Club is structured in a way that encourages everyone
+                  to work together, share ideas, and feel included. Although there are specific roles to help
+                  manage tasks and keep things organized, the club values the input of every member.
+                </p>
+                <p className="text-lg text-[var(--text-secondary)] leading-relaxed">
+                  Decisions are made together, giving each member a chance to share their thoughts and
+                  contribute. This approach helps everyone feel connected and responsible for the club's
+                  success, making the club stronger and more united in achieving its goals and purpose.
+                </p>
+              </CardContent>
+            </Card>
+          </motion.div>
         </div>
       </section>
 
