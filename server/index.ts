@@ -49,6 +49,8 @@ app.use(cors({
       "http://127.0.0.1:5173",
       "https://aprameya-asc.vercel.app",
       "https://aprameya-p40k.onrender.com",
+      "https://aprameya.kluniversity.me",
+      "https://aprameya.kluniversity.me/",
     ];
 
     // Allow requests with no origin (like mobile apps or curl requests)

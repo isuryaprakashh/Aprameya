@@ -1,0 +1,43 @@
+src/components/backgrounds/MagneticVectorField.tsx(1,8): error TS6133: 'React' is declared but its value is never read.
+src/components/backgrounds/ProximityMatrix.tsx(1,8): error TS6133: 'React' is declared but its value is never read.
+src/components/backgrounds/VoidAurora.tsx(1,8): error TS6133: 'React' is declared but its value is never read.
+src/components/ButtonLibrary.tsx(14,29): error TS2503: Cannot find namespace 'NodeJS'.
+src/components/ButtonLibrary.tsx(49,48): error TS6133: 'letter' is declared but its value is never read.
+src/components/ErrorBoundary.tsx(1,8): error TS6133: 'React' is declared but its value is never read.
+src/components/ErrorBoundary.tsx(54,30): error TS2591: Cannot find name 'process'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node` and then add 'node' to the types field in your tsconfig.
+src/components/EventCard.tsx(3,59): error TS6133: 'Calendar' is declared but its value is never read.
+src/components/icons/Logo.tsx(1,1): error TS6133: 'React' is declared but its value is never read.
+src/components/OperativeRoster.tsx(1,1): error TS6133: 'React' is declared but its value is never read.
+src/components/SocialShare.tsx(9,1): error TS6133: 'FiArrowUpRight' is declared but its value is never read.
+src/components/SocialShare.tsx(14,8): error TS6133: 'VehicleAnimations' is declared but its value is never read.
+src/components/SocialShare.tsx(36,9): error TS6133: 'encodedDescription' is declared but its value is never read.
+src/components/ui/advanced-buttons.tsx(61,55): error TS6133: 'letter' is declared but its value is never read.
+src/components/ui/calendar.tsx(55,20): error TS6133: 'props' is declared but its value is never read.
+src/components/ui/calendar.tsx(56,21): error TS6133: 'props' is declared but its value is never read.
+src/components/ui/v6-buttons.tsx(170,21): error TS6133: 'prev' is declared but its value is never read.
+src/components/ui/v6-buttons.tsx(171,41): error TS6133: 'letter' is declared but its value is never read.
+src/hooks/useHold.ts(6,11): error TS6133: 'timerRef' is declared but its value is never read.
+src/hooks/useHold.ts(6,29): error TS2503: Cannot find namespace 'NodeJS'.
+src/hooks/useScramble.ts(10,49): error TS6133: 'letter' is declared but its value is never read.
+src/pages/About.tsx(7,3): error TS6133: 'Shield' is declared but its value is never read.
+src/pages/About.tsx(8,3): error TS6133: 'CheckCircle' is declared but its value is never read.
+src/pages/About.tsx(16,3): error TS6133: 'ArrowRight' is declared but its value is never read.
+src/pages/BlogDetails.tsx(11,12): error TS6133: 'match' is declared but its value is never read.
+src/pages/Blogs.tsx(113,41): error TS6133: 'index' is declared but its value is never read.
+src/pages/DesignSystem.tsx(1,1): error TS6133: 'useState' is declared but its value is never read.
+src/pages/Events.tsx(6,1): error TS6133: 'User' is declared but its value is never read.
+src/pages/Events.tsx(280,46): error TS6133: 'index' is declared but its value is never read.
+src/pages/Login.tsx(5,1): error TS6192: All imports in import declaration are unused.
+src/pages/Projects.tsx(213,46): error TS6133: 'index' is declared but its value is never read.
+src/pages/Research.tsx(101,40): error TS6133: 'index' is declared but its value is never read.
+src/pages/Signup.tsx(5,1): error TS6192: All imports in import declaration are unused.
+src/pages/UserProfile/components/AdminStats.tsx(5,39): error TS6133: 'EventRegistration' is declared but its value is never read.
+src/pages/UserProfile/components/UserOverview.tsx(2,34): error TS6133: 'AvatarImage' is declared but its value is never read.
+src/pages/UserProfile/components/UserOverview.tsx(5,63): error TS6133: 'FaCheckCircle' is declared but its value is never read.
+src/pages/UserProfile/components/UserOverview.tsx(6,1): error TS6133: 'motion' is declared but its value is never read.
+src/pages/UserProfile/components/UserOverview.tsx(16,69): error TS6133: 'setActiveView' is declared but its value is never read.
+src/pages/UserProfile/views/BlogsView.tsx(2,10): error TS6133: 'Card' is declared but its value is never read.
+src/pages/UserProfile/views/EventsView.tsx(2,10): error TS6133: 'Card' is declared but its value is never read.
+src/pages/UserProfile/views/ProjectsView.tsx(2,10): error TS6133: 'Card' is declared but its value is never read.
+src/pages/UserProfile/views/RegistrationsView.tsx(2,10): error TS6133: 'Card' is declared but its value is never read.
+src/pages/UserProfile/views/ResearchView.tsx(2,10): error TS6133: 'Card' is declared but its value is never read.
