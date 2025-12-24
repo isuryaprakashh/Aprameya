@@ -265,7 +265,7 @@ const About = () => {
                 <p className="text-lg text-[var(--text-secondary)] leading-relaxed">
                   Decisions are made together, giving each member a chance to share their thoughts and
                   contribute. This approach helps everyone feel connected and responsible for the club's
-                  success, making the club stronger and more united in achieving its goals and purpose.
+                  success, making the club stronger and more united in achieving its goals and purpose.  
                 </p>
               </CardContent>
             </Card>
