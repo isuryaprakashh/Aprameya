@@ -58,7 +58,7 @@ const Navbar = () => {
 
   return (
     <motion.nav
-      className={`fixed w-full z-50 transition-all duration-300 ${scrolled
+      className={`fixed z-50 transition-all duration-300 left-0 right-0 mx-auto w-[95%] md:w-full top-2 md:top-0 rounded-2xl md:rounded-none ${scrolled
         ? 'glass-panel py-2'
         : 'glass-panel py-4'
         }`}
