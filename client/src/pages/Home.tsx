@@ -136,11 +136,11 @@ const Home = () => {
 
           {/* Achievement Image */}
           <div className="md:col-span-5 relative h-full min-h-[300px] border-l border-[var(--border-color)]">
-            <div className="absolute inset-0 bg-[hsl(var(--accent))]/10 mix-blend-overlay z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+            <div className="absolute inset-0 bg-gradient-to-t from-[var(--bg-body)] via-transparent to-transparent z-10"></div>
             <img
               src="/assets/UVH.jpg"
-              alt="Team Aprameya at IISc Hackathon"
-              className="absolute inset-0 w-full h-full object-cover filter grayscale group-hover:grayscale-0 transition-all duration-700"
+              alt="UVH Challenge"
+              className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
             />
           </div>
         </div>
