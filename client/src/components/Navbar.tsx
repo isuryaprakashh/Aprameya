@@ -119,13 +119,6 @@ const Navbar = () => {
               </Link>
             ) : (
               <div className="flex items-center gap-3 pl-3 border-l border-[var(--border-color)]">
-                <button
-                  onClick={() => logoutMutation.mutate()}
-                  className="p-2 rounded-lg text-[var(--text-secondary)] hover:text-red-500 hover:bg-red-500/10 transition-colors"
-                  title="Logout"
-                >
-                  <LogOut size={18} />
-                </button>
                 <Link href="/profile">
                   <Avatar className="h-9 w-9 border border-[var(--border-color)] cursor-pointer hover:border-[hsl(var(--accent))] transition-colors">
                     <AvatarFallback className="bg-[var(--card-bg)] text-[var(--text-primary)] text-xs font-mono">
@@ -133,6 +126,13 @@ const Navbar = () => {
                     </AvatarFallback>
                   </Avatar>
                 </Link>
+                <button
+                  onClick={() => logoutMutation.mutate()}
+                  className="p-2 rounded-lg text-[var(--text-secondary)] hover:text-red-500 hover:bg-red-500/10 transition-colors"
+                  title="Logout"
+                >
+                  <LogOut size={18} />
+                </button>
               </div>
             )}
           </div>
