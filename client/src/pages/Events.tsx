@@ -168,10 +168,7 @@ const Events = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
           >
-            <div className="flex items-center gap-2 mb-6">
-              <span className="bg-[var(--text-primary)] text-[var(--bg-body)] px-1 text-xs font-bold">03</span>
-              <h2 className="text-lg font-bold text-[var(--text-primary)]">COMMUNITY_HUB</h2>
-            </div>
+
             <h1 className="font-bold text-5xl md:text-7xl mb-6 leading-[0.9] text-[var(--text-primary)]">
               EVENTS &<br />WORKSHOPS
             </h1>

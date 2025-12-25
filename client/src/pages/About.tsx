@@ -34,10 +34,7 @@ const About = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
           >
-            <div className="inline-flex items-center gap-2 mb-6 border border-[var(--border-color)] px-3 py-1 bg-[var(--bg-body)]">
-              <Users className="w-3 h-3 text-[var(--text-primary)]" />
-              <span className="text-xs font-bold text-[var(--text-primary)] tracking-widest">OUR_STORY</span>
-            </div>
+
             <h1 className="font-bold text-5xl md:text-7xl mb-6 leading-[0.9]">
               ABOUT<br />APRAMEYA
             </h1>
@@ -82,10 +79,7 @@ const About = () => {
             transition={{ duration: 0.6 }}
             viewport={{ once: true }}
           >
-            <Badge variant="outline" className="mb-4 text-[var(--text-primary)] border-[var(--border-color)]">
-              <Target className="w-3 h-3 mr-1" />
-              Our Purpose
-            </Badge>
+
             <h2 className="font-bold text-3xl md:text-5xl mb-6 text-[var(--text-primary)]">
               <span className="bg-gradient-to-r from-[hsl(var(--accent))] to-[hsl(var(--accent))]/70 bg-clip-text text-transparent">
                 Our Mission
@@ -246,7 +240,7 @@ const About = () => {
               <Shield className="w-3 h-3 text-[hsl(var(--accent))]" />
               <span className="text-xs font-bold text-[var(--text-primary)] tracking-widest uppercase">Collaborative Ecosystem</span>
             </div>
-            <h2 className="font-bold text-3xl md:text-4xl mb-6 text-[var(--text-primary)]">Club Structure</h2>
+
           </motion.div>
 
           <motion.div
@@ -265,7 +259,7 @@ const About = () => {
                 <p className="text-lg text-[var(--text-secondary)] leading-relaxed">
                   Decisions are made together, giving each member a chance to share their thoughts and
                   contribute. This approach helps everyone feel connected and responsible for the club's
-                  success, making the club stronger and more united in achieving its goals and purpose.  
+                  success, making the club stronger and more united in achieving its goals and purpose.
                 </p>
               </CardContent>
             </Card>
@@ -330,10 +324,7 @@ const About = () => {
             transition={{ duration: 0.6 }}
             viewport={{ once: true }}
           >
-            <Badge variant="outline" className="mb-4 text-[var(--text-primary)] border-[var(--border-color)]">
-              <Mail className="w-3 h-3 mr-1" />
-              Get in Touch
-            </Badge>
+
             <h2 className="font-bold text-3xl md:text-4xl mb-4 text-[var(--text-primary)]">Contact Us</h2>
             <p className="text-xl text-[var(--text-secondary)]">
               Have questions or want to get involved? We'd love to hear from you!

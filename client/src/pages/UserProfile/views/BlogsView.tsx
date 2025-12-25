@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { Card, CardHeader, CardTitle, CardContent, CardFooter } from '@/components/ui/card';
+import { CardHeader, CardTitle, CardContent, CardFooter } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { FaNewspaper, FaPlus, FaTrash, FaArrowRight, FaBlog } from 'react-icons/fa';
@@ -8,7 +8,7 @@ import { BlogPost } from '@/lib/types';
 import { useAuth } from '@/context/AuthContext';
 
 interface BlogsViewProps {
-    handleEdit: (item: any, type: string) => void;
+    handleEdit: (item: BlogPost, type: string) => void;
     handleCreate: (type: string) => void;
     handleDelete: (id: string, type: string) => void;
 }

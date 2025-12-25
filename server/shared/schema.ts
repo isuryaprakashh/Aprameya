@@ -146,7 +146,6 @@ export interface Research {
   description: string;
   category: string;
   authors: string;
-  citations: number;
   image: string;
   date: Date | string;
   user_id: string;

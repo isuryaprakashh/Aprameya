@@ -22,8 +22,7 @@ const ResearchItemComponent = ({ research }: ResearchItemProps) => {
             {research.description}
           </p>
           <div className="flex items-center text-sm text-[var(--text-secondary)] mb-6 font-mono">
-            <span className="mr-4">Authors: <span className="text-[var(--text-primary)]">{research.authors.join(', ')}</span></span>
-            <span>Citations: <span className="text-[hsl(var(--accent))]">{research.citations}</span></span>
+            <span className="mr-4">Authors: <span className="text-[var(--text-primary)]">{Array.isArray(research.authors) ? research.authors.join(', ') : research.authors}</span></span>
           </div>
           <div className="flex flex-wrap gap-3">
             <a

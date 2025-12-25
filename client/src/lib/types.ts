@@ -21,14 +21,15 @@ export interface BlogPost {
 }
 
 export interface ResearchItem {
-  id: string;
+  id: number;
   title: string;
   category: string;
   description: string;
+  authors: string | string[];
   image: string;
   date: string;
-  authors: string[];
-  citations: number;
+  link?: string;
+  content?: string;
 }
 
 export interface Event {

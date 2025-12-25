@@ -54,9 +54,7 @@ const VoidAurora = () => {
                     left: 0
                 }}
             />
-            <div className="absolute bottom-2.5 left-2.5 bg-[var(--bg-body)]/70 border border-[var(--border-color)] px-2 py-1 rounded text-[10px] text-[var(--text-secondary)] z-20 font-mono pointer-events-none">
-                VISUAL: ETHEREAL DRIFT
-            </div>
+
         </div>
     );
 };

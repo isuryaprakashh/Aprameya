@@ -95,35 +95,35 @@ export const blogPosts: BlogPost[] = [
 // Sample data for research items
 export const researchItems: ResearchItem[] = [
   {
-    id: "1",
-    title: "Advanced Perception Systems for Autonomous Vehicles",
-    description: "Research on improving computer vision systems for adverse weather conditions.",
-    category: "Computer Vision",
-    date: "2023-03-15",
-    image: "/assets/feature_perception.png",
-    authors: ["Dr. John Doe", "Dr. Sarah Williams"],
-    citations: 42
+    id: 1,
+    title: "Autonomous Navigation in Unstructured Environments",
+    category: "Robotics",
+    description: "A novel approach to path planning and obstacle avoidance in complex, unstructured terrains using deep reinforcement learning.",
+    authors: ["S. Prakash", "Research Team"],
+    image: "https://images.unsplash.com/photo-1549637642-90187f64f420",
+    date: "2024",
+    link: "#",
   },
   {
-    id: "2",
-    title: "Reinforcement Learning for Urban Navigation",
-    description: "Novel approaches to teaching autonomous vehicles to navigate complex urban environments.",
-    category: "Machine Learning",
-    date: "2023-04-20",
-    image: "/assets/research_rl.png",
-    authors: ["Dr. Michael Brown", "Dr. Lisa Chen"],
-    citations: 28
+    id: 2,
+    title: "Eco-Friendly Propulsion Systems",
+    category: "Sustainability",
+    description: "Investigation into high-efficiency electric propulsion systems for next-generation autonomous vehicles.",
+    authors: ["Green Tech Lab"],
+    image: "https://images.unsplash.com/photo-1532187643603-ba119ca4109e",
+    date: "2023",
+    link: "#",
   },
   {
-    id: "3",
-    title: "Cooperative Autonomous Systems",
-    description: "Research on vehicle-to-vehicle communication for coordinated movement in traffic.",
-    category: "Connected Vehicles",
-    date: "2023-05-10",
-    image: "/assets/research_cooperative.png",
-    authors: ["Dr. David Miller", "Dr. Emily Johnson"],
-    citations: 35
-  }
+    id: 3,
+    title: "Swarm Intelligence in Drone Fleets",
+    category: "AI",
+    description: "Analyzing the efficiency of bio-inspired swarm algorithms for coordinated drone missions in search and rescue operations.",
+    authors: ["DeepMind Team"],
+    image: "https://images.unsplash.com/photo-1620712943543-bcc4688e7485",
+    date: "2025",
+    link: "#",
+  },
 ];
 
 // Sample data for events

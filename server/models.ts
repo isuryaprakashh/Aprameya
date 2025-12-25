@@ -50,7 +50,6 @@ const researchSchema = new mongoose.Schema({
     description: { type: String, required: true },
     category: { type: String, required: true },
     authors: { type: String, required: true },
-    citations: { type: Number, default: 0 },
     image: { type: String, required: true },
     date: { type: Date, default: Date.now },
     user_id: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },

@@ -20,8 +20,8 @@ import { UseMutationResult } from '@tanstack/react-query';
 
 interface UserManagementProps {
     users: User[];
-    updateUserRole: UseMutationResult<any, Error, { userId: string; role: string }, unknown>;
-    deleteUser: UseMutationResult<any, Error, string, unknown>;
+    updateUserRole: UseMutationResult<unknown, Error, { userId: string; role: string }, unknown>;
+    deleteUser: UseMutationResult<unknown, Error, string, unknown>;
     userToDelete: User | null;
     setUserToDelete: (user: User | null) => void;
 }
@@ -126,7 +126,6 @@ export const UserManagement = ({
                                                 size="sm"
                                                 className="h-8 text-red-500 hover:text-red-400 hover:bg-red-500/10"
                                                 onClick={() => {
-                                                    console.log("Deleting user:", user);
                                                     setUserToDelete(user);
                                                 }}
                                             >

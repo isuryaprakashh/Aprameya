@@ -1,24 +1,22 @@
 import { useState } from 'react';
-import { Link, useLocation } from 'wouter';
+import { Link } from 'wouter';
 import { blogCategories } from '../lib/data';
 import { useQuery } from '@tanstack/react-query';
 import { BlogPost } from '@/lib/types';
-import { Loader2 } from 'lucide-react';
+import { Loader2, Search, Tag, FileText } from 'lucide-react';
 import { motion } from 'framer-motion';
 import MagneticVectorField from '../components/backgrounds/MagneticVectorField';
 import { Input } from '@/components/ui/input';
-import { CleanCard } from '../components/ui/v6-card';
-import { Badge } from '@/components/ui/badge';
-import { Calendar, User, ArrowRight, Search, Tag, FileText } from 'lucide-react';
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from '@/components/ui/breadcrumb';
 import { EmptyState } from '@/components/EmptyState';
+import BlogCard from '@/components/BlogCard';
 
 const Blogs = () => {
   const { data: blogPosts = [], isLoading, error } = useQuery<BlogPost[]>({
     queryKey: ['/api/blogs'],
   });
-  const { data: user } = useQuery<any>({ queryKey: ['/api/me'] });
-  const [, setLocation] = useLocation();
+  // const { data: user } = useQuery<any>({ queryKey: ['/api/me'] }); // Unused
+  // const [, setLocation] = useLocation(); // Unused
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('all');
 
@@ -60,23 +58,7 @@ const Blogs = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
           >
-            <div className="mb-6 flex justify-center">
-              <Breadcrumb>
-                <BreadcrumbList>
-                  <BreadcrumbItem>
-                    <BreadcrumbLink href="/">Home</BreadcrumbLink>
-                  </BreadcrumbItem>
-                  <BreadcrumbSeparator />
-                  <BreadcrumbItem>
-                    <BreadcrumbPage className="text-[hsl(var(--accent))]">Blogs</BreadcrumbPage>
-                  </BreadcrumbItem>
-                </BreadcrumbList>
-              </Breadcrumb>
-            </div>
-            <div className="inline-flex items-center gap-2 mb-6 border border-[var(--border-color)] px-3 py-1 bg-[var(--bg-body)]">
-              <span className="w-2 h-2 bg-[hsl(var(--accent))] rounded-full animate-pulse"></span>
-              <span className="text-xs font-bold text-[var(--text-primary)] tracking-widest">KNOWLEDGE_BASE</span>
-            </div>
+
             <h1 className="font-bold text-5xl md:text-7xl mb-6 leading-[0.9] text-[var(--text-primary)]">
               BLOG &<br />INSIGHTS
             </h1>
@@ -103,57 +85,7 @@ const Blogs = () => {
                   viewport={{ once: true }}
                 >
                   <Link href={`/blogs/${post.id || (post as any)._id}`} className="block h-full">
-                    <CleanCard className="h-full flex flex-col group overflow-hidden cursor-pointer transition-transform duration-300 hover:-translate-y-1">
-                      <div className="relative h-48 overflow-hidden border-b border-[var(--border-color)]">
-                        <div className="absolute inset-0 bg-[hsl(var(--accent))] opacity-0 group-hover:opacity-10 transition-opacity z-10"></div>
-                        <img
-                          src={post.image}
-                          alt={post.title}
-                          className="w-full h-full object-cover brightness-90 group-hover:brightness-100 transition-transform duration-700 group-hover:scale-110"
-                        />
-                        <div className="absolute bottom-3 left-3 flex gap-2 z-20">
-                          <Badge variant="secondary" className="bg-[var(--bg-body)]/90 backdrop-blur border border-[var(--border-color)] text-[var(--text-primary)] text-[10px] uppercase tracking-wider">
-                            {post.category}
-                          </Badge>
-                          {user?.role === 'ADMIN' && (
-                            <Badge
-                              variant="default"
-                              className="cursor-pointer bg-[var(--text-primary)] text-[var(--bg-body)] hover:bg-[hsl(var(--accent))]"
-                              onClick={(e) => {
-                                e.preventDefault();
-                                setLocation(`/dashboard?view=blogs&editId=${post.id || (post as any)._id}&type=blog`);
-                              }}
-                            >
-                              Edit
-                            </Badge>
-                          )}
-                        </div>
-                      </div>
-
-                      <div className="p-6 flex-1 flex flex-col">
-                        <div className="flex items-center gap-2 mb-3 text-xs text-[var(--text-secondary)] font-mono">
-                          <Calendar className="w-3 h-3" />
-                          <span>{new Date(post.date).toLocaleDateString()}</span>
-                          <span className="w-1 h-1 bg-[var(--text-secondary)] rounded-full"></span>
-                          <User className="w-3 h-3" />
-                          <span>{post.author || 'Team Aprameya'}</span>
-                        </div>
-
-                        <h2 className="text-xl font-bold text-[var(--text-primary)] mb-3 leading-tight group-hover:text-[hsl(var(--accent))] transition-colors">
-                          {post.title}
-                        </h2>
-
-                        <p className="text-sm text-[var(--text-secondary)] mb-6 line-clamp-3">
-                          {post.excerpt}
-                        </p>
-
-                        <div className="mt-auto pt-4 border-t border-[var(--border-color)] flex justify-between items-center">
-                          <div className="text-xs font-bold text-[hsl(var(--accent))] uppercase tracking-widest flex items-center gap-2 group-hover:gap-3 transition-all">
-                            Read Article <ArrowRight className="w-3 h-3" />
-                          </div>
-                        </div>
-                      </div>
-                    </CleanCard>
+                    <BlogCard post={post} />
                   </Link>
                 </motion.div>
               ))}

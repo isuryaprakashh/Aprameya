@@ -83,7 +83,7 @@ const UserProfile = () => {
     const newItem: any = { contentType: type };
     if (type === 'project') Object.assign(newItem, { title: '', description: '', category: '', technologies: '', team: '', image: '' });
     else if (type === 'blog') Object.assign(newItem, { title: '', excerpt: '', content: '', category: '', image: '' });
-    else if (type === 'research') Object.assign(newItem, { title: '', description: '', category: '', authors: '', citations: 0, image: '' });
+    else if (type === 'research') Object.assign(newItem, { title: '', description: '', category: '', authors: '', image: '' });
     else if (type === 'event') Object.assign(newItem, { title: '', description: '', type: '', date: '', time: '', location: '', image: '' });
     setSelectedItem(newItem);
     setIsDialogOpen(true);
@@ -116,7 +116,7 @@ const UserProfile = () => {
           <FormField label="Category" id="category" value={selectedItem.category} onChange={(e: any) => inputChange('category', e.target.value)} />
           <FormField label="Description" id="description" value={selectedItem.description} onChange={(e: any) => inputChange('description', e.target.value)} isTextArea />
           <FormField label="Authors" id="authors" value={selectedItem.authors} onChange={(e: any) => inputChange('authors', e.target.value)} />
-          <FormField label="Citations" id="citations" type="number" value={selectedItem.citations} onChange={(e: any) => inputChange('citations', parseInt(e.target.value) || 0)} />
+
           <FormField label="Image URL" id="image" value={selectedItem.image} onChange={(e: any) => inputChange('image', e.target.value)} />
         </>}
         {contentType === 'event' && <>
