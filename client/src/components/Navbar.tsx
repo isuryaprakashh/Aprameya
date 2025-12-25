@@ -3,11 +3,10 @@ import { Link, useLocation } from 'wouter';
 import { useAuth } from '@/context/AuthContext';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import Logo from './icons/Logo';
-import { motion } from 'framer-motion';
-import { Menu, X, LogOut, User } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Menu, X, LogOut, User, ChevronRight } from 'lucide-react';
 import { ThemeCustomizer } from './ThemeCustomizer';
 import { useTheme } from '@/components/theme-provider';
-
 
 const Navbar = () => {
   const [location] = useLocation();
@@ -18,232 +17,212 @@ const Navbar = () => {
 
   const { user, logoutMutation } = useAuth();
 
-
-
-  // ALL HOOKS MUST BE CALLED BEFORE ANY CONDITIONAL RETURNS
   useEffect(() => {
     const handleScroll = () => {
-      setScrolled(window.scrollY > 10);
+      setScrolled(window.scrollY > 20);
     };
 
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // Hide navbar on dashboard routes - AFTER all hooks
   if (location.startsWith('/dashboard')) {
     return null;
   }
 
-  const toggleMobileMenu = () => {
-    setMobileMenuOpen(!mobileMenuOpen);
-  };
-
-  const closeMobileMenu = () => {
-    setMobileMenuOpen(false);
-  };
-
-  const isActive = (path: string) => {
-    return location === path;
-  };
-
-  const getInitials = (username: string) => {
-    return username?.substring(0, 2).toUpperCase() || 'A';
-  };
+  const toggleMobileMenu = () => setMobileMenuOpen(!mobileMenuOpen);
+  const closeMobileMenu = () => setMobileMenuOpen(false);
+  const isActive = (path: string) => location === path;
+  const getInitials = (username: string) => username?.substring(0, 2).toUpperCase() || 'A';
 
   const handleLogout = () => {
     logoutMutation.mutate();
     closeMobileMenu();
   };
 
+  const navLinks = [
+    { href: '/', label: 'Home' },
+    { href: '/projects', label: 'Projects' },
+    { href: '/blogs', label: 'Blogs' },
+    { href: '/events', label: 'Events' },
+    { href: '/research', label: 'Research' },
+    { href: '/about', label: 'About' },
+  ];
+
   return (
-    <motion.nav
-      className={`fixed z-50 transition-all duration-300 left-0 right-0 mx-auto w-[95%] md:w-full top-2 md:top-0 rounded-2xl md:rounded-none ${scrolled
-        ? 'glass-panel py-2'
-        : 'glass-panel py-4'
-        }`}
-      initial={{ y: -100 }}
-      animate={{ y: 0 }}
-      transition={{ duration: 0.5 }}
-    >
-      <div className="container mx-auto px-8">
-        <div className="flex justify-between items-center">
-          {/* Logo Section */}
-          <Link
-            href="/"
-            onClick={closeMobileMenu}
-            className="flex items-center min-w-[200px]"
-          >
-            <Logo
-              color={isDark ? "light" : "dark"}
-              size={scrolled ? "sm" : "md"}
-              showText={true}
-            />
+    <>
+      <motion.nav
+        className="fixed top-0 left-0 right-0 z-50 flex justify-center pt-6 px-4"
+        initial={{ y: -100 }}
+        animate={{ y: 0 }}
+        transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+      >
+        <div
+          className={`
+            relative flex items-center justify-between 
+            w-full max-w-6xl px-4 py-3 
+            rounded-2xl transition-all duration-500
+            ${scrolled
+              ? 'bg-[var(--glass-panel)] backdrop-blur-xl border border-[var(--border-color)] shadow-lg shadow-black/5'
+              : 'bg-transparent border-transparent'
+            }
+          `}
+        >
+          {/* Logo */}
+          <Link href="/" onClick={closeMobileMenu} className="flex items-center gap-3 relative z-10 shrink-0">
+            <div className="bg-[var(--bg-body)] rounded-lg p-1.5 border border-[var(--border-color)]">
+              <Logo color={isDark ? "light" : "dark"} size="sm" showText={false} />
+            </div>
+            <span className={`font-bold tracking-tight text-lg ${scrolled ? 'text-[var(--text-primary)]' : 'text-[var(--text-primary)]'}`}>
+              APRAMEYA
+            </span>
           </Link>
 
-          {/* Navigation Links */}
-          <div className="hidden md:flex items-center space-x-8">
-            <Link href="/" className={`px-5 py-2 text-sm font-medium rounded-full transition-all duration-300 ${isActive('/') ? 'bg-[#E8F5E9] text-[#2E7D32]' : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'}`}>
-              Home
-            </Link>
-            <Link href="/projects" className={`px-5 py-2 text-sm font-medium rounded-full transition-all duration-300 ${isActive('/projects') ? 'bg-[#E8F5E9] text-[#2E7D32]' : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'}`}>
-              Projects
-            </Link>
-            <Link href="/blogs" className={`px-5 py-2 text-sm font-medium rounded-full transition-all duration-300 ${isActive('/blogs') ? 'bg-[#E8F5E9] text-[#2E7D32]' : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'}`}>
-              Blogs
-            </Link>
-            <Link href="/events" className={`px-5 py-2 text-sm font-medium rounded-full transition-all duration-300 ${isActive('/events') ? 'bg-[#E8F5E9] text-[#2E7D32]' : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'}`}>
-              Events
-            </Link>
-            <Link href="/research" className={`px-5 py-2 text-sm font-medium rounded-full transition-all duration-300 ${isActive('/research') ? 'bg-[#E8F5E9] text-[#2E7D32]' : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'}`}>
-              Research
-            </Link>
-            <Link href="/about" className={`px-5 py-2 text-sm font-medium rounded-full transition-all duration-300 ${isActive('/about') ? 'bg-[#E8F5E9] text-[#2E7D32]' : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'}`}>
-              About
-            </Link>
+          {/* Desktop Nav */}
+          <div className="hidden md:flex items-center gap-1 absolute left-1/2 -translate-x-1/2">
+            <div className={`
+               flex items-center p-1.5 rounded-full border transition-colors duration-500
+               ${scrolled ? 'bg-[var(--card-bg)]/50 border-[var(--border-color)]' : 'bg-[var(--glass-panel)]/80 border-[var(--border-color)] backdrop-blur-md'}
+             `}>
+              {navLinks.map((link) => (
+                <Link key={link.href} href={link.href}>
+                  <div className="relative px-5 py-2 rounded-full text-sm font-medium cursor-pointer group transition-colors">
+                    {isActive(link.href) && (
+                      <motion.div
+                        layoutId="navbar-indicator"
+                        className="absolute inset-0 bg-[var(--text-primary)] rounded-full"
+                        transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
+                      />
+                    )}
+                    <span className={`relative z-10 transition-colors ${isActive(link.href) ? 'text-[var(--bg-body)]' : 'text-[var(--text-secondary)] group-hover:text-[var(--text-primary)]'}`}>
+                      {link.label}
+                    </span>
+                  </div>
+                </Link>
+              ))}
+            </div>
           </div>
 
-          <div className="hidden md:flex items-center space-x-4 min-w-[200px] justify-end">
+          {/* Right Actions */}
+          <div className="hidden md:flex items-center gap-3 relative z-10 shrink-0">
             <ThemeCustomizer />
+
             {!user ? (
-              <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-                <Link href="/login" className="px-6 py-2 text-sm bg-[hsl(var(--accent))] hover:opacity-90 text-[var(--bg-body)] rounded-full font-medium transition-colors shadow-lg shadow-[hsl(var(--accent))]/20">
+              <Link href="/login">
+                <motion.button
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  className="px-5 py-2.5 rounded-xl bg-[hsl(var(--accent))] text-[var(--bg-body)] text-sm font-semibold shadow-lg shadow-[hsl(var(--accent))]/20 hover:opacity-90 transition-opacity"
+                >
                   Login
-                </Link>
-              </motion.div>
+                </motion.button>
+              </Link>
             ) : (
-              <div className="flex items-center gap-4">
-
-
+              <div className="flex items-center gap-3 pl-3 border-l border-[var(--border-color)]">
                 <Link href="/profile">
-                  <Avatar className="h-10 w-10 cursor-pointer border-2 border-[hsl(var(--accent))]/20 hover:border-[hsl(var(--accent))] transition-colors">
-                    <AvatarFallback className="bg-[hsl(var(--accent))]/10 text-[hsl(var(--accent))] font-bold">
+                  <Avatar className="h-9 w-9 border border-[var(--border-color)] cursor-pointer hover:border-[hsl(var(--accent))] transition-colors">
+                    <AvatarFallback className="bg-[var(--card-bg)] text-[var(--text-primary)] text-xs font-mono">
                       {getInitials(user.username)}
                     </AvatarFallback>
                   </Avatar>
                 </Link>
-
-                <button
-                  onClick={handleLogout}
-                  className="p-2 text-red-400 hover:text-red-500 hover:bg-red-500/10 rounded-full transition-colors"
-                  title="Logout"
-                >
-                  <LogOut className="w-5 h-5" />
-                </button>
               </div>
             )}
           </div>
 
-          {/* Mobile menu button */}
-          <div className="md:hidden flex items-center gap-2">
+          {/* Mobile Toggle */}
+          <div className="md:hidden flex items-center gap-3">
             <ThemeCustomizer />
-            <motion.button
+            <button
               onClick={toggleMobileMenu}
-              className="text-[var(--text-primary)] focus:outline-none p-2 rounded-full hover:bg-[var(--text-primary)]/5 transition-colors"
-              aria-label="Toggle menu"
-              whileTap={{ scale: 0.9 }}
+              className="p-2 rounded-xl bg-[var(--card-bg)] border border-[var(--border-color)] text-[var(--text-primary)]"
             >
-              {mobileMenuOpen ? (
-                <X className="w-6 h-6" />
-              ) : (
-                <Menu className="w-6 h-6" />
-              )}
-            </motion.button>
+              {mobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
+            </button>
           </div>
         </div>
+      </motion.nav>
 
-        {/* Mobile menu */}
-        <motion.div
-          className={`md:hidden pt-4 pb-2 ${mobileMenuOpen ? 'block' : 'hidden'}`}
-          initial={false}
-          animate={mobileMenuOpen ? { height: 'auto', opacity: 1 } : { height: 0, opacity: 0 }}
-          transition={{ duration: 0.3 }}
-        >
-          <div className="flex flex-col space-y-3">
-            <Link href="/"
-              className={`py-2 font-medium text-[var(--text-secondary)] hover:text-[hsl(var(--accent))] transition-colors ${isActive('/') ? 'text-[hsl(var(--accent))]' : ''}`}
+      {/* Mobile Menu Overlay */}
+      <AnimatePresence>
+        {mobileMenuOpen && (
+          <>
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
               onClick={closeMobileMenu}
+              className="fixed inset-0 z-[45] bg-black/60 backdrop-blur-sm md:hidden"
+            />
+            <motion.div
+              initial={{ x: '100%' }}
+              animate={{ x: 0 }}
+              exit={{ x: '100%' }}
+              transition={{ type: "spring", damping: 25, stiffness: 200 }}
+              className="fixed top-0 right-0 z-[50] h-full w-[80%] max-w-sm bg-[var(--card-bg)] border-l border-[var(--border-color)] p-6 shadow-2xl md:hidden flex flex-col"
             >
-              Home
-            </Link>
-            <Link href="/projects"
-              className={`py-2 font-medium text-[var(--text-secondary)] hover:text-[hsl(var(--accent))] transition-colors ${isActive('/projects') ? 'text-[hsl(var(--accent))]' : ''}`}
-              onClick={closeMobileMenu}
-            >
-              Projects
-            </Link>
-            <Link href="/blogs"
-              className={`py-2 font-medium text-[var(--text-secondary)] hover:text-[hsl(var(--accent))] transition-colors ${isActive('/blogs') ? 'text-[hsl(var(--accent))]' : ''}`}
-              onClick={closeMobileMenu}
-            >
-              Blogs
-            </Link>
-            <Link href="/events"
-              className={`py-2 font-medium text-[var(--text-secondary)] hover:text-[hsl(var(--accent))] transition-colors ${isActive('/events') ? 'text-[hsl(var(--accent))]' : ''}`}
-              onClick={closeMobileMenu}
-            >
-              Events
-            </Link>
-            <Link href="/research"
-              className={`py-2 font-medium text-[var(--text-secondary)] hover:text-[hsl(var(--accent))] transition-colors ${isActive('/research') ? 'text-[hsl(var(--accent))]' : ''}`}
-              onClick={closeMobileMenu}
-            >
-              Research
-            </Link>
-            <Link href="/about"
-              className={`py-2 font-medium text-[var(--text-secondary)] hover:text-[hsl(var(--accent))] transition-colors ${isActive('/about') ? 'text-[hsl(var(--accent))]' : ''}`}
-              onClick={closeMobileMenu}
-            >
-              About
-            </Link>
-
-            {!user ? (
-              <Link href="/login"
-                className="py-2.5 px-4 mt-2 rounded-full bg-[hsl(var(--accent))] text-[var(--bg-body)] hover:opacity-90 transition-all w-full text-center shadow-sm"
-                onClick={closeMobileMenu}
-              >
-                Login
-              </Link>
-            ) : (
-              <>
-                <hr className="border-t border-[var(--border-color)] my-2" />
-                <div className="py-2 px-3 bg-[var(--text-primary)]/5 rounded-lg mb-2 flex items-center">
-                  <Avatar className="h-8 w-8 mr-3">
-                    <AvatarFallback className="bg-[hsl(var(--accent))]/20 text-[hsl(var(--accent))]">
-                      {getInitials(user.username)}
-                    </AvatarFallback>
-                  </Avatar>
-                  <div>
-                    <span className="font-bold text-[hsl(var(--accent))]">{user.username}</span>
-                  </div>
-                </div>
-
-                <Link href="/profile"
-                  className={`py-2 font-medium text-[var(--text-secondary)] hover:text-[hsl(var(--accent))] transition-colors flex items-center ${isActive('/profile') ? 'text-[hsl(var(--accent))]' : ''}`}
-                  onClick={closeMobileMenu}
-                >
-                  <User className="mr-2 h-4 w-4" />
-                  Profile
-                </Link>
-
-
-
-                <button
-                  onClick={() => {
-                    closeMobileMenu();
-                    handleLogout();
-                  }}
-                  className="py-2 font-medium text-red-500 hover:text-red-700 transition-colors text-left flex items-center"
-                >
-                  <LogOut className="mr-2 h-4 w-4" />
-                  Logout
+              <div className="flex items-center justify-between mb-8">
+                <span className="font-bold text-xl tracking-tight">Menu</span>
+                <button onClick={closeMobileMenu} className="p-2 rounded-full hover:bg-[var(--border-color)] transition-colors">
+                  <X size={20} />
                 </button>
-              </>
-            )}
-          </div>
-        </motion.div>
-      </div>
-    </motion.nav >
+              </div>
+
+              <div className="flex-1 space-y-2">
+                {navLinks.map((link) => (
+                  <Link key={link.href} href={link.href} onClick={closeMobileMenu}>
+                    <div className={`
+                        flex items-center justify-between p-4 rounded-xl transition-colors
+                        ${isActive(link.href) ? 'bg-[var(--btn-bg-hover)] border border-[var(--border-color)]' : 'hover:bg-[var(--bg-body)]'}
+                      `}>
+                      <span className={isActive(link.href) ? 'font-semibold text-[hsl(var(--accent))]' : 'text-[var(--text-secondary)]'}>
+                        {link.label}
+                      </span>
+                      {isActive(link.href) && <div className="w-1.5 h-1.5 rounded-full bg-[hsl(var(--accent))]" />}
+                    </div>
+                  </Link>
+                ))}
+              </div>
+
+              {user && (
+                <div className="mt-auto pt-6 border-t border-[var(--border-color)]">
+                  <Link href="/profile" onClick={closeMobileMenu}>
+                    <div className="flex items-center gap-4 p-4 rounded-xl bg-[var(--bg-body)] border border-[var(--border-color)] mb-3">
+                      <Avatar className="h-10 w-10">
+                        <AvatarFallback className="bg-[hsl(var(--accent))]/10 text-[hsl(var(--accent))]">
+                          {getInitials(user.username)}
+                        </AvatarFallback>
+                      </Avatar>
+                      <div className="flex-1">
+                        <div className="font-bold text-sm">{user.username}</div>
+                        <div className="text-xs text-[var(--text-secondary)]">View Profile</div>
+                      </div>
+                      <ChevronRight size={16} className="text-[var(--text-secondary)]" />
+                    </div>
+                  </Link>
+                  <button
+                    onClick={handleLogout}
+                    className="w-full py-3 rounded-xl bg-red-500/10 text-red-500 font-medium text-sm hover:bg-red-500/20 transition-colors flex items-center justify-center gap-2"
+                  >
+                    <LogOut size={16} /> Logout
+                  </button>
+                </div>
+              )}
+
+              {!user && (
+                <div className="mt-auto">
+                  <Link href="/login" onClick={closeMobileMenu}>
+                    <button className="w-full py-4 rounded-xl bg-[hsl(var(--accent))] text-[var(--bg-body)] font-bold shadow-lg shadow-[hsl(var(--accent))]/20">
+                      Login to Dashboard
+                    </button>
+                  </Link>
+                </div>
+              )}
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
+    </>
   );
 };
 
