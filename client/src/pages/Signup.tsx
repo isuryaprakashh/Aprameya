@@ -288,7 +288,7 @@ const Signup = () => {
                     onCheckedChange={(checked) =>
                       setFormData(prev => ({ ...prev, agreeToTerms: checked as boolean }))
                     }
-                    className="mt-1 border-[var(--border-color)] data-[state=checked]:bg-[hsl(var(--accent))] data-[state=checked]:text-[var(--bg-body)]"
+                    className="mt-1 border-black dark:border-white data-[state=checked]:bg-[hsl(var(--accent))] data-[state=checked]:text-[var(--bg-body)]"
                   />
                   <Label htmlFor="agreeToTerms" className="text-sm leading-relaxed text-[var(--text-secondary)]">
                     I agree to the{' '}

@@ -186,7 +186,7 @@ const Login = () => {
                       onCheckedChange={(checked) =>
                         setFormData(prev => ({ ...prev, rememberMe: checked as boolean }))
                       }
-                      className="border-[var(--border-color)] data-[state=checked]:bg-[hsl(var(--accent))] data-[state=checked]:text-[var(--bg-body)]"
+                      className="border-black dark:border-white data-[state=checked]:bg-[hsl(var(--accent))] data-[state=checked]:text-[var(--bg-body)]"
                     />
                     <Label htmlFor="rememberMe" className="text-sm text-[var(--text-secondary)]">Remember me</Label>
                   </div>
