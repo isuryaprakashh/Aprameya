@@ -177,6 +177,22 @@
     --accent-glow: rgba(225, 29, 72, 0.15);
   }
 
+  [data-accent="red"] {
+    --accent: 0 72% 51%;
+    --accent-foreground: 0 0% 100%;
+    --ring: 0 72% 51%;
+    --accent-rgb: 220, 38, 38;
+    --accent-glow: rgba(220, 38, 38, 0.2);
+  }
+
+  [data-theme="light"][data-accent="red"] {
+    --accent: 0 72% 51%;
+    --accent-foreground: 0 0% 98%;
+    --ring: 0 72% 51%;
+    --accent-rgb: 220, 38, 38;
+    --accent-glow: rgba(220, 38, 38, 0.15);
+  }
+
   /* --- RADIUS --- */
   [data-radius="0"] {
     --radius: 0rem;

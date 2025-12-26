@@ -44,6 +44,17 @@ const UserProfile = () => {
   // Helper functions
   const getInitials = (username: string) => username.substring(0, 2).toUpperCase();
 
+  const getAccentColor = (role?: string) => {
+    switch (role?.toUpperCase()) {
+      case 'ADMIN': return 'red';
+      case 'CORE':
+      case 'CORE_TEAM': return 'blue';
+      default: return 'emerald';
+    }
+  };
+
+  const accentColor = getAccentColor(currentUser?.role);
+
   const handleInputChange = (field: string, value: string) => {
     setProfileData({ ...profileData, [field]: value });
   };
@@ -225,7 +236,10 @@ const UserProfile = () => {
   }
 
   return (
-    <div className="flex h-screen bg-[var(--bg-body)] text-[var(--text-primary)] font-sans selection:bg-[hsl(var(--accent))]/30 overflow-hidden pt-24">
+    <div
+      className="flex h-screen bg-[var(--bg-body)] text-[var(--text-primary)] font-sans selection:bg-[hsl(var(--accent))]/30 overflow-hidden pt-24"
+      data-accent={accentColor}
+    >
       <Sidebar activeView={activeView} setActiveView={setActiveView} isMobileOpen={isMobileOpen} setIsMobileOpen={setIsMobileOpen} />
 
       <div className="flex-1 flex flex-col overflow-hidden">
