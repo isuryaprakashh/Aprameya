@@ -3,7 +3,7 @@ import { useState, useRef, useCallback } from 'react';
 export const useHold = (onComplete: () => void, duration = 1000) => {
     const [progress, setProgress] = useState(0);
     const [activated, setActivated] = useState(false);
-    const timerRef = useRef<NodeJS.Timeout | null>(null);
+
     const startTimeRef = useRef<number | null>(null);
     const rafRef = useRef<number | null>(null);
 

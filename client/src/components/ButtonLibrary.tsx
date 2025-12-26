@@ -11,7 +11,7 @@ export const ButtonTrace = ({ text = "SYS_DIAGNOSTIC" }) => (
 export const ButtonHold = ({ text = "HOLD_TO_PURGE" }) => {
     const [activated, setActivated] = useState(false);
     const [progress, setProgress] = useState(0);
-    const timerRef = useRef<NodeJS.Timeout | null>(null);
+    const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
     const startHold = () => {
         if (activated) return;

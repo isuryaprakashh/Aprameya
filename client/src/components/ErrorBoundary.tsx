@@ -1,4 +1,4 @@
-import React, { Component, ErrorInfo, ReactNode } from "react";
+import { Component, ErrorInfo, ReactNode } from "react";
 import { AlertCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -51,7 +51,7 @@ export class ErrorBoundary extends Component<Props, State> {
                                 An unexpected error occurred. Our team has been notified.
                             </p>
 
-                            {process.env.NODE_ENV === 'development' && this.state.error && (
+                            {import.meta.env.MODE === 'development' && this.state.error && (
                                 <div className="mt-4 p-3 bg-red-500/5 rounded-lg text-left overflow-auto max-h-40">
                                     <p className="text-xs font-mono text-red-400 break-all">
                                         {this.state.error.toString()}
