@@ -1,6 +1,7 @@
 import { Link } from 'wouter';
 import { featuredItems, upcomingEvents } from '../lib/data';
-import { motion } from 'framer-motion';
+import { motion, useInView, animate } from 'framer-motion';
+import { useEffect, useRef } from 'react';
 
 import { ButtonViolet3D, ButtonDarkSpec } from '../components/ui/v6-buttons';
 import { Trophy, ExternalLink, Award, ArrowRight } from 'lucide-react';
@@ -140,7 +141,7 @@ const Home = () => {
             <img
               src="/assets/UVH.jpg"
               alt="UVH Challenge"
-              className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+              className="absolute inset-0 w-full h-full object-contain bg-black/50 transition-transform duration-700 group-hover:scale-105"
             />
           </div>
         </div>
@@ -241,16 +242,48 @@ const Home = () => {
               { label: "Awards Won", value: "10+" }
             ].map((stat, idx) => (
               <div key={idx} className="bg-[var(--card-bg)] p-8 hover:bg-[var(--bg-body)] transition-colors group">
-                <div className="text-3xl md:text-4xl font-bold text-[var(--text-primary)] mb-2 group-hover:text-[hsl(var(--accent))] transition-colors font-mono">{stat.value}</div>
+                <div className="text-3xl md:text-4xl font-bold text-[var(--text-primary)] mb-2 group-hover:text-[hsl(var(--accent))] transition-colors font-mono">
+                  {stat.label === "Founded" ? (
+                    stat.value
+                  ) : (
+                    <CountUp value={stat.value} />
+                  )}
+                </div>
                 <div className="text-[10px] text-[var(--text-secondary)] uppercase tracking-widest font-mono">{stat.label}</div>
               </div>
             ))}
           </div>
         </section>
-      </div>
+      </div >
 
-    </div>
+    </div >
   );
+};
+
+const CountUp = ({ value }: { value: string }) => {
+  const ref = useRef<HTMLSpanElement>(null);
+  const isInView = useInView(ref, { once: true, margin: "-10px" });
+
+  useEffect(() => {
+    if (isInView && ref.current) {
+      const numericValue = parseInt(value.replace(/\D/g, ''));
+      const suffix = value.replace(/\d/g, '');
+
+      const controls = animate(0, numericValue, {
+        duration: 2.5,
+        ease: "easeOut",
+        onUpdate: (latest) => {
+          if (ref.current) {
+            ref.current.textContent = Math.floor(latest).toString() + suffix;
+          }
+        },
+      });
+
+      return () => controls.stop();
+    }
+  }, [isInView, value]);
+
+  return <span ref={ref} className="tabular-nums">0{value.replace(/\d/g, '')}</span>;
 };
 
 export default Home;
