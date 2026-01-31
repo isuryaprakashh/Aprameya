@@ -5,6 +5,7 @@ import { useEffect, useRef } from 'react';
 
 import { ButtonViolet3D, ButtonDarkSpec } from '../components/ui/v6-buttons';
 import { Trophy, ExternalLink, Award, ArrowRight } from 'lucide-react';
+import { useTheme } from '@/components/theme-provider';
 
 const fadeInUp = {
   hidden: { opacity: 0, y: 30 },
@@ -26,6 +27,8 @@ const staggerContainer = {
 };
 
 const Home = () => {
+  const { theme } = useTheme();
+
   return (
     <div className="min-h-screen w-full relative z-10 pb-32 pt-24 px-6 md:px-12 max-w-7xl mx-auto font-sans">
 
@@ -33,46 +36,63 @@ const Home = () => {
       <section className="min-h-[70vh] flex flex-col justify-center items-start relative mb-24">
         <div className="hero-glow opacity-60"></div>
 
-        <motion.div
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true }}
-          variants={staggerContainer}
-          className="relative z-10"
-        >
-          <motion.div variants={fadeInUp} className="mb-6 flex items-center gap-3">
-            <div className="h-[1px] w-8 bg-gradient-to-r from-[hsl(var(--accent))] to-transparent"></div>
-            <span className="text-xs md:text-sm font-mono text-[hsl(var(--accent))] tracking-widest uppercase">
-              Next Gen Autonomous Systems
-            </span>
+        <div className="w-full grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
+          <motion.div
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+            variants={staggerContainer}
+            className="relative z-10"
+          >
+            <motion.div variants={fadeInUp} className="mb-6 flex items-center gap-3">
+              <div className="h-[1px] w-8 bg-gradient-to-r from-[hsl(var(--accent))] to-transparent"></div>
+              <span className="text-xs md:text-sm font-mono text-[hsl(var(--accent))] tracking-widest uppercase">
+                Next Gen Autonomous Systems
+              </span>
+            </motion.div>
+
+            <motion.h1 variants={fadeInUp} className="text-6xl md:text-8xl lg:text-9xl font-semibold tracking-tighter text-[var(--text-primary)] mb-8 leading-[0.9]">
+              APRAMEYA
+              <span className="block text-2xl md:text-4xl lg:text-5xl font-light text-[var(--text-secondary)] mt-2 tracking-normal">
+                AI & Autonomous Club
+              </span>
+            </motion.h1>
+
+            <motion.p variants={fadeInUp} className="text-lg md:text-xl text-[var(--text-secondary)] max-w-xl leading-relaxed mb-12 border-l-2 border-[var(--border-color)] pl-6">
+              Pioneering the future of self-driving technology through research, innovation, and collaborative engineering.
+            </motion.p>
+
+            <motion.div variants={fadeInUp} className="flex flex-wrap gap-4">
+              <Link href="/projects">
+                <ButtonViolet3D className="px-10 py-5 text-sm md:text-base font-medium">
+                  Explore Projects
+                </ButtonViolet3D>
+              </Link>
+
+              <Link href="/signup">
+                <ButtonDarkSpec className="px-10 py-5 text-sm md:text-base rounded-xl inline-flex items-center gap-2 group">
+                  <span className="relative z-10">Join the Team</span>
+                  <ArrowRight className="w-4 h-4 ml-1 transition-transform group-hover:translate-x-1 relative z-10" />
+                </ButtonDarkSpec>
+              </Link>
+            </motion.div>
           </motion.div>
 
-          <motion.h1 variants={fadeInUp} className="text-6xl md:text-8xl lg:text-9xl font-semibold tracking-tighter text-[var(--text-primary)] mb-8 leading-[0.9]">
-            APRAMEYA
-            <span className="block text-2xl md:text-4xl lg:text-5xl font-light text-[var(--text-secondary)] mt-2 tracking-normal">
-              AI & Autonomous Club
-            </span>
-          </motion.h1>
-
-          <motion.p variants={fadeInUp} className="text-lg md:text-xl text-[var(--text-secondary)] max-w-xl leading-relaxed mb-12 border-l-2 border-[var(--border-color)] pl-6">
-            Pioneering the future of self-driving technology through research, innovation, and collaborative engineering.
-          </motion.p>
-
-          <motion.div variants={fadeInUp} className="flex flex-wrap gap-4">
-            <Link href="/projects">
-              <ButtonViolet3D className="px-10 py-5 text-sm md:text-base font-medium">
-                Explore Projects
-              </ButtonViolet3D>
-            </Link>
-
-            <Link href="/signup">
-              <ButtonDarkSpec className="px-10 py-5 text-sm md:text-base rounded-xl inline-flex items-center gap-2 group">
-                <span className="relative z-10">Join the Team</span>
-                <ArrowRight className="w-4 h-4 ml-1 transition-transform group-hover:translate-x-1 relative z-10" />
-              </ButtonDarkSpec>
-            </Link>
+          {/* Hero Logo */}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+            className="hidden lg:flex items-center justify-end relative z-10 -mr-8"
+          >
+            <img
+              src={theme === 'dark' ? '/logo-white.png' : '/logo-black.png'}
+              alt="Aprameya Logo"
+              className="w-full max-w-md xl:max-w-lg object-contain"
+            />
           </motion.div>
-        </motion.div>
+        </div>
       </section>
 
       {/* Recent Achievement Section */}
