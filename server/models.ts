@@ -66,6 +66,9 @@ const eventSchema = new mongoose.Schema({
     location: { type: String, required: true },
     image: { type: String, required: true },
     user_id: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
+    capacity: { type: Number, default: null },
+    registrationOpen: { type: Boolean, default: true },
+    ticketEnabled: { type: Boolean, default: false },
 });
 
 export const Event = mongoose.model('Event', eventSchema);
@@ -78,6 +81,23 @@ const eventRegistrationSchema = new mongoose.Schema({
 });
 
 export const EventRegistration = mongoose.model('EventRegistration', eventRegistrationSchema);
+
+const ticketRegistrationSchema = new mongoose.Schema({
+    eventId: { type: mongoose.Schema.Types.ObjectId, ref: 'Event', required: true },
+    userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
+    fullName: { type: String, required: true },
+    rollNumber: { type: String, required: true, match: /^\d{10}$/ },
+    year: { type: Number, required: true, enum: [1, 2, 3, 4] },
+    qrToken: { type: String, required: true },
+    scanned: { type: Boolean, default: false },
+    scannedAt: { type: Date, default: null },
+    createdAt: { type: Date, default: Date.now },
+});
+
+// Compound unique index: one roll number per event
+ticketRegistrationSchema.index({ eventId: 1, rollNumber: 1 }, { unique: true });
+
+export const TicketRegistration = mongoose.model('TicketRegistration', ticketRegistrationSchema);
 
 
 

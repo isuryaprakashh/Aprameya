@@ -69,6 +69,9 @@ export const insertEventSchema = z.object({
   location: z.string().min(1, "Location is required"),
   image: z.string().min(1, "Image is required"),
   user_id: z.string().optional(), // Handled by backend
+  capacity: z.number().int().positive().nullable().optional(),
+  registrationOpen: z.boolean().optional(),
+  ticketEnabled: z.boolean().optional(),
 });
 
 export const insertEventRegistrationSchema = z.object({
@@ -82,6 +85,13 @@ export const insertEventRegistrationSchema = z.object({
 export const insertMessageSchema = z.object({
   content: z.string().min(1, "Content is required"),
   user_id: z.string().optional(), // Handled by backend
+});
+
+export const insertTicketRegistrationSchema = z.object({
+  fullName: z.string().min(1, "Full name is required").max(100),
+  rollNumber: z.string().length(10, "Roll number must be exactly 10 digits").regex(/^\d{10}$/, "Roll number must contain only digits"),
+  year: z.number().int().min(1).max(4),
+  eventId: z.string().min(1, "Event ID is required"),
 });
 
 // Type definitions
@@ -163,6 +173,9 @@ export interface Event {
   location: string;
   image: string;
   user_id: string;
+  capacity?: number | null;
+  registrationOpen?: boolean;
+  ticketEnabled?: boolean;
 }
 
 export type InsertEventRegistration = z.infer<typeof insertEventRegistrationSchema>;
@@ -184,4 +197,19 @@ export interface Message {
   content: string;
   created_at: Date | string;
   user_id: string;
+}
+
+export type InsertTicketRegistration = z.infer<typeof insertTicketRegistrationSchema>;
+export interface TicketRegistration {
+  _id: string;
+  id: string;
+  eventId: string;
+  userId: string;
+  fullName: string;
+  rollNumber: string;
+  year: number;
+  qrToken: string;
+  scanned: boolean;
+  scannedAt: Date | string | null;
+  createdAt: Date | string;
 }

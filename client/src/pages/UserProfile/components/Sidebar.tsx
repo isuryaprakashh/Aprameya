@@ -1,4 +1,3 @@
-
 import { useAuth } from "@/context/AuthContext";
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent } from '@/components/ui/sheet';
@@ -13,7 +12,8 @@ import {
     FaHome,
     FaNewspaper,
     FaCog,
-    FaTimes
+    FaTimes,
+    FaQrcode
 } from 'react-icons/fa';
 
 interface SidebarContentProps {
@@ -26,15 +26,18 @@ interface SidebarContentProps {
 const SidebarContent = ({ activeView, setActiveView, isMobile, closeMobile }: SidebarContentProps) => {
     const { user } = useAuth();
     const isAdmin = user?.role === 'ADMIN';
+    const isCore = user?.role === 'CORE';
+    const hasAccess = isAdmin || isCore;
 
-    const menuItems = isAdmin ? [
-        { id: 'overview', label: 'Overview', icon: FaChartLine },
-        { id: 'users', label: 'Users', icon: FaUsers },
+    const menuItems = hasAccess ? [
+        ...(isAdmin ? [{ id: 'overview', label: 'Overview', icon: FaChartLine }, { id: 'users', label: 'Users', icon: FaUsers }] : []),
+        ...(isCore ? [{ id: 'overview', label: 'Overview', icon: FaHome }] : []),
         { id: 'projects', label: 'Projects', icon: FaProjectDiagram },
         { id: 'blogs', label: 'Blogs', icon: FaBlog },
         { id: 'research', label: 'Research', icon: FaFlask },
         { id: 'events', label: 'Events', icon: FaCalendarAlt },
         { id: 'registrations', label: 'Registrations', icon: FaClipboardList },
+        { id: 'scan', label: 'Scan QR', icon: FaQrcode },
     ] : [
         { id: 'overview', label: 'Overview', icon: FaHome },
         { id: 'events', label: 'Upcoming Events', icon: FaCalendarAlt },
@@ -49,6 +52,9 @@ const SidebarContent = ({ activeView, setActiveView, isMobile, closeMobile }: Si
         }
         return true;
     });
+
+    // Deduplicate items just in case
+    const uniqueItems = Array.from(new Map(menuItems.map(item => [item.id, item])).values());
 
     const handleNavigation = (viewId: string) => {
         setActiveView(viewId);
@@ -77,7 +83,7 @@ const SidebarContent = ({ activeView, setActiveView, isMobile, closeMobile }: Si
 
             <div className="flex-1 overflow-y-auto py-4">
                 <nav className="px-3 space-y-1">
-                    {menuItems.map((item) => (
+                    {uniqueItems.map((item) => (
                         <button
                             key={item.id}
                             onClick={() => handleNavigation(item.id)}

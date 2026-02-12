@@ -3,29 +3,18 @@ import { Link, useLocation } from 'wouter';
 // import { events, upcomingEvents } from '../lib/data'; // Removed static import
 import { Event, EventRegistration } from '../lib/types';
 import { useQuery } from '@tanstack/react-query';
-import { User } from '@shared/schema';
-import { Loader2 } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
 import {
   Calendar,
   Clock as ResultClockIcon,
   MapPin as ResultMapIcon,
-  Users,
-  Filter,
   Search,
-  ArrowRight,
-  Sparkles,
-  Trophy,
-  Zap
+  Ticket
 } from 'lucide-react';
 import { motion } from 'framer-motion';
 import ProximityMatrix from '../components/backgrounds/ProximityMatrix';
 import { CleanCard } from '../components/ui/v6-card';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
 
 import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
@@ -33,7 +22,7 @@ import { useAuth } from '@/context/AuthContext';
 
 const Events = () => {
   const { toast } = useToast();
-  const { data: events = [], isLoading, error } = useQuery<Event[]>({
+  const { data: events = [] } = useQuery<Event[]>({
     queryKey: ['/api/events'],
   });
   const { user } = useAuth();
@@ -45,60 +34,20 @@ const Events = () => {
 
   const [, setLocation] = useLocation();
 
-  const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
   const [filterType, setFilterType] = useState('all');
   const [searchTerm, setSearchTerm] = useState('');
-  const [formData, setFormData] = useState({
-    message: ''
-  });
 
   // Sort events to find upcoming ones
   const upcomingEvents = [...events].sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()).filter(e => new Date(e.date) > new Date()).slice(0, 1);
 
-  if (isLoading) {
-    return (
-      <div className="min-h-screen bg-[var(--bg-body)] flex items-center justify-center">
-        <Loader2 className="w-8 h-8 animate-spin text-[hsl(var(--accent))]" />
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="min-h-screen bg-[var(--bg-body)] flex items-center justify-center text-[var(--text-secondary)]">
-        Error loading events. Please try again later.
-      </div>
-    );
-  }
-
-  const handleRegisterInterest = (event: Event) => {
-    setSelectedEvent(event);
-    // Scroll to form on mobile
-    if (window.innerWidth < 1024) {
-      const form = document.getElementById('registration-form');
-      if (form) {
-        form.scrollIntoView({ behavior: 'smooth' });
-      }
-    }
-  };
-
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    const { id, value } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [id]: value
-    }));
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-
-    if (!selectedEvent) {
+  const handleQuickRegister = async (event: Event) => {
+    if (!user) {
       toast({
-        title: "Selection Required",
-        description: "Please select an event from the list first.",
+        title: "Authentication Required",
+        description: "Please login to register for events",
         variant: "destructive",
       });
+      setLocation("/login");
       return;
     }
 
@@ -111,8 +60,7 @@ const Events = () => {
         },
         credentials: 'include',
         body: JSON.stringify({
-          eventId: selectedEvent.id,
-          message: formData.message
+          event_id: event.id,
         }),
       });
 
@@ -121,13 +69,10 @@ const Events = () => {
       if (response.ok) {
         toast({
           title: "Successfully Registered!",
-          description: `You have registered for "${selectedEvent.title}". Check your email for confirmation.`,
+          description: `You have registered for "${event.title}".`,
         });
-        // Reset form
-        setFormData({
-          message: ''
-        });
-        setSelectedEvent(null);
+        // Refresh to update UI
+        setTimeout(() => window.location.reload(), 1000);
       } else {
         toast({
           title: "Registration Failed",
@@ -188,15 +133,32 @@ const Events = () => {
                   <div className="text-[var(--text-primary)] font-bold">{upcomingEvents[0].title}</div>
                   <div className="text-xs text-gray-400">{upcomingEvents[0].date} • {upcomingEvents[0].location}</div>
                 </div>
-                {/* Register Button - Highlight */}
-                {user && registeredEventIds.has(upcomingEvents[0].id) ? (
+                {/* Highlight Action */}
+                {user && (registeredEventIds.has(upcomingEvents[0].id)) ? (
                   <Button className="w-full sm:w-auto ml-0 sm:ml-auto bg-green-600 hover:bg-green-700 text-white cursor-default" size="sm">
                     Already Registered
                   </Button>
                 ) : (
-                  <Button className="w-full sm:w-auto ml-0 sm:ml-auto btn-primary" size="sm" onClick={() => handleRegisterInterest(upcomingEvents[0])}>
-                    Register Now
-                  </Button>
+                  upcomingEvents[0].ticketEnabled ? (
+                    <Button
+                      asChild
+                      className="w-full sm:w-auto ml-0 sm:ml-auto btn-primary"
+                      size="sm"
+                    >
+                      <Link href={`/events/${upcomingEvents[0].id}/register`}>
+                        <Ticket className="w-4 h-4 mr-2" />
+                        Get Ticket
+                      </Link>
+                    </Button>
+                  ) : (
+                    <Button
+                      className="w-full sm:w-auto ml-0 sm:ml-auto btn-primary"
+                      size="sm"
+                      onClick={() => handleQuickRegister(upcomingEvents[0])}
+                    >
+                      Register Now
+                    </Button>
+                  )
                 )}
               </div>
             )}
@@ -204,264 +166,146 @@ const Events = () => {
         </div>
       </section>
 
-      {/* Main Content Grid */}
-      <section className="py-16 px-4 bg-[var(--bg-body)]">
+      {/* Main Content */}
+      <section className="py-12 px-4 bg-[var(--bg-body)]">
         <div className="container mx-auto">
-          {/* Filters */}
-          <div className="flex flex-col md:flex-row justify-between items-center mb-12 gap-6">
-            <div className="flex items-center gap-4 overflow-x-auto w-full md:w-auto pb-2 md:pb-0">
-              <Filter className="w-5 h-5 text-[hsl(var(--accent))]" />
+          <div className="flex flex-col md:flex-row gap-6 mb-12 items-center justify-between">
+            {/* Filter Tabs */}
+            <div className="flex overflow-x-auto pb-2 md:pb-0 gap-2 no-scrollbar w-full md:w-auto">
               {eventTypes.map(type => (
                 <button
                   key={type}
                   onClick={() => setFilterType(type)}
-                  className={`px-4 py-2 rounded-full text-sm font-medium transition-all whitespace-nowrap ${filterType === type
-                    ? 'bg-[hsl(var(--accent))] text-[var(--bg-body)]'
-                    : 'bg-[var(--card-bg)] border border-[var(--border-color)] text-[var(--text-secondary)] hover:border-[hsl(var(--accent))]'
-                    }`}
+                  className={cn(
+                    "px-4 py-2 rounded-full text-xs font-mono whitespace-nowrap border transition-all",
+                    filterType === type
+                      ? "bg-[hsl(var(--accent))] text-[var(--bg-body)] border-[hsl(var(--accent))]"
+                      : "bg-[var(--card-bg)] border-[var(--border-color)] text-[var(--text-secondary)] hover:border-[hsl(var(--accent))]"
+                  )}
                 >
                   {type.charAt(0).toUpperCase() + type.slice(1)}
                 </button>
               ))}
             </div>
 
-            <div className="relative w-full md:w-72">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--text-secondary)]" />
-              <Input
+            {/* Search */}
+            <div className="relative w-full md:w-64">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-[var(--text-secondary)] w-4 h-4" />
+              <input
+                type="text"
                 placeholder="Search events..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-10 bg-[var(--card-bg)] border-[var(--border-color)] focus:border-[hsl(var(--accent))]"
+                className="w-full pl-10 pr-4 py-2 bg-[var(--card-bg)] border border-[var(--border-color)] rounded-full text-sm text-[var(--text-primary)] focus:outline-none focus:border-[hsl(var(--accent))]"
               />
             </div>
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            {/* Events Timeline */}
-            <div className="lg:col-span-2 relative">
-              {/* Timeline Line */}
-              <div className="absolute left-8 top-0 bottom-0 w-px bg-[var(--border-color)]"></div>
-
-              <div className="space-y-12">
-                {filteredEvents.length > 0 ? (
-                  filteredEvents.map((event, index) => (
-                    <motion.div
-                      key={event.id}
-                      initial={{ opacity: 0, x: -20 }}
-                      whileInView={{ opacity: 1, x: 0 }}
-                      transition={{ delay: index * 0.1 }}
-                      viewport={{ once: true }}
-                      className="relative pl-20"
-                    >
-                      {/* Timeline Dot */}
-                      <div className={cn(
-                        "absolute left-[30px] top-6 w-3 h-3 rounded-full shadow-[0_0_10px_hsl(var(--accent))] z-10 transition-colors duration-300",
-                        selectedEvent?.id === event.id ? "bg-[hsl(var(--accent))]" : "bg-[var(--border-color)]"
-                      )}></div>
-                      {selectedEvent?.id === event.id && (
-                        <div className="absolute left-[31px] top-6 w-3 h-3 rounded-full bg-[hsl(var(--accent))] animate-ping opacity-50"></div>
-                      )}
-
-                      <CleanCard
-                        className={cn(
-                          "flex flex-col md:flex-row overflow-hidden group transition-all duration-300",
-                          selectedEvent?.id === event.id ? "border-[hsl(var(--accent))] shadow-[0_0_20px_hsl(var(--accent))/10]" : ""
-                        )}
-                        onClick={() => handleRegisterInterest(event)}
-                      >
-                        {/* Event Image */}
-                        <div className="md:w-1/3 relative h-48 md:h-auto overflow-hidden">
-                          <div className="absolute inset-0 bg-gradient-to-r from-[var(--bg-body)]/80 to-transparent z-10 md:hidden"></div>
-                          <img
-                            src={event.image || '/assets/event_symposium.png'}
-                            alt={event.title}
-                            className="w-full h-full object-cover brightness-90 group-hover:brightness-100 transition-all duration-700 group-hover:scale-105"
-                          />
-                          <div className="absolute top-4 left-4 md:hidden z-20">
-                            <Badge variant="outline" className="bg-[var(--bg-body)]/80 backdrop-blur-sm border-[hsl(var(--accent))]/30 text-[hsl(var(--accent))]">
-                              {event.type}
-                            </Badge>
-                          </div>
-                        </div>
-
-                        {/* Event Details */}
-                        <div className="flex-1 p-6 flex flex-col justify-between relative">
-                          {user?.role === 'ADMIN' && (
-                            <Button
-                              size="sm"
-                              variant="secondary"
-                              className="absolute top-4 right-4 z-20"
-                              onClick={(e) => {
-                                e.stopPropagation(); // Prevent CleanCard's onClick from firing
-                                setLocation(`/dashboard?view=events&editId=${event.id}&type=event`);
-                              }}
-                            >
-                              Edit
-                            </Button>
-                          )}
-                          <div className="flex justify-between items-start mb-4">
-                            <div>
-                              <div className="hidden md:flex items-center gap-2 mb-2">
-                                <Badge variant="outline" className="bg-[hsl(var(--accent))]/5 border-[hsl(var(--accent))]/20 text-[hsl(var(--accent))] hover:bg-[hsl(var(--accent))]/10">
-                                  {event.type}
-                                </Badge>
-                                <span className="text-xs text-[var(--text-secondary)] font-mono">{event.year}</span>
-                              </div>
-                              <h3 className="text-xl font-bold text-[var(--text-primary)] mb-2 group-hover:text-[hsl(var(--accent))] transition-colors">
-                                {event.title}
-                              </h3>
-                            </div>
-                            <div className="text-center bg-[var(--card-bg)] border border-[var(--border-color)] rounded-lg p-2 min-w-[60px]">
-                              <div className="text-xs text-[var(--text-secondary)] uppercase">{event.month}</div>
-                              <div className="text-xl font-bold text-[var(--text-primary)]">{event.day}</div>
-                            </div>
-                          </div>
-
-                          <div className="space-y-2 mb-6">
-                            <div className="flex items-center text-sm text-[var(--text-secondary)]">
-                              <ResultClockIcon className="w-4 h-4 mr-2 text-[hsl(var(--accent))]" />
-                              {event.time}
-                            </div>
-                            <div className="flex items-center text-sm text-[var(--text-secondary)]">
-                              <ResultMapIcon className="w-4 h-4 mr-2 text-[hsl(var(--accent))]" />
-                              {event.location}
-                            </div>
-                          </div>
-
-                          <p className="text-sm text-[var(--text-secondary)] mb-6 line-clamp-2">
-                            {event.description}
-                          </p>
-
-                          <div className="flex gap-3">
-                            <Button
-                              size="sm"
-                              className={cn(
-                                "text-xs font-bold uppercase tracking-wider transition-all",
-                                selectedEvent?.id === event.id
-                                  ? "bg-[hsl(var(--accent))] text-[var(--bg-body)] hover:bg-[hsl(var(--accent))]/90"
-                                  : "bg-[var(--card-bg)] border border-[var(--border-color)] text-[var(--text-primary)] hover:border-[hsl(var(--accent))]"
-                              )}
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                handleRegisterInterest(event);
-                              }}
-                            >
-                              {selectedEvent?.id === event.id ? "Selected" : "Select Event"}
-                            </Button>
-                            {/* Status Badge for list items */}
-                            {user && registeredEventIds.has(event.id) && (
-                              <Badge variant="outline" className="bg-green-500/10 text-green-500 border-green-500/20">
-                                Registered
-                              </Badge>
-                            )}
-                          </div>
-                        </div>
-                      </CleanCard>
-                    </motion.div>
-                  ))
-                ) : (
-                  <div className="text-center py-20 bg-[var(--card-bg)]/50 rounded-xl border border-[var(--border-color)] border-dashed ml-8">
-                    <Calendar className="w-12 h-12 text-[var(--text-secondary)] mx-auto mb-4 opacity-50" />
-                    <h3 className="text-xl font-bold text-[var(--text-primary)] mb-2">No events found</h3>
-                    <p className="text-[var(--text-secondary)]">Try adjusting your search or filters</p>
-                  </div>
-                )}
-              </div>
-            </div>
-
-            {/* Registration Form Sidebar */}
-            <div className="lg:col-span-1">
-              <motion.div
-                id="registration-form"
-                className="sticky top-24"
-                initial={{ opacity: 0, x: 30 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.6, delay: 0.4 }}
-              >
-                <Card className="border-0 shadow-xl bg-[var(--card-bg)] border-[var(--border-color)]">
-                  <CardHeader>
-                    <CardTitle className="flex items-center gap-2 text-[var(--text-primary)]">
-                      <Users className="w-5 h-5 text-[hsl(var(--accent))]" />
-                      Register Interest
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <form onSubmit={handleSubmit} className="space-y-4">
-                      <div>
-                        <Label htmlFor="event-name" className="text-[var(--text-secondary)]">Selected Event</Label>
-                        <Input
-                          id="event-name"
-                          readOnly
-                          value={selectedEvent ? selectedEvent.title : 'Select an event from the list'}
-                          className="bg-[var(--bg-body)] border-[var(--border-color)] text-[var(--text-primary)]"
-                        />
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {filteredEvents.length > 0 ? (
+              filteredEvents.map((event, index) => (
+                <motion.div
+                  key={event.id}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: index * 0.1 }}
+                >
+                  <CleanCard className="h-full flex flex-col group hover:border-[hsl(var(--accent))]/50 transition-colors duration-300">
+                    <div className="relative h-48 overflow-hidden border-b border-[var(--border-color)]">
+                      <div className="absolute inset-0 bg-gradient-to-t from-[var(--card-bg)] via-transparent to-transparent z-10" />
+                      <img
+                        src={event.image}
+                        alt={event.title}
+                        className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                      />
+                      <div className="absolute top-4 right-4 z-20">
+                        <Badge className="bg-[var(--bg-body)]/80 backdrop-blur-sm text-[var(--text-primary)] border-[var(--border-color)]">
+                          {event.type}
+                        </Badge>
                       </div>
-
-                      <div>
-                        <Label htmlFor="message" className="text-[var(--text-secondary)]">Why are you interested? (Optional)</Label>
-                        <Textarea
-                          id="message"
-                          placeholder="Tell us about your interest in this event..."
-                          value={formData.message}
-                          onChange={handleInputChange}
-                          className="min-h-[80px] bg-[var(--bg-body)] border-[var(--border-color)] text-[var(--text-primary)]"
-                        />
-                      </div>
-
-                      {user ? (
-                        <Button
-                          type="submit"
-                          className="w-full bg-[hsl(var(--accent))] hover:bg-[hsl(var(--accent))]/90 text-[var(--bg-body)]"
-                          disabled={!selectedEvent}
-                        >
-                          {selectedEvent ? (registeredEventIds.has(selectedEvent.id) ? 'Already Registered' : 'Submit Registration') : 'Select an Event First'}
-                          <ArrowRight className="ml-2 w-4 h-4" />
-                        </Button>
-                      ) : (
-                        <div className="space-y-3">
-                          <p className="text-sm text-[var(--text-secondary)] text-center">
-                            Please log in to register for events
-                          </p>
-                          <Button asChild className="w-full bg-[hsl(var(--accent))] hover:bg-[hsl(var(--accent))]/90 text-[var(--bg-body)]">
-                            <Link href="/login">
-                              Login to Register
-                              <ArrowRight className="ml-2 w-4 h-4" />
-                            </Link>
-                          </Button>
+                      {/* Ticket Enabled Badge */}
+                      {event.ticketEnabled && (
+                        <div className="absolute top-4 left-4 z-20">
+                          <Badge className="bg-[hsl(var(--accent))]/90 backdrop-blur-sm text-[var(--bg-body)] border-none flex items-center gap-1">
+                            <Ticket className="w-3 h-3" /> Ticket
+                          </Badge>
                         </div>
                       )}
-                    </form>
-                  </CardContent>
-                </Card>
-
-                {/* Event Benefits */}
-                <Card className="mt-6 border-0 shadow-lg bg-[var(--card-bg)] border-[var(--border-color)]">
-                  <CardHeader>
-                    <CardTitle className="flex items-center gap-2 text-lg text-[var(--text-primary)]">
-                      <Trophy className="w-5 h-5 text-yellow-500" />
-                      Event Benefits
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="space-y-3">
-                      {[
-                        { icon: Zap, text: "Hands-on Learning" },
-                        { icon: Users, text: "Networking Opportunities" },
-                        { icon: Trophy, text: "Certificates & Prizes" },
-                        { icon: Sparkles, text: "Industry Exposure" }
-                      ].map((benefit, index) => (
-                        <div key={index} className="flex items-center gap-3">
-                          <div className="w-8 h-8 bg-[hsl(var(--accent))]/10 rounded-lg flex items-center justify-center">
-                            <benefit.icon className="w-4 h-4 text-[hsl(var(--accent))]" />
-                          </div>
-                          <span className="text-sm text-[var(--text-secondary)]">{benefit.text}</span>
-                        </div>
-                      ))}
                     </div>
-                  </CardContent>
-                </Card>
-              </motion.div>
-            </div>
+
+                    <div className="p-6 flex flex-col flex-grow">
+                      <div className="flex justify-between items-start mb-4">
+                        <div>
+                          <div className="hidden md:flex items-center gap-2 mb-2">
+                            <span className="text-xs text-[var(--text-secondary)] font-mono">{event.year}</span>
+                          </div>
+                          <h3 className="text-xl font-bold text-[var(--text-primary)] mb-2 group-hover:text-[hsl(var(--accent))] transition-colors">
+                            {event.title}
+                          </h3>
+                        </div>
+                        <div className="text-center bg-[var(--card-bg)] border border-[var(--border-color)] rounded-lg p-2 min-w-[60px]">
+                          <div className="text-xs text-[var(--text-secondary)] uppercase">{event.month}</div>
+                          <div className="text-xl font-bold text-[var(--text-primary)]">{event.day}</div>
+                        </div>
+                      </div>
+
+                      <div className="space-y-2 mb-6">
+                        <div className="flex items-center text-sm text-[var(--text-secondary)]">
+                          <ResultClockIcon className="w-4 h-4 mr-2 text-[hsl(var(--accent))]" />
+                          {event.time}
+                        </div>
+                        <div className="flex items-center text-sm text-[var(--text-secondary)]">
+                          <ResultMapIcon className="w-4 h-4 mr-2 text-[hsl(var(--accent))]" />
+                          {event.location}
+                        </div>
+                      </div>
+
+                      <p className="text-sm text-[var(--text-secondary)] mb-6 line-clamp-2">
+                        {event.description}
+                      </p>
+
+                      <div className="mt-auto pt-4 border-t border-[var(--border-color)] flex items-center justify-between">
+                        {/* Status Badge */}
+                        {user && registeredEventIds.has(event.id) ? (
+                          <Badge variant="outline" className="bg-green-500/10 text-green-500 border-green-500/20 w-full justify-center py-2">
+                            <div className="flex items-center gap-2">
+                              <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
+                              Registered
+                            </div>
+                          </Badge>
+                        ) : (
+                          /* Action Buttons */
+                          event.ticketEnabled ? (
+                            <Button
+                              asChild
+                              className="w-full bg-[hsl(var(--accent))] text-[var(--bg-body)] hover:bg-[hsl(var(--accent))]/90"
+                            >
+                              <Link href={`/events/${event.id}/register`}>
+                                <Ticket className="w-4 h-4 mr-2" />
+                                Get Ticket
+                              </Link>
+                            </Button>
+                          ) : (
+                            <Button
+                              className="w-full bg-[var(--card-bg)] text-[var(--text-primary)] border border-[var(--border-color)] hover:border-[hsl(var(--accent))]"
+                              onClick={() => handleQuickRegister(event)}
+                            >
+                              Register Now
+                            </Button>
+                          )
+                        )}
+                      </div>
+                    </div>
+                  </CleanCard>
+                </motion.div>
+              ))
+            ) : (
+              <div className="text-center py-20 bg-[var(--card-bg)]/50 rounded-xl border border-[var(--border-color)] border-dashed ml-8 col-span-1 md:col-span-2 lg:col-span-3">
+                <Calendar className="w-12 h-12 text-[var(--text-secondary)] mx-auto mb-4 opacity-50" />
+                <h3 className="text-xl font-bold text-[var(--text-primary)] mb-2">No events found</h3>
+                <p className="text-[var(--text-secondary)]">Try adjusting your search or filters</p>
+              </div>
+            )}
           </div>
         </div>
       </section>

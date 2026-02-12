@@ -4,6 +4,8 @@ import { useToast } from '@/hooks/use-toast';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { FaBars, FaSave } from 'react-icons/fa';
+import { Switch } from '@/components/ui/switch';
+import { Label } from '@/components/ui/label';
 
 // Extracted Components
 import { Sidebar } from './UserProfile/components/Sidebar';
@@ -22,6 +24,7 @@ const RegistrationsView = lazy(() => import('./UserProfile/views/RegistrationsVi
 const ProjectsView = lazy(() => import('./UserProfile/views/ProjectsView'));
 const BlogsView = lazy(() => import('./UserProfile/views/BlogsView'));
 const ResearchView = lazy(() => import('./UserProfile/views/ResearchView'));
+import AdminScanQR from './AdminScanQR';
 
 const UserProfile = () => {
   const { toast } = useToast();
@@ -95,7 +98,7 @@ const UserProfile = () => {
     if (type === 'project') Object.assign(newItem, { title: '', description: '', category: '', technologies: '', team: '', image: '' });
     else if (type === 'blog') Object.assign(newItem, { title: '', excerpt: '', content: '', category: '', image: '' });
     else if (type === 'research') Object.assign(newItem, { title: '', description: '', category: '', authors: '', image: '' });
-    else if (type === 'event') Object.assign(newItem, { title: '', description: '', type: '', date: '', time: '', location: '', image: '' });
+    else if (type === 'event') Object.assign(newItem, { title: '', description: '', type: '', date: '', time: '', location: '', image: '', ticketEnabled: false });
     setSelectedItem(newItem);
     setIsDialogOpen(true);
   };
@@ -140,6 +143,17 @@ const UserProfile = () => {
           </div>
           <FormField label="Location" id="location" value={selectedItem.location} onChange={(e: any) => inputChange('location', e.target.value)} />
           <FormField label="Image URL" id="image" value={selectedItem.image} onChange={(e: any) => inputChange('image', e.target.value)} />
+          <div className="flex flex-row items-center justify-between rounded-lg border border-[var(--border-color)] p-4 shadow-sm">
+            <div className="space-y-0.5">
+              <Label htmlFor="ticketEnabled" className="text-base text-[var(--text-primary)]">Enable Ticket System</Label>
+              <div className="text-[0.8rem] text-[var(--text-secondary)]">Generate QR codes for attendees</div>
+            </div>
+            <Switch
+              id="ticketEnabled"
+              checked={!!selectedItem.ticketEnabled}
+              onCheckedChange={(checked: boolean) => inputChange('ticketEnabled', checked)}
+            />
+          </div>
         </>}
         <div className="flex justify-end gap-3 mt-6 pt-4 border-t border-[var(--border-color)]">
           <Button variant="ghost" onClick={() => setIsDialogOpen(false)}>Cancel</Button>
@@ -193,7 +207,7 @@ const UserProfile = () => {
 
       case 'events':
         return <Suspense fallback={<div className="text-center py-12 text-[var(--text-secondary)]">Loading...</div>}>
-          <EventsView />
+          <EventsView handleEdit={handleEdit} handleCreate={handleCreate} handleDelete={handleDelete} />
         </Suspense>;
 
       case 'registrations':
@@ -215,6 +229,9 @@ const UserProfile = () => {
         return <Suspense fallback={<div className="text-center py-12 text-[var(--text-secondary)]">Loading...</div>}>
           <ResearchView handleEdit={handleEdit} handleCreate={handleCreate} handleDelete={handleDelete} />
         </Suspense>;
+
+      case 'scan':
+        return <AdminScanQR isEmbedded={true} />;
 
       default:
         return null;

@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '@/components/ui/card';
+import { CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { FaCalendarAlt, FaClipboardList, FaFileCsv } from 'react-icons/fa';
@@ -8,6 +8,7 @@ import { apiRequest } from '@/lib/queryClient';
 import { useToast } from '@/hooks/use-toast';
 import { EventRegistration } from '@/lib/types';
 import { useAuth } from '@/context/AuthContext';
+
 
 interface EventRegistrationsData {
     registrations: EventRegistration[];
@@ -18,6 +19,7 @@ export default function RegistrationsView() {
     const { toast } = useToast();
     const queryClient = useQueryClient();
     const { user: currentUser } = useAuth();
+
 
     const { data: userEventRegistrations = [] } = useQuery<EventRegistration[]>({
         queryKey: ['/api/event-registrations/my'],
@@ -82,9 +84,12 @@ export default function RegistrationsView() {
             <div className="space-y-6">
                 <div className="flex justify-between items-center">
                     <h2 className="text-2xl font-bold text-[var(--text-primary)]">Event Registrations</h2>
-                    <Button onClick={() => downloadCSV(eventRegistrations.registrations, 'registrations.csv')} variant="outline" className="text-[hsl(var(--accent))] border-[hsl(var(--accent))]/50 hover:bg-[hsl(var(--accent))]/10">
-                        <FaFileCsv className="mr-2" /> Export CSV
-                    </Button>
+                    <div className="flex gap-2">
+
+                        <Button onClick={() => downloadCSV(eventRegistrations.registrations, 'registrations.csv')} variant="outline" className="text-[hsl(var(--accent))] border-[hsl(var(--accent))]/50 hover:bg-[hsl(var(--accent))]/10">
+                            <FaFileCsv className="mr-2" /> Export CSV
+                        </Button>
+                    </div>
                 </div>
                 <div className="glass-panel rounded-xl overflow-hidden border border-[var(--border-color)]">
                     <Table>

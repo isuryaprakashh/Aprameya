@@ -19,6 +19,9 @@ import Signup from "./pages/Signup";
 import UserProfile from "./pages/UserProfile";
 import NotFound from "./pages/not-found";
 import DesignSystem from "./pages/DesignSystem";
+import TicketRegistration from "./pages/TicketRegistration";
+import MyTickets from "./pages/MyTickets";
+import AdminScanQR from "./pages/AdminScanQR";
 
 // Protected route component
 interface ProtectedRouteProps {
@@ -66,6 +69,15 @@ function App() {
             <Route path="/login" component={Login} />
             <Route path="/signup" component={Signup} />
             <Route path="/design" component={DesignSystem} />
+            <Route path="/events/:eventId/register" component={TicketRegistration} />
+
+            <Route path="/my-tickets">
+              <ProtectedRoute component={MyTickets} />
+            </Route>
+
+            <Route path="/dashboard/scan">
+              <ProtectedRoute component={AdminScanQR} roles={['ADMIN', 'CORE']} />
+            </Route>
 
             {/* Dashboard routes - will route to the appropriate dashboard based on user role */}
             <Route path="/dashboard">

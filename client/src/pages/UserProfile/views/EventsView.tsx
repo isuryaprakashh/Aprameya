@@ -1,17 +1,24 @@
 import { motion } from 'framer-motion';
-import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '@/components/ui/card';
+import { CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { FaCalendarAlt, FaClock, FaMapMarkerAlt } from 'react-icons/fa';
+import { FaCalendarAlt, FaClock, FaMapMarkerAlt, FaPlus, FaEdit, FaTrash } from 'react-icons/fa';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { apiRequest } from '@/lib/queryClient';
 import { useToast } from '@/hooks/use-toast';
 import { Event, EventRegistration } from '@/lib/types';
 import { useAuth } from '@/context/AuthContext';
 
-export default function EventsView() {
+interface EventsViewProps {
+    handleEdit?: (item: Event, type: string) => void;
+    handleCreate?: (type: string) => void;
+    handleDelete?: (id: string, type: string) => void;
+}
+
+export default function EventsView({ handleEdit, handleCreate, handleDelete }: EventsViewProps) {
     const { toast } = useToast();
     const queryClient = useQueryClient();
     const { user: currentUser } = useAuth();
+    // ... existing hooks
 
     const { data: events = [] } = useQuery<Event[]>({
         queryKey: ['/api/events'],
@@ -73,14 +80,24 @@ export default function EventsView() {
     return (
         <div className="space-y-6">
             <div className="glass-panel p-6 rounded-xl border border-[var(--border-color)]">
-                <div className="flex items-center gap-3 mb-6">
-                    <div className="p-3 rounded-lg bg-[hsl(var(--accent))]/10 border border-[hsl(var(--accent))]/20">
-                        <FaCalendarAlt className="text-2xl text-[hsl(var(--accent))]" />
+                <div className="flex flex-col md:flex-row items-center justify-between gap-4 mb-6">
+                    <div className="flex items-center gap-3">
+                        <div className="p-3 rounded-lg bg-[hsl(var(--accent))]/10 border border-[hsl(var(--accent))]/20">
+                            <FaCalendarAlt className="text-2xl text-[hsl(var(--accent))]" />
+                        </div>
+                        <div>
+                            <h2 className="text-2xl font-bold text-[var(--text-primary)]">Upcoming Events</h2>
+                            <p className="text-[var(--text-secondary)] text-sm">Discover and register for upcoming workshops and seminars</p>
+                        </div>
                     </div>
-                    <div>
-                        <h2 className="text-2xl font-bold text-[var(--text-primary)]">Upcoming Events</h2>
-                        <p className="text-[var(--text-secondary)] text-sm">Discover and register for upcoming workshops and seminars</p>
-                    </div>
+                    {currentUser?.role === 'ADMIN' && (
+                        <Button
+                            onClick={() => handleCreate && handleCreate('event')}
+                            className="bg-[hsl(var(--accent))] hover:bg-[hsl(var(--accent))]/90 text-[var(--bg-body)] w-full md:w-auto"
+                        >
+                            <FaPlus className="mr-2" /> New Event
+                        </Button>
+                    )}
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -122,21 +139,42 @@ export default function EventsView() {
                                     </div>
                                 </CardContent>
                                 <CardFooter className="border-t border-[var(--border-color)] bg-[var(--card-bg)]/20 p-4 flex justify-end relative z-10">
-                                    {isRegistered ? (
-                                        <Button
-                                            variant="destructive"
-                                            onClick={() => handleCancelRegistration(registrationId)}
-                                            className="bg-red-500/20 text-red-400 hover:bg-red-500/30 border border-red-500/30"
-                                        >
-                                            Cancel Registration
-                                        </Button>
+                                    {currentUser?.role === 'ADMIN' ? (
+                                        <div className="flex gap-2 w-full justify-end">
+                                            <Button
+                                                onClick={() => handleEdit && handleEdit(event, 'event')}
+                                                variant="outline"
+                                                size="sm"
+                                                className="border-[var(--border-color)] hover:border-[hsl(var(--accent))] hover:text-[hsl(var(--accent))]"
+                                            >
+                                                <FaEdit className="mr-2" /> Edit
+                                            </Button>
+                                            <Button
+                                                onClick={() => handleDelete && handleDelete(event.id, 'event')}
+                                                variant="destructive"
+                                                size="sm"
+                                                className="bg-red-500/10 text-red-500 border border-red-500/20 hover:bg-red-500/20"
+                                            >
+                                                <FaTrash className="mr-2" /> Delete
+                                            </Button>
+                                        </div>
                                     ) : (
-                                        <Button
-                                            onClick={() => handleRegisterForEvent(event.id)}
-                                            className="bg-[hsl(var(--accent))] hover:bg-[hsl(var(--accent))]/90 text-[var(--bg-body)] border-0 shadow-lg shadow-[hsl(var(--accent))]/20"
-                                        >
-                                            Register Now
-                                        </Button>
+                                        isRegistered ? (
+                                            <Button
+                                                variant="destructive"
+                                                onClick={() => handleCancelRegistration(registrationId)}
+                                                className="bg-red-500/20 text-red-400 hover:bg-red-500/30 border border-red-500/30"
+                                            >
+                                                Cancel Registration
+                                            </Button>
+                                        ) : (
+                                            <Button
+                                                onClick={() => handleRegisterForEvent(event.id)}
+                                                className="bg-[hsl(var(--accent))] hover:bg-[hsl(var(--accent))]/90 text-[var(--bg-body)] border-0 shadow-lg shadow-[hsl(var(--accent))]/20"
+                                            >
+                                                Register Now
+                                            </Button>
+                                        )
                                     )}
                                 </CardFooter>
                             </motion.div>

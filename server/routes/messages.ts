@@ -17,14 +17,12 @@ const isCoreOrAdmin = async (req: any, res: any, next: any) => {
 
     const user = await storage.getUser(userId);
     if (!user || (user.role !== UserRole.CORE && user.role !== UserRole.ADMIN)) {
-        return res.status(403).json({ error: "Only core team members and admins can access messages" });
+        return res.status(403).json({ error: "[DEBUG] Only core team members and admins can access messages" });
     }
     next();
 };
 
-router.use(isCoreOrAdmin);
-
-router.get("/db/messages", async (req, res) => {
+router.get("/db/messages", isCoreOrAdmin, async (req, res) => {
     try {
         const messages = await storage.getAllMessages();
 
@@ -50,7 +48,7 @@ router.get("/db/messages", async (req, res) => {
     }
 });
 
-router.post("/db/messages", async (req, res) => {
+router.post("/db/messages", isCoreOrAdmin, async (req, res) => {
     try {
         const userId = req.session?.userId!;
         // User role check already done by middleware
@@ -71,7 +69,7 @@ router.post("/db/messages", async (req, res) => {
     }
 });
 
-router.delete("/db/messages/:id", async (req, res) => {
+router.delete("/db/messages/:id", isCoreOrAdmin, async (req, res) => {
     try {
         const messageId = req.params.id;
         const message = await storage.getMessage(messageId);

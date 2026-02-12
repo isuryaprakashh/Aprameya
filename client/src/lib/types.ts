@@ -44,6 +44,9 @@ export interface Event {
   location: string;
   description: string;
   image: string;
+  capacity?: number | null;
+  registrationOpen?: boolean;
+  ticketEnabled?: boolean;
 }
 
 export interface TeamMember {
@@ -82,4 +85,27 @@ export interface EventRegistration {
   registered_at?: string;
   event?: Event;
   user?: User;
+}
+
+export interface TicketRegistration {
+  id: string;
+  eventId: string;
+  userId?: string;
+  fullName: string;
+  rollNumber: string;
+  year: number;
+  scanned: boolean;
+  scannedAt: string | null;
+  createdAt: string;
+  qrDataUrl?: string;
+  qrToken?: string;
+  event?: {
+    id: string;
+    title: string;
+    date: string;
+    time: string;
+    location: string;
+    image?: string;
+    type?: string;
+  } | null;
 }

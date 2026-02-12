@@ -7,6 +7,7 @@ import blogsRouter from "./routes/blogs";
 import researchRouter from "./routes/research";
 import eventsRouter from "./routes/events";
 import messagesRouter from "./routes/messages";
+import ticketsRouter from "./routes/tickets";
 
 import 'express-session';
 
@@ -40,6 +41,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.use("/api", researchRouter);
   app.use("/api", eventsRouter);
   app.use("/api", messagesRouter);
+  app.use("/api", ticketsRouter);
 
   const httpServer = createServer(app);
 
