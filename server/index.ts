@@ -92,7 +92,7 @@ app.use(session({
     maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days
     secure: isProduction, // True in Prod, False in Dev (allows local IP testing on mobile)
     httpOnly: true,
-    sameSite: isProduction ? 'none' : 'lax', // None for Cross-Site (Prod), Lax for Same-Site (Dev)
+    sameSite: 'lax', // Lax is correct since requests go through same-origin Vercel proxy
     domain: undefined,
     path: '/',
   },
