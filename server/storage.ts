@@ -5,6 +5,7 @@ import {
   Research,
   Event,
   EventRegistration,
+  TicketRegistration,
 
   Message
 } from "./models";
@@ -25,6 +26,8 @@ import {
 
   type Message as MessageType,
   type InsertMessage,
+  type TicketRegistration as TicketRegistrationType,
+  type InsertTicketRegistration,
   UserRole,
   type UserRoleType
 } from "./shared/schema";
@@ -79,6 +82,13 @@ export interface IStorage {
   deleteEventRegistration(id: string): Promise<boolean>;
 
 
+
+  // Ticket Operations
+  createTicketRegistration(ticket: InsertTicketRegistration): Promise<TicketRegistrationType>;
+  getTicketRegistrationByToken(token: string): Promise<TicketRegistrationType | undefined>;
+  getTicketRegistrationByEntryCode(entryCode: string): Promise<TicketRegistrationType | undefined>;
+  getTicketRegistrationsByEvent(eventId: string): Promise<TicketRegistrationType[]>;
+  updateTicketScanStatus(id: string, scanned: boolean): Promise<TicketRegistrationType | undefined>;
 
   // Message Operations (Core Team Chat)
   getMessage(id: string): Promise<MessageType | undefined>;
@@ -316,6 +326,36 @@ export class MongoStorage implements IStorage {
   async deleteMessage(id: string): Promise<boolean> {
     const result = await Message.findByIdAndDelete(id);
     return !!result;
+  }
+  // Ticket Operations
+  async createTicketRegistration(ticket: InsertTicketRegistration): Promise<TicketRegistrationType> {
+    const newTicket = new TicketRegistration(ticket);
+    await newTicket.save();
+    return this.mapDoc<TicketRegistrationType>(newTicket);
+  }
+
+  async getTicketRegistrationByToken(token: string): Promise<TicketRegistrationType | undefined> {
+    const ticket = await TicketRegistration.findOne({ qrToken: token });
+    return ticket ? this.mapDoc<TicketRegistrationType>(ticket) : undefined;
+  }
+
+  async getTicketRegistrationByEntryCode(entryCode: string): Promise<TicketRegistrationType | undefined> {
+    const ticket = await TicketRegistration.findOne({ entryCode });
+    return ticket ? this.mapDoc<TicketRegistrationType>(ticket) : undefined;
+  }
+
+  async getTicketRegistrationsByEvent(eventId: string): Promise<TicketRegistrationType[]> {
+    const tickets = await TicketRegistration.find({ eventId });
+    return tickets.map(t => this.mapDoc<TicketRegistrationType>(t));
+  }
+
+  async updateTicketScanStatus(id: string, scanned: boolean): Promise<TicketRegistrationType | undefined> {
+    const update = scanned
+      ? { scanned: true, scannedAt: new Date() }
+      : { scanned: false, scannedAt: null };
+
+    const ticket = await TicketRegistration.findByIdAndUpdate(id, update, { new: true });
+    return ticket ? this.mapDoc<TicketRegistrationType>(ticket) : undefined;
   }
 }
 
