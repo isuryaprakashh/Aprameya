@@ -71,6 +71,7 @@ const AdminScanQR = () => {
     const [manualInput, setManualInput] = useState('');
     const scannerRef = useRef<any>(null);
     const html5QrCodeRef = useRef<any>(null);
+    const lastScanned = useRef<{ code: string; time: number } | null>(null);
 
     // Fetch events
     const { data: events = [] } = useQuery<Event[]>({
@@ -111,11 +112,9 @@ const AdminScanQR = () => {
                 {
                     fps: 10,
                     qrbox: { width: 250, height: 250 },
+                    aspectRatio: 1.0,
                 },
-                async (decodedText: string) => {
-                    await scanner.stop();
-                    scannerRef.current = null;
-                    setIsScanning(false);
+                (decodedText: string) => {
                     handleScanToken(decodedText);
                 },
                 () => { }
@@ -154,9 +153,19 @@ const AdminScanQR = () => {
     }, []);
 
     const handleScanToken = async (token: string) => {
+        // Prevent duplicate scans within 2.5 seconds
+        const now = Date.now();
+        if (lastScanned.current && lastScanned.current.code === token && (now - lastScanned.current.time < 2500)) {
+            return;
+        }
+
         if (!token.trim()) return;
+
+        lastScanned.current = { code: token, time: now };
         setIsProcessing(true);
-        setScanResult(null);
+
+        // Don't clear result immediately to allow reading previous one while processing
+        // setScanResult(null); 
 
         try {
             const res = await apiRequest('/api/tickets/scan', {
@@ -221,6 +230,7 @@ const AdminScanQR = () => {
                 title: resultTitle,
                 message: errMsg,
             });
+
         } finally {
             setIsProcessing(false);
             setManualToken('');
@@ -400,8 +410,14 @@ const AdminScanQR = () => {
                             {/* Camera Mode */}
                             <div className={scanMode === 'camera' ? 'block' : 'hidden'}>
                                 <div className="space-y-4">
-                                    <div className="relative rounded-xl overflow-hidden bg-black/5 aspect-square max-h-[350px]">
+                                    <div className="relative rounded-xl overflow-hidden bg-black/5 aspect-square max-w-[350px] mx-auto w-full [&_video]:!object-cover [&_video]:!w-full [&_video]:!h-full">
                                         <div id="qr-reader" className="w-full h-full" />
+                                        {isProcessing && (
+                                            <div className="absolute inset-0 z-20 flex flex-col items-center justify-center bg-black/40 backdrop-blur-[2px]">
+                                                <Loader2 className="w-10 h-10 text-white animate-spin mb-2" />
+                                                <p className="text-white text-xs font-medium">Verifying...</p>
+                                            </div>
+                                        )}
                                         {!isScanning && (
                                             <div className="absolute inset-0 flex flex-col items-center justify-center bg-[var(--bg-body)]/50 backdrop-blur-sm z-10">
                                                 <div className="w-20 h-20 rounded-2xl bg-[var(--card-bg)] border border-[var(--border-color)]/60 flex items-center justify-center mb-4 shadow-lg">
