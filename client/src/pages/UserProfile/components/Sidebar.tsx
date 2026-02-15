@@ -1,5 +1,5 @@
+import { Link } from 'wouter';
 import { useAuth } from "@/context/AuthContext";
-import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent } from '@/components/ui/sheet';
 import {
     FaChartLine,
@@ -12,7 +12,6 @@ import {
     FaHome,
     FaNewspaper,
     FaCog,
-    FaTimes,
     FaQrcode
 } from 'react-icons/fa';
 
@@ -65,20 +64,15 @@ const SidebarContent = ({ activeView, setActiveView, isMobile, closeMobile }: Si
 
     return (
         <div className="flex flex-col h-full bg-gradient-to-b from-[var(--card-bg)] to-[var(--bg-body)] text-[var(--text-primary)] border-r border-[var(--border-color)] backdrop-blur-md">
-            <div className="p-6 border-b border-[var(--border-color)] flex items-center justify-between">
+            <div className="p-4 border-b border-[var(--border-color)] flex items-center justify-between">
                 <div className="flex items-center gap-2">
-                    <div className="w-8 h-8 rounded-lg bg-[hsl(var(--accent))] flex items-center justify-center">
+                    <Link href="/" className="w-8 h-8 rounded-lg bg-[hsl(var(--accent))] flex items-center justify-center hover:opacity-80 transition-opacity">
                         <span className="font-bold text-[var(--bg-body)]">A</span>
-                    </div>
-                    <h1 className="text-xl font-bold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-[var(--text-primary)] to-[hsl(var(--accent))]">
-                        {isAdmin ? 'Admin' : 'User'}Profile
+                    </Link>
+                    <h1 className="text-lg font-bold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-[var(--text-primary)] to-[hsl(var(--accent))]">
+                        {isAdmin ? 'Admin' : 'Dashboard'}
                     </h1>
                 </div>
-                {isMobile && (
-                    <Button variant="ghost" size="icon" onClick={closeMobile}>
-                        <FaTimes />
-                    </Button>
-                )}
             </div>
 
             <div className="flex-1 overflow-y-auto py-4">

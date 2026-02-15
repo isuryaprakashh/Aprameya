@@ -99,6 +99,7 @@ export interface TicketRegistration {
   createdAt: string;
   qrDataUrl?: string;
   qrToken?: string;
+  entryCode?: string;
   event?: {
     id: string;
     title: string;

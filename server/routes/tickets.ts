@@ -8,6 +8,21 @@ import { storage } from "../storage";
 
 const router = Router();
 
+// Helper: generate a random 3-char alphanumeric entry code, unique per event
+const ENTRY_CODE_CHARS = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; // no 0/O/1/I to avoid confusion
+
+async function generateUniqueEntryCode(eventId: string): Promise<string> {
+    for (let attempt = 0; attempt < 20; attempt++) {
+        let code = '';
+        for (let i = 0; i < 3; i++) {
+            code += ENTRY_CODE_CHARS[Math.floor(Math.random() * ENTRY_CODE_CHARS.length)];
+        }
+        const exists = await TicketRegistration.findOne({ eventId, entryCode: code }).lean();
+        if (!exists) return code;
+    }
+    throw new Error('Failed to generate unique entry code after 20 attempts');
+}
+
 // ==========================================
 // POST /tickets/register — Register for event ticket
 // ==========================================
@@ -44,6 +59,9 @@ router.post("/tickets/register", isAuthenticated, async (req, res) => {
             }
         }
 
+        // Generate unique entry code for this event
+        const entryCode = await generateUniqueEntryCode(eventId);
+
         // Create a placeholder token first, will be updated after save
         const tempToken = "pending";
 
@@ -56,6 +74,7 @@ router.post("/tickets/register", isAuthenticated, async (req, res) => {
                 rollNumber,
                 year,
                 qrToken: tempToken,
+                entryCode,
             });
 
             await registration.save();
@@ -84,6 +103,7 @@ router.post("/tickets/register", isAuthenticated, async (req, res) => {
                     fullName: registration.fullName,
                     rollNumber: registration.rollNumber,
                     year: registration.year,
+                    entryCode: registration.entryCode,
                     qrDataUrl,
                     qrToken,
                     registeredAt: registration.createdAt,
@@ -133,6 +153,7 @@ router.get("/tickets/my", isAuthenticated, async (req, res) => {
                     fullName: ticket.fullName,
                     rollNumber: ticket.rollNumber,
                     year: ticket.year,
+                    entryCode: ticket.entryCode,
                     scanned: ticket.scanned,
                     scannedAt: ticket.scannedAt,
                     createdAt: ticket.createdAt,
@@ -184,6 +205,7 @@ router.get("/tickets/my/:eventId", isAuthenticated, async (req, res) => {
             fullName: ticket.fullName,
             rollNumber: ticket.rollNumber,
             year: ticket.year,
+            entryCode: ticket.entryCode,
             scanned: ticket.scanned,
             scannedAt: ticket.scannedAt,
             createdAt: ticket.createdAt,
@@ -213,33 +235,50 @@ router.post("/tickets/scan", isAdminOrCore, async (req, res) => {
         const { token, expectedEventId } = req.body;
 
         if (!token) {
-            return res.status(400).json({ error: "QR token is required" });
+            return res.status(400).json({ error: "QR token or entry code is required" });
         }
 
-        // Verify JWT signature and decode
-        let decoded;
-        try {
-            decoded = verifyTicketToken(token);
-        } catch (err: any) {
-            if (err.name === "TokenExpiredError") {
-                return res.status(400).json({ error: "QR code has expired", code: "EXPIRED" });
+        const trimmed = token.trim().toUpperCase();
+        const isEntryCode = trimmed.length <= 6; // Entry codes are 4 chars, JWTs are 100+ chars
+
+        let query: any;
+
+        if (isEntryCode) {
+            // Entry code mode — requires an event to be selected
+            if (!expectedEventId) {
+                return res.status(400).json({
+                    error: "Please select an event first when using an entry code",
+                    code: "EVENT_REQUIRED",
+                });
             }
-            return res.status(400).json({ error: "Invalid or tampered QR code", code: "INVALID" });
-        }
+            query = { entryCode: trimmed, eventId: expectedEventId };
+        } else {
+            // QR token mode — verify JWT
+            let decoded;
+            try {
+                decoded = verifyTicketToken(token);
+            } catch (err: any) {
+                if (err.name === "TokenExpiredError") {
+                    return res.status(400).json({ error: "QR code has expired", code: "EXPIRED" });
+                }
+                return res.status(400).json({ error: "Invalid or tampered QR code", code: "INVALID" });
+            }
 
-        // If expectedEventId is provided, check for cross-event misuse
-        if (expectedEventId && decoded.eventId !== expectedEventId) {
-            return res.status(400).json({
-                error: "This QR code is for a different event",
-                code: "WRONG_EVENT",
-            });
+            // If expectedEventId is provided, check for cross-event misuse
+            if (expectedEventId && decoded.eventId !== expectedEventId) {
+                return res.status(400).json({
+                    error: "This QR code is for a different event",
+                    code: "WRONG_EVENT",
+                });
+            }
+
+            query = { _id: decoded.registrationId, eventId: decoded.eventId };
         }
 
         // Atomic scan: find the ticket that hasn't been scanned yet and mark it
         const result = await TicketRegistration.findOneAndUpdate(
             {
-                _id: decoded.registrationId,
-                eventId: decoded.eventId,
+                ...query,
                 scanned: false,
             },
             {
@@ -253,9 +292,9 @@ router.post("/tickets/scan", isAdminOrCore, async (req, res) => {
 
         if (!result) {
             // Check if it exists but was already scanned
-            const existing = await TicketRegistration.findById(decoded.registrationId).lean();
+            const existing = await TicketRegistration.findOne(query).lean();
             if (!existing) {
-                return res.status(404).json({ error: "Registration not found", code: "NOT_FOUND" });
+                return res.status(404).json({ error: isEntryCode ? "Entry code not found" : "Registration not found", code: "NOT_FOUND" });
             }
             if (existing.scanned) {
                 return res.status(409).json({
@@ -268,7 +307,7 @@ router.post("/tickets/scan", isAdminOrCore, async (req, res) => {
         }
 
         // Get event details for response
-        const event = await Event.findById(decoded.eventId).lean();
+        const event = await Event.findById(result.eventId).lean();
 
         res.json({
             success: true,
@@ -306,6 +345,7 @@ router.get("/tickets/event/:eventId", isAdminOrCore, async (req, res) => {
             fullName: t.fullName,
             rollNumber: t.rollNumber,
             year: t.year,
+            entryCode: t.entryCode,
             scanned: t.scanned,
             scannedAt: t.scannedAt,
             createdAt: t.createdAt,

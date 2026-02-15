@@ -48,6 +48,7 @@ const TicketRegistration = () => {
         fullName: string;
         rollNumber: string;
         year: number;
+        entryCode: string;
         eventTitle: string;
         eventDate: string;
         id: string;
@@ -294,6 +295,17 @@ const TicketRegistration = () => {
                                                     ) : null}
                                                 </div>
                                             </div>
+
+                                            {/* Entry Code */}
+                                            {showTicket.entryCode && (
+                                                <div className="text-center mb-4">
+                                                    <p className="text-[10px] uppercase tracking-wider text-[var(--text-secondary)] mb-1.5">Entry Code</p>
+                                                    <div className="inline-flex items-center gap-1 px-4 py-2 rounded-lg bg-[var(--bg-body)] border border-[var(--border-color)]">
+                                                        <span className="text-2xl font-bold font-mono tracking-[0.3em] text-[hsl(var(--accent))]">{showTicket.entryCode}</span>
+                                                    </div>
+                                                    <p className="text-[10px] text-[var(--text-secondary)]/60 mt-1.5">Use this code if QR scan doesn't work</p>
+                                                </div>
+                                            )}
 
                                             {/* Ticket Details */}
                                             <div className="space-y-3 p-4 rounded-lg bg-[var(--bg-body)] border border-[var(--border-color)]">

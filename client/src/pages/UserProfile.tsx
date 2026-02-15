@@ -1,9 +1,10 @@
 import { lazy, Suspense } from 'react';
+import { useLocation } from 'wouter';
 import { useAuth } from "@/context/AuthContext";
 import { useToast } from '@/hooks/use-toast';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
-import { FaBars, FaSave } from 'react-icons/fa';
+import { FaBars, FaSave, FaArrowLeft } from 'react-icons/fa';
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
 
@@ -252,21 +253,25 @@ const UserProfile = () => {
     );
   }
 
+  const [, navigate] = useLocation();
+
   return (
     <div
-      className="flex h-screen bg-[var(--bg-body)] text-[var(--text-primary)] font-sans selection:bg-[hsl(var(--accent))]/30 overflow-hidden pt-24"
+      className="flex h-screen bg-[var(--bg-body)] text-[var(--text-primary)] font-sans selection:bg-[hsl(var(--accent))]/30 overflow-hidden"
       data-accent={accentColor}
     >
       <Sidebar activeView={activeView} setActiveView={setActiveView} isMobileOpen={isMobileOpen} setIsMobileOpen={setIsMobileOpen} />
 
       <div className="flex-1 flex flex-col overflow-hidden">
         {/* Mobile Header */}
-        <header className="md:hidden flex items-center justify-between p-4 border-b border-[var(--border-color)] bg-[var(--card-bg)]/50 backdrop-blur-md">
-          <Button variant="ghost" size="icon" onClick={() => setIsMobileOpen(true)}>
-            <FaBars />
+        <header className="md:hidden flex items-center gap-2 p-3 border-b border-[var(--border-color)] bg-[var(--card-bg)]/80 backdrop-blur-md">
+          <Button variant="ghost" size="icon" className="shrink-0" onClick={() => navigate('/')}>
+            <FaArrowLeft className="w-4 h-4" />
           </Button>
-          <span className="font-bold text-lg">User Profile</span>
-          <div className="w-10" />
+          <span className="font-bold text-base flex-1 text-center">Dashboard</span>
+          <Button variant="ghost" size="icon" className="shrink-0" onClick={() => setIsMobileOpen(true)}>
+            <FaBars className="w-4 h-4" />
+          </Button>
         </header>
 
         <main className="flex-1 overflow-y-auto p-4 md:p-8 custom-scrollbar">

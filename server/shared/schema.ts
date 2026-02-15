@@ -209,6 +209,7 @@ export interface TicketRegistration {
   rollNumber: string;
   year: number;
   qrToken: string;
+  entryCode: string;
   scanned: boolean;
   scannedAt: Date | string | null;
   createdAt: Date | string;

@@ -89,6 +89,7 @@ const ticketRegistrationSchema = new mongoose.Schema({
     rollNumber: { type: String, required: true, match: /^\d{10}$/ },
     year: { type: Number, required: true, enum: [1, 2, 3, 4] },
     qrToken: { type: String, required: true },
+    entryCode: { type: String, required: true },
     scanned: { type: Boolean, default: false },
     scannedAt: { type: Date, default: null },
     createdAt: { type: Date, default: Date.now },
@@ -96,6 +97,7 @@ const ticketRegistrationSchema = new mongoose.Schema({
 
 // Compound unique index: one roll number per event
 ticketRegistrationSchema.index({ eventId: 1, rollNumber: 1 }, { unique: true });
+ticketRegistrationSchema.index({ eventId: 1, entryCode: 1 }, { unique: true });
 
 export const TicketRegistration = mongoose.model('TicketRegistration', ticketRegistrationSchema);
 

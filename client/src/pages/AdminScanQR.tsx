@@ -1,15 +1,14 @@
 import { useState, useEffect, useRef } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useLocation } from 'wouter';
 import { useAuth } from '@/context/AuthContext';
 import { useToast } from '@/hooks/use-toast';
 import { apiRequest } from '@/lib/queryClient';
 import { Event } from '@/lib/types';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
 import {
     Select,
     SelectContent,
@@ -30,6 +29,9 @@ import {
     Shield,
     Search,
     CameraOff,
+    ArrowLeft,
+    ScanLine,
+    ChevronDown,
 } from 'lucide-react';
 
 interface ScanResult {
@@ -55,19 +57,18 @@ interface TicketEntry {
     createdAt: string;
 }
 
-interface AdminScanQRProps {
-    isEmbedded?: boolean;
-}
-
-const AdminScanQR = ({ isEmbedded = false }: AdminScanQRProps) => {
+const AdminScanQR = () => {
     const { toast } = useToast();
     const { user } = useAuth();
+    const [, setLocation] = useLocation();
     const [selectedEventId, setSelectedEventId] = useState('');
     const [scanResult, setScanResult] = useState<ScanResult | null>(null);
     const [isScanning, setIsScanning] = useState(false);
     const [manualToken, setManualToken] = useState('');
     const [isProcessing, setIsProcessing] = useState(false);
     const [scanMode, setScanMode] = useState<'camera' | 'manual'>('manual');
+    const [showRegistrations, setShowRegistrations] = useState(false);
+    const [manualInput, setManualInput] = useState('');
     const scannerRef = useRef<any>(null);
     const html5QrCodeRef = useRef<any>(null);
 
@@ -95,7 +96,6 @@ const AdminScanQR = ({ isEmbedded = false }: AdminScanQRProps) => {
     const startCameraScanner = async () => {
         if (scannerRef.current) return;
 
-        // Wait a tick for DOM checking if needed, or just check
         if (!document.getElementById('qr-reader')) {
             console.log("QR Reader element not found, skipping start");
             return;
@@ -113,13 +113,12 @@ const AdminScanQR = ({ isEmbedded = false }: AdminScanQRProps) => {
                     qrbox: { width: 250, height: 250 },
                 },
                 async (decodedText: string) => {
-                    // Stop scanner after reading
                     await scanner.stop();
                     scannerRef.current = null;
                     setIsScanning(false);
                     handleScanToken(decodedText);
                 },
-                () => { } // Ignore errors (no QR found in frame)
+                () => { }
             );
 
             scannerRef.current = scanner;
@@ -172,17 +171,16 @@ const AdminScanQR = ({ isEmbedded = false }: AdminScanQRProps) => {
 
             setScanResult({
                 type: 'success',
-                title: '✅ Verified!',
+                title: 'Verified!',
                 message: `${data.ticket.fullName} — ${data.ticket.rollNumber}`,
                 ticket: data.ticket,
             });
 
-            // Refresh the registrations list
             if (selectedEventId) refetchEventData();
         } catch (err: any) {
             let errMsg = 'Scan failed';
             let resultType: ScanResult['type'] = 'error';
-            let resultTitle = '❌ Invalid';
+            let resultTitle = 'Invalid Ticket';
 
             try {
                 const errText = err.message || '';
@@ -192,23 +190,23 @@ const AdminScanQR = ({ isEmbedded = false }: AdminScanQRProps) => {
 
                     if (json.code === 'ALREADY_SCANNED') {
                         resultType = 'warning';
-                        resultTitle = '⚠️ Already Scanned';
+                        resultTitle = 'Already Scanned';
                         toast({
                             title: 'Already Scanned',
                             description: json.scannedAt
-                                ? `Masked as scanned at ${new Date(json.scannedAt).toLocaleTimeString()}`
-                                : 'This ticket has taken been scanned.',
+                                ? `Scanned at ${new Date(json.scannedAt).toLocaleTimeString()}`
+                                : 'This ticket has already been scanned.',
                             variant: 'destructive',
                         });
                     } else if (json.code === 'WRONG_EVENT') {
-                        resultTitle = '🔀 Wrong Event';
+                        resultTitle = 'Wrong Event';
                         toast({
                             title: 'Wrong Event',
                             description: 'This ticket is for a different event.',
                             variant: 'destructive',
                         });
                     } else if (json.code === 'EXPIRED') {
-                        resultTitle = '⏰ Expired';
+                        resultTitle = 'Ticket Expired';
                         toast({
                             title: 'Ticket Expired',
                             description: 'This ticket is no longer valid.',
@@ -226,12 +224,14 @@ const AdminScanQR = ({ isEmbedded = false }: AdminScanQRProps) => {
         } finally {
             setIsProcessing(false);
             setManualToken('');
+            setManualInput('');
         }
     };
 
     const handleManualSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        handleScanToken(manualToken);
+        // Send either entry code or token - server auto-detects
+        handleScanToken(manualInput || manualToken);
     };
 
     const handleExportCSV = async () => {
@@ -257,323 +257,389 @@ const AdminScanQR = ({ isEmbedded = false }: AdminScanQRProps) => {
         }
     };
 
+    // Access denied state
     if (!user || (user.role !== 'ADMIN' && user.role !== 'CORE')) {
         return (
-            <div className={isEmbedded ? "flex items-center justify-center p-12" : "min-h-screen bg-[var(--bg-body)] flex items-center justify-center p-4"}>
-                <Card className="max-w-md w-full bg-[var(--card-bg)] border-[var(--border-color)]">
-                    <CardContent className="p-8 text-center">
-                        <Shield className="w-12 h-12 text-red-500 mx-auto mb-4" />
-                        <h2 className="text-xl font-bold text-[var(--text-primary)] mb-2">Access Denied</h2>
-                        <p className="text-[var(--text-secondary)]">Only admins and core team members can access the scanner.</p>
-                    </CardContent>
-                </Card>
+            <div className="min-h-screen bg-[var(--bg-body)] flex items-center justify-center p-4">
+                <motion.div
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    className="max-w-sm w-full text-center"
+                >
+                    <div className="w-16 h-16 rounded-2xl bg-red-500/10 flex items-center justify-center mx-auto mb-5">
+                        <Shield className="w-8 h-8 text-red-500" />
+                    </div>
+                    <h2 className="text-xl font-bold text-[var(--text-primary)] mb-2">Access Denied</h2>
+                    <p className="text-[var(--text-secondary)] text-sm mb-6">Only admins and core team members can access the scanner.</p>
+                    <Button variant="outline" onClick={() => setLocation('/')} className="text-sm">
+                        <ArrowLeft className="w-4 h-4 mr-2" />
+                        Go Home
+                    </Button>
+                </motion.div>
             </div>
         );
     }
 
+    const scannedPercent = eventData ? Math.round((eventData.scannedCount / Math.max(eventData.totalTickets, 1)) * 100) : 0;
+
     return (
-        <div className={isEmbedded ? "" : "min-h-screen bg-[var(--bg-body)] pt-24 pb-16 px-4"}>
-            <div className={isEmbedded ? "max-w-5xl mx-auto" : "container mx-auto max-w-5xl"}>
-                {/* Header */}
-                <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    className="mb-8"
-                >
-                    <div className="flex items-center gap-3 mb-2">
-                        <div className="w-10 h-10 bg-[hsl(var(--accent))]/10 rounded-xl flex items-center justify-center">
-                            <QrCode className="w-5 h-5 text-[hsl(var(--accent))]" />
+        <div className="min-h-screen bg-[var(--bg-body)] relative overflow-hidden">
+            {/* Subtle gradient overlay */}
+            <div className="fixed inset-0 pointer-events-none">
+                <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[600px] bg-[hsl(var(--accent))]/[0.03] rounded-full blur-[120px]" />
+                <div className="absolute bottom-0 right-0 w-[400px] h-[400px] bg-purple-500/[0.02] rounded-full blur-[100px]" />
+            </div>
+
+            {/* Top bar */}
+            <div className="sticky top-0 z-50 backdrop-blur-xl bg-[var(--bg-body)]/80 border-b border-[var(--border-color)]/50">
+                <div className="flex items-center justify-between px-4 py-3 max-w-2xl mx-auto">
+                    <button
+                        onClick={() => setLocation('/dashboard')}
+                        className="flex items-center gap-2 text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors -ml-1 py-1 px-2 rounded-lg hover:bg-[var(--card-bg)]"
+                    >
+                        <ArrowLeft className="w-5 h-5" />
+                        <span className="text-sm font-medium">Back</span>
+                    </button>
+
+                    <div className="flex items-center gap-2">
+                        <div className="w-8 h-8 rounded-lg bg-[hsl(var(--accent))]/10 flex items-center justify-center">
+                            <ScanLine className="w-4 h-4 text-[hsl(var(--accent))]" />
                         </div>
-                        <h1 className="text-3xl font-bold text-[var(--text-primary)]">Scan Tickets</h1>
+                        <span className="text-sm font-semibold text-[var(--text-primary)]">Scan Tickets</span>
                     </div>
-                    <p className="text-[var(--text-secondary)] text-sm ml-[52px]">
-                        Verify event attendance by scanning QR codes
-                    </p>
-                </motion.div>
+
+                    <div className="w-[68px]" /> {/* Spacer for centering */}
+                </div>
+            </div>
+
+            {/* Main content */}
+            <div className="relative z-10 max-w-2xl mx-auto px-4 py-6 space-y-5">
 
                 {/* Event Selector */}
                 <motion.div
-                    initial={{ opacity: 0, y: 20 }}
+                    initial={{ opacity: 0, y: 16 }}
                     animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.1 }}
-                    className="mb-8"
+                    transition={{ delay: 0.05 }}
                 >
-                    <Card className="bg-[var(--card-bg)] border-[var(--border-color)]">
-                        <CardContent className="p-5">
-                            <Label className="text-[var(--text-secondary)] text-sm mb-2 block">Select Event</Label>
-                            <Select value={selectedEventId} onValueChange={setSelectedEventId}>
-                                <SelectTrigger className="bg-[var(--bg-body)] border-[var(--border-color)] text-[var(--text-primary)]">
-                                    <SelectValue placeholder="Choose an event to scan for..." />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    {events.map((ev) => (
-                                        <SelectItem key={ev.id} value={ev.id}>
-                                            {ev.title} — {ev.date}
-                                        </SelectItem>
-                                    ))}
-                                </SelectContent>
-                            </Select>
+                    <div className="rounded-2xl bg-[var(--card-bg)]/80 backdrop-blur-sm border border-[var(--border-color)]/60 p-4">
+                        <label className="text-xs font-medium text-[var(--text-secondary)] uppercase tracking-wider mb-2.5 block">
+                            Select Event
+                        </label>
+                        <Select value={selectedEventId} onValueChange={setSelectedEventId}>
+                            <SelectTrigger className="bg-[var(--bg-body)]/60 border-[var(--border-color)]/60 text-[var(--text-primary)] h-11 rounded-xl">
+                                <SelectValue placeholder="Choose an event..." />
+                            </SelectTrigger>
+                            <SelectContent>
+                                {events.map((ev) => (
+                                    <SelectItem key={ev.id} value={ev.id}>
+                                        {ev.title} — {ev.date}
+                                    </SelectItem>
+                                ))}
+                            </SelectContent>
+                        </Select>
 
-                            {eventData && (
-                                <div className="flex gap-4 mt-4 text-sm">
-                                    <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-[var(--bg-body)]">
-                                        <Users className="w-4 h-4 text-[hsl(var(--accent))]" />
-                                        <span className="text-[var(--text-secondary)]">Total:</span>
-                                        <span className="font-semibold text-[var(--text-primary)]">{eventData.totalTickets}</span>
-                                    </div>
-                                    <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-green-500/5">
-                                        <CheckCircle2 className="w-4 h-4 text-green-500" />
-                                        <span className="text-[var(--text-secondary)]">Scanned:</span>
-                                        <span className="font-semibold text-green-500">{eventData.scannedCount}</span>
-                                    </div>
+                        {/* Stats */}
+                        {eventData && (
+                            <div className="mt-4 flex gap-3">
+                                <div className="flex-1 rounded-xl bg-[var(--bg-body)]/60 p-3 text-center">
+                                    <div className="text-2xl font-bold text-[var(--text-primary)]">{eventData.totalTickets}</div>
+                                    <div className="text-[10px] uppercase tracking-wider text-[var(--text-secondary)] mt-0.5">Registered</div>
                                 </div>
-                            )}
-                        </CardContent>
-                    </Card>
+                                <div className="flex-1 rounded-xl bg-green-500/5 border border-green-500/10 p-3 text-center">
+                                    <div className="text-2xl font-bold text-green-500">{eventData.scannedCount}</div>
+                                    <div className="text-[10px] uppercase tracking-wider text-green-500/70 mt-0.5">Scanned</div>
+                                </div>
+                                <div className="flex-1 rounded-xl bg-[var(--bg-body)]/60 p-3 text-center">
+                                    <div className="text-2xl font-bold text-[hsl(var(--accent))]">{scannedPercent}%</div>
+                                    <div className="text-[10px] uppercase tracking-wider text-[var(--text-secondary)] mt-0.5">Progress</div>
+                                </div>
+                            </div>
+                        )}
+                    </div>
                 </motion.div>
 
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                    {/* Scanner */}
-                    <motion.div
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: 0.2 }}
-                    >
-                        <Card className="bg-[var(--card-bg)] border-[var(--border-color)]">
-                            <CardHeader>
-                                <div className="flex items-center justify-between">
-                                    <CardTitle className="flex items-center gap-2 text-[var(--text-primary)]">
-                                        <Camera className="w-5 h-5 text-[hsl(var(--accent))]" />
-                                        Scanner
-                                    </CardTitle>
-                                    <div className="flex gap-2">
-                                        <Button
-                                            size="sm"
-                                            variant={scanMode === 'camera' ? 'default' : 'outline'}
-                                            onClick={async () => {
-                                                if (scanMode === 'camera') return;
-                                                // Switch TO camera: mode first (to render div), then start (via button or effect?)
-                                                // Actually the 'Start Camera' button handles the start.
-                                                // We just need to ensure we stop if we were somehow in manual (which doesn't have a scanner running).
-                                                // But usually manual doesn't have a running scanner. 
-                                                // Safe to just switch mode.
-                                                setScanMode('camera');
-                                            }}
-                                            className="text-xs"
-                                        >
-                                            <Camera className="w-3 h-3 mr-1" />
-                                            Camera
-                                        </Button>
-                                        <Button
-                                            size="sm"
-                                            variant={scanMode === 'manual' ? 'default' : 'outline'}
-                                            onClick={async () => {
-                                                if (scanMode === 'manual') return;
-                                                // Switch TO manual: Must STOP camera first because manual view REMOVES the qr-reader div.
-                                                await stopCameraScanner();
-                                                setScanMode('manual');
-                                            }}
-                                            className="text-xs"
-                                        >
-                                            <Search className="w-3 h-3 mr-1" />
-                                            Manual
-                                        </Button>
-                                    </div>
-                                </div>
-                            </CardHeader>
-                            <CardContent>
+                {/* Scanner Section */}
+                <motion.div
+                    initial={{ opacity: 0, y: 16 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.1 }}
+                >
+                    <div className="rounded-2xl bg-[var(--card-bg)]/80 backdrop-blur-sm border border-[var(--border-color)]/60 overflow-hidden">
+                        {/* Mode toggle */}
+                        <div className="flex border-b border-[var(--border-color)]/40">
+                            <button
+                                onClick={async () => {
+                                    if (scanMode === 'camera') return;
+                                    setScanMode('camera');
+                                }}
+                                className={`flex-1 flex items-center justify-center gap-2 py-3.5 text-sm font-medium transition-all ${scanMode === 'camera'
+                                    ? 'text-[hsl(var(--accent))] bg-[hsl(var(--accent))]/5 border-b-2 border-[hsl(var(--accent))]'
+                                    : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
+                                    }`}
+                            >
+                                <Camera className="w-4 h-4" />
+                                Camera
+                            </button>
+                            <button
+                                onClick={async () => {
+                                    if (scanMode === 'manual') return;
+                                    await stopCameraScanner();
+                                    setScanMode('manual');
+                                }}
+                                className={`flex-1 flex items-center justify-center gap-2 py-3.5 text-sm font-medium transition-all ${scanMode === 'manual'
+                                    ? 'text-[hsl(var(--accent))] bg-[hsl(var(--accent))]/5 border-b-2 border-[hsl(var(--accent))]'
+                                    : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
+                                    }`}
+                            >
+                                <Search className="w-4 h-4" />
+                                Manual
+                            </button>
+                        </div>
 
-                                {/* Camera Mode UI - Always rendered but hidden when not active to prevent DOM thrashing */}
-                                <div className={scanMode === 'camera' ? 'block' : 'hidden'}>
-                                    <div className="space-y-4">
-                                        <div className="relative rounded-lg overflow-hidden bg-black/5 min-h-[280px]">
-                                            {/* Scanner Container - React leaves this empty for the library */}
-                                            <div id="qr-reader" className="w-full h-full" />
-
-                                            {/* Placeholder Overlay - React manages this fully */}
-                                            {!isScanning && (
-                                                <div className="absolute inset-0 flex items-center justify-center bg-black/5 z-10">
-                                                    <div className="text-center p-6">
-                                                        <CameraOff className="w-10 h-10 text-[var(--text-secondary)] mx-auto mb-3" />
-                                                        <p className="text-sm text-[var(--text-secondary)]">Camera not active</p>
-                                                    </div>
+                        <div className="p-4">
+                            {/* Camera Mode */}
+                            <div className={scanMode === 'camera' ? 'block' : 'hidden'}>
+                                <div className="space-y-4">
+                                    <div className="relative rounded-xl overflow-hidden bg-black/5 aspect-square max-h-[350px]">
+                                        <div id="qr-reader" className="w-full h-full" />
+                                        {!isScanning && (
+                                            <div className="absolute inset-0 flex flex-col items-center justify-center bg-[var(--bg-body)]/50 backdrop-blur-sm z-10">
+                                                <div className="w-20 h-20 rounded-2xl bg-[var(--card-bg)] border border-[var(--border-color)]/60 flex items-center justify-center mb-4 shadow-lg">
+                                                    <CameraOff className="w-8 h-8 text-[var(--text-secondary)]/50" />
                                                 </div>
-                                            )}
-                                        </div>
-                                        <div className="flex gap-3">
-                                            {!isScanning ? (
-                                                <Button
-                                                    onClick={startCameraScanner}
-                                                    className="flex-1 bg-[hsl(var(--accent))] text-[var(--bg-body)]"
-                                                >
-                                                    <Camera className="w-4 h-4 mr-2" />
-                                                    Start Camera
-                                                </Button>
-                                            ) : (
-                                                <Button
-                                                    onClick={stopCameraScanner}
-                                                    variant="outline"
-                                                    className="flex-1"
-                                                >
-                                                    <CameraOff className="w-4 h-4 mr-2" />
-                                                    Stop Camera
-                                                </Button>
-                                            )}
-                                        </div>
-                                    </div>
-                                </div>
-
-                                {/* Manual Mode UI */}
-                                <div className={scanMode === 'manual' ? 'block' : 'hidden'}>
-                                    <form onSubmit={handleManualSubmit} className="space-y-4">
-                                        <div>
-                                            <Label className="text-[var(--text-secondary)]">Paste QR Token</Label>
-                                            <Input
-                                                value={manualToken}
-                                                onChange={(e) => setManualToken(e.target.value)}
-                                                placeholder="Paste the QR code content here..."
-                                                className="mt-1.5 bg-[var(--bg-body)] border-[var(--border-color)] text-[var(--text-primary)] font-mono text-xs"
-                                            />
-                                        </div>
-                                        <Button
-                                            type="submit"
-                                            disabled={!manualToken.trim() || isProcessing}
-                                            className="w-full bg-[hsl(var(--accent))] text-[var(--bg-body)]"
-                                        >
-                                            {isProcessing ? (
-                                                <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                                            ) : (
-                                                <CheckCircle2 className="w-4 h-4 mr-2" />
-                                            )}
-                                            Verify Token
-                                        </Button>
-                                    </form>
-                                </div>
-
-                                {/* Scan Result */}
-                                <AnimatePresence mode="wait">
-                                    {scanResult && (
-                                        <motion.div
-                                            initial={{ opacity: 0, y: 10 }}
-                                            animate={{ opacity: 1, y: 0 }}
-                                            exit={{ opacity: 0, y: -10 }}
-                                            className={`mt-6 p-4 rounded-xl border ${scanResult.type === 'success'
-                                                ? 'bg-green-500/5 border-green-500/20'
-                                                : scanResult.type === 'warning'
-                                                    ? 'bg-yellow-500/5 border-yellow-500/20'
-                                                    : 'bg-red-500/5 border-red-500/20'
-                                                }`}
-                                        >
-                                            <div className="flex items-start gap-3">
-                                                {scanResult.type === 'success' ? (
-                                                    <CheckCircle2 className="w-6 h-6 text-green-500 shrink-0 mt-0.5" />
-                                                ) : scanResult.type === 'warning' ? (
-                                                    <AlertTriangle className="w-6 h-6 text-yellow-500 shrink-0 mt-0.5" />
-                                                ) : (
-                                                    <XCircle className="w-6 h-6 text-red-500 shrink-0 mt-0.5" />
-                                                )}
-                                                <div>
-                                                    <h4 className="font-semibold text-[var(--text-primary)]">{scanResult.title}</h4>
-                                                    <p className="text-sm text-[var(--text-secondary)] mt-1">{scanResult.message}</p>
-                                                    {scanResult.ticket && (
-                                                        <div className="mt-3 text-xs text-[var(--text-secondary)] space-y-1">
-                                                            <p>Year: {scanResult.ticket.year}</p>
-                                                            <p>Event: {scanResult.ticket.eventTitle}</p>
-                                                        </div>
-                                                    )}
-                                                </div>
+                                                <p className="text-sm text-[var(--text-secondary)] mb-1">Camera is off</p>
+                                                <p className="text-xs text-[var(--text-secondary)]/60">Tap below to start scanning</p>
                                             </div>
-
-                                            <Button
-                                                size="sm"
-                                                variant="outline"
-                                                onClick={() => setScanResult(null)}
-                                                className="mt-3 text-xs"
-                                            >
-                                                <RotateCcw className="w-3 h-3 mr-1" />
-                                                Scan Next
-                                            </Button>
-                                        </motion.div>
-                                    )}
-                                </AnimatePresence>
-                            </CardContent>
-                        </Card>
-                    </motion.div>
-
-                    {/* Registrations Table */}
-                    <motion.div
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: 0.3 }}
-                    >
-                        <Card className="bg-[var(--card-bg)] border-[var(--border-color)]">
-                            <CardHeader>
-                                <div className="flex items-center justify-between">
-                                    <CardTitle className="flex items-center gap-2 text-[var(--text-primary)]">
-                                        <Users className="w-5 h-5 text-[hsl(var(--accent))]" />
-                                        Registrations
-                                    </CardTitle>
-                                    {selectedEventId && (
-                                        <Button size="sm" variant="outline" onClick={handleExportCSV} className="text-xs">
-                                            <Download className="w-3 h-3 mr-1" />
-                                            Export CSV
+                                        )}
+                                    </div>
+                                    {!isScanning ? (
+                                        <Button
+                                            onClick={startCameraScanner}
+                                            className="w-full h-12 rounded-xl bg-[hsl(var(--accent))] hover:bg-[hsl(var(--accent))]/90 text-white font-medium text-sm"
+                                        >
+                                            <Camera className="w-4 h-4 mr-2" />
+                                            Start Camera
+                                        </Button>
+                                    ) : (
+                                        <Button
+                                            onClick={stopCameraScanner}
+                                            variant="outline"
+                                            className="w-full h-12 rounded-xl border-red-500/30 text-red-500 hover:bg-red-500/5 font-medium text-sm"
+                                        >
+                                            <CameraOff className="w-4 h-4 mr-2" />
+                                            Stop Camera
                                         </Button>
                                     )}
                                 </div>
-                            </CardHeader>
-                            <CardContent>
-                                {!selectedEventId ? (
-                                    <div className="text-center py-12 text-[var(--text-secondary)]">
-                                        <Users className="w-10 h-10 mx-auto mb-3 opacity-30" />
-                                        <p className="text-sm">Select an event to view registrations</p>
+                            </div>
+
+                            {/* Manual Mode */}
+                            <div className={scanMode === 'manual' ? 'block' : 'hidden'}>
+                                <div className="text-center py-4 mb-4">
+                                    <div className="w-16 h-16 rounded-2xl bg-[hsl(var(--accent))]/5 border border-[hsl(var(--accent))]/10 flex items-center justify-center mx-auto mb-3">
+                                        <QrCode className="w-7 h-7 text-[hsl(var(--accent))]/70" />
                                     </div>
-                                ) : loadingEventData ? (
-                                    <div className="flex justify-center py-12">
-                                        <Loader2 className="w-6 h-6 animate-spin text-[hsl(var(--accent))]" />
+                                    <p className="text-sm text-[var(--text-secondary)]">Enter the 3-character entry code shown on the ticket</p>
+                                </div>
+                                <form onSubmit={handleManualSubmit} className="space-y-3">
+                                    {/* Entry Code Input */}
+                                    <div>
+                                        <label className="text-[10px] uppercase tracking-wider text-[var(--text-secondary)] mb-1.5 block">Entry Code</label>
+                                        <Input
+                                            value={manualInput}
+                                            onChange={(e) => setManualInput(e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 3))}
+                                            placeholder="e.g. A3X"
+                                            className="h-14 rounded-xl bg-[var(--bg-body)]/60 border-[var(--border-color)]/60 text-[var(--text-primary)] font-mono text-2xl text-center tracking-[0.3em] font-bold px-4"
+                                            maxLength={3}
+                                        />
                                     </div>
-                                ) : eventData?.tickets.length === 0 ? (
-                                    <div className="text-center py-12 text-[var(--text-secondary)]">
-                                        <Users className="w-10 h-10 mx-auto mb-3 opacity-30" />
-                                        <p className="text-sm">No registrations yet</p>
+
+                                    {/* Divider */}
+                                    <div className="flex items-center gap-3 py-1">
+                                        <div className="flex-1 h-px bg-[var(--border-color)]/40" />
+                                        <span className="text-[10px] text-[var(--text-secondary)]/60 uppercase">or paste full QR token</span>
+                                        <div className="flex-1 h-px bg-[var(--border-color)]/40" />
                                     </div>
-                                ) : (
-                                    <div className="max-h-[500px] overflow-y-auto">
-                                        <table className="w-full text-sm">
-                                            <thead className="sticky top-0 bg-[var(--card-bg)]">
-                                                <tr className="border-b border-[var(--border-color)]">
-                                                    <th className="text-left py-2 px-2 text-xs text-[var(--text-secondary)] font-medium">Name</th>
-                                                    <th className="text-left py-2 px-2 text-xs text-[var(--text-secondary)] font-medium">Roll No.</th>
-                                                    <th className="text-center py-2 px-2 text-xs text-[var(--text-secondary)] font-medium">Year</th>
-                                                    <th className="text-center py-2 px-2 text-xs text-[var(--text-secondary)] font-medium">Status</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                {eventData?.tickets.map((ticket) => (
-                                                    <tr key={ticket.id} className="border-b border-[var(--border-color)]/50 hover:bg-[var(--bg-body)]/50 transition-colors">
-                                                        <td className="py-2.5 px-2 text-[var(--text-primary)] font-medium">{ticket.fullName}</td>
-                                                        <td className="py-2.5 px-2 text-[var(--text-secondary)] font-mono text-xs">{ticket.rollNumber}</td>
-                                                        <td className="py-2.5 px-2 text-center text-[var(--text-secondary)]">{ticket.year}</td>
-                                                        <td className="py-2.5 px-2 text-center">
+
+                                    {/* Full Token Input (fallback) */}
+                                    <Input
+                                        value={manualToken}
+                                        onChange={(e) => setManualToken(e.target.value)}
+                                        placeholder="Paste full QR token..."
+                                        className="h-10 rounded-xl bg-[var(--bg-body)]/60 border-[var(--border-color)]/40 text-[var(--text-primary)] font-mono text-[10px] px-4 opacity-60 focus:opacity-100 transition-opacity"
+                                    />
+
+                                    <Button
+                                        type="submit"
+                                        disabled={(!manualInput.trim() && !manualToken.trim()) || isProcessing}
+                                        className="w-full h-12 rounded-xl bg-[hsl(var(--accent))] hover:bg-[hsl(var(--accent))]/90 text-white font-medium text-sm disabled:opacity-40"
+                                    >
+                                        {isProcessing ? (
+                                            <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                                        ) : (
+                                            <CheckCircle2 className="w-4 h-4 mr-2" />
+                                        )}
+                                        Verify
+                                    </Button>
+                                </form>
+                            </div>
+                        </div>
+
+                        {/* Scan Result */}
+                        <AnimatePresence mode="wait">
+                            {scanResult && (
+                                <motion.div
+                                    initial={{ opacity: 0, height: 0 }}
+                                    animate={{ opacity: 1, height: 'auto' }}
+                                    exit={{ opacity: 0, height: 0 }}
+                                    className="overflow-hidden"
+                                >
+                                    <div className={`p-5 border-t ${scanResult.type === 'success'
+                                        ? 'bg-green-500/5 border-green-500/20'
+                                        : scanResult.type === 'warning'
+                                            ? 'bg-yellow-500/5 border-yellow-500/20'
+                                            : 'bg-red-500/5 border-red-500/20'
+                                        }`}>
+                                        <div className="flex items-center gap-3 mb-2">
+                                            {scanResult.type === 'success' ? (
+                                                <div className="w-10 h-10 rounded-full bg-green-500/10 flex items-center justify-center shrink-0">
+                                                    <CheckCircle2 className="w-5 h-5 text-green-500" />
+                                                </div>
+                                            ) : scanResult.type === 'warning' ? (
+                                                <div className="w-10 h-10 rounded-full bg-yellow-500/10 flex items-center justify-center shrink-0">
+                                                    <AlertTriangle className="w-5 h-5 text-yellow-500" />
+                                                </div>
+                                            ) : (
+                                                <div className="w-10 h-10 rounded-full bg-red-500/10 flex items-center justify-center shrink-0">
+                                                    <XCircle className="w-5 h-5 text-red-500" />
+                                                </div>
+                                            )}
+                                            <div className="min-w-0">
+                                                <h4 className="font-semibold text-[var(--text-primary)] text-base">{scanResult.title}</h4>
+                                                <p className="text-sm text-[var(--text-secondary)] truncate">{scanResult.message}</p>
+                                            </div>
+                                        </div>
+                                        {scanResult.ticket && (
+                                            <div className="ml-[52px] flex gap-3 text-xs text-[var(--text-secondary)] mb-3">
+                                                <span className="px-2 py-1 rounded-md bg-[var(--bg-body)]/60">Year {scanResult.ticket.year}</span>
+                                                <span className="px-2 py-1 rounded-md bg-[var(--bg-body)]/60">{scanResult.ticket.eventTitle}</span>
+                                            </div>
+                                        )}
+                                        <Button
+                                            size="sm"
+                                            variant="outline"
+                                            onClick={() => setScanResult(null)}
+                                            className="ml-[52px] text-xs rounded-lg h-8"
+                                        >
+                                            <RotateCcw className="w-3 h-3 mr-1.5" />
+                                            Scan Next
+                                        </Button>
+                                    </div>
+                                </motion.div>
+                            )}
+                        </AnimatePresence>
+                    </div>
+                </motion.div>
+
+                {/* Registrations panel */}
+                {selectedEventId && (
+                    <motion.div
+                        initial={{ opacity: 0, y: 16 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.15 }}
+                    >
+                        <div className="rounded-2xl bg-[var(--card-bg)]/80 backdrop-blur-sm border border-[var(--border-color)]/60 overflow-hidden">
+                            {/* Collapsible header */}
+                            <button
+                                onClick={() => setShowRegistrations(!showRegistrations)}
+                                className="w-full flex items-center justify-between p-4 hover:bg-[var(--bg-body)]/30 transition-colors"
+                            >
+                                <div className="flex items-center gap-2.5">
+                                    <Users className="w-4 h-4 text-[hsl(var(--accent))]" />
+                                    <span className="font-semibold text-sm text-[var(--text-primary)]">
+                                        Registrations
+                                    </span>
+                                    {eventData && (
+                                        <Badge variant="outline" className="text-[10px] bg-[var(--bg-body)]/60 border-[var(--border-color)]/40">
+                                            {eventData.totalTickets}
+                                        </Badge>
+                                    )}
+                                </div>
+                                <div className="flex items-center gap-2">
+                                    {showRegistrations && selectedEventId && (
+                                        <Button
+                                            size="sm"
+                                            variant="ghost"
+                                            onClick={(e) => { e.stopPropagation(); handleExportCSV(); }}
+                                            className="text-[10px] h-7 px-2 text-[var(--text-secondary)]"
+                                        >
+                                            <Download className="w-3 h-3 mr-1" />
+                                            CSV
+                                        </Button>
+                                    )}
+                                    <ChevronDown className={`w-4 h-4 text-[var(--text-secondary)] transition-transform ${showRegistrations ? 'rotate-180' : ''}`} />
+                                </div>
+                            </button>
+
+                            {/* Collapsible content */}
+                            <AnimatePresence>
+                                {showRegistrations && (
+                                    <motion.div
+                                        initial={{ height: 0, opacity: 0 }}
+                                        animate={{ height: 'auto', opacity: 1 }}
+                                        exit={{ height: 0, opacity: 0 }}
+                                        transition={{ duration: 0.2 }}
+                                        className="overflow-hidden"
+                                    >
+                                        <div className="border-t border-[var(--border-color)]/40">
+                                            {loadingEventData ? (
+                                                <div className="flex justify-center py-10">
+                                                    <Loader2 className="w-5 h-5 animate-spin text-[hsl(var(--accent))]" />
+                                                </div>
+                                            ) : eventData?.tickets.length === 0 ? (
+                                                <div className="text-center py-10 text-[var(--text-secondary)]">
+                                                    <Users className="w-8 h-8 mx-auto mb-2 opacity-20" />
+                                                    <p className="text-xs">No registrations yet</p>
+                                                </div>
+                                            ) : (
+                                                <div className="max-h-[400px] overflow-y-auto">
+                                                    {eventData?.tickets.map((ticket, idx) => (
+                                                        <div
+                                                            key={ticket.id}
+                                                            className={`flex items-center justify-between px-4 py-3 ${idx !== 0 ? 'border-t border-[var(--border-color)]/20' : ''
+                                                                } hover:bg-[var(--bg-body)]/30 transition-colors`}
+                                                        >
+                                                            <div className="min-w-0 flex-1">
+                                                                <div className="text-sm font-medium text-[var(--text-primary)] truncate">
+                                                                    {ticket.fullName}
+                                                                </div>
+                                                                <div className="text-xs text-[var(--text-secondary)] mt-0.5">
+                                                                    {ticket.rollNumber} · Year {ticket.year}
+                                                                </div>
+                                                            </div>
                                                             <Badge
                                                                 variant="outline"
-                                                                className={`text-[10px] ${ticket.scanned
+                                                                className={`text-[10px] shrink-0 ml-3 ${ticket.scanned
                                                                     ? 'bg-green-500/10 text-green-500 border-green-500/20'
-                                                                    : 'bg-[var(--bg-body)] text-[var(--text-secondary)] border-[var(--border-color)]'
+                                                                    : 'bg-[var(--bg-body)]/60 text-[var(--text-secondary)] border-[var(--border-color)]/40'
                                                                     }`}
                                                             >
                                                                 {ticket.scanned ? '✓ Scanned' : 'Pending'}
                                                             </Badge>
-                                                        </td>
-                                                    </tr>
-                                                ))}
-                                            </tbody>
-                                        </table>
-                                    </div>
+                                                        </div>
+                                                    ))}
+                                                </div>
+                                            )}
+                                        </div>
+                                    </motion.div>
                                 )}
-                            </CardContent>
-                        </Card>
+                            </AnimatePresence>
+                        </div>
                     </motion.div>
-                </div>
+                )}
+
+                {/* Bottom spacer for safe area */}
+                <div className="h-6" />
             </div>
         </div>
     );
