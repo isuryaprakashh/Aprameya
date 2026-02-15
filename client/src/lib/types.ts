@@ -47,6 +47,7 @@ export interface Event {
   capacity?: number | null;
   registrationOpen?: boolean;
   ticketEnabled?: boolean;
+  registeredCount?: number;
 }
 
 export interface TeamMember {

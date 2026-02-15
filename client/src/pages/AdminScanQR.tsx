@@ -57,7 +57,7 @@ interface TicketEntry {
     createdAt: string;
 }
 
-const AdminScanQR = () => {
+const AdminScanQR = ({ isEmbedded = false }: { isEmbedded?: boolean }) => {
     const { toast } = useToast();
     const { user } = useAuth();
     const [, setLocation] = useLocation();
@@ -303,13 +303,15 @@ const AdminScanQR = () => {
             {/* Top bar */}
             <div className="sticky top-0 z-50 backdrop-blur-xl bg-[var(--bg-body)]/80 border-b border-[var(--border-color)]/50">
                 <div className="flex items-center justify-between px-4 py-3 max-w-2xl mx-auto">
-                    <button
-                        onClick={() => setLocation('/dashboard')}
-                        className="flex items-center gap-2 text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors -ml-1 py-1 px-2 rounded-lg hover:bg-[var(--card-bg)]"
-                    >
-                        <ArrowLeft className="w-5 h-5" />
-                        <span className="text-sm font-medium">Back</span>
-                    </button>
+                    {!isEmbedded && (
+                        <button
+                            onClick={() => setLocation('/dashboard')}
+                            className="flex items-center gap-2 text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors -ml-1 py-1 px-2 rounded-lg hover:bg-[var(--card-bg)]"
+                        >
+                            <ArrowLeft className="w-5 h-5" />
+                            <span className="text-sm font-medium">Back</span>
+                        </button>
+                    )}
 
                     <div className="flex items-center gap-2">
                         <div className="w-8 h-8 rounded-lg bg-[hsl(var(--accent))]/10 flex items-center justify-center">
@@ -465,8 +467,9 @@ const AdminScanQR = () => {
                                             value={manualInput}
                                             onChange={(e) => setManualInput(e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 3))}
                                             placeholder="e.g. A3X"
-                                            className="h-14 rounded-xl bg-[var(--bg-body)]/60 border-[var(--border-color)]/60 text-[var(--text-primary)] font-mono text-2xl text-center tracking-[0.3em] font-bold px-4"
+                                            className="h-14 rounded-xl bg-black/50 border-[var(--border-color)]/60 text-white font-mono text-2xl text-center tracking-[0.3em] font-bold px-4 focus:bg-black/70 transition-colors"
                                             maxLength={3}
+                                            autoComplete="off"
                                         />
                                     </div>
 
@@ -482,7 +485,8 @@ const AdminScanQR = () => {
                                         value={manualToken}
                                         onChange={(e) => setManualToken(e.target.value)}
                                         placeholder="Paste full QR token..."
-                                        className="h-10 rounded-xl bg-[var(--bg-body)]/60 border-[var(--border-color)]/40 text-[var(--text-primary)] font-mono text-[10px] px-4 opacity-60 focus:opacity-100 transition-opacity"
+                                        className="h-10 rounded-xl bg-black/50 border-[var(--border-color)]/40 text-white font-mono text-[10px] px-4 opacity-60 focus:opacity-100 transition-all focus:bg-black/70"
+                                        autoComplete="off"
                                     />
 
                                     <Button

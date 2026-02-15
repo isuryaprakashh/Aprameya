@@ -149,6 +149,28 @@ const TicketRegistration = () => {
         );
     }
 
+    const isSoldOut = event?.capacity && (event?.registeredCount || 0) >= event.capacity;
+
+    if (isSoldOut) {
+        return (
+            <div className="min-h-screen bg-[var(--bg-body)] flex items-center justify-center p-4">
+                <Card className="max-w-md w-full bg-[var(--card-bg)] border-[var(--border-color)]">
+                    <CardContent className="p-8 text-center">
+                        <AlertTriangle className="w-12 h-12 text-red-500 mx-auto mb-4" />
+                        <h2 className="text-xl font-bold text-[var(--text-primary)] mb-2">Sold Out</h2>
+                        <p className="text-[var(--text-secondary)] mb-6">Sorry, this event has reached its maximum capacity.</p>
+                        <Button asChild variant="outline" className="border-red-500/30 text-red-500 hover:bg-red-500/10">
+                            <Link href="/events">
+                                <ArrowLeft className="w-4 h-4 mr-2" />
+                                Back to Events
+                            </Link>
+                        </Button>
+                    </CardContent>
+                </Card>
+            </div>
+        );
+    }
+
     if (eventLoading) {
         return (
             <div className="min-h-screen bg-[var(--bg-body)] flex items-center justify-center">

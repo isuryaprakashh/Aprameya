@@ -39,7 +39,6 @@ const SidebarContent = ({ activeView, setActiveView, isMobile, closeMobile }: Si
         { id: 'scan', label: 'Scan QR', icon: FaQrcode },
     ] : [
         { id: 'overview', label: 'Overview', icon: FaHome },
-        { id: 'events', label: 'Upcoming Events', icon: FaCalendarAlt },
         { id: 'registrations', label: 'My Registrations', icon: FaClipboardList },
         { id: 'projects', label: 'Projects', icon: FaProjectDiagram },
         { id: 'blogs', label: 'Blogs', icon: FaNewspaper },

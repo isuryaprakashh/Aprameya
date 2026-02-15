@@ -9,11 +9,12 @@ import { User, EventRegistration } from '@/lib/types';
 interface UserOverviewProps {
     currentUser: User;
     userEventRegistrations: EventRegistration[];
+    tickets?: any[];
     setActiveView: (view: string) => void;
     getInitials: (name: string) => string;
 }
 
-export const UserOverview = ({ currentUser, userEventRegistrations, setActiveView, getInitials }: UserOverviewProps) => {
+export const UserOverview = ({ currentUser, userEventRegistrations, tickets = [], setActiveView, getInitials }: UserOverviewProps) => {
     const getRoleBadgeColor = (role: string) => {
         switch (role?.toUpperCase()) {
             case 'ADMIN': return 'bg-red-500/20 text-red-400 border-red-500/50';
@@ -92,7 +93,7 @@ export const UserOverview = ({ currentUser, userEventRegistrations, setActiveVie
                         </CardTitle>
                     </CardHeader>
                     <CardContent>
-                        <div className="text-2xl font-bold text-[var(--text-primary)]">{userEventRegistrations.length}</div>
+                        <div className="text-2xl font-bold text-[var(--text-primary)]">{userEventRegistrations.length + tickets.length}</div>
                         <p className="text-xs text-[var(--text-secondary)]">Active Event Signups</p>
                     </CardContent>
                 </Card>

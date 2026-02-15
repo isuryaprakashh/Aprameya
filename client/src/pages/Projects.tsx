@@ -9,7 +9,7 @@ import { Project } from '../lib/types';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Search, Users } from 'lucide-react';
-import ProximityMatrix from '../components/backgrounds/ProximityMatrix';
+import VoidAurora from '../components/backgrounds/VoidAurora';
 import { motion } from 'framer-motion';
 import { EmptyState } from '../components/EmptyState';
 import { FolderOpen } from 'lucide-react';
@@ -66,28 +66,28 @@ const Projects = () => {
     <div className="fadeIn">
       {/* Header Section */}
       <section className="relative py-24 px-4 bg-[var(--bg-body)] border-b border-[var(--border-color)] overflow-hidden">
-        <ProximityMatrix />
+        <VoidAurora />
         <div className="absolute inset-0 dither-bg opacity-30 pointer-events-none"></div>
         <div className="container mx-auto relative z-10">
           <motion.div
-            className="text-left"
+            className="text-center"
             transition={{ duration: 0.8 }}
           >
             <div className="mb-6">
               {/* Breadcrumbs removed */}
             </div>
 
-            <h1 className="font-bold text-5xl md:text-7xl mb-6 leading-[0.9] text-[var(--text-primary)]">
+            <h1 className="font-bold text-4xl md:text-6xl mb-6 text-[var(--text-primary)] leading-none tracking-tighter">
               INNOVATIVE<br />PROJECTS
             </h1>
-            <p className="text-sm text-[var(--text-secondary)] max-w-xl mb-12 font-mono leading-relaxed">
+            <p className="text-sm text-[var(--text-secondary)] max-w-2xl mx-auto font-mono">
               Explore our cutting-edge autonomous vehicle projects and research initiatives
               that are shaping the future of transportation. From neural networks to hardware integration.
             </p>
 
             {/* Featured Project Highlight */}
             {featuredProject && (
-              <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 p-4 bg-[var(--card-bg)] border border-[var(--border-color)] rounded-lg max-w-2xl">
+              <div className="mt-12 flex flex-col sm:flex-row items-start sm:items-center gap-4 p-4 bg-[var(--card-bg)] border border-[var(--border-color)] rounded-lg max-w-2xl mx-auto text-left">
                 <div className="w-12 h-12 bg-[hsl(var(--accent))]/10 flex items-center justify-center rounded-md border border-[hsl(var(--accent))]/20 shrink-0">
                   <Users className="w-6 h-6 text-[hsl(var(--accent))]" />
                 </div>

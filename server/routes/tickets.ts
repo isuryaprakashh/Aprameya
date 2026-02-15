@@ -1,12 +1,123 @@
 import { Router } from "express";
 import { storage } from "../storage";
 import { insertTicketRegistrationSchema } from "../shared/schema";
-import { isAdmin, isAdminOrCore } from "../middleware/auth";
+import { isAuthenticated, isAdminOrCore } from "../middleware/auth";
 import { nanoid } from "nanoid";
 
 const router = Router();
 
-// Create a new ticket (Admin only)
+// Register for an event
+router.post("/tickets/register", isAuthenticated, async (req, res) => {
+    try {
+        const ticketInput = insertTicketRegistrationSchema.safeParse(req.body);
+
+        if (!ticketInput.success) {
+            return res.status(400).json({ error: ticketInput.error });
+        }
+
+        const { eventId, fullName, rollNumber, year } = ticketInput.data;
+        const userId = req.session.userId!;
+
+        // Check if event exists
+        const event = await storage.getEvent(eventId);
+        if (!event) {
+            return res.status(404).json({ error: "Event not found" });
+        }
+
+        // Check if registration is open
+        if (event.registrationOpen === false) {
+            return res.status(400).json({ error: "Registration is closed for this event" });
+        }
+
+        // Check for existing registration for this user
+        const existingTicket = await storage.getTicketRegistrationByUserAndEvent(userId, eventId);
+        if (existingTicket) {
+            return res.status(400).json({ error: "You are already registered for this event" });
+        }
+
+        // Check for duplicate roll number (prevent double registration by same person with different account)
+        const allTickets = await storage.getTicketRegistrationsByEvent(eventId);
+        const duplicate = allTickets.find(t => t.rollNumber === rollNumber);
+        if (duplicate) {
+            return res.status(400).json({ error: "This Roll Number is already registered" });
+        }
+
+        // Check capacity if applicable
+        if (event.capacity && allTickets.length >= event.capacity) {
+            return res.status(400).json({ error: "Event capacity reached" });
+        }
+
+        // Generate tokens
+        const qrToken = nanoid(32); // Long secure token for QR
+        const entryCode = nanoid(3).toUpperCase(); // Short 3-char code for manual entry
+
+        const ticket = await storage.createTicketRegistration({
+            ...ticketInput.data,
+            userId,
+            qrToken,
+            entryCode,
+        });
+
+        res.status(201).json({ ticket });
+    } catch (error) {
+        console.error("Ticket registration error:", error);
+        res.status(500).json({ error: "Failed to register ticket" });
+    }
+});
+
+// Get all my tickets
+router.get("/tickets/my", isAuthenticated, async (req, res) => {
+    try {
+        const userId = req.session.userId!;
+        const tickets = await storage.getTicketRegistrationsByUser(userId);
+
+        // Enhance tickets with event details
+        const ticketsWithEvents = await Promise.all(tickets.map(async (ticket) => {
+            const event = await storage.getEvent(ticket.eventId);
+            return {
+                ...ticket,
+                event: event ? {
+                    title: event.title,
+                    date: event.date,
+                    time: event.time,
+                    location: event.location
+                } : null
+            };
+        }));
+
+        res.json(ticketsWithEvents);
+    } catch (error) {
+        console.error("Get my tickets error:", error);
+        res.status(500).json({ error: "Failed to fetch tickets" });
+    }
+});
+
+// Get my ticket for an event
+router.get("/tickets/my/:eventId", isAuthenticated, async (req, res) => {
+    try {
+        const { eventId } = req.params;
+        const userId = req.session.userId!;
+
+        const ticket = await storage.getTicketRegistrationByUserAndEvent(userId, eventId);
+
+        if (!ticket) {
+            return res.json(null); // Return null if no ticket found, not 404
+        }
+
+        const event = await storage.getEvent(eventId);
+
+        res.json({
+            ...ticket,
+            eventTitle: event?.title || "Unknown Event",
+            eventDate: event?.date || ""
+        });
+    } catch (error) {
+        console.error("Get my ticket error:", error);
+        res.status(500).json({ error: "Failed to fetch ticket" });
+    }
+});
+
+// Create a new ticket (Admin only) - KEEPING FOR BACKWARD COMPATIBILITY OR ADMIN OVERRIDE
 router.post("/tickets", isAdminOrCore, async (req, res) => {
     try {
         const ticketInput = insertTicketRegistrationSchema.safeParse(req.body);
@@ -79,7 +190,11 @@ router.post("/tickets/scan", isAdminOrCore, async (req, res) => {
         }
 
         // Mark as scanned
-        const updatedTicket = await storage.updateTicketScanStatus(ticket.id, true);
+        const scannerId = req.session.userId!;
+        const scanner = await storage.getUser(scannerId);
+        const scannerName = scanner ? scanner.username : "Unknown";
+
+        const updatedTicket = await storage.updateTicketScanStatus(ticket.id, true, scannerId, scannerName);
 
         // Fetch event details for response
         const event = await storage.getEvent(ticket.eventId);
@@ -128,14 +243,15 @@ router.get("/tickets/event/:eventId/export", isAdminOrCore, async (req, res) => 
         }
 
         // Simple CSV generation
-        const headers = ["Full Name", "Roll Number", "Year", "Entry Code", "Scanned", "Scanned At"];
+        const headers = ["Full Name", "Roll Number", "Year", "Entry Code", "Scanned", "Scanned At", "Scanned By"];
         const rows = tickets.map(t => [
             t.fullName,
             t.rollNumber,
             t.year,
             t.entryCode,
             t.scanned ? "Yes" : "No",
-            t.scannedAt ? new Date(t.scannedAt).toLocaleString() : ""
+            t.scannedAt ? new Date(t.scannedAt).toLocaleString() : "",
+            t.scannedByName || ""
         ]);
 
         const csvContent = [

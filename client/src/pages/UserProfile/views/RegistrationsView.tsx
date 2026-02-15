@@ -15,7 +15,7 @@ interface EventRegistrationsData {
     totalRegistrations: number;
 }
 
-export default function RegistrationsView() {
+export default function RegistrationsView({ tickets = [] }: { tickets?: any[] }) {
     const { toast } = useToast();
     const queryClient = useQueryClient();
     const { user: currentUser } = useAuth();
@@ -133,7 +133,7 @@ export default function RegistrationsView() {
                     </div>
                 </div>
 
-                {userEventRegistrations.length === 0 ? (
+                {userEventRegistrations.length === 0 && (!tickets || tickets.length === 0) ? (
                     <div className="text-center py-12 border border-dashed border-[var(--border-color)] rounded-xl bg-[var(--card-bg)]/20">
                         <FaCalendarAlt className="mx-auto text-4xl text-[var(--text-secondary)] mb-4" />
                         <p className="text-[var(--text-secondary)] text-lg">You haven't registered for any events yet.</p>
@@ -147,16 +147,20 @@ export default function RegistrationsView() {
                     </div>
                 ) : (
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        {/* Event Registrations */}
                         {userEventRegistrations.map((registration, index) => (
                             <motion.div
-                                key={registration.id}
+                                key={`reg-${registration.id}`}
                                 initial={{ opacity: 0, scale: 0.95 }}
                                 animate={{ opacity: 1, scale: 1 }}
                                 transition={{ delay: index * 0.05 }}
                                 className="clean-card group"
                             >
                                 <CardHeader>
-                                    <CardTitle className="text-[var(--text-primary)] group-hover:text-[hsl(var(--accent))] transition-colors">{registration.event?.title || 'Event'}</CardTitle>
+                                    <div className="flex justify-between items-start">
+                                        <CardTitle className="text-[var(--text-primary)] group-hover:text-[hsl(var(--accent))] transition-colors">{registration.event?.title || 'Event'}</CardTitle>
+                                        <div className="px-2 py-1 rounded bg-blue-500/10 text-blue-500 text-xs border border-blue-500/20">Quick Reg</div>
+                                    </div>
                                     <CardDescription className="text-[var(--text-secondary)] font-mono text-xs">
                                         {registration.event?.date || 'Date TBA'} | {registration.event?.location || 'Location TBA'}
                                     </CardDescription>
@@ -172,6 +176,41 @@ export default function RegistrationsView() {
                                         className="text-red-400 hover:text-red-300 hover:bg-red-500/10"
                                     >
                                         Cancel Registration
+                                    </Button>
+                                </CardFooter>
+                            </motion.div>
+                        ))}
+
+                        {/* Ticket Registrations */}
+                        {tickets?.map((ticket, index) => (
+                            <motion.div
+                                key={`ticket-${ticket.id}`}
+                                initial={{ opacity: 0, scale: 0.95 }}
+                                animate={{ opacity: 1, scale: 1 }}
+                                transition={{ delay: (userEventRegistrations.length + index) * 0.05 }}
+                                className="clean-card group"
+                            >
+                                <CardHeader>
+                                    <div className="flex justify-between items-start">
+                                        <CardTitle className="text-[var(--text-primary)] group-hover:text-[hsl(var(--accent))] transition-colors">{ticket.event?.title || 'Event'}</CardTitle>
+                                        <div className="px-2 py-1 rounded bg-[hsl(var(--accent))]/10 text-[hsl(var(--accent))] text-xs border border-[hsl(var(--accent))]/20">Ticket</div>
+                                    </div>
+                                    <CardDescription className="text-[var(--text-secondary)] font-mono text-xs">
+                                        {ticket.event?.date || 'Date TBA'} | {ticket.event?.location || 'Location TBA'}
+                                    </CardDescription>
+                                </CardHeader>
+                                <CardContent>
+                                    <p className="text-[var(--text-secondary)] text-sm mb-2">Roll No: {ticket.rollNumber}</p>
+                                    <p className="text-[var(--text-secondary)] text-xs font-mono">ID: {ticket.entryCode}</p>
+                                </CardContent>
+                                <CardFooter className="border-t border-[var(--border-color)] bg-[var(--card-bg)]/20 p-4 flex justify-end">
+                                    <Button
+                                        variant="outline"
+                                        size="sm"
+                                        className="border-[var(--border-color)] hover:border-[hsl(var(--accent))] hover:text-[hsl(var(--accent))]"
+                                        onClick={() => window.location.href = '/my-tickets'}
+                                    >
+                                        View Ticket
                                     </Button>
                                 </CardFooter>
                             </motion.div>

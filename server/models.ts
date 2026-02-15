@@ -92,6 +92,8 @@ const ticketRegistrationSchema = new mongoose.Schema({
     entryCode: { type: String, required: true },
     scanned: { type: Boolean, default: false },
     scannedAt: { type: Date, default: null },
+    scannedBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User', default: null },
+    scannedByName: { type: String, default: null },
     createdAt: { type: Date, default: Date.now },
 });
 

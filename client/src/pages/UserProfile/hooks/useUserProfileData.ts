@@ -49,6 +49,13 @@ export const useUserProfileData = () => {
         staleTime: 5000,
         enabled: !!currentUser,
     });
+
+    const { data: tickets = [] } = useQuery<any[]>({
+        queryKey: ['/api/tickets/my'],
+        staleTime: 5000,
+        enabled: !!currentUser,
+    });
+
     const { data: projects = [] } = useQuery<Project[]>({ queryKey: ['/api/projects'], staleTime: 5000 });
     const { data: blogs = [] } = useQuery<BlogPost[]>({ queryKey: ['/api/blogs'], staleTime: 5000 });
     const { data: research = [] } = useQuery<ResearchItem[]>({ queryKey: ['/api/research'], staleTime: 5000 });
@@ -100,17 +107,17 @@ export const useUserProfileData = () => {
     });
 
     const registerForEvent = useMutation({
-        mutationFn: (eventId: string) => apiRequest('/api/db/event-registrations', { method: 'POST', body: JSON.stringify({ event_id: eventId }) }),
+        mutationFn: (eventId: string) => apiRequest('/api/event-registrations', { method: 'POST', body: JSON.stringify({ event_id: eventId }) }),
         onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ['/api/db/event-registrations/user'] });
+            queryClient.invalidateQueries({ queryKey: ['/api/event-registrations/my'] });
             toast({ title: 'Success', description: 'You have been registered for the event successfully' });
         },
     });
 
     const cancelEventRegistration = useMutation({
-        mutationFn: (registrationId: string) => apiRequest(`/api/db/event-registrations/${registrationId}`, { method: 'DELETE' }),
+        mutationFn: (registrationId: string) => apiRequest(`/api/event-registrations/${registrationId}`, { method: 'DELETE' }),
         onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ['/api/db/event-registrations/user'] });
+            queryClient.invalidateQueries({ queryKey: ['/api/event-registrations/my'] });
             toast({ title: 'Success', description: 'Event registration cancelled successfully' });
         },
     });
@@ -130,7 +137,16 @@ export const useUserProfileData = () => {
         if (contentType === 'project') item.id ? updateProject.mutate(item) : createProject.mutate(item);
         else if (contentType === 'blog') item.id ? updateBlog.mutate(item) : createBlog.mutate(item);
         else if (contentType === 'research') item.id ? updateResearch.mutate(item) : createResearch.mutate(item);
-        else if (contentType === 'event') item.id ? updateEvent.mutate(item) : createEvent.mutate(item);
+        else if (contentType === 'event') {
+            // Convert capacity to number if it exists
+            if (item.capacity) {
+                item.capacity = parseInt(String(item.capacity), 10);
+                if (isNaN(item.capacity)) item.capacity = null;
+            } else {
+                item.capacity = null;
+            }
+            item.id ? updateEvent.mutate(item) : createEvent.mutate(item);
+        }
     };
 
     const handleDelete = (id: string, type: string) => {
@@ -166,7 +182,7 @@ export const useUserProfileData = () => {
         isDialogOpen, setIsDialogOpen,
         userToDelete, setUserToDelete,
         profileData, setProfileData,
-        users, eventRegistrations, events, userEventRegistrations, projects, blogs, research,
+        users, eventRegistrations, events, userEventRegistrations, tickets, projects, blogs, research,
         userGrowthData, contentDistributionData,
         updateUserRole, deleteUser,
         createProject, updateProject, deleteProject,

@@ -204,7 +204,14 @@ const MyTickets = () => {
                                                                 </Button>
                                                             )}
                                                         </div>
-
+                                                        {ticket.entryCode && (
+                                                            <div className="mt-4 text-center">
+                                                                <p className="text-xs text-[var(--text-secondary)] mb-1 uppercase tracking-wider">Manual Code</p>
+                                                                <div className="bg-[hsl(var(--accent))]/10 border border-[hsl(var(--accent))]/20 text-[hsl(var(--accent))] font-mono text-2xl font-bold py-2 px-4 rounded-lg tracking-widest">
+                                                                    {ticket.entryCode}
+                                                                </div>
+                                                            </div>
+                                                        )}
                                                         {/* Details */}
                                                         <div className="flex-1 space-y-3">
                                                             <div className="grid grid-cols-2 gap-3">
@@ -244,15 +251,17 @@ const MyTickets = () => {
                                                     </div>
                                                 </CardContent>
                                             </motion.div>
-                                        )}
+                                        )
+                                        }
                                     </Card>
                                 </motion.div>
                             );
                         })}
                     </div>
-                )}
-            </div>
-        </div>
+                )
+                }
+            </div >
+        </div >
     );
 };
 

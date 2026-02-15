@@ -10,8 +10,19 @@ const router = Router();
 router.get("/events", async (req, res) => {
     try {
         const events = await storage.getAllEvents();
-        res.json(events);
+
+        // Enhance events with registration counts
+        const eventsWithCounts = await Promise.all(events.map(async (event) => {
+            const registrations = await storage.getTicketRegistrationsByEvent(event.id);
+            return {
+                ...event,
+                registeredCount: registrations.length
+            };
+        }));
+
+        res.json(eventsWithCounts);
     } catch (error) {
+        console.error("Failed to fetch events:", error);
         res.status(500).json({ error: "Failed to fetch events" });
     }
 });
@@ -20,8 +31,15 @@ router.get("/events/:id", async (req, res) => {
     try {
         const event = await storage.getEvent(req.params.id);
         if (!event) return res.status(404).json({ error: "Event not found" });
-        res.json(event);
+
+        const registrations = await storage.getTicketRegistrationsByEvent(event.id);
+
+        res.json({
+            ...event,
+            registeredCount: registrations.length
+        });
     } catch (error) {
+        console.error("Failed to fetch event:", error);
         res.status(500).json({ error: "Failed to fetch event" });
     }
 });

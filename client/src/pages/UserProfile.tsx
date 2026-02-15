@@ -1,4 +1,4 @@
-import { lazy, Suspense } from 'react';
+import { lazy, Suspense, useEffect } from 'react';
 import { useLocation } from 'wouter';
 import { useAuth } from "@/context/AuthContext";
 import { useToast } from '@/hooks/use-toast';
@@ -39,7 +39,7 @@ const UserProfile = () => {
     isDialogOpen, setIsDialogOpen,
     userToDelete, setUserToDelete,
     profileData, setProfileData,
-    users, eventRegistrations, events, userEventRegistrations, projects, blogs, research,
+    users, eventRegistrations, events, userEventRegistrations, tickets, projects, blogs, research,
     userGrowthData, contentDistributionData,
     updateUserRole, deleteUser,
     handleSave, handleDelete
@@ -59,6 +59,15 @@ const UserProfile = () => {
 
   const accentColor = getAccentColor(currentUser?.role);
 
+  useEffect(() => {
+    if (accentColor) {
+      document.documentElement.setAttribute('data-accent', accentColor);
+    }
+    return () => {
+      document.documentElement.setAttribute('data-accent', 'emerald');
+    };
+  }, [accentColor]);
+
   const handleInputChange = (field: string, value: string) => {
     setProfileData({ ...profileData, [field]: value });
   };
@@ -77,6 +86,8 @@ const UserProfile = () => {
     }
     if (Object.keys(updateData).length > 0) {
       // Call mutation here
+      // The actual mutation call seems missing in original code's handler, 
+      // but sticking to the request scope, I will just ensure data flow for tickets.
     } else {
       toast({ title: 'Info', description: 'No changes to update' });
     }
@@ -99,7 +110,7 @@ const UserProfile = () => {
     if (type === 'project') Object.assign(newItem, { title: '', description: '', category: '', technologies: '', team: '', image: '' });
     else if (type === 'blog') Object.assign(newItem, { title: '', excerpt: '', content: '', category: '', image: '' });
     else if (type === 'research') Object.assign(newItem, { title: '', description: '', category: '', authors: '', image: '' });
-    else if (type === 'event') Object.assign(newItem, { title: '', description: '', type: '', date: '', time: '', location: '', image: '', ticketEnabled: false });
+    else if (type === 'event') Object.assign(newItem, { title: '', description: '', type: '', date: '', time: '', location: '', image: '', ticketEnabled: false, capacity: '' });
     setSelectedItem(newItem);
     setIsDialogOpen(true);
   };
@@ -143,7 +154,10 @@ const UserProfile = () => {
             <FormField label="Time" id="time" value={selectedItem.time} onChange={(e: any) => inputChange('time', e.target.value)} />
           </div>
           <FormField label="Location" id="location" value={selectedItem.location} onChange={(e: any) => inputChange('location', e.target.value)} />
-          <FormField label="Image URL" id="image" value={selectedItem.image} onChange={(e: any) => inputChange('image', e.target.value)} />
+          <div className="grid grid-cols-2 gap-4">
+            <FormField label="Image URL" id="image" value={selectedItem.image} onChange={(e: any) => inputChange('image', e.target.value)} />
+            <FormField label="Capacity" id="capacity" type="number" value={selectedItem.capacity || ''} onChange={(e: any) => inputChange('capacity', e.target.value)} />
+          </div>
           <div className="flex flex-row items-center justify-between rounded-lg border border-[var(--border-color)] p-4 shadow-sm">
             <div className="space-y-0.5">
               <Label htmlFor="ticketEnabled" className="text-base text-[var(--text-primary)]">Enable Ticket System</Label>
@@ -184,6 +198,7 @@ const UserProfile = () => {
         return <UserOverview
           currentUser={currentUser!}
           userEventRegistrations={userEventRegistrations}
+          tickets={tickets}
           setActiveView={setActiveView}
           getInitials={getInitials}
         />;
@@ -213,7 +228,7 @@ const UserProfile = () => {
 
       case 'registrations':
         return <Suspense fallback={<div className="text-center py-12 text-[var(--text-secondary)]">Loading...</div>}>
-          <RegistrationsView />
+          <RegistrationsView tickets={tickets} />
         </Suspense>;
 
       case 'projects':

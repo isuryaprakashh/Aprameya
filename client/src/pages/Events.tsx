@@ -11,7 +11,7 @@ import {
   Ticket
 } from 'lucide-react';
 import { motion } from 'framer-motion';
-import ProximityMatrix from '../components/backgrounds/ProximityMatrix';
+import VoidAurora from '../components/backgrounds/VoidAurora';
 import { CleanCard } from '../components/ui/v6-card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -104,7 +104,7 @@ const Events = () => {
     <div className="fadeIn">
       {/* Header Section */}
       <section className="relative py-24 px-4 bg-[var(--bg-body)] border-b border-[var(--border-color)] overflow-hidden">
-        <ProximityMatrix />
+        <VoidAurora />
         <div className="absolute inset-0 dither-bg opacity-30 pointer-events-none"></div>
         <div className="container mx-auto relative z-10">
           <motion.div
@@ -275,7 +275,11 @@ const Events = () => {
                           </Badge>
                         ) : (
                           /* Action Buttons */
-                          event.ticketEnabled ? (
+                          event.capacity && (event.registeredCount || 0) >= event.capacity ? (
+                            <Button disabled className="w-full bg-red-500/10 text-red-500 border border-red-500/20 cursor-not-allowed hover:bg-red-500/10">
+                              Sold Out
+                            </Button>
+                          ) : event.ticketEnabled ? (
                             <Button
                               asChild
                               className="w-full bg-[hsl(var(--accent))] text-[var(--bg-body)] hover:bg-[hsl(var(--accent))]/90"

@@ -212,5 +212,7 @@ export interface TicketRegistration {
   entryCode: string;
   scanned: boolean;
   scannedAt: Date | string | null;
+  scannedBy?: string | null;
+  scannedByName?: string | null;
   createdAt: Date | string;
 }
