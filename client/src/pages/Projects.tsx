@@ -1,22 +1,33 @@
 import { useState } from 'react';
-import { Link, useLocation } from 'wouter';
+import { useLocation } from 'wouter';
 import { useQuery } from '@tanstack/react-query';
-import { Search, Users, ShieldCheck } from 'lucide-react';
+import { Search, ShieldCheck } from 'lucide-react';
 import ProjectCard from '../components/ProjectCard';
 import ProjectModal from '../components/ProjectModal';
 import UnderConstruction from '../components/UnderConstruction';
 import AprameyaLoader from '../components/AprameyaLoader';
 import HudFrame from '../components/ui/HudFrame';
 import { Project } from '../lib/types';
-import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import VoidAurora from '../components/backgrounds/VoidAurora';
+import ChamferedButton from '@/components/ui/ChamferedButton';
 import { motion } from 'framer-motion';
 
 const Projects = () => {
-  const { data: projects = [], isLoading, error } = useQuery<Project[]>({
+  const { data: projects = [], isLoading } = useQuery<Project[]>({
     queryKey: ['/api/projects'],
+    queryFn: async () => {
+      try {
+        const baseUrl = import.meta.env.VITE_API_URL || '';
+        const res = await fetch(`${baseUrl}/api/projects`);
+        if (!res.ok) return [];
+        return res.json();
+      } catch {
+        return [];
+      }
+    },
   });
+
   const { data: user } = useQuery<any>({ queryKey: ['/api/me'] });
   const [, setLocation] = useLocation();
 
@@ -35,25 +46,17 @@ const Projects = () => {
 
   // Filter projects based on search
   const filteredProjects = projects.filter(project => {
-    const matchesSearch = project.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      project.description.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesSearch = project.title?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      project.description?.toLowerCase().includes(searchTerm.toLowerCase());
     return matchesSearch;
   });
 
-  const featuredProject = projects.find(p => p.is_featured) || projects[0];
+  const featuredProject = projects.find(p => p.is_featured) || (projects.length > 0 ? projects[0] : null);
 
   if (isLoading) {
     return (
       <div className="min-h-screen bg-[var(--bg-body)] flex items-center justify-center">
         <AprameyaLoader size={40} />
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="min-h-screen bg-[var(--bg-body)] flex items-center justify-center text-[var(--text-secondary)] font-mono text-sm">
-        STATUS: 500 TELEMETRY_UNAVAILABLE // Unable to load projects.
       </div>
     );
   }
@@ -67,20 +70,22 @@ const Projects = () => {
         <div className="container mx-auto relative z-10">
           <motion.div
             className="text-center"
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
           >
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[hsl(var(--accent))]/10 border border-[hsl(var(--accent))]/20 text-[hsl(var(--accent))] text-xs font-mono mb-6 uppercase tracking-wider">
               Autonomous Systems & Engineering
             </div>
 
-            <h1 className="font-display font-bold text-4xl md:text-6xl mb-6 text-[var(--text-primary)] leading-none tracking-tight">
+            <h1 className="font-display font-bold text-5xl md:text-7xl mb-6 text-[var(--text-primary)] leading-[0.9] tracking-tight">
               LABORATORY<br />PROJECTS
             </h1>
-            <p className="text-sm text-[var(--text-secondary)] max-w-2xl mx-auto font-mono">
+            <p className="text-sm text-[var(--text-secondary)] max-w-2xl mx-auto font-mono leading-relaxed">
               Hardware integrations, computer vision pipelines, and robotics systems built and tested by Aprameya members.
             </p>
 
-            {/* Featured Project Highlight */}
+            {/* Featured Project Highlight (if projects exist) */}
             {featuredProject && (
               <div className="mt-12 max-w-2xl mx-auto">
                 <HudFrame label="FEATURED_BUILD // VERIFIED" status="ONLINE" className="p-5 text-left">
@@ -95,13 +100,13 @@ const Projects = () => {
                     </div>
                     <div className="flex gap-2 ml-auto w-full sm:w-auto">
                       {user?.role === 'ADMIN' && (
-                        <Button variant="secondary" size="sm" onClick={() => setLocation(`/dashboard?view=projects&editId=${featuredProject.id}&type=project`)}>
+                        <ChamferedButton variant="secondary" size="sm" onClick={() => setLocation(`/dashboard?view=projects&editId=${featuredProject.id}&type=project`)}>
                           Edit
-                        </Button>
+                        </ChamferedButton>
                       )}
-                      <Button className="btn-primary flex-1 sm:flex-none text-xs font-display tracking-wider uppercase" size="sm" onClick={() => handleViewDetails(featuredProject)}>
+                      <ChamferedButton variant="primary" size="sm" onClick={() => handleViewDetails(featuredProject)}>
                         View Stack
-                      </Button>
+                      </ChamferedButton>
                     </div>
                   </div>
                 </HudFrame>
@@ -123,7 +128,7 @@ const Projects = () => {
                   placeholder="Filter by title, stack, or domain..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="pl-10 h-11 rounded-xl bg-[var(--card-bg)] border-[var(--border-color)] text-[var(--text-primary)] focus:border-[hsl(var(--accent))]/50 text-sm"
+                  className="pl-10 h-11 rounded-xl bg-[var(--card-bg)] border-[var(--border-color)] text-[var(--text-primary)] focus:border-[hsl(var(--accent))]/50 text-sm font-mono"
                 />
               </div>
 
@@ -154,45 +159,12 @@ const Projects = () => {
             </>
           ) : (
             <UnderConstruction
-              category="PROJECTS REPOSITORY"
-              title="Active Hardware & Software Development"
-              subtitle="Benchmarking & Repository Verification"
-              description="Laboratory projects are undergoing physical integration tests and ROS 2 package verification. Verified builds will be listed here with schematics, demo links, and component breakdowns."
+              category="LABORATORY INITIATIVES"
+              title="Repositories In Preparation"
+              subtitle="ROS 2 Pipelines & Hardware Benchmarking"
+              description="Laboratory engineering squads are compiling ROS 2 software packages and hardware integration schematics. Verified builds will appear here once physical testing and peer review are finalized."
             />
           )}
-        </div>
-      </section>
-
-      {/* CTA Section */}
-      <section className="py-16 px-4 border-t border-[var(--border-color)] bg-[var(--bg-body)]">
-        <div className="container mx-auto max-w-4xl">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-            viewport={{ once: true }}
-            className="p-8 md:p-12 rounded-2xl border border-[var(--border-color)] bg-[var(--card-bg)] text-center relative overflow-hidden"
-          >
-            <h2 className="text-2xl md:text-3xl font-bold mb-4 text-[var(--text-primary)] tracking-tight">
-              Collaborate on Autonomous Systems
-            </h2>
-            <p className="text-sm text-[var(--text-secondary)] mb-8 max-w-xl mx-auto leading-relaxed">
-              Aprameya welcomes student engineers from computer science, electronics, robotics, and mechanical disciplines at KL University.
-            </p>
-            <div className="flex flex-wrap gap-4 justify-center">
-              <Link href="/signup">
-                <Button size="lg" className="bg-[hsl(var(--accent))] text-[var(--bg-body)] font-semibold rounded-xl hover:opacity-90">
-                  <Users className="mr-2 h-4 w-4" />
-                  Join the Lab
-                </Button>
-              </Link>
-              <Link href="/about">
-                <Button variant="outline" size="lg" className="rounded-xl border-[var(--border-color)] text-[var(--text-primary)]">
-                  Explore Mission
-                </Button>
-              </Link>
-            </div>
-          </motion.div>
         </div>
       </section>
 

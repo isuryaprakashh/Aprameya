@@ -1,7 +1,7 @@
 import { Link } from 'wouter';
 import { motion } from 'framer-motion';
 import { ArrowLeft, RefreshCw, Terminal, ShieldAlert } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import ChamferedButton from '@/components/ui/ChamferedButton';
 
 interface UnderConstructionProps {
   title?: string;
@@ -55,20 +55,18 @@ export const UnderConstruction = ({
         {/* Action Buttons */}
         <div className="flex flex-wrap items-center justify-center gap-3 pt-4 border-t border-[var(--border-color)]">
           <Link href="/">
-            <Button variant="outline" size="sm" className="gap-2 border-[var(--border-color)]">
-              <ArrowLeft className="w-4 h-4" />
+            <ChamferedButton variant="secondary" size="sm" leftIcon={<ArrowLeft className="w-3.5 h-3.5" />}>
               Return Home
-            </Button>
+            </ChamferedButton>
           </Link>
-          <Button
+          <ChamferedButton
             variant="ghost"
             size="sm"
-            className="gap-2 text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
+            leftIcon={<RefreshCw className="w-3.5 h-3.5" />}
             onClick={() => window.location.reload()}
           >
-            <RefreshCw className="w-3.5 h-3.5" />
             Check Sync Status
-          </Button>
+          </ChamferedButton>
         </div>
       </motion.div>
     </div>
