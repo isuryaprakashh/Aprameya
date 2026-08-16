@@ -116,4 +116,4 @@ Access the frontend at `http://localhost:5173` and backend API at `http://localh
 ## 🛡️ Security Notes
 *   **Global Error Boundary**: The frontend is wrapped in an Error Boundary to prevent crashes.
 *   **Rate Limiting**: API is protected against spam.
-*   **Secure Headers**: `Helmet` is active on the backend.
+*   **Secure Headers**: `Helmet` is active on the backend. 
