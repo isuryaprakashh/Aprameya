@@ -2,10 +2,10 @@ import { Link } from 'wouter';
 import { featuredItems, upcomingEvents } from '../lib/data';
 import { motion, useInView, animate } from 'framer-motion';
 import { useEffect, useRef } from 'react';
-import { ButtonViolet3D, ButtonDarkSpec } from '../components/ui/v6-buttons';
 import { Trophy, ExternalLink, Award, ArrowRight, Activity } from 'lucide-react';
 import { useTheme } from '@/components/theme-provider';
 import HudFrame from '@/components/ui/HudFrame';
+import ChamferedButton from '@/components/ui/ChamferedButton';
 
 const fadeInUp = {
   hidden: { opacity: 0, y: 24 },
@@ -63,16 +63,15 @@ const Home = () => {
 
             <motion.div variants={fadeInUp} className="flex flex-wrap items-center gap-4">
               <Link href="/recruitment">
-                <ButtonViolet3D className="px-8 py-4 text-sm font-medium font-display tracking-wider">
+                <ChamferedButton variant="primary" size="lg">
                   Join The Flight Crew
-                </ButtonViolet3D>
+                </ChamferedButton>
               </Link>
 
               <Link href="/projects">
-                <ButtonDarkSpec className="px-8 py-4 text-sm rounded-xl inline-flex items-center gap-2 group border border-[var(--border-color)]">
-                  <span className="relative z-10 font-mono">Laboratory Stacks</span>
-                  <ArrowRight className="w-4 h-4 ml-1 transition-transform group-hover:translate-x-1 relative z-10 text-[hsl(var(--accent))]" />
-                </ButtonDarkSpec>
+                <ChamferedButton variant="secondary" size="lg" rightIcon={<ArrowRight className="w-4 h-4 text-[hsl(var(--accent))]" />}>
+                  Laboratory Stacks
+                </ChamferedButton>
               </Link>
             </motion.div>
           </motion.div>
@@ -161,9 +160,9 @@ const Home = () => {
               </div>
 
               <a href="https://www.apnnews.com/klef-team-aprameya-among-top-winners-in-indias-premier-ai-hackathon/" target="_blank" rel="noopener noreferrer" className="self-start">
-                <ButtonViolet3D className="px-5 py-2.5 text-xs inline-flex items-center gap-2 font-display tracking-wider">
-                  Press Coverage <ExternalLink className="w-3 h-3" />
-                </ButtonViolet3D>
+                <ChamferedButton variant="secondary" size="sm" rightIcon={<ExternalLink className="w-3.5 h-3.5 text-[hsl(var(--accent))]" />}>
+                  Press Coverage
+                </ChamferedButton>
               </a>
             </div>
 

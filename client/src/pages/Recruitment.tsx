@@ -7,6 +7,7 @@ import {
 } from 'lucide-react';
 import { RecruitmentSettings } from '@/lib/types';
 import VoidAurora from '../components/backgrounds/VoidAurora';
+import ChamferedButton from '@/components/ui/ChamferedButton';
 
 const DOMAINS = [
   { name: 'Autonomy & Controls', icon: Bot, desc: 'Path planning, control systems, autonomous navigation.' },
@@ -150,34 +151,34 @@ export default function Recruitment() {
             <div className="rounded-xl border border-[var(--border-color)] bg-[var(--card-bg)] p-6">
               {isOpen ? (
                 <>
-                  <p className="text-sm text-[var(--text-secondary)] mb-4">
+                  <p className="text-sm text-[var(--text-secondary)] mb-4 font-mono">
                     Applications are open. Sign in to submit yours.
                   </p>
                   <Link href="/recruitment/apply">
-                    <button className="w-full flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-[hsl(var(--accent))] text-[var(--bg-body)] font-semibold text-sm hover:opacity-90 active:scale-[0.98] transition-all">
-                      Apply now <ArrowRight size={16} />
-                    </button>
+                    <ChamferedButton variant="primary" size="md" className="w-full" rightIcon={<ArrowRight size={16} />}>
+                      Apply Now
+                    </ChamferedButton>
                   </Link>
                   <Link href="/recruitment/status">
-                    <button className="w-full mt-2 px-5 py-2.5 rounded-xl border border-[var(--border-color)] text-[var(--text-secondary)] text-sm hover:text-[var(--text-primary)] hover:border-[hsl(var(--accent))]/40 transition-colors">
-                      Check my application
-                    </button>
+                    <ChamferedButton variant="secondary" size="md" className="w-full mt-2">
+                      Check Application Status
+                    </ChamferedButton>
                   </Link>
                 </>
               ) : (
                 <>
-                  <p className="text-sm text-[var(--text-secondary)] mb-4">
+                  <p className="text-sm text-[var(--text-secondary)] mb-4 font-mono">
                     Recruitment is closed. Follow our events page for announcements about the next cycle.
                   </p>
                   <Link href="/events">
-                    <button className="w-full flex items-center justify-center gap-2 px-5 py-3 rounded-xl border border-[var(--border-color)] text-sm hover:border-[hsl(var(--accent))]/40 hover:text-[hsl(var(--accent))] transition-colors">
-                      View events <ArrowRight size={16} />
-                    </button>
+                    <ChamferedButton variant="secondary" size="md" className="w-full" rightIcon={<ArrowRight size={16} />}>
+                      View Events
+                    </ChamferedButton>
                   </Link>
                   <Link href="/recruitment/status">
-                    <button className="w-full mt-2 px-5 py-2.5 rounded-xl text-[var(--text-muted)] text-sm hover:text-[var(--text-secondary)] transition-colors">
-                      Check existing application
-                    </button>
+                    <ChamferedButton variant="ghost" size="md" className="w-full mt-2 text-[var(--text-secondary)]">
+                      Check Existing Application
+                    </ChamferedButton>
                   </Link>
                 </>
               )}

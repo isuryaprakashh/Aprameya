@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { Radio, ArrowLeft, ShieldAlert } from 'lucide-react';
 import HudFrame from '@/components/ui/HudFrame';
 import ScanlineDivider from '@/components/ScanlineDivider';
+import ChamferedButton from '@/components/ui/ChamferedButton';
 
 export default function NotFound() {
   return (
@@ -58,17 +59,15 @@ export default function NotFound() {
           {/* Navigation Recovery CTAs */}
           <div className="flex flex-col sm:flex-row items-center gap-4">
             <Link href="/" className="w-full sm:w-auto flex-1">
-              <button className="w-full px-6 py-3.5 rounded-xl bg-[hsl(var(--accent))] text-black font-display text-xs tracking-wider uppercase font-bold flex items-center justify-center gap-2 hover:opacity-90 transition-opacity">
-                <ArrowLeft className="w-4 h-4" />
+              <ChamferedButton variant="primary" size="md" className="w-full" leftIcon={<ArrowLeft className="w-4 h-4" />}>
                 Return to Command
-              </button>
+              </ChamferedButton>
             </Link>
 
             <Link href="/recruitment" className="w-full sm:w-auto flex-1">
-              <button className="w-full px-6 py-3.5 rounded-xl border border-[var(--border-color)] bg-[var(--card-bg)] text-[var(--text-primary)] font-display text-xs tracking-wider uppercase font-medium flex items-center justify-center gap-2 hover:bg-[var(--bg-body)] transition-colors">
-                <Radio className="w-4 h-4 text-[hsl(var(--accent))]" />
+              <ChamferedButton variant="secondary" size="md" className="w-full" leftIcon={<Radio className="w-4 h-4 text-[hsl(var(--accent))]" />}>
                 Join Flight Crew
-              </button>
+              </ChamferedButton>
             </Link>
           </div>
         </HudFrame>

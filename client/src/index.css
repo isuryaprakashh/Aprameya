@@ -1037,4 +1037,17 @@
     font-family: var(--font-display);
     letter-spacing: -0.02em;
   }
+
+  /* --- CHAMFERED CORNER (Top-Right 8px Cut) --- */
+  .clip-chamfer {
+    clip-path: polygon(0 0, calc(100% - 8px) 0, 100% 8px, 100% 100%, 0 100%);
+  }
+
+  /* --- RESPONSIVE TYPOGRAPHY & SPACING TOKENS --- */
+  :root {
+    --text-hero: clamp(2.75rem, 8vw, 7.5rem);
+    --text-h1: clamp(2rem, 5vw, 3.5rem);
+    --card-padding-compact: 1rem;
+    --card-padding-default: 1.5rem;
+  }
 }
