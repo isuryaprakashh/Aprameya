@@ -1,4 +1,4 @@
- # Aprameya 
+# Aprameya -
 
 **Aprameya** is a full-stack web application designed for the "Innovation Lab" community. It serves as a central hub for managing events, showcasing projects, publishing research,/blogs and managing user profiles with role-based access control.
 
