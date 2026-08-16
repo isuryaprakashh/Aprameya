@@ -3,7 +3,7 @@ import { Link } from 'wouter';
 import { motion } from 'framer-motion';
 import {
   ArrowLeft, Clock, CheckCircle, XCircle,
-  Calendar, MapPin, UserCheck, ShieldCheck
+  ShieldCheck
 } from 'lucide-react';
 import { RecruitmentApplication } from '@/lib/types';
 import VoidAurora from '../components/backgrounds/VoidAurora';
@@ -16,7 +16,7 @@ type StatusMeta = {
   color: string;
   icon: any;
   message: string;
-  stage: number; // 1 = submitted, 2 = interview, 3 = final
+  isComplete: boolean;
 };
 
 const STATUS_MAP: Record<string, StatusMeta> = {
@@ -25,16 +25,8 @@ const STATUS_MAP: Record<string, StatusMeta> = {
     label: 'APPLICATION_UNDER_REVIEW',
     color: 'text-amber-400',
     icon: Clock,
-    message: 'Your application has been received and is currently under review by domain leads for Face-to-Face Interview shortlisting.',
-    stage: 1,
-  },
-  interview_scheduled: {
-    code: '206',
-    label: 'F2F_INTERVIEW_SCHEDULED',
-    color: 'text-cyan-400',
-    icon: UserCheck,
-    message: 'Congratulations! You have been shortlisted for the in-person Face-to-Face Interview round. Please review your schedule details below.',
-    stage: 2,
+    message: 'Your application has been received and is currently under evaluation by the club core leads.',
+    isComplete: false,
   },
   accepted: {
     code: '200',
@@ -42,7 +34,7 @@ const STATUS_MAP: Record<string, StatusMeta> = {
     color: 'text-emerald-400',
     icon: CheckCircle,
     message: 'Welcome to Aprameya. Your candidate induction is officially confirmed. Review your designated wing assignment below.',
-    stage: 3,
+    isComplete: true,
   },
   rejected: {
     code: '409',
@@ -50,7 +42,7 @@ const STATUS_MAP: Record<string, StatusMeta> = {
     color: 'text-red-400',
     icon: XCircle,
     message: 'Your application was not selected for this recruitment cycle. We run induction rounds each semester — you are welcome to apply again.',
-    stage: 3,
+    isComplete: true,
   },
 };
 
@@ -85,7 +77,7 @@ export default function RecruitmentStatus() {
             TELEMETRY // CANDIDATE_STATUS
           </p>
           <h1 className="font-display text-3xl md:text-4xl font-bold tracking-tight">
-            Application Pipeline
+            Application Tracker
           </h1>
         </div>
 
@@ -116,23 +108,12 @@ export default function RecruitmentStatus() {
             transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
             className="space-y-6"
           >
-            {/* 3-Stage Progress Pipeline */}
-            <HudFrame label="PIPELINE_PROGRESSION" status={`STAGE_${meta.stage}_OF_3`} className="p-6">
-              <div className="grid grid-cols-3 gap-2 text-center text-xs font-mono mb-4">
-                <div className={`p-2.5 rounded-lg border ${meta.stage >= 1 ? 'border-[hsl(var(--accent))] bg-[hsl(var(--accent))]/10 text-[hsl(var(--accent))] font-bold' : 'border-[var(--border-color)] text-[var(--text-secondary)]'}`}>
-                  1. Applied
+            {/* Status Header Chip */}
+            <HudFrame label="APPLICATION_LIFECYCLE" status={meta.label} className="p-6">
+              <div className="flex items-start gap-4">
+                <div className={`p-3 rounded-xl border ${app.status === 'accepted' ? 'border-emerald-500/40 bg-emerald-500/10' : app.status === 'rejected' ? 'border-red-500/40 bg-red-500/10' : 'border-amber-500/40 bg-amber-500/10'}`}>
+                  <meta.icon className={`w-6 h-6 ${meta.color} shrink-0`} />
                 </div>
-                <div className={`p-2.5 rounded-lg border ${meta.stage >= 2 ? 'border-cyan-400 bg-cyan-400/10 text-cyan-400 font-bold' : 'border-[var(--border-color)] text-[var(--text-secondary)]'}`}>
-                  2. F2F Interview
-                </div>
-                <div className={`p-2.5 rounded-lg border ${meta.stage >= 3 ? (app.status === 'accepted' ? 'border-emerald-400 bg-emerald-400/10 text-emerald-400 font-bold' : 'border-red-400 bg-red-400/10 text-red-400 font-bold') : 'border-[var(--border-color)] text-[var(--text-secondary)]'}`}>
-                  3. Decision
-                </div>
-              </div>
-
-              {/* Status Header Chip */}
-              <div className="flex items-center gap-3 pt-4 border-t border-[var(--border-color)]">
-                <meta.icon className={`w-5 h-5 ${meta.color} shrink-0`} />
                 <div>
                   <span className={`text-xs font-mono font-bold ${meta.color}`}>
                     STATUS: {meta.code} {meta.label}
@@ -143,43 +124,6 @@ export default function RecruitmentStatus() {
                 </div>
               </div>
             </HudFrame>
-
-            {/* F2F Interview Scheduled Card (If Interview Scheduled) */}
-            {app.status === 'interview_scheduled' && (
-              <HudFrame label="INTERVIEW_SCHEDULE // IN_PERSON" status="CONFIRMED" className="p-6 border-cyan-500/40 bg-cyan-500/5">
-                <h3 className="font-display text-base font-bold text-cyan-400 mb-4 flex items-center gap-2">
-                  <Calendar className="w-4 h-4" /> Face-to-Face Interview Coordinates
-                </h3>
-
-                <div className="grid sm:grid-cols-2 gap-4 text-xs font-mono mb-4">
-                  <div className="p-3 rounded-lg bg-[var(--bg-body)] border border-[var(--border-color)]">
-                    <span className="text-[var(--text-secondary)] block mb-1">DATE & TIME:</span>
-                    <span className="text-[var(--text-primary)] font-bold">
-                      {app.interviewDetails?.date || 'To be communicated by Lead'}
-                    </span>
-                  </div>
-
-                  <div className="p-3 rounded-lg bg-[var(--bg-body)] border border-[var(--border-color)]">
-                    <span className="text-[var(--text-secondary)] block mb-1">VENUE / LAB:</span>
-                    <span className="text-[var(--text-primary)] font-bold flex items-center gap-1.5">
-                      <MapPin className="w-3.5 h-3.5 text-cyan-400" />
-                      {app.interviewDetails?.venue || 'Aprameya Innovation Lab, KLU'}
-                    </span>
-                  </div>
-                </div>
-
-                {app.interviewDetails?.notes && (
-                  <div className="p-3 rounded-lg bg-[var(--bg-body)] border border-[var(--border-color)] text-xs font-mono text-[var(--text-secondary)] mb-4">
-                    <span className="text-cyan-400 font-bold block mb-1">CANDIDATE INSTRUCTIONS:</span>
-                    {app.interviewDetails.notes}
-                  </div>
-                )}
-
-                <div className="text-[11px] font-mono text-[var(--text-secondary)]">
-                  * Please carry your Student ID card and laptop / portfolio if applicable.
-                </div>
-              </HudFrame>
-            )}
 
             {/* Induction Details Card (If Accepted) */}
             {app.status === 'accepted' && (

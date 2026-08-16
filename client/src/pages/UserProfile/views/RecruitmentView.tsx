@@ -3,7 +3,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   X, ChevronRight, ToggleLeft, ToggleRight, Download,
-  UserCheck, Check, Calendar, Phone, ExternalLink, Filter
+  Check, Phone, ExternalLink, Filter
 } from 'lucide-react';
 import { RecruitmentApplication, RecruitmentSettings, CLUB_DOMAINS } from '@/lib/types';
 import { apiRequest } from '@/lib/queryClient';
@@ -12,14 +12,12 @@ import ChamferedButton from '@/components/ui/ChamferedButton';
 
 const STATUS_COLORS: Record<string, string> = {
   pending_review: 'text-amber-400 border-amber-400/30 bg-amber-400/10',
-  interview_scheduled: 'text-cyan-400 border-cyan-400/30 bg-cyan-400/10',
   accepted: 'text-emerald-400 border-emerald-400/30 bg-emerald-400/10',
   rejected: 'text-red-400 border-red-400/30 bg-red-400/10',
 };
 
 const STATUS_LABELS: Record<string, string> = {
   pending_review: '202 PENDING',
-  interview_scheduled: '206 INTERVIEW',
   accepted: '200 ACCEPTED',
   rejected: '409 REJECTED',
 };
@@ -31,25 +29,12 @@ function Drawer({ app, onClose }: { app: RecruitmentApplication; onClose: () => 
   const [assignedTitle, setAssignedTitle] = useState(app.assignedTitle || 'Core Cadet');
   const [reviewNotes, setReviewNotes] = useState(app.reviewNotes || '');
 
-  // Interview Schedule inputs
-  const [interviewDate, setInterviewDate] = useState(app.interviewDetails?.date || '');
-  const [interviewVenue, setInterviewVenue] = useState(app.interviewDetails?.venue || 'Aprameya Lab, Innovation Block');
-  const [interviewNotes, setInterviewNotes] = useState(app.interviewDetails?.notes || 'Please bring your student ID and laptop / portfolio work.');
-
   const decideMutation = useMutation({
-    mutationFn: async (status: 'pending_review' | 'interview_scheduled' | 'accepted' | 'rejected') => {
+    mutationFn: async (status: 'accepted' | 'rejected') => {
       const payload: Record<string, any> = {
         status,
         reviewNotes: reviewNotes || undefined,
       };
-
-      if (status === 'interview_scheduled') {
-        payload.interviewDetails = {
-          date: interviewDate || 'To be announced',
-          venue: interviewVenue || 'Aprameya Lab',
-          notes: interviewNotes || undefined,
-        };
-      }
 
       if (status === 'accepted') {
         payload.assignedDomain = assignedDomain || app.wing;
@@ -71,11 +56,7 @@ function Drawer({ app, onClose }: { app: RecruitmentApplication; onClose: () => 
       qc.invalidateQueries({ queryKey: ['/api/recruitment/applications'] });
       onClose();
       toast({
-        title: status === 'interview_scheduled'
-          ? 'Interview Round Scheduled'
-          : status === 'accepted'
-            ? 'Candidate Inducted'
-            : 'Candidate Decision Updated',
+        title: status === 'accepted' ? 'Candidate Inducted' : 'Application Rejected',
       });
     },
     onError: (err: Error) => {
@@ -114,9 +95,9 @@ function Drawer({ app, onClose }: { app: RecruitmentApplication; onClose: () => 
           {/* Current Status */}
           <div className="flex items-center justify-between p-4 rounded-xl bg-[var(--bg-body)] border border-[var(--border-color)]">
             <div>
-              <p className="text-[10px] font-mono text-[var(--text-secondary)] uppercase tracking-wider mb-1">Lifecycle State</p>
-              <span className={`inline-flex items-center px-3 py-1 rounded-full border font-mono text-xs font-bold ${STATUS_COLORS[app.status]}`}>
-                {STATUS_LABELS[app.status]}
+              <p className="text-[10px] font-mono text-[var(--text-secondary)] uppercase tracking-wider mb-1">Status</p>
+              <span className={`inline-flex items-center px-3 py-1 rounded-full border font-mono text-xs font-bold ${STATUS_COLORS[app.status] || STATUS_COLORS.pending_review}`}>
+                {STATUS_LABELS[app.status] || '202 PENDING'}
               </span>
             </div>
             <div className="text-right font-mono text-xs text-[var(--text-secondary)]">
@@ -127,7 +108,7 @@ function Drawer({ app, onClose }: { app: RecruitmentApplication; onClose: () => 
 
           {/* Contact Coordinates */}
           <div className="p-4 rounded-xl bg-[var(--bg-body)] border border-[var(--border-color)] space-y-2 text-xs font-mono">
-            <p className="text-[10px] text-[hsl(var(--accent))] uppercase tracking-wider font-bold mb-2">Student Dossier</p>
+            <p className="text-[10px] text-[hsl(var(--accent))] uppercase tracking-wider font-bold mb-2">Candidate Details</p>
             <div className="flex justify-between items-center">
               <span className="text-[var(--text-secondary)]">MOBILE NUMBER:</span>
               <span className="text-[var(--text-primary)] font-bold flex items-center gap-1.5">
@@ -164,68 +145,12 @@ function Drawer({ app, onClose }: { app: RecruitmentApplication; onClose: () => 
             </div>
           </div>
 
-          {/* ACTION 1: Schedule Face-to-Face Interview */}
-          <div className="p-5 rounded-xl border border-cyan-500/30 bg-cyan-500/5 space-y-4">
-            <div className="flex items-center gap-2">
-              <UserCheck size={18} className="text-cyan-400" />
-              <h3 className="font-display font-bold text-sm text-cyan-400">
-                Action 1: Schedule Face-to-Face Interview
-              </h3>
-            </div>
-
-            <div className="grid sm:grid-cols-2 gap-3">
-              <div>
-                <label className="block text-[10px] font-mono text-[var(--text-secondary)] mb-1">INTERVIEW DATE & TIME</label>
-                <input
-                  type="text"
-                  placeholder="e.g. 18 Aug, 4:30 PM"
-                  value={interviewDate}
-                  onChange={e => setInterviewDate(e.target.value)}
-                  className="w-full h-10 px-3 rounded-lg bg-[var(--bg-body)] border border-[var(--border-color)] text-xs font-mono text-[var(--text-primary)]"
-                />
-              </div>
-
-              <div>
-                <label className="block text-[10px] font-mono text-[var(--text-secondary)] mb-1">VENUE / LAB</label>
-                <input
-                  type="text"
-                  placeholder="Aprameya Innovation Lab"
-                  value={interviewVenue}
-                  onChange={e => setInterviewVenue(e.target.value)}
-                  className="w-full h-10 px-3 rounded-lg bg-[var(--bg-body)] border border-[var(--border-color)] text-xs font-mono text-[var(--text-primary)]"
-                />
-              </div>
-            </div>
-
-            <div>
-              <label className="block text-[10px] font-mono text-[var(--text-secondary)] mb-1">INSTRUCTIONS FOR CANDIDATE</label>
-              <input
-                type="text"
-                placeholder="e.g. Please bring laptop with your GitHub projects"
-                value={interviewNotes}
-                onChange={e => setInterviewNotes(e.target.value)}
-                className="w-full h-10 px-3 rounded-lg bg-[var(--bg-body)] border border-[var(--border-color)] text-xs font-mono text-[var(--text-primary)]"
-              />
-            </div>
-
-            <ChamferedButton
-              variant="command"
-              size="sm"
-              isLoading={decideMutation.isPending}
-              onClick={() => decideMutation.mutate('interview_scheduled')}
-              className="w-full border-cyan-500/50 text-cyan-400 hover:bg-cyan-500/10"
-              leftIcon={<Calendar size={14} />}
-            >
-              SAVE & SCHEDULE F2F INTERVIEW
-            </ChamferedButton>
-          </div>
-
-          {/* ACTION 2: Final Acceptance & Induction */}
+          {/* Acceptance & Induction Section */}
           <div className="p-5 rounded-xl border border-emerald-500/30 bg-emerald-500/5 space-y-4">
             <div className="flex items-center gap-2">
               <Check size={18} className="text-emerald-400" />
               <h3 className="font-display font-bold text-sm text-emerald-400">
-                Action 2: Final Induction (Accept Candidate)
+                Confirm Candidate Induction (Accept)
               </h3>
             </div>
 
@@ -263,15 +188,15 @@ function Drawer({ app, onClose }: { app: RecruitmentApplication; onClose: () => 
               className="w-full"
               leftIcon={<Check size={14} />}
             >
-              CONFIRM INDUCTION (ACCEPT)
+              ACCEPT & INDUCT CANDIDATE
             </ChamferedButton>
           </div>
 
-          {/* ACTION 3: Reject */}
+          {/* Rejection Section */}
           <div className="pt-2 space-y-2">
             <input
               type="text"
-              placeholder="Rejection feedback or internal note (optional)"
+              placeholder="Rejection note (optional)"
               value={reviewNotes}
               onChange={e => setReviewNotes(e.target.value)}
               className="w-full h-9 px-3 rounded-lg bg-[var(--bg-body)] border border-[var(--border-color)] text-xs font-mono text-[var(--text-primary)]"
@@ -347,7 +272,6 @@ export default function RecruitmentView() {
   const counts = {
     total: applications.length,
     pending: applications.filter(a => a.status === 'pending_review').length,
-    interview: applications.filter(a => a.status === 'interview_scheduled').length,
     accepted: applications.filter(a => a.status === 'accepted').length,
     rejected: applications.filter(a => a.status === 'rejected').length,
   };
@@ -366,7 +290,7 @@ export default function RecruitmentView() {
             </span>
           </div>
           <p className="text-xs text-[var(--text-secondary)] font-mono mt-1">
-            Review candidate submissions, schedule Face-to-Face interviews, and export student rosters.
+            Review candidate profiles, confirm squad inductions, and export student rosters.
           </p>
         </div>
 
@@ -396,11 +320,10 @@ export default function RecruitmentView() {
       </div>
 
       {/* Metrics Strip */}
-      <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
         {[
           { label: 'TOTAL APPLICANTS', count: counts.total, color: 'text-[var(--text-primary)]' },
           { label: 'PENDING REVIEW', count: counts.pending, color: 'text-amber-400' },
-          { label: 'INTERVIEWS', count: counts.interview, color: 'text-cyan-400' },
           { label: 'ACCEPTED', count: counts.accepted, color: 'text-emerald-400' },
           { label: 'REJECTED', count: counts.rejected, color: 'text-red-400' },
         ].map(s => (
@@ -442,7 +365,6 @@ export default function RecruitmentView() {
           >
             <option value="all">All Statuses</option>
             <option value="pending_review">Pending Review</option>
-            <option value="interview_scheduled">Interview Scheduled</option>
             <option value="accepted">Accepted</option>
             <option value="rejected">Rejected</option>
           </select>
@@ -497,8 +419,8 @@ export default function RecruitmentView() {
                       </span>
                     </td>
                     <td className="py-4 px-4">
-                      <span className={`inline-flex px-2.5 py-1 rounded-full text-[10px] font-bold border ${STATUS_COLORS[app.status]}`}>
-                        {STATUS_LABELS[app.status]}
+                      <span className={`inline-flex px-2.5 py-1 rounded-full text-[10px] font-bold border ${STATUS_COLORS[app.status] || STATUS_COLORS.pending_review}`}>
+                        {STATUS_LABELS[app.status] || '202 PENDING'}
                       </span>
                     </td>
                     <td className="py-4 px-4 text-[var(--text-secondary)] text-[11px]">
