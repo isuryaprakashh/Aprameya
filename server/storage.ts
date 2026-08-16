@@ -437,15 +437,18 @@ export class MongoStorage implements IStorage {
       reviewNotes: decision.reviewNotes ?? null,
       reviewedAt: new Date(),
     };
+    if (decision.interviewDetails) {
+      update.interviewDetails = decision.interviewDetails;
+    }
     if (decision.status === 'accepted') {
       update.assignedDomain = decision.assignedDomain ?? null;
       update.assignedTitle = decision.assignedTitle ?? null;
       // Atomically update user domain/title on acceptance
       const app = await RecruitmentApplication.findById(id);
-      if (app && decision.assignedDomain && decision.assignedTitle) {
+      if (app && (decision.assignedDomain || app.wing)) {
         await User.findByIdAndUpdate(app.userId, {
-          domain: decision.assignedDomain,
-          title: decision.assignedTitle,
+          domain: decision.assignedDomain || app.wing,
+          title: decision.assignedTitle || 'Core Member',
         });
       }
     }

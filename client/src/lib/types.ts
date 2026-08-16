@@ -117,30 +117,48 @@ export interface TicketRegistration {
   } | null;
 }
 
-export const CLUB_DOMAINS = [
-  'Autonomy & Controls',
-  'Perception & Computer Vision',
-  'Embedded Systems & Hardware',
-  'Software & AI/ML',
-  'Mechanical & CAD',
-  'Design & Content',
-  'Operations & Sponsorship',
+export const TECH_WINGS = [
+  'Software',
+  'Hardware',
+  'Website & Tech Support',
 ] as const;
 
-export type ApplicationStatus = 'pending_review' | 'accepted' | 'waitlisted' | 'rejected';
+export const NON_TECH_WINGS = [
+  'Event Management',
+  'Designing',
+  'Broadcasting & Media',
+] as const;
+
+export const CLUB_DOMAINS = [
+  ...TECH_WINGS,
+  ...NON_TECH_WINGS,
+] as const;
+
+export type RecruitmentTrack = 'TECH' | 'NON_TECH';
+export type ApplicationStatus = 'pending_review' | 'interview_scheduled' | 'accepted' | 'rejected';
 
 export interface RecruitmentApplication {
   id: string;
   userId: string;
   fullName: string;
   rollNumber: string;
-  branch: string;
+  mobileNumber: string;
+  department: string;
+  specialization: string;
+  branch?: string | null;
   year: string;
-  domainPreferences: string[];
-  roleInterest: string;
+  track: RecruitmentTrack;
+  wing: string;
+  domainPreferences?: string[];
+  roleInterest?: string;
   portfolioUrl?: string | null;
   motivation: string;
   status: ApplicationStatus;
+  interviewDetails?: {
+    date?: string | null;
+    venue?: string | null;
+    notes?: string | null;
+  } | null;
   assignedDomain?: string | null;
   assignedTitle?: string | null;
   reviewedBy?: string | null;

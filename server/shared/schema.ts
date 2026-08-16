@@ -234,28 +234,41 @@ export type ClubDomain = typeof CLUB_DOMAINS[number];
 
 export const ApplicationStatus = {
   PENDING_REVIEW: 'pending_review',
+  INTERVIEW_SCHEDULED: 'interview_scheduled',
   ACCEPTED: 'accepted',
-  WAITLISTED: 'waitlisted',
   REJECTED: 'rejected',
 } as const;
 export type ApplicationStatusType = typeof ApplicationStatus[keyof typeof ApplicationStatus];
 
 export const insertRecruitmentApplicationSchema = z.object({
   fullName: z.string().min(1, 'Full name is required'),
-  rollNumber: z.string().min(1, 'Roll number is required'),
-  branch: z.string().min(1, 'Branch is required'),
+  rollNumber: z.string().min(1, 'Student ID / Roll number is required'),
+  mobileNumber: z.string().min(10, 'Valid 10-digit mobile number is required'),
+  department: z.string().min(1, 'Department is required'),
+  specialization: z.string().min(1, 'Specialization is required'),
+  branch: z.string().optional(),
   year: z.enum(['1st', '2nd', '3rd', '4th']),
-  domainPreferences: z.array(z.string()).min(1, 'Select at least one domain'),
-  roleInterest: z.string().min(1, 'Role interest is required'),
-  portfolioUrl: z.string().url('Invalid URL').optional().or(z.literal('')),
-  motivation: z.string().min(10, 'Minimum 10 characters').max(500, 'Maximum 500 characters'),
+  track: z.enum(['TECH', 'NON_TECH']),
+  wing: z.string().min(1, 'Please select a wing'),
+  domainPreferences: z.array(z.string()).optional().default([]),
+  roleInterest: z.string().optional().default(''),
+  portfolioUrl: z.string().optional().nullable().transform(val => {
+    if (!val || val.trim() === '' || val.trim() === 'https://' || val.trim() === 'http://') return null;
+    return val.trim();
+  }),
+  motivation: z.string().min(10, 'Minimum 10 characters').max(1000, 'Maximum 1000 characters'),
 });
 
 export const applicationDecisionSchema = z.object({
-  status: z.enum(['accepted', 'waitlisted', 'rejected']),
+  status: z.enum(['pending_review', 'interview_scheduled', 'accepted', 'rejected']),
   assignedDomain: z.string().optional(),
   assignedTitle: z.string().optional(),
   reviewNotes: z.string().optional(),
+  interviewDetails: z.object({
+    date: z.string().optional().nullable(),
+    venue: z.string().optional().nullable(),
+    notes: z.string().optional().nullable(),
+  }).optional(),
 });
 
 export type InsertRecruitmentApplication = z.infer<typeof insertRecruitmentApplicationSchema>;
@@ -267,13 +280,23 @@ export interface RecruitmentApplication {
   userId: string;
   fullName: string;
   rollNumber: string;
-  branch: string;
+  mobileNumber: string;
+  department: string;
+  specialization: string;
+  branch?: string | null;
   year: string;
-  domainPreferences: string[];
-  roleInterest: string;
+  track: 'TECH' | 'NON_TECH';
+  wing: string;
+  domainPreferences?: string[];
+  roleInterest?: string;
   portfolioUrl?: string | null;
   motivation: string;
   status: ApplicationStatusType;
+  interviewDetails?: {
+    date?: string | null;
+    venue?: string | null;
+    notes?: string | null;
+  } | null;
   assignedDomain?: string | null;
   assignedTitle?: string | null;
   reviewedBy?: string | null;
