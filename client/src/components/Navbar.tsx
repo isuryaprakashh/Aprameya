@@ -1,12 +1,12 @@
 import { useState, useEffect } from 'react';
 import { Link, useLocation } from 'wouter';
 import { useAuth } from '@/context/AuthContext';
-import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import Logo from './icons/Logo';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Menu, X, LogOut, ChevronRight } from 'lucide-react';
+import { Menu, X, LogOut, ChevronRight, LayoutDashboard } from 'lucide-react';
 import { ThemeCustomizer } from './ThemeCustomizer';
 import { useTheme } from '@/components/theme-provider';
+import ChamferedButton from '@/components/ui/ChamferedButton';
 
 const Navbar = () => {
   const [location] = useLocation();
@@ -33,7 +33,6 @@ const Navbar = () => {
   const toggleMobileMenu = () => setMobileMenuOpen(!mobileMenuOpen);
   const closeMobileMenu = () => setMobileMenuOpen(false);
   const isActive = (path: string) => location === path;
-  const getInitials = (username: string) => username?.substring(0, 2).toUpperCase() || 'A';
 
   const handleLogout = () => {
     logoutMutation.mutate();
@@ -109,29 +108,30 @@ const Navbar = () => {
 
             {!user ? (
               <Link href="/login">
-                <motion.button
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  className="px-5 py-2.5 rounded-xl bg-[hsl(var(--accent))] text-[var(--bg-body)] text-sm font-semibold shadow-lg shadow-[hsl(var(--accent))]/20 hover:opacity-90 transition-opacity"
+                <ChamferedButton
+                  variant="primary"
+                  size="sm"
                 >
                   Login
-                </motion.button>
+                </ChamferedButton>
               </Link>
             ) : (
-              <div className="flex items-center gap-3 pl-3 border-l border-[var(--border-color)]">
-                <Link href="/profile">
-                  <Avatar className="h-9 w-9 border border-[var(--border-color)] cursor-pointer hover:border-[hsl(var(--accent))] transition-colors">
-                    <AvatarFallback className="bg-[var(--card-bg)] text-[var(--text-primary)] text-xs font-mono">
-                      {getInitials(user.username)}
-                    </AvatarFallback>
-                  </Avatar>
+              <div className="flex items-center gap-2 pl-3 border-l border-[var(--border-color)]">
+                <Link href="/dashboard">
+                  <ChamferedButton
+                    variant="command"
+                    size="sm"
+                    leftIcon={<LayoutDashboard size={14} className="text-[hsl(var(--accent))]" />}
+                  >
+                    Dashboard
+                  </ChamferedButton>
                 </Link>
                 <button
                   onClick={() => logoutMutation.mutate()}
                   className="p-2 rounded-lg text-[var(--text-secondary)] hover:text-red-500 hover:bg-red-500/10 transition-colors"
                   title="Logout"
                 >
-                  <LogOut size={18} />
+                  <LogOut size={16} />
                 </button>
               </div>
             )}
@@ -169,7 +169,7 @@ const Navbar = () => {
               className="fixed top-0 right-0 z-[50] h-full w-[80%] max-w-sm bg-[var(--card-bg)] border-l border-[var(--border-color)] p-6 shadow-2xl md:hidden flex flex-col"
             >
               <div className="flex items-center justify-between mb-8">
-                <span className="font-bold text-xl tracking-tight">Menu</span>
+                <span className="font-bold text-xl tracking-tight font-display">Navigation</span>
                 <button onClick={closeMobileMenu} className="p-2 rounded-full hover:bg-[var(--border-color)] transition-colors">
                   <X size={20} />
                 </button>
@@ -192,26 +192,24 @@ const Navbar = () => {
               </div>
 
               {user && (
-                <div className="mt-auto pt-6 border-t border-[var(--border-color)]">
-                  <Link href="/profile" onClick={closeMobileMenu}>
-                    <div className="flex items-center gap-4 p-4 rounded-xl bg-[var(--bg-body)] border border-[var(--border-color)] mb-3">
-                      <Avatar className="h-10 w-10">
-                        <AvatarFallback className="bg-[hsl(var(--accent))]/10 text-[hsl(var(--accent))]">
-                          {getInitials(user.username)}
-                        </AvatarFallback>
-                      </Avatar>
+                <div className="mt-auto pt-6 border-t border-[var(--border-color)] space-y-3">
+                  <Link href="/dashboard" onClick={closeMobileMenu}>
+                    <div className="flex items-center gap-3 p-3.5 rounded-xl bg-[var(--bg-body)] border border-[var(--border-color)] hover:border-[hsl(var(--accent))]/50 transition-colors">
+                      <div className="w-9 h-9 rounded-lg bg-[hsl(var(--accent))]/10 border border-[hsl(var(--accent))]/30 flex items-center justify-center text-[hsl(var(--accent))]">
+                        <LayoutDashboard size={18} />
+                      </div>
                       <div className="flex-1">
-                        <div className="font-bold text-sm">{user.username}</div>
-                        <div className="text-xs text-[var(--text-secondary)]">View Profile</div>
+                        <div className="font-bold text-sm text-[var(--text-primary)]">{user.display_name || user.username}</div>
+                        <div className="text-xs text-[hsl(var(--accent))] font-mono">Open Dashboard</div>
                       </div>
                       <ChevronRight size={16} className="text-[var(--text-secondary)]" />
                     </div>
                   </Link>
                   <button
                     onClick={handleLogout}
-                    className="w-full py-3 rounded-xl bg-red-500/10 text-red-500 font-medium text-sm hover:bg-red-500/20 transition-colors flex items-center justify-center gap-2"
+                    className="w-full py-2.5 rounded-xl bg-red-500/10 text-red-500 font-medium text-xs hover:bg-red-500/20 transition-colors flex items-center justify-center gap-2 font-mono"
                   >
-                    <LogOut size={16} /> Logout
+                    <LogOut size={14} /> LOGOUT
                   </button>
                 </div>
               )}
