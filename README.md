@@ -92,7 +92,7 @@ CLIENT_ORIGIN="http://localhost:5173"
 VITE_API_URL=http://localhost:5001
 ```
 
-### 2. Running Locally
+### 2. Running Locally 
 
 From the root workspace directory (`website/`):
 ```bash
