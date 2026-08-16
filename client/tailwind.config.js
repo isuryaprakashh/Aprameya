@@ -11,6 +11,7 @@ export default {
             },
             fontFamily: {
                 sans: ["Outfit", "sans-serif"],
+                display: ["Orbitron", "sans-serif"],
                 mono: ["JetBrains Mono", "monospace"],
             },
             colors: {

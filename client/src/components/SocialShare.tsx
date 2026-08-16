@@ -6,12 +6,11 @@ import {
   FaWhatsapp,
   FaShareAlt
 } from 'react-icons/fa';
-import { FiArrowUpRight } from 'react-icons/fi';
 import { motion, AnimatePresence } from 'framer-motion';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
-import VehicleAnimations, { CarAnimation, DroneAnimation, TruckAnimation, BikeAnimation } from './VehicleAnimations';
+import { CarAnimation, DroneAnimation, TruckAnimation, BikeAnimation } from './VehicleAnimations';
 
 interface SocialShareProps {
   url: string;
@@ -24,7 +23,6 @@ interface SocialShareProps {
 const SocialShare: React.FC<SocialShareProps> = ({
   url,
   title,
-  description = '',
   className,
   variant = 'default'
 }) => {
@@ -33,7 +31,6 @@ const SocialShare: React.FC<SocialShareProps> = ({
 
   const encodedUrl = encodeURIComponent(url);
   const encodedTitle = encodeURIComponent(title);
-  const encodedDescription = encodeURIComponent(description);
 
   // Social sharing URLs
   const socials = [

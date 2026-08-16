@@ -167,8 +167,8 @@ export const ButtonScramble = ({
         if (intervalRef.current) clearInterval(intervalRef.current);
 
         intervalRef.current = setInterval(() => {
-            setText(prev =>
-                children.split('').map((letter, index) => {
+            setText(() =>
+                children.split('').map((_letter, index) => {
                     if (index < iterations) return children[index];
                     return chars[Math.floor(Math.random() * chars.length)];
                 }).join('')

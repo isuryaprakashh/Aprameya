@@ -25,6 +25,8 @@ const RegistrationsView = lazy(() => import('./UserProfile/views/RegistrationsVi
 const ProjectsView = lazy(() => import('./UserProfile/views/ProjectsView'));
 const BlogsView = lazy(() => import('./UserProfile/views/BlogsView'));
 const ResearchView = lazy(() => import('./UserProfile/views/ResearchView'));
+const RecruitmentView = lazy(() => import('./UserProfile/views/RecruitmentView'));
+const RosterView = lazy(() => import('./UserProfile/views/RosterView'));
 import AdminScanQR from './AdminScanQR';
 
 const UserProfile = () => {
@@ -248,6 +250,16 @@ const UserProfile = () => {
 
       case 'scan':
         return <AdminScanQR isEmbedded={true} />;
+
+      case 'recruitment':
+        return <Suspense fallback={<div className="text-center py-12 text-[var(--text-secondary)]">Loading...</div>}>
+          <RecruitmentView />
+        </Suspense>;
+
+      case 'roster':
+        return <Suspense fallback={<div className="text-center py-12 text-[var(--text-secondary)]">Loading...</div>}>
+          <RosterView />
+        </Suspense>;
 
       default:
         return null;

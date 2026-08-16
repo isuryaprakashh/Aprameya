@@ -4,10 +4,10 @@ import authRouter from "./routes/auth";
 import usersRouter from "./routes/users";
 import projectsRouter from "./routes/projects";
 import blogsRouter from "./routes/blogs";
-import researchRouter from "./routes/research";
 import eventsRouter from "./routes/events";
 import messagesRouter from "./routes/messages";
 import ticketsRouter from "./routes/tickets";
+import recruitmentRouter from "./routes/recruitment";
 
 import 'express-session';
 
@@ -38,10 +38,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.use("/api", usersRouter);
   app.use("/api", projectsRouter);
   app.use("/api", blogsRouter);
-  app.use("/api", researchRouter);
   app.use("/api", eventsRouter);
   app.use("/api", messagesRouter);
   app.use("/api", ticketsRouter);
+  app.use("/api", recruitmentRouter);
 
   const httpServer = createServer(app);
 

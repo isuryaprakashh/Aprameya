@@ -1,4 +1,3 @@
-import React from 'react';
 import { teamMembers } from '../lib/data';
 
 const OperativeRoster = () => {

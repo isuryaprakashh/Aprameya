@@ -21,7 +21,7 @@ const ProjectCard = ({ project, onViewDetails, onEdit, isAdmin }: ProjectCardPro
 
   return (
     <div
-      className={`w-full group ${R_CARD} bg-[var(--card-bg)] shadow-lg p-2 transition-colors border border-[var(--border-color)] cursor-pointer`}
+      className={`w-full group hud-card ${R_CARD} bg-[var(--card-bg)] shadow-lg p-2 transition-colors border border-[var(--border-color)] cursor-pointer`}
       onClick={() => onViewDetails(project)}
     >
       <div className={`relative h-[200px] ${R_IMAGE} overflow-hidden bg-[var(--bg-body)]`}>

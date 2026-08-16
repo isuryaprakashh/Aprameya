@@ -11,7 +11,6 @@ import Home from "./pages/Home";
 import Projects from "./pages/Projects";
 import Blogs from "./pages/Blogs";
 import BlogDetails from "./pages/BlogDetails";
-import Research from "./pages/Research";
 import Events from "./pages/Events";
 import About from "./pages/About";
 import Login from "./pages/Login";
@@ -22,6 +21,9 @@ import DesignSystem from "./pages/DesignSystem";
 import TicketRegistration from "./pages/TicketRegistration";
 import MyTickets from "./pages/MyTickets";
 import AdminScanQR from "./pages/AdminScanQR";
+import Recruitment from "./pages/Recruitment";
+import RecruitmentApply from "./pages/RecruitmentApply";
+import RecruitmentStatus from "./pages/RecruitmentStatus";
 
 // Routes that render as standalone pages (no header/footer)
 const STANDALONE_ROUTES = ['/dashboard/scan'];
@@ -58,6 +60,7 @@ function AppContent() {
 
   return (
     <>
+      <div className="surface-grain" aria-hidden="true" />
       {/* Standalone routes (no header/footer) */}
       {isStandalone && (
         <Switch>
@@ -78,13 +81,21 @@ function AppContent() {
               <Route path="/projects" component={Projects} />
               <Route path="/blogs" component={Blogs} />
               <Route path="/blogs/:id" component={BlogDetails} />
-              <Route path="/research" component={Research} />
               <Route path="/events" component={Events} />
+              <Route path="/recruitment" component={Recruitment} />
               <Route path="/about" component={About} />
               <Route path="/login" component={Login} />
               <Route path="/signup" component={Signup} />
               <Route path="/design" component={DesignSystem} />
               <Route path="/events/:eventId/register" component={TicketRegistration} />
+
+              <Route path="/recruitment/apply">
+                <ProtectedRoute component={RecruitmentApply} />
+              </Route>
+
+              <Route path="/recruitment/status">
+                <ProtectedRoute component={RecruitmentStatus} />
+              </Route>
 
               <Route path="/my-tickets">
                 <ProtectedRoute component={MyTickets} />

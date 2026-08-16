@@ -16,9 +16,46 @@ const userSchema = new mongoose.Schema({
     linkedin: String,
     github: String,
     bio: String,
+    domain: { type: String, default: null },
+    title: { type: String, default: null },
 });
 
 export const User = mongoose.model('User', userSchema);
+
+const recruitmentApplicationSchema = new mongoose.Schema({
+    userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true, unique: true },
+    fullName: { type: String, required: true },
+    rollNumber: { type: String, required: true },
+    branch: { type: String, required: true },
+    year: { type: String, required: true },
+    domainPreferences: { type: [String], required: true },
+    roleInterest: { type: String, required: true },
+    portfolioUrl: { type: String, default: null },
+    motivation: { type: String, required: true },
+    status: {
+        type: String,
+        enum: ['pending_review', 'accepted', 'waitlisted', 'rejected'],
+        default: 'pending_review',
+    },
+    assignedDomain: { type: String, default: null },
+    assignedTitle: { type: String, default: null },
+    reviewedBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User', default: null },
+    reviewNotes: { type: String, default: null },
+    appliedAt: { type: Date, default: Date.now },
+    reviewedAt: { type: Date, default: null },
+});
+
+export const RecruitmentApplication = mongoose.model('RecruitmentApplication', recruitmentApplicationSchema);
+
+// Single-row document — only one RecruitmentSettings document ever exists.
+const recruitmentSettingsSchema = new mongoose.Schema({
+    isOpen: { type: Boolean, default: false },
+    openedAt: { type: Date, default: null },
+    closedAt: { type: Date, default: null },
+    updatedBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User', default: null },
+});
+
+export const RecruitmentSettings = mongoose.model('RecruitmentSettings', recruitmentSettingsSchema);
 
 const projectSchema = new mongoose.Schema({
     title: { type: String, required: true },

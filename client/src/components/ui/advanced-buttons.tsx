@@ -58,7 +58,7 @@ export const ScrambleButton = ({ children, className = '', ...props }: Omit<Adva
 
         let iterations = 0;
         const interval = setInterval(() => {
-            btn.textContent = original.split('').map((letter, index) => {
+            btn.textContent = original.split('').map((_letter, index) => {
                 if (index < iterations) return original[index];
                 return chars[Math.floor(Math.random() * chars.length)];
             }).join('');

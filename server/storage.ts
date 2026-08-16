@@ -6,7 +6,8 @@ import {
   Event,
   EventRegistration,
   TicketRegistration,
-
+  RecruitmentApplication,
+  RecruitmentSettings,
   Message
 } from "./models";
 import {
@@ -28,6 +29,10 @@ import {
   type InsertMessage,
   type TicketRegistration as TicketRegistrationType,
   type InsertTicketRegistration,
+  type RecruitmentApplication as RecruitmentApplicationType,
+  type InsertRecruitmentApplication,
+  type ApplicationDecision,
+  type RecruitmentSettings as RecruitmentSettingsType,
   UserRole,
   type UserRoleType
 } from "./shared/schema";
@@ -39,6 +44,7 @@ export interface IStorage {
   createUser(user: InsertUser): Promise<UserType>;
   updateUserRole(userId: string, newRole: UserRoleType): Promise<UserType | undefined>;
   updateUserProfile(userId: string, profileData: UpdateUserProfile): Promise<UserType | undefined>;
+  updateUserDomainTitle(userId: string, domain: string, title: string): Promise<UserType | undefined>;
   getAllUsers(): Promise<UserType[]>;
   getUsersByRole(role: UserRoleType): Promise<UserType[]>;
   deleteUser(userId: string): Promise<boolean>;
@@ -97,6 +103,15 @@ export interface IStorage {
   getAllMessages(): Promise<MessageType[]>;
   createMessage(message: InsertMessage): Promise<MessageType>;
   deleteMessage(id: string): Promise<boolean>;
+
+  // Recruitment Operations
+  getRecruitmentSettings(): Promise<RecruitmentSettingsType | undefined>;
+  upsertRecruitmentSettings(isOpen: boolean, updatedBy: string): Promise<RecruitmentSettingsType>;
+  createRecruitmentApplication(data: InsertRecruitmentApplication & { userId: string }): Promise<RecruitmentApplicationType>;
+  getRecruitmentApplicationByUser(userId: string): Promise<RecruitmentApplicationType | undefined>;
+  getAllRecruitmentApplications(filters?: { status?: string; domain?: string }): Promise<RecruitmentApplicationType[]>;
+  getRecruitmentApplication(id: string): Promise<RecruitmentApplicationType | undefined>;
+  decideRecruitmentApplication(id: string, decision: ApplicationDecision, reviewedBy: string): Promise<RecruitmentApplicationType | undefined>;
 }
 
 export class MongoStorage implements IStorage {
@@ -141,6 +156,11 @@ export class MongoStorage implements IStorage {
 
   async updateUserProfile(userId: string, profileData: UpdateUserProfile): Promise<UserType | undefined> {
     const user = await User.findByIdAndUpdate(userId, profileData, { new: true });
+    return user ? this.mapDoc<UserType>(user) : undefined;
+  }
+
+  async updateUserDomainTitle(userId: string, domain: string, title: string): Promise<UserType | undefined> {
+    const user = await User.findByIdAndUpdate(userId, { domain, title }, { new: true });
     return user ? this.mapDoc<UserType>(user) : undefined;
   }
 
@@ -368,6 +388,69 @@ export class MongoStorage implements IStorage {
   async getTicketRegistrationsByUser(userId: string): Promise<TicketRegistrationType[]> {
     const tickets = await TicketRegistration.find({ userId });
     return tickets.map(t => this.mapDoc<TicketRegistrationType>(t));
+  }
+
+  // Recruitment Operations
+  async getRecruitmentSettings(): Promise<RecruitmentSettingsType | undefined> {
+    const settings = await RecruitmentSettings.findOne();
+    return settings ? this.mapDoc<RecruitmentSettingsType>(settings) : undefined;
+  }
+
+  async upsertRecruitmentSettings(isOpen: boolean, updatedBy: string): Promise<RecruitmentSettingsType> {
+    const update = {
+      isOpen,
+      updatedBy,
+      ...(isOpen ? { openedAt: new Date() } : { closedAt: new Date() }),
+    };
+    const settings = await RecruitmentSettings.findOneAndUpdate({}, update, { new: true, upsert: true });
+    return this.mapDoc<RecruitmentSettingsType>(settings);
+  }
+
+  async createRecruitmentApplication(data: InsertRecruitmentApplication & { userId: string }): Promise<RecruitmentApplicationType> {
+    const app = new RecruitmentApplication(data);
+    await app.save();
+    return this.mapDoc<RecruitmentApplicationType>(app);
+  }
+
+  async getRecruitmentApplicationByUser(userId: string): Promise<RecruitmentApplicationType | undefined> {
+    const app = await RecruitmentApplication.findOne({ userId });
+    return app ? this.mapDoc<RecruitmentApplicationType>(app) : undefined;
+  }
+
+  async getAllRecruitmentApplications(filters?: { status?: string; domain?: string }): Promise<RecruitmentApplicationType[]> {
+    const query: Record<string, any> = {};
+    if (filters?.status) query.status = filters.status;
+    if (filters?.domain) query.domainPreferences = { $in: [filters.domain] };
+    const apps = await RecruitmentApplication.find(query).sort({ appliedAt: -1 });
+    return apps.map(a => this.mapDoc<RecruitmentApplicationType>(a));
+  }
+
+  async getRecruitmentApplication(id: string): Promise<RecruitmentApplicationType | undefined> {
+    const app = await RecruitmentApplication.findById(id);
+    return app ? this.mapDoc<RecruitmentApplicationType>(app) : undefined;
+  }
+
+  async decideRecruitmentApplication(id: string, decision: ApplicationDecision, reviewedBy: string): Promise<RecruitmentApplicationType | undefined> {
+    const update: Record<string, any> = {
+      status: decision.status,
+      reviewedBy,
+      reviewNotes: decision.reviewNotes ?? null,
+      reviewedAt: new Date(),
+    };
+    if (decision.status === 'accepted') {
+      update.assignedDomain = decision.assignedDomain ?? null;
+      update.assignedTitle = decision.assignedTitle ?? null;
+      // Atomically update user domain/title on acceptance
+      const app = await RecruitmentApplication.findById(id);
+      if (app && decision.assignedDomain && decision.assignedTitle) {
+        await User.findByIdAndUpdate(app.userId, {
+          domain: decision.assignedDomain,
+          title: decision.assignedTitle,
+        });
+      }
+    }
+    const result = await RecruitmentApplication.findByIdAndUpdate(id, update, { new: true });
+    return result ? this.mapDoc<RecruitmentApplicationType>(result) : undefined;
   }
 }
 

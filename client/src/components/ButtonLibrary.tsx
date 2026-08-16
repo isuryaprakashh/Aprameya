@@ -46,7 +46,7 @@ export const ButtonScramble = ({ text = "ENCRYPTED_DATA" }) => {
     const scramble = () => {
         let iterations = 0;
         const interval = setInterval(() => {
-            setDisplayText(text.split('').map((letter, index) => {
+            setDisplayText(text.split('').map((_letter, index) => {
                 if (index < iterations) return text[index];
                 return chars[Math.floor(Math.random() * chars.length)];
             }).join(''));

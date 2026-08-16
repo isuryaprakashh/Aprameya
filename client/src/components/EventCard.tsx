@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Event } from '../lib/types';
-import { Zap, Music, CreditCard, MessageSquare, Database, Calendar } from 'lucide-react';
+import { Zap, Music, CreditCard, MessageSquare, Database } from 'lucide-react';
 import { CleanCard } from './ui/v6-card';
 
 interface EventCardProps {
@@ -28,6 +28,7 @@ const EventCard = ({ event, onRegister }: EventCardProps) => {
   };
 
   return (
+    <div className="hud-card h-full">
     <CleanCard className="p-8 flex flex-col justify-between h-full">
       <div className="shimmer pointer-events-none"></div>
 
@@ -80,6 +81,7 @@ const EventCard = ({ event, onRegister }: EventCardProps) => {
         {buttonText}
       </button>
     </CleanCard>
+    </div>
   );
 };
 

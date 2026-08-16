@@ -2,7 +2,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { FaChartLine, FaUsers, FaProjectDiagram, FaFlask, FaClipboardList } from 'react-icons/fa';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, Legend } from 'recharts';
-import { User, Project, ResearchItem, EventRegistration } from '@/lib/types';
+import { User, Project, ResearchItem } from '@/lib/types';
 
 interface AdminStatsProps {
     users: User[];

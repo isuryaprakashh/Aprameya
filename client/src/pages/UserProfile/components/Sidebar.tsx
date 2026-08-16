@@ -6,13 +6,13 @@ import {
     FaUsers,
     FaProjectDiagram,
     FaBlog,
-    FaFlask,
     FaCalendarAlt,
     FaClipboardList,
     FaHome,
-    FaNewspaper,
     FaCog,
-    FaQrcode
+    FaQrcode,
+    FaUserPlus,
+    FaIdCard
 } from 'react-icons/fa';
 
 interface SidebarContentProps {
@@ -33,23 +33,16 @@ const SidebarContent = ({ activeView, setActiveView, isMobile, closeMobile }: Si
         ...(isCore ? [{ id: 'overview', label: 'Overview', icon: FaHome }] : []),
         { id: 'projects', label: 'Projects', icon: FaProjectDiagram },
         { id: 'blogs', label: 'Blogs', icon: FaBlog },
-        { id: 'research', label: 'Research', icon: FaFlask },
         { id: 'events', label: 'Events', icon: FaCalendarAlt },
         { id: 'registrations', label: 'Registrations', icon: FaClipboardList },
+        { id: 'recruitment', label: 'Recruitment', icon: FaUserPlus },
+        { id: 'roster', label: 'Roster', icon: FaIdCard },
         { id: 'scan', label: 'Scan QR', icon: FaQrcode },
     ] : [
         { id: 'overview', label: 'Overview', icon: FaHome },
         { id: 'registrations', label: 'My Registrations', icon: FaClipboardList },
-        { id: 'projects', label: 'Projects', icon: FaProjectDiagram },
-        { id: 'blogs', label: 'Blogs', icon: FaNewspaper },
-        { id: 'research', label: 'Research', icon: FaFlask },
         { id: 'settings', label: 'Settings', icon: FaCog },
-    ].filter(item => {
-        if (user?.role === 'ASPIRANT') {
-            return !['projects', 'blogs', 'research'].includes(item.id);
-        }
-        return true;
-    });
+    ];
 
     // Deduplicate items just in case
     const uniqueItems = Array.from(new Map(menuItems.map(item => [item.id, item])).values());

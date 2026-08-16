@@ -77,6 +77,11 @@ export interface User {
   rollNumber?: string;
   password?: string;
   created_at: string;
+  display_name?: string | null;
+  department?: string | null;
+  year?: string | null;
+  domain?: string | null;
+  title?: string | null;
 }
 
 export interface EventRegistration {
@@ -110,4 +115,42 @@ export interface TicketRegistration {
     image?: string;
     type?: string;
   } | null;
+}
+
+export const CLUB_DOMAINS = [
+  'Autonomy & Controls',
+  'Perception & Computer Vision',
+  'Embedded Systems & Hardware',
+  'Software & AI/ML',
+  'Mechanical & CAD',
+  'Design & Content',
+  'Operations & Sponsorship',
+] as const;
+
+export type ApplicationStatus = 'pending_review' | 'accepted' | 'waitlisted' | 'rejected';
+
+export interface RecruitmentApplication {
+  id: string;
+  userId: string;
+  fullName: string;
+  rollNumber: string;
+  branch: string;
+  year: string;
+  domainPreferences: string[];
+  roleInterest: string;
+  portfolioUrl?: string | null;
+  motivation: string;
+  status: ApplicationStatus;
+  assignedDomain?: string | null;
+  assignedTitle?: string | null;
+  reviewedBy?: string | null;
+  reviewNotes?: string | null;
+  appliedAt: string;
+  reviewedAt?: string | null;
+}
+
+export interface RecruitmentSettings {
+  isOpen: boolean;
+  openedAt?: string | null;
+  closedAt?: string | null;
 }

@@ -1,20 +1,19 @@
 
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { FaUser, FaShieldAlt, FaClipboardList, FaCalendarAlt, FaCheckCircle, FaTag, FaClock } from 'react-icons/fa';
-import { motion } from 'framer-motion';
+import { FaUser, FaShieldAlt, FaClipboardList, FaCalendarAlt, FaTag, FaClock } from 'react-icons/fa';
 import { User, EventRegistration } from '@/lib/types';
 
 interface UserOverviewProps {
     currentUser: User;
     userEventRegistrations: EventRegistration[];
     tickets?: any[];
-    setActiveView: (view: string) => void;
+    setActiveView?: (view: string) => void;
     getInitials: (name: string) => string;
 }
 
-export const UserOverview = ({ currentUser, userEventRegistrations, tickets = [], setActiveView, getInitials }: UserOverviewProps) => {
+export const UserOverview = ({ currentUser, userEventRegistrations, tickets = [], getInitials }: UserOverviewProps) => {
     const getRoleBadgeColor = (role: string) => {
         switch (role?.toUpperCase()) {
             case 'ADMIN': return 'bg-red-500/20 text-red-400 border-red-500/50';

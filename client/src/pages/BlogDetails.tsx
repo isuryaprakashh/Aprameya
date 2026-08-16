@@ -8,7 +8,7 @@ import { motion } from "framer-motion";
 import { Badge } from "@/components/ui/badge";
 
 const BlogDetails = () => {
-    const [match, params] = useRoute("/blogs/:id");
+    const [, params] = useRoute("/blogs/:id");
     const id = params?.id;
 
     const { data: blog, isLoading, error } = useQuery<BlogPost>({

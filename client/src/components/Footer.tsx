@@ -112,11 +112,11 @@ export default function Footer() {
               </li>
               <li>
                 <Link
-                  href="/research"
+                  href="/recruitment"
                   className="text-[var(--text-secondary)] hover:text-[hsl(var(--accent))] text-sm transition-colors duration-200 flex items-center gap-2 group"
                 >
                   <span className="w-0 h-px bg-[hsl(var(--accent))] group-hover:w-4 transition-all duration-300"></span>
-                  Research
+                  Recruitment
                 </Link>
               </li>
               <li>

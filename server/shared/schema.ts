@@ -118,6 +118,8 @@ export interface User {
   linkedin?: string | null;
   github?: string | null;
   bio?: string | null;
+  domain?: string | null;
+  title?: string | null;
 }
 
 export type InsertProject = z.infer<typeof insertProjectSchema>;
@@ -215,4 +217,76 @@ export interface TicketRegistration {
   scannedBy?: string | null;
   scannedByName?: string | null;
   createdAt: Date | string;
+}
+
+// Recruitment
+export const CLUB_DOMAINS = [
+  'Autonomy & Controls',
+  'Perception & Computer Vision',
+  'Embedded Systems & Hardware',
+  'Software & AI/ML',
+  'Mechanical & CAD',
+  'Design & Content',
+  'Operations & Sponsorship',
+] as const;
+
+export type ClubDomain = typeof CLUB_DOMAINS[number];
+
+export const ApplicationStatus = {
+  PENDING_REVIEW: 'pending_review',
+  ACCEPTED: 'accepted',
+  WAITLISTED: 'waitlisted',
+  REJECTED: 'rejected',
+} as const;
+export type ApplicationStatusType = typeof ApplicationStatus[keyof typeof ApplicationStatus];
+
+export const insertRecruitmentApplicationSchema = z.object({
+  fullName: z.string().min(1, 'Full name is required'),
+  rollNumber: z.string().min(1, 'Roll number is required'),
+  branch: z.string().min(1, 'Branch is required'),
+  year: z.enum(['1st', '2nd', '3rd', '4th']),
+  domainPreferences: z.array(z.string()).min(1, 'Select at least one domain'),
+  roleInterest: z.string().min(1, 'Role interest is required'),
+  portfolioUrl: z.string().url('Invalid URL').optional().or(z.literal('')),
+  motivation: z.string().min(10, 'Minimum 10 characters').max(500, 'Maximum 500 characters'),
+});
+
+export const applicationDecisionSchema = z.object({
+  status: z.enum(['accepted', 'waitlisted', 'rejected']),
+  assignedDomain: z.string().optional(),
+  assignedTitle: z.string().optional(),
+  reviewNotes: z.string().optional(),
+});
+
+export type InsertRecruitmentApplication = z.infer<typeof insertRecruitmentApplicationSchema>;
+export type ApplicationDecision = z.infer<typeof applicationDecisionSchema>;
+
+export interface RecruitmentApplication {
+  _id: string;
+  id: string;
+  userId: string;
+  fullName: string;
+  rollNumber: string;
+  branch: string;
+  year: string;
+  domainPreferences: string[];
+  roleInterest: string;
+  portfolioUrl?: string | null;
+  motivation: string;
+  status: ApplicationStatusType;
+  assignedDomain?: string | null;
+  assignedTitle?: string | null;
+  reviewedBy?: string | null;
+  reviewNotes?: string | null;
+  appliedAt: Date | string;
+  reviewedAt?: Date | string | null;
+}
+
+export interface RecruitmentSettings {
+  _id: string;
+  id: string;
+  isOpen: boolean;
+  openedAt?: Date | string | null;
+  closedAt?: Date | string | null;
+  updatedBy?: string | null;
 }

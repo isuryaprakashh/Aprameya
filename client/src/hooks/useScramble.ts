@@ -7,7 +7,7 @@ export const useScramble = (originalText: string) => {
     const scramble = useCallback(() => {
         let iterations = 0;
         const interval = setInterval(() => {
-            setText(originalText.split('').map((letter, index) => {
+            setText(originalText.split('').map((_letter, index) => {
                 if (index < iterations) return originalText[index];
                 return chars[Math.floor(Math.random() * chars.length)];
             }).join(''));

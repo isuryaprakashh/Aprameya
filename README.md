@@ -76,47 +76,40 @@ These modules share a similar "Collaborative" workflow:
 *   MongoDB Instance (Local or Atlas)
 
 ### 1. Environment Variables
-Create `.env` files in both `client` and `server` directories.
+Environment variables are configured in `server/.env` and `client/.env`:
 
 **server/.env**:
 ```env
-PORT=5000
-MONGODB_URI=mongodb://localhost:27017/aprameya_db
-SESSION_SECRET=your_super_secret_key
-node_env=development
-CLIENT_ORIGIN=http://localhost:5173
+PORT=5001
+MONGODB_URI="mongodb+srv://..."
+SESSION_SECRET="your-secret-key"
+NODE_ENV="development"
+CLIENT_ORIGIN="http://localhost:5173"
 ```
 
 **client/.env**:
 ```env
-VITE_API_URL=http://localhost:5000
+VITE_API_URL=http://localhost:5001
 ```
 
-### 2. Installation
-Install dependencies for both client and server.
+### 2. Running Locally
 
+From the root workspace directory (`website/`):
 ```bash
-# Root directory (if using workspaces) or individually:
-cd client && npm install
-cd ../server && npm install
-```
-
-### 3. Running Locally
-You need to run both the client and server terminals.
-
-**Terminal 1 (Server)**:
-```bash
-cd server
+# Start both Backend (port 5001) and Frontend (port 5173) concurrently:
 npm run dev
 ```
 
-**Terminal 2 (Client)**:
+Or run individually:
 ```bash
-cd client
-npm run dev
+# Terminal 1 (Server):
+npm run dev:server
+
+# Terminal 2 (Client):
+npm run dev:client
 ```
 
-Access the app at `http://localhost:5173`.
+Access the frontend at `http://localhost:5173` and backend API at `http://localhost:5001`.
 
 ---
 

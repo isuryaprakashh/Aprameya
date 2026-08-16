@@ -4,7 +4,7 @@ import { useAuth } from '@/context/AuthContext';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import Logo from './icons/Logo';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Menu, X, LogOut, User, ChevronRight } from 'lucide-react';
+import { Menu, X, LogOut, ChevronRight } from 'lucide-react';
 import { ThemeCustomizer } from './ThemeCustomizer';
 import { useTheme } from '@/components/theme-provider';
 
@@ -43,9 +43,9 @@ const Navbar = () => {
   const navLinks = [
     { href: '/', label: 'Home' },
     { href: '/projects', label: 'Projects' },
-    { href: '/blogs', label: 'Blogs' },
     { href: '/events', label: 'Events' },
-    { href: '/research', label: 'Research' },
+    { href: '/recruitment', label: 'Recruitment' },
+    { href: '/blogs', label: 'Blogs' },
     { href: '/about', label: 'About' },
   ];
 
