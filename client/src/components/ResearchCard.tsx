@@ -1,43 +1,39 @@
 import { ResearchItem } from '@/lib/types';
 
-
 interface ResearchCardProps {
     item: ResearchItem;
     onReadMore?: () => void;
 }
 
 const ResearchCard = ({ item, onReadMore }: ResearchCardProps) => {
-    // Radius tokens (geometry-correct)
-    const R_CARD = "rounded-[22px]";          // outer container
-    const R_IMAGE = "rounded-[14px]";         // 22 - 8 = 14 → correct curve
-
-    // Using CSS variables to map to user's requested logic
     return (
-        <div className={`w-full ${R_CARD} bg-[var(--card-bg)] shadow-md p-2 transition-colors border border-[var(--border-color)]`}>
-            <div className={`relative ${R_IMAGE} overflow-hidden h-[200px]`}>
+        <div className="w-full rounded-xl morphic-metallic-card p-2 transition-all duration-300 group">
+            <div className="relative rounded-lg overflow-hidden h-[200px] bg-black">
                 <img
                     src={item.image}
-                    className="w-full h-full object-cover transition-transform duration-700 hover:scale-105"
+                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                     alt={item.title}
                 />
+                <span className="absolute top-2.5 left-2.5 text-[10px] font-sans font-bold uppercase tracking-wider text-metallic-green bg-emerald-950/70 border border-emerald-400/30 px-2.5 py-0.5 rounded shadow-[inset_0_1px_1px_rgba(167,243,208,0.2)]">
+                    Publication
+                </span>
             </div>
 
-            <div className="px-1 pt-3 pb-2">
-                <p className="text-sm font-semibold text-[var(--text-primary)]">Research Paper</p>
-                <p className="text-xs mt-1 text-[var(--text-secondary)] line-clamp-2" title={item.description}>
-                    {item.title} - {item.description}
+            <div className="p-4">
+                <h3 className="text-base font-bold font-display text-white group-hover:text-metallic-green transition-colors">
+                    {item.title}
+                </h3>
+                <p className="text-xs mt-1.5 text-[#94A3B8] line-clamp-2 leading-relaxed" title={item.description}>
+                    {item.description}
                 </p>
 
-                <div className="mt-3 flex justify-between items-center">
-                    {/* <div className="text-center">
-                        <p className="text-sm font-semibold text-[var(--text-primary)]">{item.date}</p>
-                        <p className="text-xs text-[var(--text-secondary)] uppercase font-mono tracking-wider">Year</p>
-                    </div> */}
+                <div className="mt-4 pt-3 border-t border-emerald-500/15 flex justify-between items-center">
+                    <span className="text-[11px] text-[#64748B] font-mono">{item.date || 'Peer Review'}</span>
                     <button
-                        className="px-4 py-1.5 rounded-full text-sm bg-[var(--text-primary)] text-[var(--bg-body)] hover:opacity-90 transition-opacity"
+                        className="px-3.5 py-1.5 rounded-lg text-xs btn-metallic-green cursor-pointer"
                         onClick={onReadMore}
                     >
-                        Read Paper
+                        Read Abstract
                     </button>
                 </div>
             </div>
