@@ -47,6 +47,12 @@ export default {
                     foreground: "hsl(var(--destructive-foreground))",
                 },
                 doom: {
+                    black: "#000000",
+                    forest: "#20401F",
+                    obsidian: "#1D2C21",
+                    armor: "#1D3224",
+                    plum: "#532241",
+                    plumLight: "#7A325F",
                     950: "#040705",
                     900: "#060A07",
                     850: "#0A100C",
