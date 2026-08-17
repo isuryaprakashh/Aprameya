@@ -1,15 +1,13 @@
 import { useState } from 'react';
 import { useLocation } from 'wouter';
 import { useQuery } from '@tanstack/react-query';
-import { Search, ShieldCheck } from 'lucide-react';
+import { Search, ShieldCheck, ArrowRight } from 'lucide-react';
 import ProjectCard from '../components/ProjectCard';
 import ProjectModal from '../components/ProjectModal';
 import UnderConstruction from '../components/UnderConstruction';
 import AprameyaLoader from '../components/AprameyaLoader';
-import HudFrame from '../components/ui/HudFrame';
 import { Project } from '../lib/types';
 import { Input } from '@/components/ui/input';
-import VoidAurora from '../components/backgrounds/VoidAurora';
 import ChamferedButton from '@/components/ui/ChamferedButton';
 import { motion } from 'framer-motion';
 
@@ -62,54 +60,50 @@ const Projects = () => {
   }
 
   return (
-    <div className="fadeIn">
+    <div className="fadeIn min-h-screen bg-[var(--bg-body)]">
       {/* Header Section */}
-      <section className="relative py-24 px-4 bg-[var(--bg-body)] border-b border-[var(--border-color)] overflow-hidden">
-        <VoidAurora />
-        <div className="absolute inset-0 dither-bg opacity-30 pointer-events-none"></div>
-        <div className="container mx-auto relative z-10">
+      <section className="relative pt-32 pb-16 px-6 md:px-12 border-b border-white/[0.04]">
+        <div className="max-w-7xl mx-auto">
           <motion.div
-            className="text-center"
-            initial={{ opacity: 0, y: 30 }}
+            initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
+            transition={{ duration: 0.5 }}
           >
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[hsl(var(--accent))]/10 border border-[hsl(var(--accent))]/20 text-[hsl(var(--accent))] text-xs font-mono mb-6 uppercase tracking-wider">
-              Autonomous Systems & Engineering
-            </div>
+            <p className="text-[11px] font-sans font-medium uppercase tracking-[0.15em] text-[var(--text-muted)] mb-3">
+              Research & Hardware
+            </p>
 
-            <h1 className="font-display font-bold text-5xl md:text-7xl mb-6 text-[var(--text-primary)] leading-[0.9] tracking-tight">
-              LABORATORY<br />PROJECTS
+            <h1 className="text-4xl sm:text-5xl md:text-6xl mb-4 tracking-tight text-[var(--text-primary)]">
+              <span className="font-serif italic font-normal text-[1.08em] text-[var(--text-secondary)]">Laboratory</span>{" "}
+              <span className="font-display font-bold">Projects</span>
             </h1>
-            <p className="text-sm text-[var(--text-secondary)] max-w-2xl mx-auto font-mono leading-relaxed">
+            <p className="text-base text-[var(--text-secondary)] max-w-xl leading-relaxed">
               Hardware integrations, computer vision pipelines, and robotics systems built and tested by Aprameya members.
             </p>
 
-            {/* Featured Project Highlight (if projects exist) */}
+            {/* Featured Project Highlight */}
             {featuredProject && (
-              <div className="mt-12 max-w-2xl mx-auto">
-                <HudFrame label="FEATURED_BUILD // VERIFIED" status="ONLINE" className="p-5 text-left">
-                  <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
-                    <div className="w-12 h-12 bg-[hsl(var(--accent))]/10 flex items-center justify-center rounded-lg border border-[hsl(var(--accent))]/20 shrink-0">
-                      <ShieldCheck className="w-6 h-6 text-[hsl(var(--accent))]" />
-                    </div>
-                    <div className="flex-1">
-                      <div className="text-[10px] text-[hsl(var(--accent))] font-bold uppercase tracking-wider mb-1 font-mono">Featured Initiative</div>
-                      <div className="text-[var(--text-primary)] font-display font-bold text-base">{featuredProject.title}</div>
-                      <div className="text-xs text-[var(--text-secondary)] font-mono">{featuredProject.category} • Verified Build</div>
-                    </div>
-                    <div className="flex gap-2 ml-auto w-full sm:w-auto">
-                      {user?.role === 'ADMIN' && (
-                        <ChamferedButton variant="secondary" size="sm" onClick={() => setLocation(`/dashboard?view=projects&editId=${featuredProject.id}&type=project`)}>
-                          Edit
-                        </ChamferedButton>
-                      )}
-                      <ChamferedButton variant="primary" size="sm" onClick={() => handleViewDetails(featuredProject)}>
-                        View Stack
-                      </ChamferedButton>
-                    </div>
+              <div className="mt-8 max-w-2xl border border-white/[0.06] bg-[var(--card-bg)] p-5 rounded-xl">
+                <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
+                  <div className="w-10 h-10 bg-white/[0.03] flex items-center justify-center rounded-lg border border-white/[0.06] shrink-0 text-[var(--text-primary)]">
+                    <ShieldCheck className="w-5 h-5" />
                   </div>
-                </HudFrame>
+                  <div className="flex-1">
+                    <div className="text-[10px] text-[var(--text-muted)] font-medium uppercase tracking-wider mb-0.5">Featured Project</div>
+                    <div className="text-[var(--text-primary)] font-display font-bold text-base">{featuredProject.title}</div>
+                    <div className="text-xs text-[var(--text-secondary)]">{featuredProject.category}</div>
+                  </div>
+                  <div className="flex gap-2 ml-auto w-full sm:w-auto">
+                    {user?.role === 'ADMIN' && (
+                      <ChamferedButton variant="secondary" size="sm" onClick={() => setLocation(`/dashboard?view=projects&editId=${featuredProject.id}&type=project`)}>
+                        Edit
+                      </ChamferedButton>
+                    )}
+                    <ChamferedButton variant="primary" size="sm" onClick={() => handleViewDetails(featuredProject)}>
+                      View Project
+                    </ChamferedButton>
+                  </div>
+                </div>
               </div>
             )}
           </motion.div>
@@ -117,30 +111,30 @@ const Projects = () => {
       </section>
 
       {/* Main Content Section */}
-      <section className="py-16 bg-[var(--bg-body)]">
-        <div className="max-w-7xl mx-auto px-6 md:px-8">
+      <section className="py-12 bg-[var(--bg-body)]">
+        <div className="max-w-7xl mx-auto px-6 md:px-12">
           {projects.length > 0 ? (
             <>
-              <div className="w-full relative max-w-xl mx-auto mb-12">
-                <Search className="absolute left-3.5 top-1/2 transform -translate-y-1/2 text-[var(--text-secondary)] w-4 h-4" />
+              <div className="w-full relative max-w-md mb-8">
+                <Search className="absolute left-3.5 top-1/2 transform -translate-y-1/2 text-[var(--text-muted)] w-4 h-4" />
                 <Input
                   type="text"
                   placeholder="Filter by title, stack, or domain..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="pl-10 h-11 rounded-xl bg-[var(--card-bg)] border-[var(--border-color)] text-[var(--text-primary)] focus:border-[hsl(var(--accent))]/50 text-sm font-mono"
+                  className="pl-10 h-10 rounded-lg bg-[var(--card-bg)] border-white/[0.06] text-[var(--text-primary)] focus:border-white/[0.2] text-sm font-sans"
                 />
               </div>
 
               {/* Projects Grid */}
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {filteredProjects.length > 0 ? (
                   filteredProjects.map((project, index) => (
                     <motion.div
                       key={project.id}
                       initial={{ opacity: 0, y: 16 }}
                       animate={{ opacity: 1, y: 0 }}
-                      transition={{ duration: 0.4, delay: index * 0.1 }}
+                      transition={{ duration: 0.4, delay: index * 0.08 }}
                     >
                       <ProjectCard
                         project={project}
@@ -151,7 +145,7 @@ const Projects = () => {
                     </motion.div>
                   ))
                 ) : (
-                  <div className="col-span-full text-center py-12 text-sm font-mono text-[var(--text-secondary)]">
+                  <div className="col-span-full text-center py-12 text-sm text-[var(--text-secondary)]">
                     No projects matching "{searchTerm}"
                   </div>
                 )}
@@ -159,10 +153,10 @@ const Projects = () => {
             </>
           ) : (
             <UnderConstruction
-              category="LABORATORY INITIATIVES"
-              title="Repositories In Preparation"
-              subtitle="ROS 2 Pipelines & Hardware Benchmarking"
-              description="Laboratory engineering squads are compiling ROS 2 software packages and hardware integration schematics. Verified builds will appear here once physical testing and peer review are finalized."
+              category="LABORATORY"
+              title="Projects in Review"
+              subtitle="ROS 2 Pipelines & Hardware Builds"
+              description="Engineering squads are compiling ROS 2 software packages and hardware integration schematics. Verified builds will appear here once benchmarking and testing are complete."
             />
           )}
         </div>

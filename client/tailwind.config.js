@@ -10,8 +10,9 @@ export default {
                 sm: "calc(var(--radius) - 4px)",
             },
             fontFamily: {
-                sans: ["Outfit", "sans-serif"],
-                display: ["Orbitron", "sans-serif"],
+                sans: ["Inter", "sans-serif"],
+                display: ["Space Grotesk", "sans-serif"],
+                serif: ["'Instrument Serif'", "Georgia", "serif"],
                 mono: ["JetBrains Mono", "monospace"],
             },
             colors: {

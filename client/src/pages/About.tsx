@@ -10,245 +10,234 @@ import {
   Star
 } from 'lucide-react';
 import { motion } from 'framer-motion';
-import MagneticVectorField from '../components/backgrounds/MagneticVectorField';
 import OperativeRoster from '../components/OperativeRoster';
 
 const About = () => {
   return (
-    <div className="fadeIn">
+    <div className="fadeIn min-h-screen bg-[var(--bg-body)]">
       {/* Header Section */}
-      <section className="relative py-24 px-4 bg-[var(--bg-body)] border-b border-[var(--border-color)] overflow-hidden">
-        <MagneticVectorField />
-        <div className="absolute inset-0 dither-bg opacity-30 pointer-events-none"></div>
-        <div className="container mx-auto relative z-10">
+      <section className="relative pt-32 pb-16 px-6 md:px-12 border-b border-white/[0.04]">
+        <div className="max-w-7xl mx-auto">
           <motion.div
-            className="text-center text-[var(--text-primary)]"
-            initial={{ opacity: 0, y: 30 }}
+            initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
+            transition={{ duration: 0.5 }}
           >
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[hsl(var(--accent))]/10 border border-[hsl(var(--accent))]/20 text-[hsl(var(--accent))] text-xs font-mono mb-6 uppercase tracking-wider">
-              Innovation & Autonomous Systems Lab
-            </div>
+            <p className="text-[11px] font-sans font-medium uppercase tracking-[0.15em] text-[var(--text-muted)] mb-3">
+              Organization & Team
+            </p>
 
-            <h1 className="font-display font-bold text-5xl md:text-7xl mb-6 leading-[0.9] tracking-tight">
-              ABOUT<br />APRAMEYA
+            <h1 className="text-4xl sm:text-5xl md:text-6xl mb-4 tracking-tight text-[var(--text-primary)]">
+              <span className="font-serif italic font-normal text-[1.08em] text-[var(--text-secondary)]">About</span>{" "}
+              <span className="font-display font-bold">Aprameya</span>
             </h1>
-            <p className="text-sm text-[var(--text-secondary)] max-w-2xl mx-auto mb-12 font-mono">
+            <p className="text-base text-[var(--text-secondary)] max-w-2xl leading-relaxed mb-10">
               Founded in 2019 at KL University. Dedicated to advancing autonomous robotics, sensor fusion, and embedded AI through student-led research and competitive engineering.
             </p>
 
             {/* Achievement Stats */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-px bg-[var(--border-color)] border border-[var(--border-color)] max-w-4xl mx-auto rounded-xl overflow-hidden">
-              <div className="bg-[var(--card-bg)] p-6">
-                <div className="font-display text-3xl font-bold text-[var(--text-primary)] mb-1">2019</div>
-                <div className="text-[10px] text-[var(--text-secondary)] uppercase tracking-widest font-mono">Founded</div>
-              </div>
-              <div className="bg-[var(--card-bg)] p-6">
-                <div className="font-display text-3xl font-bold text-[var(--text-primary)] mb-1">50+</div>
-                <div className="text-[10px] text-[var(--text-secondary)] uppercase tracking-widest font-mono">Members</div>
-              </div>
-              <div className="bg-[var(--card-bg)] p-6">
-                <div className="font-display text-3xl font-bold text-[var(--text-primary)] mb-1">3rd</div>
-                <div className="text-[10px] text-[var(--text-secondary)] uppercase tracking-widest font-mono">National (IISc)</div>
-              </div>
-              <div className="bg-[var(--card-bg)] p-6">
-                <div className="font-display text-3xl font-bold text-[var(--text-primary)] mb-1">100%</div>
-                <div className="text-[10px] text-[var(--text-secondary)] uppercase tracking-widest font-mono">Hands-on R&D</div>
-              </div>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-3xl">
+              {[
+                { n: "2019", l: "Founded" },
+                { n: "50+", l: "Members" },
+                { n: "3rd", l: "National (IISc)" },
+                { n: "100%", l: "Hands-on R&D" },
+              ].map((s, i) => (
+                <div key={i} className="border border-white/[0.06] bg-[var(--card-bg)] p-5 rounded-xl">
+                  <div className="font-display text-2xl sm:text-3xl font-bold text-[var(--text-primary)] mb-1">{s.n}</div>
+                  <div className="text-[11px] text-[var(--text-muted)] font-medium uppercase tracking-wider">{s.l}</div>
+                </div>
+              ))}
             </div>
           </motion.div>
         </div>
       </section>
 
       {/* Mission Section */}
-      <section className="py-24 px-4 bg-[var(--bg-body)]">
-        <div className="container mx-auto max-w-6xl">
+      <section className="py-16 px-6 md:px-12 bg-[var(--bg-body)]">
+        <div className="max-w-7xl mx-auto">
           <motion.div
-            className="text-center mb-16"
-            initial={{ opacity: 0, y: 30 }}
+            initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
+            transition={{ duration: 0.5 }}
             viewport={{ once: true }}
           >
-            <h2 className="font-bold text-3xl md:text-5xl mb-6 text-[var(--text-primary)] tracking-tight">
-              Our Core Mission
-            </h2>
-          </motion.div>
+            <div className="border border-white/[0.06] bg-[var(--card-bg)] rounded-xl p-8 md:p-12">
+              <div className="grid lg:grid-cols-2 gap-10 items-center">
+                <div>
+                  <p className="text-[11px] font-sans font-medium uppercase tracking-[0.15em] text-[var(--text-muted)] mb-2">
+                    01 — Our Mission
+                  </p>
+                  <h3 className="text-2xl md:text-3xl sm:text-4xl mb-4 text-[var(--text-primary)]">
+                    <span className="font-serif italic font-normal text-[1.1em] text-[var(--text-secondary)]">Applied</span>{" "}
+                    <span className="font-display font-bold">Autonomy Engineering</span>
+                  </h3>
 
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.2 }}
-            viewport={{ once: true }}
-          >
-            <Card className="bg-[var(--card-bg)] border border-[var(--border-color)] rounded-2xl">
-              <CardContent className="p-8 md:p-12">
-                <div className="grid lg:grid-cols-2 gap-12 items-center">
-                  <div>
-                    <div className="w-14 h-14 bg-[hsl(var(--accent))]/10 border border-[hsl(var(--accent))]/20 rounded-xl flex items-center justify-center mb-6">
-                      <Lightbulb className="w-7 h-7 text-[hsl(var(--accent))]" />
-                    </div>
-                    <h3 className="font-bold text-2xl mb-4 text-[var(--text-primary)]">Applied Autonomous Engineering</h3>
-
-                    <p className="text-base text-[var(--text-secondary)] leading-relaxed mb-4">
-                      Aprameya provides an intensive, project-driven laboratory environment where student engineers collaborate across computer science, electronics, and mechanical engineering. Members build real hardware prototypes and run simulation workloads in ROS 2, Gazebo, and PyTorch.
-                    </p>
-                    <p className="text-base text-[var(--text-secondary)] leading-relaxed">
-                      We focus on core autonomy pillars: LiDAR-camera sensor fusion, SLAM spatial localization, embedded edge acceleration (NVIDIA Jetson, Coral TPU), and CAN-bus control systems.
-                    </p>
-                  </div>
-                  <div className="relative rounded-xl overflow-hidden border border-[var(--border-color)] bg-black/40">
-                    <img
-                      src="/assets/UVH.jpg"
-                      alt="Aprameya Engineering Team at Hackathon"
-                      className="w-full h-full object-cover min-h-[300px]"
-                    />
-                  </div>
+                  <p className="text-sm text-[var(--text-secondary)] leading-relaxed mb-4">
+                    Aprameya provides an intensive, project-driven laboratory environment where student engineers collaborate across computer science, electronics, and mechanical engineering. Members build real hardware prototypes and run simulation workloads in ROS 2, Gazebo, and PyTorch.
+                  </p>
+                  <p className="text-sm text-[var(--text-secondary)] leading-relaxed">
+                    We focus on core autonomy pillars: LiDAR-camera sensor fusion, SLAM spatial localization, embedded edge acceleration (NVIDIA Jetson, Coral TPU), and CAN-bus control systems.
+                  </p>
                 </div>
-              </CardContent>
-            </Card>
+                <div className="relative rounded-lg overflow-hidden border border-white/[0.06] bg-black/40 aspect-[4/3]">
+                  <img
+                    src="/assets/UVH.jpg"
+                    alt="Aprameya Engineering Team at Hackathon"
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+              </div>
+            </div>
           </motion.div>
         </div>
       </section>
 
       {/* Vision & Values */}
-      <section className="py-24 px-4 bg-[var(--bg-body)] border-t border-[var(--border-color)]">
-        <div className="container mx-auto max-w-6xl">
-          <div className="grid lg:grid-cols-2 gap-12">
+      <section className="py-16 px-6 md:px-12 bg-[var(--bg-body)] border-t border-white/[0.04]">
+        <div className="max-w-7xl mx-auto">
+          <div className="grid lg:grid-cols-2 gap-8">
             {/* Vision */}
             <motion.div
-              initial={{ opacity: 0, x: -20 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.6 }}
+              initial={{ opacity: 0, y: 16 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5 }}
               viewport={{ once: true }}
             >
-              <Card className="h-full border border-[var(--border-color)] bg-[var(--card-bg)] rounded-2xl">
-                <CardContent className="p-8">
-                  <div className="flex items-center mb-6">
-                    <div className="w-12 h-12 rounded-xl bg-[hsl(var(--accent))]/10 border border-[hsl(var(--accent))]/20 flex items-center justify-center mr-4">
-                      <Eye className="w-6 h-6 text-[hsl(var(--accent))]" />
-                    </div>
-                    <h3 className="font-bold text-2xl text-[var(--text-primary)]">Our Vision</h3>
-                  </div>
-                  <p className="text-base text-[var(--text-secondary)] leading-relaxed mb-6">
+              <div className="h-full border border-white/[0.06] bg-[var(--card-bg)] rounded-xl p-8 flex flex-col justify-between">
+                <div>
+                  <p className="text-[11px] font-sans font-medium uppercase tracking-[0.15em] text-[var(--text-muted)] mb-2">
+                    02 — Long-Term Goal
+                  </p>
+                  <h3 className="text-2xl sm:text-3xl text-[var(--text-primary)] mb-4">
+                    <span className="font-serif italic font-normal text-[1.1em] text-[var(--text-secondary)]">Our</span>{" "}
+                    <span className="font-display font-bold">Vision</span>
+                  </h3>
+                  <p className="text-sm text-[var(--text-secondary)] leading-relaxed mb-6">
                     To establish a premier student research and prototyping lab that incubates impactful autonomous mobility solutions, fosters rigorous research publications, and competes at national and international autonomy benchmarks.
                   </p>
-                  <div className="flex items-center text-[hsl(var(--accent))] text-sm font-mono">
-                    <Globe className="w-4 h-4 mr-2" />
-                    Rigorous Engineering & Autonomous Safety
-                  </div>
-                </CardContent>
-              </Card>
+                </div>
+                <div className="flex items-center text-xs text-[var(--text-muted)] font-medium pt-4 border-t border-white/[0.04]">
+                  <Globe className="w-4 h-4 mr-2" />
+                  Rigorous Engineering & Autonomous Safety
+                </div>
+              </div>
             </motion.div>
 
             {/* Values */}
             <motion.div
-              initial={{ opacity: 0, x: 20 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.6 }}
+              initial={{ opacity: 0, y: 16 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.1 }}
               viewport={{ once: true }}
             >
-              <Card className="h-full border border-[var(--border-color)] bg-[var(--card-bg)] rounded-2xl">
-                <CardContent className="p-8">
-                  <div className="flex items-center mb-6">
-                    <div className="w-12 h-12 rounded-xl bg-[hsl(var(--accent))]/10 border border-[hsl(var(--accent))]/20 flex items-center justify-center mr-4">
-                      <Heart className="w-6 h-6 text-[hsl(var(--accent))]" />
-                    </div>
-                    <h3 className="font-bold text-2xl text-[var(--text-primary)]">Core Principles</h3>
-                  </div>
-                  <div className="space-y-4">
-                    {[
-                      {
-                        icon: Lightbulb,
-                        title: "First-Principles Rigor",
-                        description: "Validating algorithms with empirical hardware tests rather than speculation."
-                      },
-                      {
-                        icon: Users,
-                        title: "Cross-Disciplinary Teamwork",
-                        description: "Integrating software, mechanical design, and embedded electronics seamlessly."
-                      },
-                      {
-                        icon: Star,
-                        title: "Open Knowledge Sharing",
-                        description: "Conducting peer workshops, open-sourcing modules, and mentoring incoming batches."
-                      }
-                    ].map((value, index) => (
-                      <div key={index} className="flex items-start gap-3">
-                        <div className="flex-shrink-0 w-8 h-8 bg-[var(--bg-body)] border border-[var(--border-color)] rounded-lg flex items-center justify-center mt-1">
-                          <value.icon className="w-4 h-4 text-[hsl(var(--accent))]" />
-                        </div>
-                        <div>
-                          <h4 className="font-semibold text-sm text-[var(--text-primary)]">{value.title}</h4>
-                          <p className="text-xs text-[var(--text-secondary)]">{value.description}</p>
-                        </div>
+              <div className="h-full border border-white/[0.06] bg-[var(--card-bg)] rounded-xl p-8">
+                <p className="text-[11px] font-sans font-medium uppercase tracking-[0.15em] text-[var(--text-muted)] mb-2">
+                  03 — Operating Values
+                </p>
+                <h3 className="text-2xl sm:text-3xl text-[var(--text-primary)] mb-6">
+                  <span className="font-serif italic font-normal text-[1.1em] text-[var(--text-secondary)]">Core</span>{" "}
+                  <span className="font-display font-bold">Principles</span>
+                </h3>
+                <div className="space-y-4">
+                  {[
+                    {
+                      icon: Lightbulb,
+                      title: "First-Principles Rigor",
+                      description: "Validating algorithms with empirical hardware tests rather than speculation."
+                    },
+                    {
+                      icon: Users,
+                      title: "Cross-Disciplinary Teamwork",
+                      description: "Integrating software, mechanical design, and embedded electronics seamlessly."
+                    },
+                    {
+                      icon: Star,
+                      title: "Open Knowledge Sharing",
+                      description: "Conducting peer workshops, open-sourcing modules, and mentoring incoming batches."
+                    }
+                  ].map((value, index) => (
+                    <div key={index} className="flex items-start gap-3">
+                      <div className="flex-shrink-0 w-8 h-8 bg-white/[0.03] border border-white/[0.06] rounded-lg flex items-center justify-center mt-0.5 text-[var(--text-primary)]">
+                        <value.icon className="w-4 h-4" />
                       </div>
-                    ))}
-                  </div>
-                </CardContent>
-              </Card>
+                      <div>
+                        <h4 className="font-semibold text-sm text-[var(--text-primary)]">{value.title}</h4>
+                        <p className="text-xs text-[var(--text-secondary)] mt-0.5 leading-relaxed">{value.description}</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
             </motion.div>
           </div>
         </div>
       </section>
 
       {/* Operative Roster */}
-      <section className="py-24 px-4 bg-[var(--bg-body)] border-t border-[var(--border-color)]">
-        <div className="container mx-auto max-w-6xl">
+      <section className="py-16 px-6 md:px-12 bg-[var(--bg-body)] border-t border-white/[0.04]">
+        <div className="max-w-7xl mx-auto">
+          <div className="mb-8">
+            <p className="text-[11px] font-sans font-medium uppercase tracking-[0.15em] text-[var(--text-muted)] mb-2">
+              04 — Leadership & Members
+            </p>
+            <h2 className="text-3xl md:text-4xl text-[var(--text-primary)] tracking-tight">
+              <span className="font-serif italic font-normal text-[1.1em] text-[var(--text-secondary)]">Lab Leads &</span>{" "}
+              <span className="font-display font-bold">Faculty Mentors</span>
+            </h2>
+          </div>
           <OperativeRoster />
         </div>
       </section>
 
       {/* Lab Location & Contact */}
-      <section className="py-24 px-4 bg-[var(--bg-body)] border-t border-[var(--border-color)]">
-        <div className="container mx-auto max-w-4xl">
-          <div className="text-center mb-12">
-            <h2 className="font-bold text-3xl md:text-4xl mb-4 text-[var(--text-primary)]">Laboratory Headquarters</h2>
-            <p className="text-sm font-mono text-[var(--text-secondary)]">
-              Innovation & Autonomous Systems Lab • KL University
+      <section className="py-16 px-6 md:px-12 bg-[var(--bg-body)] border-t border-white/[0.04]">
+        <div className="max-w-7xl mx-auto">
+          <div className="mb-8">
+            <p className="text-[11px] font-sans font-medium uppercase tracking-[0.15em] text-[var(--text-muted)] mb-2">
+              05 — Campus Presence
             </p>
+            <h2 className="text-3xl text-[var(--text-primary)]">
+              <span className="font-serif italic font-normal text-[1.1em] text-[var(--text-secondary)]">Laboratory</span>{" "}
+              <span className="font-display font-bold">Headquarters</span>
+            </h2>
           </div>
 
-          <div className="grid md:grid-cols-2 gap-8">
-            <Card className="h-full border border-[var(--border-color)] bg-[var(--card-bg)] rounded-2xl">
-              <CardContent className="p-8">
-                <div className="flex items-center mb-6">
-                  <div className="w-12 h-12 bg-[hsl(var(--accent))]/10 border border-[hsl(var(--accent))]/20 rounded-xl flex items-center justify-center mr-4">
-                    <Mail className="w-6 h-6 text-[hsl(var(--accent))]" />
-                  </div>
-                  <div>
-                    <h3 className="font-semibold text-lg text-[var(--text-primary)]">Contact Lab</h3>
-                    <p className="text-xs text-[var(--text-secondary)] font-mono">Official Communications</p>
-                  </div>
+          <div className="grid md:grid-cols-2 gap-6 max-w-4xl">
+            <div className="border border-white/[0.06] bg-[var(--card-bg)] rounded-xl p-6">
+              <div className="flex items-center gap-3 mb-4">
+                <div className="w-9 h-9 bg-white/[0.03] border border-white/[0.06] rounded-lg flex items-center justify-center text-[var(--text-primary)]">
+                  <Mail className="w-4 h-4" />
                 </div>
-                <a
-                  href="mailto:aprameya.techclub@kluniversity.in"
-                  className="text-[hsl(var(--accent))] hover:underline font-mono text-sm break-all"
-                >
-                  aprameya.techclub@kluniversity.in
-                </a>
-              </CardContent>
-            </Card>
+                <div>
+                  <h3 className="font-semibold text-sm text-[var(--text-primary)]">Official Contact</h3>
+                  <p className="text-xs text-[var(--text-muted)]">Communications</p>
+                </div>
+              </div>
+              <a
+                href="mailto:aprameya.techclub@kluniversity.in"
+                className="text-xs text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors break-all"
+              >
+                aprameya.techclub@kluniversity.in
+              </a>
+            </div>
 
-            <Card className="h-full border border-[var(--border-color)] bg-[var(--card-bg)] rounded-2xl">
-              <CardContent className="p-8">
-                <div className="flex items-center mb-6">
-                  <div className="w-12 h-12 bg-[hsl(var(--accent))]/10 border border-[hsl(var(--accent))]/20 rounded-xl flex items-center justify-center mr-4">
-                    <MapPin className="w-6 h-6 text-[hsl(var(--accent))]" />
-                  </div>
-                  <div>
-                    <h3 className="font-semibold text-lg text-[var(--text-primary)]">Physical Lab</h3>
-                    <p className="text-xs text-[var(--text-secondary)] font-mono">Campus Location</p>
-                  </div>
+            <div className="border border-white/[0.06] bg-[var(--card-bg)] rounded-xl p-6">
+              <div className="flex items-center gap-3 mb-4">
+                <div className="w-9 h-9 bg-white/[0.03] border border-white/[0.06] rounded-lg flex items-center justify-center text-[var(--text-primary)]">
+                  <MapPin className="w-4 h-4" />
                 </div>
-                <p className="text-sm text-[var(--text-secondary)] leading-relaxed">
-                  Room R609, Innovation Block<br />
-                  KL Deemed to be University<br />
-                  Green Fields, Vaddeswaram, Andhra Pradesh - 522302
-                </p>
-              </CardContent>
-            </Card>
+                <div>
+                  <h3 className="font-semibold text-sm text-[var(--text-primary)]">Physical Lab</h3>
+                  <p className="text-xs text-[var(--text-muted)]">Campus Location</p>
+                </div>
+              </div>
+              <p className="text-xs text-[var(--text-secondary)] leading-relaxed">
+                Room R609, Innovation Block<br />
+                KL Deemed to be University<br />
+                Green Fields, Vaddeswaram, AP - 522302
+              </p>
+            </div>
           </div>
         </div>
       </section>

@@ -1,32 +1,38 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link } from 'wouter';
 import Logo from '../components/icons/Logo';
-import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Checkbox } from '@/components/ui/checkbox';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import { Eye, EyeOff, Lock, User, ArrowRight, Shield } from 'lucide-react';
+import { Eye, EyeOff, Lock, User, Shield, CheckCircle2 } from 'lucide-react';
 import { motion } from 'framer-motion';
-import { GlassPanel } from '@/components/ui/v6-card';
+import ChamferedButton from '@/components/ui/ChamferedButton';
 
 const Login = () => {
   const [formData, setFormData] = useState({
     username: '',
-    password: '',
-    rememberMe: false
+    password: ''
   });
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
+  const [successMessage, setSuccessMessage] = useState('');
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const msg = params.get('message');
+    if (msg) {
+      setSuccessMessage(msg);
+    }
+  }, []);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { id, value, type, checked } = e.target;
+    const { id, value } = e.target;
     setFormData(prev => ({
       ...prev,
-      [id]: type === 'checkbox' ? checked : value
+      [id]: value
     }));
-    setError(''); // Clear error when user types
+    setError('');
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -43,177 +49,169 @@ const Login = () => {
         },
         credentials: 'include',
         body: JSON.stringify({
-          username: formData.username,
+          username: formData.username.trim(),
           password: formData.password
         }),
       });
 
       if (!response.ok) {
         const errorData = await response.json();
-        setError(errorData.error || 'Failed to login');
+        setError(errorData.error || 'Invalid College ID or password');
         return;
       }
 
       window.location.href = '/';
     } catch (error) {
       console.error('Error:', error);
-      setError('Network error. Please try again.');
+      setError('Network error. Please check server connection.');
     } finally {
       setIsLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center px-4 py-16 bg-[var(--bg-body)] relative overflow-hidden">
-      <div className="absolute inset-0 dither-bg opacity-30 pointer-events-none"></div>
-      <div className="w-full max-w-6xl grid lg:grid-cols-2 gap-8 items-center relative z-10">
+    <div className="min-h-screen flex items-center justify-center px-6 py-24 bg-[var(--bg-body)] text-[var(--text-primary)] relative overflow-hidden font-sans">
+      <div className="w-full max-w-4xl grid lg:grid-cols-2 gap-12 items-center relative z-10">
+        
         {/* Left Side - Branding */}
         <motion.div
           className="hidden lg:block"
-          initial={{ opacity: 0, x: -30 }}
+          initial={{ opacity: 0, x: -20 }}
           animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.8 }}
+          transition={{ duration: 0.5 }}
         >
-          <div className="text-center lg:text-left">
-            <Link href="/" className="inline-flex items-center justify-center lg:justify-start mb-8">
-              <Logo size="xl" />
+          <div className="text-left">
+            <Link href="/" className="inline-flex items-center gap-2.5 mb-8">
+              <Logo size="md" color="light" showText={false} />
+              <span className="font-display font-bold text-lg text-[var(--text-primary)]">APRAMEYA</span>
             </Link>
-            <div className="mb-6">
-              <p className="text-xs font-mono text-[hsl(var(--accent))] mb-2 tracking-widest">/// ACCESS CONTROL</p>
-              <h1 className="font-bold text-5xl lg:text-6xl leading-none text-[var(--text-primary)]">
-                WELCOME<br />BACK
+            <div className="mb-4">
+              <p className="text-[11px] font-sans font-medium text-[var(--text-muted)] mb-2 uppercase tracking-[0.15em]">Student Portal</p>
+              <h1 className="text-4xl sm:text-5xl tracking-tight text-[var(--text-primary)] leading-tight">
+                <span className="font-serif italic font-normal text-[1.1em] text-[var(--text-secondary)]">Welcome</span>{" "}
+                <span className="font-display font-bold">Back</span>
               </h1>
             </div>
-            <p className="text-sm text-[var(--text-secondary)] mb-12 max-w-lg font-mono leading-relaxed">
-              Continue your journey in autonomous vehicle innovation.
-              Access your dashboard and connect with the community.
+            <p className="text-sm text-[var(--text-secondary)] mb-8 max-w-sm leading-relaxed">
+              Sign in with your College ID Number (Roll No) to access laboratory repositories, track applications, and manage workshop passes.
             </p>
 
-            {/* Features */}
-            <div className="space-y-4 border-l border-[var(--border-color)] pl-6">
-              {[
-                { icon: Shield, text: "Secure & Private" },
-                { icon: User, text: "Personalized Dashboard" },
-                { icon: ArrowRight, text: "Quick Access to Projects" }
-              ].map((feature, index) => (
-                <motion.div
-                  key={index}
-                  className="flex items-center gap-3"
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ duration: 0.6, delay: 0.2 + index * 0.1 }}
-                >
-                  <div className="w-8 h-8 bg-[var(--card-bg)] border border-[var(--border-color)] flex items-center justify-center">
-                    <feature.icon className="w-4 h-4 text-[var(--text-primary)]" />
-                  </div>
-                  <span className="text-xs text-[var(--text-secondary)] uppercase tracking-wider">{feature.text}</span>
-                </motion.div>
-              ))}
+            <div className="space-y-3 border-l border-white/[0.06] pl-5 text-xs text-[var(--text-secondary)]">
+              <div className="flex items-center gap-2.5">
+                <Shield className="w-3.5 h-3.5 text-[var(--text-muted)]" />
+                <span>Single Sign-On with College ID Number</span>
+              </div>
+              <div className="flex items-center gap-2.5">
+                <User className="w-3.5 h-3.5 text-[var(--text-muted)]" />
+                <span>Member Portal & Application Status</span>
+              </div>
             </div>
           </div>
         </motion.div>
 
         {/* Right Side - Login Form */}
         <motion.div
-          initial={{ opacity: 0, x: 30 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.8, delay: 0.2 }}
+          initial={{ opacity: 0, y: 16 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.1 }}
         >
-          <GlassPanel className="border-0 shadow-2xl backdrop-blur-sm p-0">
-            <div className="p-6 text-center pb-6">
+          <div className="rounded-xl border border-white/[0.06] bg-[var(--card-bg)] p-8 sm:p-9">
+            <div className="text-left pb-5 border-b border-white/[0.04] mb-6">
               <div className="lg:hidden mb-4">
-                <Link href="/" className="inline-flex items-center justify-center">
-                  <Logo size="lg" />
+                <Link href="/" className="inline-flex items-center gap-2">
+                  <Logo size="sm" color="light" showText={false} />
+                  <span className="font-display font-bold text-base text-[var(--text-primary)]">APRAMEYA</span>
                 </Link>
               </div>
-              <h2 className="text-2xl font-bold text-[var(--text-primary)]">Sign In</h2>
-              <p className="text-[var(--text-secondary)]">Enter your credentials to access your account</p>
+              <h2 className="text-xl font-bold text-[var(--text-primary)] font-display">Sign In</h2>
+              <p className="text-xs text-[var(--text-secondary)] mt-1">Enter your College ID Number and password</p>
             </div>
 
-            <div className="p-6 pt-0 space-y-6">
+            <div className="space-y-4">
+              {successMessage && (
+                <div className="p-3 rounded-lg bg-emerald-950/40 border border-emerald-800/40 text-emerald-300 text-xs flex items-center gap-2">
+                  <CheckCircle2 size={14} />
+                  <span>{successMessage}</span>
+                </div>
+              )}
+
               {error && (
-                <Alert variant="destructive">
+                <Alert variant="destructive" className="bg-red-950/40 border-red-800/50 text-red-300 text-xs">
                   <AlertDescription>{error}</AlertDescription>
                 </Alert>
               )}
 
               <form onSubmit={handleSubmit} className="space-y-4">
-                <div className="space-y-2">
-                  <Label htmlFor="username" className="text-[var(--text-primary)]">Username</Label>
+                <div className="space-y-1.5">
+                  <Label htmlFor="username" className="text-xs text-[var(--text-secondary)] font-medium">
+                    College ID Number / Email
+                  </Label>
                   <div className="relative">
-                    <User className="absolute left-3 top-1/2 transform -translate-y-1/2 text-[var(--text-secondary)] w-4 h-4" />
+                    <User className="absolute left-3.5 top-1/2 transform -translate-y-1/2 text-[var(--text-muted)] w-4 h-4" />
                     <Input
                       type="text"
                       id="username"
-                      placeholder="Enter your username"
+                      placeholder="e.g. 2200030000"
                       value={formData.username}
                       onChange={handleInputChange}
-                      className="pl-10 bg-[var(--bg-body)] border-[var(--border-color)] text-[var(--text-primary)]"
+                      className="pl-10 h-10 bg-white/[0.02] border-white/[0.06] text-[var(--text-primary)] text-sm focus:border-white/[0.2]"
                       required
                     />
                   </div>
                 </div>
 
-                <div className="space-y-2">
-                  <Label htmlFor="password" className="text-[var(--text-primary)]">Password</Label>
+                <div className="space-y-1.5">
+                  <div className="flex items-center justify-between">
+                    <Label htmlFor="password" className="text-xs text-[var(--text-secondary)] font-medium">
+                      Password
+                    </Label>
+                    <Link href="/forgot-password" className="text-xs text-[var(--text-muted)] hover:text-[var(--text-primary)] transition-colors">
+                      Forgot password?
+                    </Link>
+                  </div>
                   <div className="relative">
-                    <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-[var(--text-secondary)] w-4 h-4" />
+                    <Lock className="absolute left-3.5 top-1/2 transform -translate-y-1/2 text-[var(--text-muted)] w-4 h-4" />
                     <Input
                       type={showPassword ? "text" : "password"}
                       id="password"
                       placeholder="Enter your password"
                       value={formData.password}
                       onChange={handleInputChange}
-                      className="pl-10 pr-10 bg-[var(--bg-body)] border-[var(--border-color)] text-[var(--text-primary)]"
+                      className="pl-10 pr-10 h-10 bg-white/[0.02] border-white/[0.06] text-[var(--text-primary)] text-sm focus:border-white/[0.2]"
                       required
                     />
                     <button
                       type="button"
                       onClick={() => setShowPassword(!showPassword)}
-                      className="absolute right-3 top-1/2 transform -translate-y-1/2 text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
+                      className="absolute right-3.5 top-1/2 transform -translate-y-1/2 text-[var(--text-muted)] hover:text-[var(--text-primary)] cursor-pointer"
                     >
                       {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                     </button>
                   </div>
                 </div>
 
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center space-x-2">
-                    <Checkbox
-                      id="rememberMe"
-                      checked={formData.rememberMe}
-                      onCheckedChange={(checked) =>
-                        setFormData(prev => ({ ...prev, rememberMe: checked as boolean }))
-                      }
-                      className="border-black dark:border-white data-[state=checked]:bg-[hsl(var(--accent))] data-[state=checked]:text-[var(--bg-body)]"
-                    />
-                    <Label htmlFor="rememberMe" className="text-sm text-[var(--text-secondary)]">Remember me</Label>
-                  </div>
-                  <Link href="#" className="text-sm text-[hsl(var(--accent))] hover:text-[hsl(var(--accent))]/80 hover:underline">
-                    Forgot password?
-                  </Link>
+                <div className="pt-2">
+                  <ChamferedButton
+                    variant="primary"
+                    size="md"
+                    isLoading={isLoading}
+                    className="w-full"
+                  >
+                    Sign In
+                  </ChamferedButton>
                 </div>
-
-                <Button
-                  type="submit"
-                  className="w-full bg-[hsl(var(--accent))] text-[var(--bg-body)] hover:bg-[hsl(var(--accent))]/90"
-                  disabled={isLoading}
-                >
-                  {isLoading ? 'Signing In...' : 'Sign In'}
-                  <ArrowRight className="ml-2 w-4 h-4" />
-                </Button>
               </form>
 
-              <div className="text-center pt-4 border-t border-[var(--border-color)]">
-                <p className="text-[var(--text-secondary)]">
-                  New to Aprameya?{' '}
-                  <Link href="/signup" className="text-[hsl(var(--accent))] hover:text-[hsl(var(--accent))]/80 font-medium hover:underline">
-                    Create an account
+              <div className="text-center pt-4 border-t border-white/[0.04]">
+                <p className="text-xs text-[var(--text-secondary)]">
+                  New student?{' '}
+                  <Link href="/signup" className="text-[var(--text-primary)] hover:underline font-semibold">
+                    Create Account
                   </Link>
                 </p>
               </div>
             </div>
-          </GlassPanel>
+          </div>
         </motion.div>
       </div>
     </div>

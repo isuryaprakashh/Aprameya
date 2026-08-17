@@ -22,6 +22,17 @@ const userSchema = new mongoose.Schema({
 
 export const User = mongoose.model('User', userSchema);
 
+const passwordResetOtpSchema = new mongoose.Schema({
+    email: { type: String, required: true },
+    userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
+    otp: { type: String, required: true },
+    expiresAt: { type: Date, required: true },
+    used: { type: Boolean, default: false },
+    createdAt: { type: Date, default: Date.now }
+});
+
+export const PasswordResetOtp = mongoose.model('PasswordResetOtp', passwordResetOtpSchema);
+
 const recruitmentApplicationSchema = new mongoose.Schema({
     userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true, unique: true },
     fullName: { type: String, required: true },

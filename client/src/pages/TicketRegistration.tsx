@@ -237,7 +237,10 @@ const TicketRegistration = () => {
                                 <Badge variant="outline" className="mb-3 bg-[hsl(var(--accent))]/5 border-[hsl(var(--accent))]/20 text-[hsl(var(--accent))]">
                                     {event.type}
                                 </Badge>
-                                <h1 className="text-2xl font-bold text-[var(--text-primary)] mb-4">{event.title}</h1>
+                                <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-[var(--text-primary)] mb-4 font-display">
+                                    <span className="font-serif italic font-normal text-[1.08em] text-[var(--text-secondary)]">Event</span>{" "}
+                                    <span>Pass</span>
+                                </h1>
 
                                 <div className="space-y-3 mb-4">
                                     <div className="flex items-center text-sm text-[var(--text-secondary)]">

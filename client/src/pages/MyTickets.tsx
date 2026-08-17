@@ -73,10 +73,13 @@ const MyTickets = () => {
                     className="mb-10"
                 >
                     <div className="flex items-center gap-3 mb-2">
-                        <div className="w-10 h-10 bg-[hsl(var(--accent))]/10 rounded-xl flex items-center justify-center">
-                            <Ticket className="w-5 h-5 text-[hsl(var(--accent))]" />
+                        <div className="w-10 h-10 bg-white/[0.03] border border-white/[0.06] rounded-xl flex items-center justify-center text-[var(--text-primary)]">
+                            <Ticket className="w-5 h-5" />
                         </div>
-                        <h1 className="text-3xl font-bold text-[var(--text-primary)]">My Tickets</h1>
+                        <h1 className="text-3xl sm:text-4xl font-bold tracking-tight text-[var(--text-primary)]">
+                            <span className="font-serif italic font-normal text-[1.08em] text-[var(--text-secondary)]">My</span>{" "}
+                            <span className="font-display">Passes</span>
+                        </h1>
                     </div>
                     <p className="text-[var(--text-secondary)] text-sm ml-[52px]">
                         {tickets.length} ticket{tickets.length !== 1 ? 's' : ''} registered

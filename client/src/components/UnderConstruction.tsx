@@ -1,6 +1,6 @@
 import { Link } from 'wouter';
 import { motion } from 'framer-motion';
-import { ArrowLeft, RefreshCw, Terminal, ShieldAlert } from 'lucide-react';
+import { ArrowLeft, RefreshCw, FolderGit2 } from 'lucide-react';
 import ChamferedButton from '@/components/ui/ChamferedButton';
 
 interface UnderConstructionProps {
@@ -11,49 +11,42 @@ interface UnderConstructionProps {
 }
 
 export const UnderConstruction = ({
-  title = "Module In Active R&D",
-  subtitle = "Deployment & Verification In Progress",
-  description = "The engineering team is actively building, documenting, and validating items for this section. No speculative or placeholder content is displayed until hardware-tested benchmarks and peer reviews are completed.",
-  category = "LAB OPERATIONS"
+  title = "In Active Development",
+  subtitle = "Documentation & Release In Progress",
+  description = "The engineering team is actively building, documenting, and validating items for this section. Content will be published once benchmarks and reviews are complete.",
+  category = "LABORATORY"
 }: UnderConstructionProps) => {
   return (
-    <div className="w-full py-20 px-6 flex flex-col items-center justify-center text-center">
+    <div className="w-full py-16 px-4 flex flex-col items-center justify-center text-center">
       <motion.div
-        initial={{ opacity: 0, y: 20 }}
+        initial={{ opacity: 0, y: 16 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-        className="max-w-2xl w-full border border-[var(--border-color)] bg-[var(--card-bg)] p-8 md:p-12 rounded-2xl relative overflow-hidden"
+        transition={{ duration: 0.4 }}
+        className="max-w-xl w-full border border-white/[0.06] bg-[var(--card-bg)] p-8 md:p-10 rounded-xl text-center"
       >
-        {/* Top status bar */}
-        <div className="flex items-center justify-between border-b border-[var(--border-color)] pb-4 mb-8 text-xs font-mono text-[var(--text-secondary)]">
-          <div className="flex items-center gap-2">
-            <span className="w-2 h-2 rounded-full bg-amber-500 animate-pulse"></span>
-            <span className="uppercase tracking-widest text-[hsl(var(--accent))]">{category}</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <Terminal className="w-3.5 h-3.5 text-[var(--text-secondary)]" />
-            <span>STATUS: 204 NO_CONTENT</span>
-          </div>
+        <div className="w-12 h-12 rounded-xl bg-white/[0.03] border border-white/[0.06] flex items-center justify-center mx-auto mb-6 text-[var(--text-secondary)]">
+          <FolderGit2 className="w-5 h-5" />
         </div>
 
-        {/* Center Icon badge */}
-        <div className="w-16 h-16 rounded-2xl bg-[var(--bg-body)] border border-[var(--border-color)] flex items-center justify-center mx-auto mb-6">
-          <ShieldAlert className="w-8 h-8 text-[hsl(var(--accent))]" />
-        </div>
+        <p className="text-[11px] font-sans font-medium text-[var(--text-muted)] uppercase tracking-[0.15em] mb-2">
+          {category}
+        </p>
 
-        <h2 className="text-2xl md:text-3xl font-bold tracking-tight text-[var(--text-primary)] mb-3">
-          {title}
+        <h2 className="text-2xl sm:text-3xl tracking-tight text-[var(--text-primary)] mb-2">
+          <span className="font-serif italic font-normal text-[1.1em] text-[var(--text-secondary)]">In</span>{" "}
+          <span className="font-display font-bold">Active R&D</span>
         </h2>
-        <p className="text-sm font-mono text-[hsl(var(--accent))] mb-4 uppercase tracking-wider">
+        
+        <p className="text-xs text-[var(--text-muted)] mb-4">
           {subtitle}
         </p>
 
-        <p className="text-sm text-[var(--text-secondary)] leading-relaxed mb-8 max-w-lg mx-auto">
+        <p className="text-sm text-[var(--text-secondary)] leading-relaxed mb-8 max-w-md mx-auto">
           {description}
         </p>
 
         {/* Action Buttons */}
-        <div className="flex flex-wrap items-center justify-center gap-3 pt-4 border-t border-[var(--border-color)]">
+        <div className="flex flex-wrap items-center justify-center gap-3 pt-4 border-t border-white/[0.04]">
           <Link href="/">
             <ChamferedButton variant="secondary" size="sm" leftIcon={<ArrowLeft className="w-3.5 h-3.5" />}>
               Return Home
@@ -65,7 +58,7 @@ export const UnderConstruction = ({
             leftIcon={<RefreshCw className="w-3.5 h-3.5" />}
             onClick={() => window.location.reload()}
           >
-            Check Sync Status
+            Refresh
           </ChamferedButton>
         </div>
       </motion.div>

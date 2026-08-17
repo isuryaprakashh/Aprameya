@@ -5,7 +5,7 @@ import { ThemeProvider } from "@/components/theme-provider";
 import { AuthProvider, useAuth } from "@/context/AuthContext";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
-import NeuralCanvas from "./components/NeuralCanvas";
+
 import DashboardRouter from "./components/DashboardRouter";
 import Home from "./pages/Home";
 import Projects from "./pages/Projects";
@@ -15,9 +15,10 @@ import Events from "./pages/Events";
 import About from "./pages/About";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
+import ForgotPassword from "./pages/ForgotPassword";
 import UserProfile from "./pages/UserProfile";
 import NotFound from "./pages/not-found";
-import DesignSystem from "./pages/DesignSystem";
+
 import TicketRegistration from "./pages/TicketRegistration";
 import MyTickets from "./pages/MyTickets";
 import AdminScanQR from "./pages/AdminScanQR";
@@ -60,7 +61,7 @@ function AppContent() {
 
   return (
     <>
-      <div className="surface-grain" aria-hidden="true" />
+
       {/* Standalone routes (no header/footer) */}
       {isStandalone && (
         <Switch>
@@ -73,7 +74,7 @@ function AppContent() {
       {/* Standard layout with header/footer */}
       {!isStandalone && (
         <>
-          <NeuralCanvas />
+
           {!isDashboard && <Navbar />}
           <main className="flex-grow">
             <Switch>
@@ -86,7 +87,9 @@ function AppContent() {
               <Route path="/about" component={About} />
               <Route path="/login" component={Login} />
               <Route path="/signup" component={Signup} />
-              <Route path="/design" component={DesignSystem} />
+              <Route path="/forgot-password" component={ForgotPassword} />
+              <Route path="/reset-password" component={ForgotPassword} />
+
               <Route path="/events/:eventId/register" component={TicketRegistration} />
 
               <Route path="/recruitment/apply">

@@ -8,6 +8,7 @@ import {
   TicketRegistration,
   RecruitmentApplication,
   RecruitmentSettings,
+  PasswordResetOtp,
   Message
 } from "./models";
 import {
@@ -41,13 +42,21 @@ export interface IStorage {
   // User Operations
   getUser(id: string): Promise<UserType | undefined>;
   getUserByUsername(username: string): Promise<UserType | undefined>;
+  getUserByEmail(email: string): Promise<UserType | undefined>;
+  getUserByIdentifier(identifier: string): Promise<UserType | undefined>;
   createUser(user: InsertUser): Promise<UserType>;
+  updateUserPassword(userId: string, newPassword: string): Promise<boolean>;
   updateUserRole(userId: string, newRole: UserRoleType): Promise<UserType | undefined>;
   updateUserProfile(userId: string, profileData: UpdateUserProfile): Promise<UserType | undefined>;
   updateUserDomainTitle(userId: string, domain: string, title: string): Promise<UserType | undefined>;
   getAllUsers(): Promise<UserType[]>;
   getUsersByRole(role: UserRoleType): Promise<UserType[]>;
   deleteUser(userId: string): Promise<boolean>;
+
+  // Password Reset OTP Operations
+  createPasswordResetOtp(userId: string, email: string, otp: string): Promise<any>;
+  getValidPasswordResetOtp(email: string, otp: string): Promise<any | null>;
+  markPasswordResetOtpUsed(otpId: string): Promise<void>;
 
   // Project Operations
   getProject(id: string): Promise<ProjectType | undefined>;
@@ -135,14 +144,73 @@ export class MongoStorage implements IStorage {
     return user ? this.mapDoc<UserType>(user) : undefined;
   }
 
+  async getUserByEmail(email: string): Promise<UserType | undefined> {
+    const user = await User.findOne({ email: email.toLowerCase().trim() });
+    return user ? this.mapDoc<UserType>(user) : undefined;
+  }
+
+  async getUserByIdentifier(identifier: string): Promise<UserType | undefined> {
+    const cleanId = identifier.trim();
+    const user = await User.findOne({
+      $or: [
+        { username: cleanId },
+        { rollNumber: cleanId },
+        { email: cleanId.toLowerCase() }
+      ]
+    });
+    return user ? this.mapDoc<UserType>(user) : undefined;
+  }
+
+  async updateUserPassword(userId: string, newPassword: string): Promise<boolean> {
+    const result = await User.findByIdAndUpdate(userId, { password: newPassword });
+    return !!result;
+  }
+
+  async createPasswordResetOtp(userId: string, email: string, otp: string): Promise<any> {
+    // Invalidate previous active OTPs for this user/email
+    await PasswordResetOtp.updateMany(
+      { email: email.toLowerCase().trim(), used: false },
+      { used: true }
+    );
+
+    const expiresAt = new Date(Date.now() + 10 * 60 * 1000); // 10 minutes
+    const record = new PasswordResetOtp({
+      userId,
+      email: email.toLowerCase().trim(),
+      otp,
+      expiresAt,
+      used: false
+    });
+    await record.save();
+    return record;
+  }
+
+  async getValidPasswordResetOtp(email: string, otp: string): Promise<any | null> {
+    const record = await PasswordResetOtp.findOne({
+      email: email.toLowerCase().trim(),
+      otp: otp.trim(),
+      used: false,
+      expiresAt: { $gt: new Date() }
+    });
+    return record;
+  }
+
+  async markPasswordResetOtpUsed(otpId: string): Promise<void> {
+    await PasswordResetOtp.findByIdAndUpdate(otpId, { used: true });
+  }
+
   async getUsersByRole(role: UserRoleType): Promise<UserType[]> {
     const users = await User.find({ role });
     return users.map(u => this.mapDoc<UserType>(u));
   }
 
   async createUser(insertUser: InsertUser): Promise<UserType> {
+    const rollNo = (insertUser.rollNumber || insertUser.username).trim();
     const user = new User({
       ...insertUser,
+      username: insertUser.username.trim(),
+      rollNumber: rollNo,
+      email: insertUser.email.toLowerCase().trim(),
       role: UserRole.ASPIRANT
     });
     await user.save();

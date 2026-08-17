@@ -4,16 +4,12 @@ import { useAuth } from '@/context/AuthContext';
 import Logo from './icons/Logo';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Menu, X, LogOut, ChevronRight, LayoutDashboard } from 'lucide-react';
-import { ThemeCustomizer } from './ThemeCustomizer';
-import { useTheme } from '@/components/theme-provider';
 import ChamferedButton from '@/components/ui/ChamferedButton';
 
 const Navbar = () => {
   const [location] = useLocation();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
-  const { theme } = useTheme();
-  const isDark = theme === 'dark' || (theme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches);
 
   const { user, logoutMutation } = useAuth();
 
@@ -51,7 +47,7 @@ const Navbar = () => {
   return (
     <>
       <motion.nav
-        className="fixed top-0 left-0 right-0 z-50 flex justify-center pt-6 px-4"
+        className="fixed top-0 left-0 right-0 z-50 flex justify-center pt-5 px-4"
         initial={{ y: -100 }}
         animate={{ y: 0 }}
         transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
@@ -59,33 +55,31 @@ const Navbar = () => {
         <div
           className={`
             relative flex items-center justify-between 
-            w-full max-w-6xl px-4 py-3 
-            rounded-2xl transition-all duration-500
+            w-full max-w-6xl px-4 py-2.5
+            rounded-xl transition-all duration-500
             ${scrolled
-              ? 'bg-[var(--glass-panel)] backdrop-blur-xl border border-[var(--border-color)] shadow-lg shadow-black/5'
+              ? 'bg-[var(--bg-body)]/90 backdrop-blur-xl border border-white/[0.06] shadow-lg shadow-black/10'
               : 'bg-transparent border-transparent'
             }
           `}
         >
           {/* Logo */}
-          <Link href="/" onClick={closeMobileMenu} className="flex items-center gap-3 relative z-10 shrink-0">
-            <div className="bg-[var(--bg-body)] rounded-lg p-1.5 border border-[var(--border-color)]">
-              <Logo color={isDark ? "light" : "dark"} size="sm" showText={false} />
-            </div>
-            <span className={`font-bold tracking-tight text-lg ${scrolled ? 'text-[var(--text-primary)]' : 'text-[var(--text-primary)]'}`}>
+          <Link href="/" onClick={closeMobileMenu} className="flex items-center gap-2.5 relative z-10 shrink-0">
+            <Logo color="light" size="sm" showText={false} />
+            <span className="font-display font-bold tracking-tight text-base text-[var(--text-primary)]">
               APRAMEYA
             </span>
           </Link>
 
           {/* Desktop Nav */}
-          <div className="hidden md:flex items-center gap-1 absolute left-1/2 -translate-x-1/2">
+          <div className="hidden md:flex items-center gap-0.5 absolute left-1/2 -translate-x-1/2">
             <div className={`
-               flex items-center p-1.5 rounded-full border transition-colors duration-500
-               ${scrolled ? 'bg-[var(--card-bg)]/50 border-[var(--border-color)]' : 'bg-[var(--glass-panel)]/80 border-[var(--border-color)] backdrop-blur-md'}
+               flex items-center p-1 rounded-full border transition-colors duration-500
+               ${scrolled ? 'bg-white/[0.03] border-white/[0.06]' : 'bg-white/[0.03] border-white/[0.04] backdrop-blur-md'}
              `}>
               {navLinks.map((link) => (
                 <Link key={link.href} href={link.href}>
-                  <div className="relative px-5 py-2 rounded-full text-sm font-medium cursor-pointer group transition-colors">
+                  <div className="relative px-4 py-1.5 rounded-full text-[13px] font-sans font-medium cursor-pointer group transition-colors">
                     {isActive(link.href) && (
                       <motion.div
                         layoutId="navbar-indicator"
@@ -104,31 +98,22 @@ const Navbar = () => {
 
           {/* Right Actions */}
           <div className="hidden md:flex items-center gap-3 relative z-10 shrink-0">
-            <ThemeCustomizer />
-
             {!user ? (
               <Link href="/login">
-                <ChamferedButton
-                  variant="primary"
-                  size="sm"
-                >
+                <ChamferedButton variant="primary" size="sm">
                   Login
                 </ChamferedButton>
               </Link>
             ) : (
-              <div className="flex items-center gap-2 pl-3 border-l border-[var(--border-color)]">
+              <div className="flex items-center gap-2 pl-3 border-l border-white/[0.06]">
                 <Link href="/dashboard">
-                  <ChamferedButton
-                    variant="command"
-                    size="sm"
-                    leftIcon={<LayoutDashboard size={14} className="text-[hsl(var(--accent))]" />}
-                  >
+                  <ChamferedButton variant="secondary" size="sm" leftIcon={<LayoutDashboard size={14} />}>
                     Dashboard
                   </ChamferedButton>
                 </Link>
                 <button
                   onClick={() => logoutMutation.mutate()}
-                  className="p-2 rounded-lg text-[var(--text-secondary)] hover:text-red-500 hover:bg-red-500/10 transition-colors"
+                  className="p-2 rounded-lg text-[var(--text-secondary)] hover:text-red-500 hover:bg-red-500/10 transition-colors cursor-pointer"
                   title="Logout"
                 >
                   <LogOut size={16} />
@@ -138,11 +123,10 @@ const Navbar = () => {
           </div>
 
           {/* Mobile Toggle */}
-          <div className="md:hidden flex items-center gap-3">
-            <ThemeCustomizer />
+          <div className="md:hidden flex items-center gap-2">
             <button
               onClick={toggleMobileMenu}
-              className="p-2 rounded-xl bg-[var(--card-bg)] border border-[var(--border-color)] text-[var(--text-primary)]"
+              className="p-2 rounded-lg bg-white/[0.03] border border-white/[0.06] text-[var(--text-primary)] cursor-pointer"
             >
               {mobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
             </button>
@@ -150,7 +134,7 @@ const Navbar = () => {
         </div>
       </motion.nav>
 
-      {/* Mobile Menu Overlay */}
+      {/* Mobile Menu */}
       <AnimatePresence>
         {mobileMenuOpen && (
           <>
@@ -166,50 +150,50 @@ const Navbar = () => {
               animate={{ x: 0 }}
               exit={{ x: '100%' }}
               transition={{ type: "spring", damping: 25, stiffness: 200 }}
-              className="fixed top-0 right-0 z-[50] h-full w-[80%] max-w-sm bg-[var(--card-bg)] border-l border-[var(--border-color)] p-6 shadow-2xl md:hidden flex flex-col"
+              className="fixed top-0 right-0 z-[50] h-full w-[80%] max-w-sm bg-[var(--card-bg)] border-l border-white/[0.06] p-6 shadow-2xl md:hidden flex flex-col"
             >
               <div className="flex items-center justify-between mb-8">
-                <span className="font-bold text-xl tracking-tight font-display">Navigation</span>
-                <button onClick={closeMobileMenu} className="p-2 rounded-full hover:bg-[var(--border-color)] transition-colors">
+                <span className="font-display font-bold text-lg text-[var(--text-primary)]">Menu</span>
+                <button onClick={closeMobileMenu} className="p-2 rounded-full hover:bg-white/[0.05] transition-colors cursor-pointer">
                   <X size={20} />
                 </button>
               </div>
 
-              <div className="flex-1 space-y-2">
+              <div className="flex-1 space-y-1">
                 {navLinks.map((link) => (
                   <Link key={link.href} href={link.href} onClick={closeMobileMenu}>
                     <div className={`
-                        flex items-center justify-between p-4 rounded-xl transition-colors
-                        ${isActive(link.href) ? 'bg-[var(--btn-bg-hover)] border border-[var(--border-color)]' : 'hover:bg-[var(--bg-body)]'}
+                        flex items-center justify-between p-3.5 rounded-lg transition-colors
+                        ${isActive(link.href) ? 'bg-white/[0.05] border border-white/[0.06]' : 'hover:bg-white/[0.02]'}
                       `}>
-                      <span className={isActive(link.href) ? 'font-semibold text-[hsl(var(--accent))]' : 'text-[var(--text-secondary)]'}>
+                      <span className={`font-sans font-medium text-sm ${isActive(link.href) ? 'text-[var(--text-primary)]' : 'text-[var(--text-secondary)]'}`}>
                         {link.label}
                       </span>
-                      {isActive(link.href) && <div className="w-1.5 h-1.5 rounded-full bg-[hsl(var(--accent))]" />}
+                      {isActive(link.href) && <div className="w-1.5 h-1.5 rounded-full bg-[var(--text-primary)]" />}
                     </div>
                   </Link>
                 ))}
               </div>
 
               {user && (
-                <div className="mt-auto pt-6 border-t border-[var(--border-color)] space-y-3">
+                <div className="mt-auto pt-6 border-t border-white/[0.06] space-y-3">
                   <Link href="/dashboard" onClick={closeMobileMenu}>
-                    <div className="flex items-center gap-3 p-3.5 rounded-xl bg-[var(--bg-body)] border border-[var(--border-color)] hover:border-[hsl(var(--accent))]/50 transition-colors">
-                      <div className="w-9 h-9 rounded-lg bg-[hsl(var(--accent))]/10 border border-[hsl(var(--accent))]/30 flex items-center justify-center text-[hsl(var(--accent))]">
-                        <LayoutDashboard size={18} />
+                    <div className="flex items-center gap-3 p-3.5 rounded-lg bg-white/[0.02] border border-white/[0.06] hover:border-white/[0.12] transition-colors">
+                      <div className="w-9 h-9 rounded-lg bg-white/[0.03] border border-white/[0.06] flex items-center justify-center">
+                        <LayoutDashboard size={18} className="text-[var(--text-secondary)]" />
                       </div>
                       <div className="flex-1">
-                        <div className="font-bold text-sm text-[var(--text-primary)]">{user.display_name || user.username}</div>
-                        <div className="text-xs text-[hsl(var(--accent))] font-mono">Open Dashboard</div>
+                        <div className="font-semibold text-sm text-[var(--text-primary)]">{user.display_name || user.username}</div>
+                        <div className="text-xs text-[var(--text-muted)]">Dashboard</div>
                       </div>
-                      <ChevronRight size={16} className="text-[var(--text-secondary)]" />
+                      <ChevronRight size={16} className="text-[var(--text-muted)]" />
                     </div>
                   </Link>
                   <button
                     onClick={handleLogout}
-                    className="w-full py-2.5 rounded-xl bg-red-500/10 text-red-500 font-medium text-xs hover:bg-red-500/20 transition-colors flex items-center justify-center gap-2 font-mono"
+                    className="w-full py-2.5 rounded-lg bg-red-500/10 text-red-500 font-medium text-xs hover:bg-red-500/20 transition-colors flex items-center justify-center gap-2 cursor-pointer"
                   >
-                    <LogOut size={14} /> LOGOUT
+                    <LogOut size={14} /> Log out
                   </button>
                 </div>
               )}
@@ -217,8 +201,8 @@ const Navbar = () => {
               {!user && (
                 <div className="mt-auto">
                   <Link href="/login" onClick={closeMobileMenu}>
-                    <button className="w-full py-4 rounded-xl bg-[hsl(var(--accent))] text-[var(--bg-body)] font-bold shadow-lg shadow-[hsl(var(--accent))]/20">
-                      Login to Dashboard
+                    <button className="w-full py-3.5 rounded-lg bg-red-600 text-white font-semibold text-sm cursor-pointer">
+                      Log in
                     </button>
                   </Link>
                 </div>

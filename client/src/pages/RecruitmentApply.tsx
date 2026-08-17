@@ -7,9 +7,7 @@ import { TECH_WINGS, NON_TECH_WINGS, RecruitmentSettings, RecruitmentApplication
 import { useAuth } from '@/context/AuthContext';
 import { useToast } from '@/hooks/use-toast';
 import { apiRequest } from '@/lib/queryClient';
-import VoidAurora from '../components/backgrounds/VoidAurora';
 import ChamferedButton from '@/components/ui/ChamferedButton';
-import HudFrame from '@/components/ui/HudFrame';
 
 const YEARS = ['1st', '2nd', '3rd', '4th'] as const;
 
@@ -129,10 +127,10 @@ export default function RecruitmentApply() {
   if (!settings?.isOpen) {
     return (
       <div className="min-h-screen bg-[var(--bg-body)] flex items-center justify-center px-6">
-        <HudFrame label="GATEWAY // ACCESS_RESTRICTED" className="max-w-md w-full p-8 text-center">
+        <div className="max-w-md w-full p-8 text-center border border-white/[0.06] bg-[var(--card-bg)] rounded-xl">
           <Lock className="w-10 h-10 text-[var(--text-secondary)] mx-auto mb-4" />
           <h1 className="font-display text-xl font-bold mb-2">Recruitment Closed</h1>
-          <p className="text-xs text-[var(--text-secondary)] font-mono mb-6">
+          <p className="text-xs text-[var(--text-secondary)] mb-6">
             The application window is currently closed. Keep an eye on our events and social channels for the next cycle.
           </p>
           <Link href="/recruitment">
@@ -140,7 +138,7 @@ export default function RecruitmentApply() {
               Back to Overview
             </ChamferedButton>
           </Link>
-        </HudFrame>
+        </div>
       </div>
     );
   }
@@ -148,10 +146,10 @@ export default function RecruitmentApply() {
   if (existing) {
     return (
       <div className="min-h-screen bg-[var(--bg-body)] flex items-center justify-center px-6">
-        <HudFrame label="APPLICATION // RECORD_FOUND" status="QUEUED" className="max-w-md w-full p-8 text-center">
+        <div className="max-w-md w-full p-8 text-center border border-white/[0.06] bg-[var(--card-bg)] rounded-xl">
           <Check className="w-10 h-10 text-emerald-400 mx-auto mb-4" />
           <h1 className="font-display text-xl font-bold mb-2">Already Applied</h1>
-          <p className="text-xs text-[var(--text-secondary)] font-mono mb-6">
+          <p className="text-xs text-[var(--text-secondary)] mb-6">
             You have already submitted an application for this recruitment cycle. Check your tracker for interview status.
           </p>
           <Link href="/recruitment/status">
@@ -159,7 +157,7 @@ export default function RecruitmentApply() {
               View Application Tracker
             </ChamferedButton>
           </Link>
-        </HudFrame>
+        </div>
       </div>
     );
   }
@@ -216,37 +214,36 @@ export default function RecruitmentApply() {
 
   return (
     <div className="min-h-screen bg-[var(--bg-body)] text-[var(--text-primary)] font-sans">
-      <VoidAurora />
       <div className="relative z-10 max-w-3xl mx-auto px-6 pt-32 pb-24">
 
         {/* Step Progression Header */}
         <div className="mb-10 text-center">
-          <p className="font-mono text-xs text-[hsl(var(--accent))] tracking-[0.2em] uppercase mb-2">
-            APRAMEYA // CADET ENROLLMENT
+          <p className="text-[11px] font-sans font-medium text-[var(--text-muted)] uppercase tracking-[0.12em] mb-2">
+            Application Portal
           </p>
           <h1 className="font-display text-3xl md:text-4xl font-bold tracking-tight mb-6">
-            Candidate Application
+            Apply for Aprameya
           </h1>
 
-          <div className="flex items-center justify-center gap-3 font-mono text-xs max-w-sm mx-auto">
-            <div className={`flex items-center gap-2 px-3 py-1.5 rounded-lg border ${step === 1 ? 'border-[hsl(var(--accent))] bg-[hsl(var(--accent))]/10 text-[hsl(var(--accent))] font-bold' : 'border-[var(--border-color)] text-[var(--text-secondary)]'}`}>
+          <div className="flex items-center justify-center gap-3 text-xs max-w-sm mx-auto">
+            <div className={`flex items-center gap-2 px-3 py-1.5 rounded-lg border ${step === 1 ? 'border-white/[0.2] bg-white/[0.05] text-[var(--text-primary)] font-semibold' : 'border-white/[0.06] text-[var(--text-muted)]'}`}>
               <span>01</span>
               <span>Profile</span>
             </div>
-            <span className="text-[var(--border-color)]">/</span>
-            <div className={`flex items-center gap-2 px-3 py-1.5 rounded-lg border ${step === 2 ? 'border-[hsl(var(--accent))] bg-[hsl(var(--accent))]/10 text-[hsl(var(--accent))] font-bold' : 'border-[var(--border-color)] text-[var(--text-secondary)]'}`}>
+            <span className="text-white/[0.1]">•</span>
+            <div className={`flex items-center gap-2 px-3 py-1.5 rounded-lg border ${step === 2 ? 'border-white/[0.2] bg-white/[0.05] text-[var(--text-primary)] font-semibold' : 'border-white/[0.06] text-[var(--text-muted)]'}`}>
               <span>02</span>
               <span>Track & Wing</span>
             </div>
-            <span className="text-[var(--border-color)]">/</span>
-            <div className={`flex items-center gap-2 px-3 py-1.5 rounded-lg border ${step === 3 ? 'border-[hsl(var(--accent))] bg-[hsl(var(--accent))]/10 text-[hsl(var(--accent))] font-bold' : 'border-[var(--border-color)] text-[var(--text-secondary)]'}`}>
+            <span className="text-white/[0.1]">•</span>
+            <div className={`flex items-center gap-2 px-3 py-1.5 rounded-lg border ${step === 3 ? 'border-white/[0.2] bg-white/[0.05] text-[var(--text-primary)] font-semibold' : 'border-white/[0.06] text-[var(--text-muted)]'}`}>
               <span>03</span>
               <span>Statement</span>
             </div>
           </div>
         </div>
 
-        <HudFrame label={`FORM_STEP // 0${step}_OF_03`} className="p-6 md:p-8">
+        <div className="p-6 md:p-8 border border-white/[0.06] bg-[var(--card-bg)] rounded-xl">
           <AnimatePresence mode="wait">
             {/* STEP 1: Student Credentials */}
             {step === 1 && (
@@ -568,7 +565,7 @@ export default function RecruitmentApply() {
               </motion.div>
             )}
           </AnimatePresence>
-        </HudFrame>
+        </div>
       </div>
     </div>
   );

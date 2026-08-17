@@ -1,7 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { ResearchItem } from '@/lib/types';
-import { Loader2 } from 'lucide-react';
-import VoidAurora from '../components/backgrounds/VoidAurora';
+import AprameyaLoader from '../components/AprameyaLoader';
 import ResearchCard from '../components/ResearchCard';
 import UnderConstruction from '../components/UnderConstruction';
 import { motion } from 'framer-motion';
@@ -16,7 +15,7 @@ const Research = () => {
   if (isLoading) {
     return (
       <div className="min-h-screen bg-[var(--bg-body)] flex items-center justify-center">
-        <Loader2 className="w-8 h-8 animate-spin text-[hsl(var(--accent))]" />
+        <AprameyaLoader size={40} />
       </div>
     );
   }
@@ -30,43 +29,46 @@ const Research = () => {
   }
 
   return (
-    <div className="fadeIn">
+    <div className="fadeIn min-h-screen bg-[var(--bg-body)]">
       {/* Header Section */}
-      <section className="relative py-24 px-4 bg-[var(--bg-body)] border-b border-[var(--border-color)] overflow-hidden">
-        <VoidAurora />
-        <div className="absolute inset-0 dither-bg opacity-30 pointer-events-none"></div>
-        <div className="container mx-auto relative z-10">
-          <div className="text-center">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[hsl(var(--accent))]/10 border border-[hsl(var(--accent))]/20 text-[hsl(var(--accent))] text-xs font-mono mb-6 uppercase tracking-wider">
-              Autonomous Systems & Perception
-            </div>
-            <h1 className="font-bold text-4xl md:text-6xl mb-6 text-[var(--text-primary)] leading-none tracking-tighter">
-              RESEARCH &<br />PUBLICATIONS
+      <section className="relative pt-32 pb-16 px-6 md:px-12 border-b border-white/[0.04]">
+        <div className="max-w-7xl mx-auto">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+          >
+            <p className="text-[11px] font-sans font-medium uppercase tracking-[0.15em] text-[var(--text-muted)] mb-3">
+              Publications & Benchmarks
+            </p>
+            <h1 className="text-4xl sm:text-5xl md:text-6xl mb-4 tracking-tight text-[var(--text-primary)]">
+              <span className="font-serif italic font-normal text-[1.08em] text-[var(--text-secondary)]">Research &</span>{" "}
+              <span className="font-display font-bold">Publications</span>
             </h1>
-            <p className="text-sm text-[var(--text-secondary)] max-w-2xl mx-auto font-mono">
+            <p className="text-base text-[var(--text-secondary)] max-w-xl leading-relaxed">
               Empirical investigations, sensor fusion benchmarks, and algorithmic models produced by Aprameya researchers at KL University.
             </p>
-          </div>
+          </motion.div>
         </div>
       </section>
 
       {/* Research Content */}
-      <div className="py-16 px-4 bg-[var(--bg-body)]">
-        <div className="container mx-auto max-w-5xl">
+      <div className="py-12 px-6 md:px-12">
+        <div className="max-w-7xl mx-auto">
           {researchItems.length > 0 ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {researchItems.map((item, index) => (
                 <motion.div
                   key={item.id}
                   initial={{ opacity: 0, y: 16 }}
                   whileInView={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.4, delay: index * 0.1 }}
+                  transition={{ duration: 0.4, delay: index * 0.08 }}
                   viewport={{ once: true }}
                 >
                   <ResearchCard
                     item={item}
                     onReadMore={() => toast({
-                      title: "Access Restricted",
+                      title: "Access Notice",
                       description: "Full research paper access is currently limited to verified laboratory members.",
                     })}
                   />
@@ -75,10 +77,10 @@ const Research = () => {
             </div>
           ) : (
             <UnderConstruction
-              category="RESEARCH & PUBLICATIONS"
-              title="Peer-Reviewed Research In Progress"
+              category="PUBLICATIONS"
+              title="Manuscripts in Preparation"
               subtitle="Dataset Validation & Manuscript Drafting"
-              description="The research cohort is currently finalizing simulation benchmarks and experimental test data for upcoming autonomy symposiums. Manuscripts will be indexed here upon peer review approval."
+              description="The research cohort is finalizing simulation benchmarks and experimental test data for upcoming symposiums."
             />
           )}
         </div>
