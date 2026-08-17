@@ -3,20 +3,23 @@ import { Link } from "wouter";
 
 export default function Footer() {
   return (
-    <footer className="relative bg-[var(--bg-body)] border-t border-white/[0.04] pt-16 pb-12 font-sans overflow-hidden">
-      <div className="max-w-7xl mx-auto px-6 md:px-12">
+    <footer className="relative bg-[#060A07] border-t border-emerald-500/10 pt-16 pb-12 font-sans overflow-hidden">
+      {/* Soft doom ambient glow at bottom */}
+      <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[600px] h-[200px] bg-gradient-to-t from-[#276738]/10 to-transparent blur-[100px] pointer-events-none" />
+
+      <div className="max-w-7xl mx-auto px-6 md:px-12 relative z-10">
         {/* Main footer content */}
         <div className="grid grid-cols-1 md:grid-cols-12 gap-12 mb-12">
           {/* Brand section */}
           <div className="md:col-span-6 lg:col-span-5">
             <div className="flex items-center gap-2.5 mb-4">
-              <span className="font-display font-bold text-xl text-[var(--text-primary)] tracking-tight">APRAMEYA</span>
-              <span className="text-[11px] font-sans font-medium uppercase tracking-wider text-[var(--text-muted)] bg-white/[0.03] px-2 py-0.5 rounded border border-white/[0.06]">
-                R&D Lab
+              <span className="font-display font-bold text-xl text-white tracking-tight">APRAMEYA</span>
+              <span className="text-[11px] font-sans font-medium uppercase tracking-wider text-emerald-400 bg-emerald-950/40 px-2 py-0.5 rounded border border-emerald-500/20">
+                Robotics Lab
               </span>
             </div>
-            <p className="text-[var(--text-secondary)] text-sm leading-relaxed max-w-sm mb-6">
-              Undergraduate robotics research and autonomous systems engineering at KL University. Building hardware prototypes and ROS 2 pipelines.
+            <p className="text-[#94A3B8] text-sm leading-relaxed max-w-sm mb-6">
+              Undergraduate robotics research and autonomous systems engineering at KL University. Building physical platforms and ROS 2 compute stacks.
             </p>
 
             {/* Social links */}
@@ -34,7 +37,7 @@ export default function Footer() {
                   href={item.href}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="w-9 h-9 rounded-lg bg-white/[0.02] border border-white/[0.06] flex items-center justify-center text-[var(--text-muted)] hover:text-[var(--text-primary)] hover:border-white/[0.15] hover:bg-white/[0.04] transition-colors"
+                  className="w-9 h-9 rounded-lg bg-[#0B130E] border border-emerald-500/15 flex items-center justify-center text-[#94A3B8] hover:text-white hover:border-emerald-400/40 hover:bg-[#0E1B13] transition-colors"
                   aria-label={item.label}
                 >
                   {item.icon}

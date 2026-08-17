@@ -13,8 +13,8 @@ const BlogCard = ({ post, onRead }: BlogCardProps) => {
 
     // Using CSS variables to map to user's requested logic
     return (
-        <div className={`w-full ${R_CARD} bg-[var(--card-bg)] shadow-md p-2 transition-colors border border-[var(--border-color)] cursor-pointer group`}>
-            <div className={`relative h-[180px] ${R_IMAGE} overflow-hidden bg-[var(--bg-body)]`}>
+        <div className="w-full rounded-xl bg-[#0B130E] p-2 transition-all duration-300 border border-emerald-500/15 hover:border-emerald-400/35 hover:bg-[#0E1A13] shadow-lg shadow-black/20 cursor-pointer group">
+            <div className="relative h-[180px] rounded-lg overflow-hidden bg-black">
                 <img
                     src={post.image}
                     className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
@@ -23,22 +23,22 @@ const BlogCard = ({ post, onRead }: BlogCardProps) => {
             </div>
 
             <div className="p-5">
-                <p className="text-xs uppercase tracking-wide text-[var(--text-secondary)] font-mono opacity-80">
+                <p className="text-[10px] uppercase tracking-wider text-emerald-400 font-mono font-semibold">
                     {post.category || 'Article'}
                 </p>
-                <h3 className="mt-1 font-semibold text-lg text-[var(--text-primary)] leading-tight group-hover:text-[hsl(var(--accent))] transition-colors">
+                <h3 className="mt-1 font-display font-bold text-lg text-white leading-tight group-hover:text-emerald-300 transition-colors">
                     {post.title}
                 </h3>
-                <p className="mt-2 text-sm text-[var(--text-secondary)] line-clamp-3">
+                <p className="mt-2 text-xs text-[#94A3B8] line-clamp-3 leading-relaxed">
                     {post.excerpt}
                 </p>
 
-                <div className="mt-4 flex justify-between items-center">
-                    <p className="text-xs text-[var(--text-secondary)] font-mono">
+                <div className="mt-5 pt-4 border-t border-emerald-500/10 flex justify-between items-center">
+                    <p className="text-[11px] text-[#64748B] font-mono">
                         {new Date(post.date).toLocaleDateString()}
                     </p>
                     <button
-                        className="px-4 py-2 rounded-full text-sm bg-[var(--text-primary)] text-[var(--bg-body)] hover:opacity-90 transition-opacity"
+                        className="px-3.5 py-1.5 rounded-lg text-xs font-medium bg-gradient-to-b from-[#2A723E] to-[#1C512A] border border-[#4ADE80]/30 text-white hover:from-[#32874A] hover:to-[#226334] shadow-sm shadow-[#1C512A]/30 transition-all"
                         onClick={(e) => {
                             if (onRead) {
                                 e.stopPropagation();
@@ -47,7 +47,7 @@ const BlogCard = ({ post, onRead }: BlogCardProps) => {
                             }
                         }}
                     >
-                        Read Blog
+                        Read Article
                     </button>
                 </div>
             </div>

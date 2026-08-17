@@ -12,16 +12,38 @@
     --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
     --font-mono: 'JetBrains Mono', monospace;
 
-    /* Motion */
-    --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
-    --duration-fast: 150ms;
-    --duration-normal: 300ms;
+    /* Doctor Doom Sovereign Palette */
+    --bg-body: #060A07;
+    --card-bg: #0A110D;
+    --card-hover: #0E1A13;
+    --border-color: rgba(74, 222, 128, 0.08);
+    --border-hover: rgba(74, 222, 128, 0.22);
+    --doom-cape: #276738;
+    --doom-cape-hover: #348749;
+    --doom-glow: rgba(39, 103, 56, 0.35);
+    --text-primary: #F8FAFC;
+    --text-secondary: #94A3B8;
+    --text-muted: #64748B;
+    --accent: 142 45% 30%;
+    --accent-foreground: 0 0% 98%;
 
-    /* Single accent: red */
-    --accent: 0 72% 51%;
-    --accent-foreground: 0 0% 100%;
-    --ring: 0 0% 40%;
-    --accent-rgb: 220, 38, 38;
+    --background: 140 33% 3%;
+    --foreground: 210 40% 98%;
+    --card: 140 25% 5%;
+    --card-foreground: 210 40% 98%;
+    --popover: 140 25% 5%;
+    --popover-foreground: 210 40% 98%;
+    --primary: 142 45% 30%;
+    --primary-foreground: 0 0% 98%;
+    --secondary: 140 18% 10%;
+    --secondary-foreground: 210 40% 98%;
+    --muted: 140 18% 10%;
+    --muted-foreground: 215 16% 55%;
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 142 30% 12%;
+    --input: 142 30% 12%;
+    --ring: 142 45% 35%;
   }
 
   /* Dark mode — the only mode */

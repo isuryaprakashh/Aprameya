@@ -62,25 +62,25 @@ const About = () => {
             transition={{ duration: 0.5 }}
             viewport={{ once: true }}
           >
-            <div className="border border-white/[0.06] bg-[var(--card-bg)] rounded-xl p-8 md:p-12">
+            <div className="border border-emerald-500/15 bg-[#0B130E] rounded-xl p-8 md:p-12 shadow-xl shadow-black/20">
               <div className="grid lg:grid-cols-2 gap-10 items-center">
                 <div>
-                  <p className="text-[11px] font-sans font-medium uppercase tracking-[0.15em] text-[var(--text-muted)] mb-2">
-                    01 — Our Mission
+                  <p className="text-[11px] font-sans font-medium uppercase tracking-[0.15em] text-emerald-400 mb-2">
+                    Our Mission
                   </p>
-                  <h3 className="text-2xl md:text-3xl sm:text-4xl mb-4 text-[var(--text-primary)]">
-                    <span className="font-serif italic font-normal text-[1.1em] text-[var(--text-secondary)]">Applied</span>{" "}
+                  <h3 className="text-2xl md:text-3xl sm:text-4xl mb-4 text-white">
+                    <span className="font-serif italic font-normal text-[1.1em] text-[#94A3B8]">Applied</span>{" "}
                     <span className="font-display font-bold">Autonomy Engineering</span>
                   </h3>
 
-                  <p className="text-sm text-[var(--text-secondary)] leading-relaxed mb-4">
+                  <p className="text-sm text-[#94A3B8] leading-relaxed mb-4">
                     Aprameya provides an intensive, project-driven laboratory environment where student engineers collaborate across computer science, electronics, and mechanical engineering. Members build real hardware prototypes and run simulation workloads in ROS 2, Gazebo, and PyTorch.
                   </p>
-                  <p className="text-sm text-[var(--text-secondary)] leading-relaxed">
+                  <p className="text-sm text-[#94A3B8] leading-relaxed">
                     We focus on core autonomy pillars: LiDAR-camera sensor fusion, SLAM spatial localization, embedded edge acceleration (NVIDIA Jetson, Coral TPU), and CAN-bus control systems.
                   </p>
                 </div>
-                <div className="relative rounded-lg overflow-hidden border border-white/[0.06] bg-black/40 aspect-[4/3]">
+                <div className="relative rounded-lg overflow-hidden border border-emerald-500/20 bg-black aspect-[4/3]">
                   <img
                     src="/assets/UVH.jpg"
                     alt="Aprameya Engineering Team at Hackathon"
@@ -94,7 +94,7 @@ const About = () => {
       </section>
 
       {/* Vision & Values */}
-      <section className="py-16 px-6 md:px-12 bg-[var(--bg-body)] border-t border-white/[0.04]">
+      <section className="py-16 px-6 md:px-12 bg-[var(--bg-body)] border-t border-emerald-500/10">
         <div className="max-w-7xl mx-auto">
           <div className="grid lg:grid-cols-2 gap-8">
             {/* Vision */}
@@ -104,20 +104,20 @@ const About = () => {
               transition={{ duration: 0.5 }}
               viewport={{ once: true }}
             >
-              <div className="h-full border border-white/[0.06] bg-[var(--card-bg)] rounded-xl p-8 flex flex-col justify-between">
+              <div className="h-full border border-emerald-500/15 bg-[#0B130E] rounded-xl p-8 flex flex-col justify-between shadow-lg shadow-black/20">
                 <div>
-                  <p className="text-[11px] font-sans font-medium uppercase tracking-[0.15em] text-[var(--text-muted)] mb-2">
-                    02 — Long-Term Goal
+                  <p className="text-[11px] font-sans font-medium uppercase tracking-[0.15em] text-emerald-400 mb-2">
+                    Long-Term Trajectory
                   </p>
-                  <h3 className="text-2xl sm:text-3xl text-[var(--text-primary)] mb-4">
-                    <span className="font-serif italic font-normal text-[1.1em] text-[var(--text-secondary)]">Our</span>{" "}
+                  <h3 className="text-2xl sm:text-3xl text-white mb-4">
+                    <span className="font-serif italic font-normal text-[1.1em] text-[#94A3B8]">Our</span>{" "}
                     <span className="font-display font-bold">Vision</span>
                   </h3>
-                  <p className="text-sm text-[var(--text-secondary)] leading-relaxed mb-6">
+                  <p className="text-sm text-[#94A3B8] leading-relaxed mb-6">
                     To establish a premier student research and prototyping lab that incubates impactful autonomous mobility solutions, fosters rigorous research publications, and competes at national and international autonomy benchmarks.
                   </p>
                 </div>
-                <div className="flex items-center text-xs text-[var(--text-muted)] font-medium pt-4 border-t border-white/[0.04]">
+                <div className="flex items-center text-xs text-emerald-400 font-medium pt-4 border-t border-emerald-500/10">
                   <Globe className="w-4 h-4 mr-2" />
                   Rigorous Engineering & Autonomous Safety
                 </div>
@@ -131,13 +131,13 @@ const About = () => {
               transition={{ duration: 0.5, delay: 0.1 }}
               viewport={{ once: true }}
             >
-              <div className="h-full border border-white/[0.06] bg-[var(--card-bg)] rounded-xl p-8">
-                <p className="text-[11px] font-sans font-medium uppercase tracking-[0.15em] text-[var(--text-muted)] mb-2">
-                  03 — Operating Values
+              <div className="h-full border border-emerald-500/15 bg-[#0B130E] rounded-xl p-8 shadow-lg shadow-black/20">
+                <p className="text-[11px] font-sans font-medium uppercase tracking-[0.15em] text-emerald-400 mb-2">
+                  Operating Principles
                 </p>
-                <h3 className="text-2xl sm:text-3xl text-[var(--text-primary)] mb-6">
-                  <span className="font-serif italic font-normal text-[1.1em] text-[var(--text-secondary)]">Core</span>{" "}
-                  <span className="font-display font-bold">Principles</span>
+                <h3 className="text-2xl sm:text-3xl text-white mb-6">
+                  <span className="font-serif italic font-normal text-[1.1em] text-[#94A3B8]">Core</span>{" "}
+                  <span className="font-display font-bold">Values</span>
                 </h3>
                 <div className="space-y-4">
                   {[
@@ -158,12 +158,12 @@ const About = () => {
                     }
                   ].map((value, index) => (
                     <div key={index} className="flex items-start gap-3">
-                      <div className="flex-shrink-0 w-8 h-8 bg-white/[0.03] border border-white/[0.06] rounded-lg flex items-center justify-center mt-0.5 text-[var(--text-primary)]">
+                      <div className="flex-shrink-0 w-8 h-8 bg-emerald-950/50 border border-emerald-500/20 rounded-lg flex items-center justify-center mt-0.5 text-emerald-400">
                         <value.icon className="w-4 h-4" />
                       </div>
                       <div>
-                        <h4 className="font-semibold text-sm text-[var(--text-primary)]">{value.title}</h4>
-                        <p className="text-xs text-[var(--text-secondary)] mt-0.5 leading-relaxed">{value.description}</p>
+                        <h4 className="font-semibold text-sm text-white">{value.title}</h4>
+                        <p className="text-xs text-[#94A3B8] mt-0.5 leading-relaxed">{value.description}</p>
                       </div>
                     </div>
                   ))}
@@ -175,14 +175,14 @@ const About = () => {
       </section>
 
       {/* Operative Roster */}
-      <section className="py-16 px-6 md:px-12 bg-[var(--bg-body)] border-t border-white/[0.04]">
+      <section className="py-16 px-6 md:px-12 bg-[var(--bg-body)] border-t border-emerald-500/10">
         <div className="max-w-7xl mx-auto">
           <div className="mb-8">
-            <p className="text-[11px] font-sans font-medium uppercase tracking-[0.15em] text-[var(--text-muted)] mb-2">
-              04 — Leadership & Members
+            <p className="text-[11px] font-sans font-medium uppercase tracking-[0.15em] text-emerald-400 mb-2">
+              Leadership & Members
             </p>
-            <h2 className="text-3xl md:text-4xl text-[var(--text-primary)] tracking-tight">
-              <span className="font-serif italic font-normal text-[1.1em] text-[var(--text-secondary)]">Lab Leads &</span>{" "}
+            <h2 className="text-3xl md:text-4xl text-white tracking-tight">
+              <span className="font-serif italic font-normal text-[1.1em] text-[#94A3B8]">Lab Leads &</span>{" "}
               <span className="font-display font-bold">Faculty Mentors</span>
             </h2>
           </div>
@@ -191,14 +191,14 @@ const About = () => {
       </section>
 
       {/* Lab Location & Contact */}
-      <section className="py-16 px-6 md:px-12 bg-[var(--bg-body)] border-t border-white/[0.04]">
+      <section className="py-16 px-6 md:px-12 bg-[var(--bg-body)] border-t border-emerald-500/10">
         <div className="max-w-7xl mx-auto">
           <div className="mb-8">
-            <p className="text-[11px] font-sans font-medium uppercase tracking-[0.15em] text-[var(--text-muted)] mb-2">
-              05 — Campus Presence
+            <p className="text-[11px] font-sans font-medium uppercase tracking-[0.15em] text-emerald-400 mb-2">
+              Campus Presence
             </p>
-            <h2 className="text-3xl text-[var(--text-primary)]">
-              <span className="font-serif italic font-normal text-[1.1em] text-[var(--text-secondary)]">Laboratory</span>{" "}
+            <h2 className="text-3xl text-white">
+              <span className="font-serif italic font-normal text-[1.1em] text-[#94A3B8]">Laboratory</span>{" "}
               <span className="font-display font-bold">Headquarters</span>
             </h2>
           </div>

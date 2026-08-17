@@ -152,15 +152,15 @@ export default function Recruitment() {
               >
                 {TECH_DOMAINS.map(({ name, icon: Icon, desc }) => (
                   <motion.div key={name} variants={stagger.item}>
-                    <div className="p-5 h-full flex flex-col justify-between border border-white/[0.06] bg-[var(--card-bg)] rounded-xl hover:border-white/[0.12] transition-colors">
+                    <div className="p-5 h-full flex flex-col justify-between border border-emerald-500/15 bg-[#0B130E] rounded-xl hover:border-emerald-400/35 hover:bg-[#0E1A13] transition-all shadow-lg shadow-black/20">
                       <div>
-                        <div className="w-9 h-9 rounded-lg bg-white/[0.03] border border-white/[0.06] flex items-center justify-center text-[var(--text-primary)] mb-4">
+                        <div className="w-9 h-9 rounded-lg bg-emerald-950/50 border border-emerald-500/25 flex items-center justify-center text-emerald-400 mb-4">
                           <Icon size={18} />
                         </div>
-                        <h3 className="font-display font-bold text-base text-[var(--text-primary)] mb-2">
+                        <h3 className="font-display font-bold text-base text-white mb-2">
                           {name}
                         </h3>
-                        <p className="text-xs text-[var(--text-secondary)] leading-relaxed">
+                        <p className="text-xs text-[#94A3B8] leading-relaxed">
                           {desc}
                         </p>
                       </div>
@@ -172,16 +172,16 @@ export default function Recruitment() {
 
             {/* Non-Tech Track */}
             <div>
-              <div className="flex items-center justify-between mb-5 pb-3 border-b border-white/[0.04]">
+              <div className="flex items-center justify-between mb-5 pb-3 border-b border-emerald-500/10">
                 <div className="flex items-center gap-3">
-                  <span className="px-2 py-0.5 rounded bg-white/[0.04] text-[var(--text-primary)] text-[11px] font-semibold">
+                  <span className="px-2 py-0.5 rounded bg-emerald-950/50 border border-emerald-500/20 text-emerald-400 text-[11px] font-semibold">
                     Track 02
                   </span>
-                  <h2 className="font-display text-lg font-bold text-[var(--text-primary)]">
+                  <h2 className="font-display text-lg font-bold text-white">
                     Operations Wings
                   </h2>
                 </div>
-                <span className="text-xs text-[var(--text-muted)]">3 Specializations</span>
+                <span className="text-xs text-[#64748B]">3 Specializations</span>
               </div>
 
               <motion.div
@@ -192,15 +192,15 @@ export default function Recruitment() {
               >
                 {NON_TECH_DOMAINS.map(({ name, icon: Icon, desc }) => (
                   <motion.div key={name} variants={stagger.item}>
-                    <div className="p-5 h-full flex flex-col justify-between border border-white/[0.06] bg-[var(--card-bg)] rounded-xl hover:border-white/[0.12] transition-colors">
+                    <div className="p-5 h-full flex flex-col justify-between border border-emerald-500/15 bg-[#0B130E] rounded-xl hover:border-emerald-400/35 hover:bg-[#0E1A13] transition-all shadow-lg shadow-black/20">
                       <div>
-                        <div className="w-9 h-9 rounded-lg bg-white/[0.03] border border-white/[0.06] flex items-center justify-center text-[var(--text-primary)] mb-4">
+                        <div className="w-9 h-9 rounded-lg bg-emerald-950/50 border border-emerald-500/25 flex items-center justify-center text-emerald-400 mb-4">
                           <Icon size={18} />
                         </div>
-                        <h3 className="font-display font-bold text-base text-[var(--text-primary)] mb-2">
+                        <h3 className="font-display font-bold text-base text-white mb-2">
                           {name}
                         </h3>
-                        <p className="text-xs text-[var(--text-secondary)] leading-relaxed">
+                        <p className="text-xs text-[#94A3B8] leading-relaxed">
                           {desc}
                         </p>
                       </div>
@@ -214,8 +214,8 @@ export default function Recruitment() {
           {/* Right Column: 3-Step Pipeline & Actions */}
           <div className="space-y-6">
             {/* Timeline */}
-            <div className="p-6 border border-white/[0.06] bg-[var(--card-bg)] rounded-xl">
-              <h3 className="font-display text-sm font-bold text-[var(--text-primary)] uppercase tracking-wider mb-6">
+            <div className="p-6 border border-emerald-500/15 bg-[#0B130E] rounded-xl shadow-lg shadow-black/20">
+              <h3 className="font-display text-sm font-bold text-white uppercase tracking-wider mb-6">
                 Selection Process
               </h3>
               <div className="space-y-5">
@@ -224,16 +224,16 @@ export default function Recruitment() {
                   return (
                     <div key={item.step} className="flex gap-3.5">
                       <div className="flex flex-col items-center">
-                        <div className="w-7 h-7 rounded-md border border-white/[0.08] bg-white/[0.02] flex items-center justify-center text-[var(--text-primary)] shrink-0 text-xs font-semibold">
+                        <div className="w-7 h-7 rounded-md border border-emerald-500/20 bg-emerald-950/30 flex items-center justify-center text-emerald-400 shrink-0 text-xs font-semibold">
                           <Icon size={14} />
                         </div>
                         {idx < PIPELINE_STEPS.length - 1 && (
-                          <div className="w-px flex-1 bg-white/[0.06] mt-2.5" />
+                          <div className="w-px flex-1 bg-emerald-500/15 mt-2.5" />
                         )}
                       </div>
                       <div className="pb-2">
-                        <p className="font-semibold text-sm text-[var(--text-primary)]">{item.title}</p>
-                        <p className="text-xs text-[var(--text-secondary)] mt-1 leading-relaxed">
+                        <p className="font-semibold text-sm text-white">{item.title}</p>
+                        <p className="text-xs text-[#94A3B8] mt-1 leading-relaxed">
                           {item.desc}
                         </p>
                       </div>
@@ -244,7 +244,7 @@ export default function Recruitment() {
             </div>
 
             {/* Action Card */}
-            <div className="p-6 border border-white/[0.06] bg-[var(--card-bg)] rounded-xl">
+            <div className="p-6 border border-emerald-500/15 bg-[#0B130E] rounded-xl shadow-lg shadow-black/20">
               {isOpen ? (
                 <div className="space-y-3">
                   <p className="text-xs text-[var(--text-secondary)] leading-relaxed">

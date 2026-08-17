@@ -174,7 +174,7 @@ const ForgotPassword = () => {
           </h1>
         </div>
 
-        <div className="rounded-xl border border-white/[0.06] bg-[var(--card-bg)] p-8 sm:p-9">
+        <div className="w-full max-w-md border border-emerald-500/15 bg-[#0B130E] p-8 sm:p-10 rounded-xl shadow-2xl shadow-black/30 relative z-10">
           
           {error && (
             <Alert variant="destructive" className="bg-red-950/40 border-red-800/50 text-red-300 text-xs mb-5">

@@ -142,16 +142,16 @@ const Signup = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.1 }}
         >
-          <div className="rounded-xl border border-white/[0.06] bg-[var(--card-bg)] p-8 sm:p-9">
-            <div className="text-left pb-5 border-b border-white/[0.04] mb-6">
+          <div className="rounded-xl border border-emerald-500/15 bg-[#0B130E] p-8 sm:p-9 shadow-xl shadow-black/30">
+            <div className="text-left pb-5 border-b border-emerald-500/10 mb-6">
               <div className="lg:hidden mb-4">
                 <Link href="/" className="inline-flex items-center gap-2">
                   <Logo size="sm" color="light" showText={false} />
-                  <span className="font-display font-bold text-base text-[var(--text-primary)]">APRAMEYA</span>
+                  <span className="font-display font-bold text-base text-white">APRAMEYA</span>
                 </Link>
               </div>
-              <h2 className="text-xl font-bold text-[var(--text-primary)] font-display">Student Registration</h2>
-              <p className="text-xs text-[var(--text-secondary)] mt-1">Enter your College ID Number as your official username</p>
+              <h2 className="text-xl font-bold text-white font-display">Create Account</h2>
+              <p className="text-xs text-[#94A3B8] mt-1">Register using your official College ID Number</p>
             </div>
 
             <div className="space-y-4">

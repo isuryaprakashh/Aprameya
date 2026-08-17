@@ -35,11 +35,11 @@ export const ChamferedButton = React.forwardRef<HTMLButtonElement, ChamferedButt
 
     const variantClasses = {
       primary:
-        'bg-red-600 text-white font-semibold hover:bg-red-700 active:brightness-95 rounded-lg',
+        'bg-gradient-to-b from-[#2A723E] to-[#1C512A] border border-[#4ADE80]/30 text-[#F8FAFC] font-semibold hover:from-[#32874A] hover:to-[#226334] shadow-[0_4px_20px_rgba(28,81,42,0.35)] active:brightness-95 rounded-lg',
       secondary:
-        'bg-transparent border border-white/[0.08] text-[#F5F0EB] hover:border-white/[0.16] hover:bg-white/[0.03] rounded-lg',
+        'bg-[#0C150F]/80 backdrop-blur-sm border border-emerald-500/20 text-[#F8FAFC] hover:border-emerald-500/40 hover:bg-[#13241A] rounded-lg',
       ghost:
-        'bg-transparent text-[#8A8580] hover:text-[#F5F0EB] active:opacity-80',
+        'bg-transparent text-[#94A3B8] hover:text-[#F8FAFC] active:opacity-80',
       destructive:
         'bg-red-950/40 border border-red-800/50 text-red-400 hover:bg-red-900/40 active:brightness-95 rounded-lg',
     }[variant];

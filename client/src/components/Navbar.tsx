@@ -201,7 +201,7 @@ const Navbar = () => {
               {!user && (
                 <div className="mt-auto">
                   <Link href="/login" onClick={closeMobileMenu}>
-                    <button className="w-full py-3.5 rounded-lg bg-red-600 text-white font-semibold text-sm cursor-pointer">
+                    <button className="w-full py-3.5 rounded-lg bg-gradient-to-b from-[#2A723E] to-[#1C512A] border border-[#4ADE80]/30 text-white font-semibold text-sm cursor-pointer shadow-lg shadow-[#1C512A]/30">
                       Log in
                     </button>
                   </Link>
