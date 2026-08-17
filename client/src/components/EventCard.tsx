@@ -8,14 +8,14 @@ interface EventCardProps {
 
 const EventCard = ({ event, onRegister }: EventCardProps) => {
   return (
-    <div className="h-full flex flex-col justify-between p-6 rounded-xl border border-emerald-500/15 bg-[#0B130E] hover:border-emerald-400/35 hover:bg-[#0E1A13] transition-all duration-300 shadow-lg shadow-black/20 group">
+    <div className="h-full flex flex-col justify-between p-6 rounded-xl morphic-metallic-card transition-all duration-300 group">
       <div>
         <div className="flex items-center justify-between mb-4">
-          <span className="text-[10px] font-sans font-semibold uppercase tracking-wider text-emerald-400 bg-emerald-950/40 border border-emerald-500/20 px-2.5 py-1 rounded">
+          <span className="text-[10px] font-sans font-bold uppercase tracking-wider text-metallic-green bg-emerald-950/60 border border-emerald-400/30 px-2.5 py-1 rounded shadow-[inset_0_1px_1px_rgba(167,243,208,0.2)]">
             {event.type}
           </span>
           <span className="text-[11px] text-[#94A3B8] font-mono flex items-center gap-1.5">
-            <Calendar className="w-3.5 h-3.5 text-emerald-400/80" />
+            <Calendar className="w-3.5 h-3.5 text-emerald-400" />
             {event.date}
           </span>
         </div>
@@ -30,7 +30,7 @@ const EventCard = ({ event, onRegister }: EventCardProps) => {
           </div>
         )}
 
-        <h3 className="font-display font-bold text-lg text-white mb-2 leading-snug">
+        <h3 className="font-display font-bold text-lg text-white mb-2 leading-snug group-hover:text-metallic-green transition-all">
           {event.title}
         </h3>
         
@@ -39,17 +39,17 @@ const EventCard = ({ event, onRegister }: EventCardProps) => {
         </p>
 
         <div className="text-[11px] text-[#64748B] flex items-center gap-1.5 mb-6">
-          <MapPin className="w-3.5 h-3.5 text-emerald-400/70 shrink-0" />
+          <MapPin className="w-3.5 h-3.5 text-emerald-400/80 shrink-0" />
           <span className="truncate">{event.location}</span>
         </div>
       </div>
 
       <button
         onClick={onRegister}
-        className="w-full py-2.5 rounded-lg font-medium text-xs bg-gradient-to-b from-[#2A723E] to-[#1C512A] border border-[#4ADE80]/30 text-white hover:from-[#32874A] hover:to-[#226334] shadow-md shadow-[#1C512A]/30 transition-all flex items-center justify-center gap-2 cursor-pointer"
+        className="w-full py-2.5 rounded-lg text-xs btn-metallic-green flex items-center justify-center gap-2 cursor-pointer"
       >
         <span>Register Pass</span>
-        <ArrowRight className="w-3.5 h-3.5 text-emerald-300" />
+        <ArrowRight className="w-3.5 h-3.5" />
       </button>
     </div>
   );
