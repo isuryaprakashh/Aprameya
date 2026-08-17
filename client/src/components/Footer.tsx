@@ -3,10 +3,7 @@ import { Link } from "wouter";
 
 export default function Footer() {
   return (
-    <footer className="relative bg-black border-t border-red-500/15 pt-16 pb-12 font-sans overflow-hidden">
-      {/* Ambient Metallic Red bottom glow */}
-      <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[700px] h-[200px] bg-gradient-to-t from-red-600/15 to-transparent blur-[120px] pointer-events-none" />
-
+    <footer className="relative bg-black border-t border-white/10 pt-16 pb-12 font-sans overflow-hidden">
       <div className="max-w-7xl mx-auto px-6 md:px-12 relative z-10">
         {/* Main footer content */}
         <div className="grid grid-cols-1 md:grid-cols-12 gap-12 mb-12">
@@ -14,11 +11,11 @@ export default function Footer() {
           <div className="md:col-span-6 lg:col-span-5">
             <div className="flex items-center gap-2.5 mb-4">
               <span className="font-display font-bold text-xl text-white tracking-tight">APRAMEYA</span>
-              <span className="text-[11px] font-sans font-semibold uppercase tracking-wider text-red-300 bg-red-950/60 px-2 py-0.5 rounded border border-red-500/30">
+              <span className="text-[11px] font-mono font-semibold uppercase tracking-wider text-red-400 bg-[#161616] px-2 py-0.5 rounded border border-white/10">
                 Robotics Lab
               </span>
             </div>
-            <p className="text-[#94A3B8] text-sm leading-relaxed max-w-sm mb-6">
+            <p className="text-zinc-400 text-sm leading-relaxed max-w-sm mb-6">
               Undergraduate robotics research and autonomous systems engineering at KL University. Building physical platforms and ROS 2 compute stacks.
             </p>
 
@@ -37,7 +34,7 @@ export default function Footer() {
                   href={item.href}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="w-9 h-9 rounded-lg bg-[#1A050A] border border-red-500/20 flex items-center justify-center text-[#94A3B8] hover:text-white hover:border-red-400/50 hover:bg-[#2D0A12] transition-colors"
+                  className="w-9 h-9 rounded-lg bg-[#111111] border border-white/10 flex items-center justify-center text-zinc-400 hover:text-white hover:border-white/25 hover:bg-[#1A1A1A] transition-colors"
                   aria-label={item.label}
                 >
                   {item.icon}

@@ -6,11 +6,11 @@ import { ExternalLink, Award, ArrowRight, BookOpen, Cpu, Trophy, Sparkles } from
 import ChamferedButton from '@/components/ui/ChamferedButton';
 
 const fadeUp = {
-  hidden: { opacity: 0, y: 20 },
+  hidden: { opacity: 0, y: 16 },
   visible: {
     opacity: 1,
     y: 0,
-    transition: { duration: 0.5, ease: [0.16, 1, 0.3, 1] }
+    transition: { duration: 0.4, ease: [0.16, 1, 0.3, 1] }
   }
 };
 
@@ -18,36 +18,36 @@ const stagger = {
   hidden: { opacity: 0 },
   visible: {
     opacity: 1,
-    transition: { staggerChildren: 0.08 }
+    transition: { staggerChildren: 0.06 }
   }
 };
 
 const STUDENT_PILLARS = [
   {
     tag: "RESEARCH & PUBLICATIONS",
-    title: "Write Research Papers & Journals",
-    desc: "From algorithmic formulation to simulation proofs and peer-reviewed conference submissions, we guide members to publish in IEEE and autonomy symposiums.",
+    title: "Write Research Papers",
+    desc: "Formulate algorithms, run simulations, and submit verified findings to IEEE and autonomy conferences.",
     icon: BookOpen,
     badge: "Academic Writing"
   },
   {
     tag: "HARDWARE & SENSORS",
-    title: "Build Real Autonomous Platforms",
-    desc: "Hands-on engineering with drive-by-wire vehicles, LiDAR-camera sensor fusion, SLAM spatial localization, and ROS 2 compute stacks.",
+    title: "Build Autonomous Platforms",
+    desc: "Engineer drive-by-wire vehicles with LiDAR-camera fusion, SLAM localization, and ROS 2 compute stacks.",
     icon: Cpu,
     badge: "Hardware R&D"
   },
   {
     tag: "NATIONAL PODIUMS",
-    title: "Win National Robotics Hackathons",
-    desc: "Team Aprameya secured 3rd in India at IISc Bengaluru. We build under pressure, test rigorously, and compete on the national stage.",
+    title: "Compete at National Hackathons",
+    desc: "Team Aprameya ranked 3rd in India at IISc Bengaluru, testing autonomy algorithms under tight benchmark constraints.",
     icon: Trophy,
     badge: "Competitions"
   },
   {
-    tag: "MENTORSHIP & GROWTH",
-    title: "Learn, Grow & Upskill Rapidly",
-    desc: "Structured bootcamps in PyTorch, embedded Linux, NVIDIA Jetson edge inference, and collaborative GitHub workflows for every student.",
+    tag: "MENTORSHIP & SKILLS",
+    title: "Upskill in Robotics & AI",
+    desc: "Hands-on training in PyTorch, embedded Linux, NVIDIA Jetson edge inference, and collaborative GitHub workflows.",
     icon: Sparkles,
     badge: "Engineering Track"
   }
@@ -57,14 +57,9 @@ const Home = () => {
   return (
     <main className="overflow-x-hidden w-full max-w-full bg-black min-h-screen">
 
-      {/* ─── HERO SECTION (PURE BLACK & METALLIC GRADIENT RED) ─── */}
-      <section className="relative min-h-[90vh] flex items-center px-6 md:px-12 pt-32 pb-20 overflow-hidden">
-        
-        {/* Ambient Metallic Crimson / Ruby Radial Lights */}
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[900px] h-[450px] bg-gradient-to-b from-red-600/18 via-rose-950/10 to-transparent blur-[140px] pointer-events-none" />
-        <div className="absolute top-1/3 -right-24 w-[500px] h-[500px] bg-red-700/10 blur-[150px] pointer-events-none" />
-
-        <div className="max-w-7xl mx-auto w-full grid lg:grid-cols-12 gap-10 lg:gap-12 items-center relative z-10">
+      {/* ─── HERO SECTION (CLEAN SOLID BLACK & RED) ─── */}
+      <section className="relative min-h-[85vh] flex items-center px-6 md:px-12 pt-32 pb-20">
+        <div className="max-w-7xl mx-auto w-full grid lg:grid-cols-12 gap-10 lg:gap-12 items-center">
 
           {/* Left: Typographic Stack */}
           <motion.div
@@ -73,33 +68,33 @@ const Home = () => {
             variants={stagger}
             className="lg:col-span-7 flex flex-col items-start"
           >
-            {/* Metallic Red Pill Badge */}
+            {/* Clean Solid Pill Badge */}
             <motion.div
               variants={fadeUp}
-              className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-red-500/30 bg-gradient-to-r from-red-950/70 via-black/80 to-red-950/70 backdrop-blur-xl shadow-[inset_0_1px_1px_rgba(254,202,202,0.3),0_4px_15px_rgba(0,0,0,0.7)] text-[11px] font-sans font-semibold uppercase tracking-[0.15em] text-red-200 mb-6"
+              className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-white/10 bg-[#111111] text-[11px] font-mono text-zinc-300 mb-6"
             >
-              <span className="w-1.5 h-1.5 rounded-full bg-red-400 shadow-[0_0_8px_#ef4444] animate-pulse" />
+              <span className="w-1.5 h-1.5 rounded-full bg-red-500" />
               KL University • Autonomous Systems & Robotics Lab
             </motion.div>
 
-            {/* Headline with Metallic Red Sheen */}
+            {/* Headline */}
             <motion.h1
               variants={fadeUp}
-              className="text-4xl sm:text-5xl md:text-6xl lg:text-[4.75rem] tracking-tight text-white leading-[1.02] mb-6"
+              className="text-4xl sm:text-5xl md:text-6xl lg:text-[4.5rem] tracking-tight text-white leading-[1.04] mb-6"
             >
-              <span className="font-serif italic font-normal text-[1.12em] text-[#94A3B8]">We are</span>{" "}
+              <span className="font-serif italic font-normal text-[1.1em] text-zinc-400">We are</span>{" "}
               <span className="font-display font-bold tracking-tight text-white">APRAMEYA</span>
               <br />
-              <span className="font-serif italic font-normal text-[1.12em] text-[#94A3B8]">and we build</span>{" "}
-              <span className="font-display font-bold tracking-tight text-metallic-red">autonomous systems.</span>
+              <span className="font-serif italic font-normal text-[1.1em] text-zinc-400">and we build</span>{" "}
+              <span className="font-display font-bold tracking-tight text-red-500">autonomous systems.</span>
             </motion.h1>
 
-            {/* Value Statement */}
+            {/* Clean Direct Value Statement (stop-slop) */}
             <motion.p
               variants={fadeUp}
-              className="text-base sm:text-lg text-[#94A3B8] font-sans max-w-xl leading-relaxed mb-8"
+              className="text-base sm:text-lg text-zinc-400 font-sans max-w-xl leading-relaxed mb-8"
             >
-              We empower student engineers to <span className="text-white font-medium">write research papers</span>, publish in <span className="text-white font-medium">tech journals</span>, build physical self-driving vehicles, compete in <span className="text-white font-medium">national hackathons</span>, and continuously <span className="text-white font-medium">learn, grow, and upskill</span>.
+              We develop physical self-driving platforms, publish peer-reviewed papers in academic journals, compete in national autonomy hackathons, and train undergraduate engineers.
             </motion.p>
 
             {/* Action Group */}
@@ -114,7 +109,7 @@ const Home = () => {
                 <ChamferedButton
                   variant="secondary"
                   size="lg"
-                  rightIcon={<ArrowRight className="w-4 h-4 text-red-400" />}
+                  rightIcon={<ArrowRight className="w-4 h-4 text-zinc-400" />}
                 >
                   Explore Repositories
                 </ChamferedButton>
@@ -122,17 +117,15 @@ const Home = () => {
             </motion.div>
           </motion.div>
 
-          {/* Right: Double-Bezel Metallic Red Framed Video */}
+          {/* Right: Clean Solid Framed Video */}
           <motion.div
-            initial={{ opacity: 0, scale: 0.96 }}
+            initial={{ opacity: 0, scale: 0.98 }}
             animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1], delay: 0.15 }}
+            transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1], delay: 0.1 }}
             className="lg:col-span-5 relative"
           >
-            {/* Outer Metallic Red Frame */}
-            <div className="p-2.5 rounded-2xl border border-red-500/30 bg-gradient-to-b from-[#2D0A12]/70 via-[#1A050A]/80 to-black backdrop-blur-2xl shadow-[inset_0_1px_2px_rgba(254,202,202,0.35),0_20px_50px_rgba(0,0,0,0.9),0_0_30px_rgba(220,38,38,0.18)]">
-              {/* Inner core */}
-              <div className="relative rounded-xl overflow-hidden aspect-[4/3] bg-black">
+            <div className="p-2 rounded-xl border border-white/10 bg-[#0A0A0A]">
+              <div className="relative rounded-lg overflow-hidden aspect-[4/3] bg-black">
                 <video
                   autoPlay
                   loop
@@ -141,12 +134,12 @@ const Home = () => {
                   className="w-full h-full object-cover"
                   src="/assets/hero-loop.mp4"
                 />
-                <div className="absolute inset-0 rounded-xl ring-1 ring-inset ring-red-400/25 pointer-events-none" />
+                <div className="absolute inset-0 rounded-lg ring-1 ring-inset ring-white/10 pointer-events-none" />
                 
-                {/* Floating Metallic Red Caption Pill */}
-                <div className="absolute bottom-3 left-3 right-3 px-3.5 py-2 rounded-lg bg-black/85 backdrop-blur-xl border border-red-500/30 text-[11px] text-[#CBD5E1] flex items-center justify-between shadow-lg shadow-black/80">
-                  <span className="font-medium">Physical Autonomous Vehicle</span>
-                  <span className="font-mono text-[10px] text-metallic-red font-bold uppercase tracking-wider">KL-AV-01</span>
+                {/* Clean Caption Pill */}
+                <div className="absolute bottom-3 left-3 right-3 px-3 py-1.5 rounded bg-black/90 border border-white/10 text-[11px] text-zinc-300 flex items-center justify-between">
+                  <span>Physical Autonomous Vehicle</span>
+                  <span className="font-mono text-[10px] text-red-400 font-bold">KL-AV-01</span>
                 </div>
               </div>
             </div>
@@ -155,8 +148,8 @@ const Home = () => {
       </section>
 
 
-      {/* ─── STATS BAR (PURE BLACK WITH METALLIC BEVEL) ─── */}
-      <section className="border-y border-red-500/15 bg-gradient-to-r from-black via-[#1A050A]/50 to-black backdrop-blur-md">
+      {/* ─── STATS BAR (CLEAN SOLID BLACK) ─── */}
+      <section className="border-y border-white/10 bg-black">
         <div className="max-w-7xl mx-auto px-6 md:px-12 py-8 grid grid-cols-2 md:grid-cols-4 gap-6">
           {[
             { n: "2019", l: "Founded at KL University" },
@@ -168,7 +161,7 @@ const Home = () => {
               <div className="text-3xl md:text-4xl font-bold text-white tabular-nums font-display mb-1">
                 {s.n === "50+" ? <CountUp value={s.n} /> : s.n}
               </div>
-              <div className="text-[11px] text-red-400 font-sans font-semibold uppercase tracking-[0.1em]">
+              <div className="text-[11px] text-zinc-400 font-sans font-semibold uppercase tracking-[0.08em]">
                 {s.l}
               </div>
             </div>
@@ -177,51 +170,51 @@ const Home = () => {
       </section>
 
 
-      {/* ─── STUDENT EMPOWERMENT / HOW WE HELP YOU GROW (MORPHIC METALLIC RED BENTO) ─── */}
-      <section className="py-20 md:py-28 px-6 md:px-12 max-w-7xl mx-auto border-b border-red-500/15">
+      {/* ─── STUDENT EMPOWERMENT / HOW WE HELP YOU GROW ─── */}
+      <section className="py-20 md:py-24 px-6 md:px-12 max-w-7xl mx-auto border-b border-white/10">
         <div className="flex flex-col md:flex-row md:items-end justify-between mb-12">
           <div>
             <p className="text-[11px] font-sans font-semibold uppercase tracking-[0.15em] text-red-400 mb-2">
               Member Growth & Acceleration
             </p>
-            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight text-white">
-              <span className="font-serif italic font-normal text-[1.1em] text-[#94A3B8]">How we help you</span>{" "}
+            <h2 className="text-3xl sm:text-4xl font-bold tracking-tight text-white">
+              <span className="font-serif italic font-normal text-[1.1em] text-zinc-400">How we help you</span>{" "}
               <span className="font-display">learn, build & publish.</span>
             </h2>
           </div>
-          <p className="text-xs text-[#94A3B8] max-w-xs mt-4 md:mt-0 leading-relaxed">
-            Aprameya is an incubator for undergraduate autonomy engineering, academic paper writing, and competitive robotics.
+          <p className="text-xs text-zinc-400 max-w-xs mt-4 md:mt-0 leading-relaxed">
+            Aprameya trains undergraduates in autonomy engineering, academic paper writing, and competitive robotics.
           </p>
         </div>
 
-        {/* 4-Pillar Grid with Morphic Metallic Red Cards */}
+        {/* 4-Pillar Grid with Clean Solid Cards */}
         <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
           {STUDENT_PILLARS.map((pillar, idx) => {
             const Icon = pillar.icon;
             return (
               <div
                 key={idx}
-                className="p-6 rounded-xl morphic-metallic-card flex flex-col justify-between transition-all duration-300 group"
+                className="p-6 rounded-xl border border-white/10 bg-[#0A0A0A] hover:bg-[#111111] hover:border-white/20 flex flex-col justify-between transition-colors duration-200 group"
               >
                 <div>
                   <div className="flex items-center justify-between mb-6">
-                    <span className="font-mono text-xs text-red-400 font-bold tracking-wider">
+                    <span className="font-mono text-xs text-red-400 font-bold">
                       0{idx + 1}
                     </span>
-                    <div className="w-9 h-9 rounded-lg bg-gradient-to-b from-red-900/60 to-red-950/80 border border-red-400/30 flex items-center justify-center text-red-300 group-hover:text-white shadow-[inset_0_1px_1px_rgba(254,202,202,0.2)] transition-colors">
-                      <Icon size={18} />
+                    <div className="w-8 h-8 rounded bg-[#161616] border border-white/10 flex items-center justify-center text-zinc-300 group-hover:text-white">
+                      <Icon size={16} />
                     </div>
                   </div>
 
-                  <span className="text-[10px] font-sans font-bold uppercase tracking-wider text-metallic-red mb-2 block">
+                  <span className="text-[10px] font-sans font-semibold uppercase tracking-wider text-red-400 mb-2 block">
                     {pillar.badge}
                   </span>
 
-                  <h3 className="font-display font-bold text-lg text-white mb-3 leading-snug">
+                  <h3 className="font-display font-bold text-base text-white mb-2 leading-snug">
                     {pillar.title}
                   </h3>
 
-                  <p className="text-xs text-[#94A3B8] leading-relaxed">
+                  <p className="text-xs text-zinc-400 leading-relaxed">
                     {pillar.desc}
                   </p>
                 </div>
@@ -233,37 +226,37 @@ const Home = () => {
 
 
       {/* ─── HACKATHON & BENCHMARK FEATURE ─── */}
-      <section className="py-20 md:py-28 px-6 md:px-12 max-w-7xl mx-auto">
+      <section className="py-20 md:py-24 px-6 md:px-12 max-w-7xl mx-auto">
         <div className="mb-10">
           <p className="text-[11px] font-sans font-semibold uppercase tracking-[0.15em] text-red-400 mb-2">
             Verified National Honors
           </p>
-          <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight text-white">
-            <span className="font-serif italic font-normal text-[1.1em] text-[#94A3B8]">National 3rd at</span>{" "}
+          <h2 className="text-3xl sm:text-4xl font-bold tracking-tight text-white">
+            <span className="font-serif italic font-normal text-[1.1em] text-zinc-400">National 3rd at</span>{" "}
             <span className="font-display">IISc Bengaluru</span>
           </h2>
         </div>
 
-        <div className="grid lg:grid-cols-12 gap-0 rounded-2xl morphic-metallic-card overflow-hidden">
+        <div className="grid lg:grid-cols-12 gap-0 rounded-xl border border-white/10 bg-[#0A0A0A] overflow-hidden">
           {/* Photo */}
-          <div className="lg:col-span-7 relative min-h-[320px] lg:min-h-[440px] overflow-hidden group">
+          <div className="lg:col-span-7 relative min-h-[320px] lg:min-h-[400px] overflow-hidden group">
             <img
               src="/assets/UVH.jpg"
               alt="Aprameya team receiving national awards at IISc Bengaluru"
-              className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-[1.02]"
+              className="absolute inset-0 w-full h-full object-cover"
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent pointer-events-none" />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent pointer-events-none" />
             
-            <div className="absolute bottom-4 left-4 right-4 p-3 rounded-lg bg-black/85 backdrop-blur-xl border border-red-500/25 text-xs text-[#CBD5E1] shadow-lg">
+            <div className="absolute bottom-4 left-4 right-4 p-3 rounded bg-black/90 border border-white/10 text-xs text-zinc-300">
               Team Aprameya receiving national honors at the Urban Vision Autonomous Hackathon, IISc Bengaluru.
             </div>
           </div>
 
           {/* Details */}
-          <div className="lg:col-span-5 p-8 md:p-10 flex flex-col justify-between border-t lg:border-t-0 lg:border-l border-red-500/20 bg-black/60 backdrop-blur-xl">
+          <div className="lg:col-span-5 p-8 md:p-10 flex flex-col justify-between border-t lg:border-t-0 lg:border-l border-white/10 bg-[#0A0A0A]">
             <div>
-              <div className="inline-flex items-center gap-2 mb-5 px-3 py-1.5 rounded-lg bg-red-950/60 border border-red-400/30 text-[11px] font-sans font-semibold text-red-300 shadow-[inset_0_1px_1px_rgba(254,202,202,0.15)]">
-                <Award className="w-3.5 h-3.5 text-amber-400" />
+              <div className="inline-flex items-center gap-2 mb-5 px-2.5 py-1 rounded bg-[#161616] border border-white/10 text-[11px] font-sans text-zinc-300">
+                <Award className="w-3.5 h-3.5 text-red-400" />
                 Urban Vision Autonomous Challenge
               </div>
 
@@ -271,19 +264,19 @@ const Home = () => {
                 High-Density Autonomous Navigation
               </h3>
 
-              <p className="text-sm text-[#94A3B8] leading-relaxed mb-6">
+              <p className="text-sm text-zinc-400 leading-relaxed mb-6">
                 Real-time computer vision, lane tracking, dynamic obstacle avoidance, and path trajectory planning built for complex Indian traffic conditions.
               </p>
 
-              <div className="space-y-4 text-xs border-t border-red-500/15 pt-5">
+              <div className="space-y-3 text-xs border-t border-white/10 pt-5">
                 <div>
-                  <p className="text-red-400 font-sans font-semibold uppercase tracking-[0.1em] text-[10px] mb-1">Core Student Cohort</p>
-                  <p className="text-white leading-relaxed text-sm">
+                  <p className="text-zinc-500 font-sans font-semibold uppercase tracking-[0.08em] text-[10px] mb-0.5">Core Student Cohort</p>
+                  <p className="text-white text-sm">
                     S. Sai Revanth, A. Venkata Praveen, A. Komal Sai Raj, K. Yashwanth Chowdary
                   </p>
                 </div>
                 <div>
-                  <p className="text-red-400 font-sans font-semibold uppercase tracking-[0.1em] text-[10px] mb-1">Faculty Mentorship</p>
+                  <p className="text-zinc-500 font-sans font-semibold uppercase tracking-[0.08em] text-[10px] mb-0.5">Faculty Mentorship</p>
                   <p className="text-white text-sm">
                     Prof. Hari Kiran Vege, Mr. Srikanth Annamareddy
                   </p>
@@ -300,7 +293,7 @@ const Home = () => {
               <ChamferedButton
                 variant="secondary"
                 size="sm"
-                rightIcon={<ExternalLink className="w-3.5 h-3.5 text-red-400" />}
+                rightIcon={<ExternalLink className="w-3.5 h-3.5 text-zinc-400" />}
               >
                 Read Press Coverage
               </ChamferedButton>
@@ -310,20 +303,20 @@ const Home = () => {
       </section>
 
 
-      {/* ─── R&D INITIATIVES (MORPHIC METALLIC RED CARDS) ─── */}
-      <section className="py-20 md:py-28 px-6 md:px-12 max-w-7xl mx-auto border-t border-red-500/15">
+      {/* ─── R&D INITIATIVES ─── */}
+      <section className="py-20 md:py-24 px-6 md:px-12 max-w-7xl mx-auto border-t border-white/10">
         <div className="flex items-end justify-between mb-10">
           <div>
             <p className="text-[11px] font-sans font-semibold uppercase tracking-[0.15em] text-red-400 mb-2">
               Engineering Repositories
             </p>
-            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight text-white">
-              <span className="font-serif italic font-normal text-[1.1em] text-[#94A3B8]">Active</span>{" "}
+            <h2 className="text-3xl sm:text-4xl font-bold tracking-tight text-white">
+              <span className="font-serif italic font-normal text-[1.1em] text-zinc-400">Active</span>{" "}
               <span className="font-display">R&D Projects</span>
             </h2>
           </div>
           <Link href="/projects">
-            <span className="text-xs font-sans font-medium text-red-400 hover:text-red-300 transition-colors flex items-center gap-1.5 cursor-pointer">
+            <span className="text-xs font-sans font-medium text-zinc-400 hover:text-white transition-colors flex items-center gap-1.5 cursor-pointer">
               All projects <ArrowRight className="w-3.5 h-3.5" />
             </span>
           </Link>
@@ -333,14 +326,14 @@ const Home = () => {
           {featuredItems.map((item) => (
             <Link key={item.id} href={item.link} className="block h-full">
               <div className="group h-full cursor-pointer">
-                <div className="h-full flex flex-col rounded-xl morphic-metallic-card overflow-hidden transition-all duration-300">
+                <div className="h-full flex flex-col rounded-xl border border-white/10 bg-[#0A0A0A] hover:bg-[#111111] hover:border-white/20 overflow-hidden transition-colors duration-200">
                   <div className="relative h-48 overflow-hidden bg-black">
                     <img
                       src={item.image}
                       alt={item.title}
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                      className="w-full h-full object-cover"
                     />
-                    <div className="absolute top-3 left-3 px-2.5 py-1 bg-black/80 backdrop-blur-md rounded border border-red-400/30 text-red-300 text-[10px] font-sans font-bold uppercase tracking-wider shadow">
+                    <div className="absolute top-3 left-3 px-2 py-0.5 bg-black/90 rounded border border-white/10 text-white text-[10px] font-sans font-semibold uppercase tracking-wider">
                       {item.category}
                     </div>
                   </div>
@@ -350,14 +343,14 @@ const Home = () => {
                       <h3 className="font-display font-bold text-white text-base mb-2">
                         {item.title}
                       </h3>
-                      <p className="text-xs text-[#94A3B8] leading-relaxed line-clamp-3">
+                      <p className="text-xs text-zinc-400 leading-relaxed line-clamp-3">
                         {item.description}
                       </p>
                     </div>
 
-                    <div className="mt-5 pt-4 border-t border-red-500/15 flex items-center justify-between text-xs text-[#64748B] group-hover:text-red-300 transition-colors">
+                    <div className="mt-5 pt-4 border-t border-white/10 flex items-center justify-between text-xs text-zinc-400 group-hover:text-white transition-colors">
                       <span className="font-sans font-medium">Explore stack</span>
-                      <ArrowRight size={14} className="transform group-hover:translate-x-1 transition-transform" />
+                      <ArrowRight size={14} className="transform group-hover:translate-x-0.5 transition-transform" />
                     </div>
                   </div>
                 </div>
@@ -369,7 +362,7 @@ const Home = () => {
 
 
       {/* ─── WORKSHOPS & EXPLORE ─── */}
-      <section className="py-20 md:py-28 px-6 md:px-12 max-w-7xl mx-auto border-t border-red-500/15">
+      <section className="py-20 md:py-24 px-6 md:px-12 max-w-7xl mx-auto border-t border-white/10">
         <div className="grid lg:grid-cols-2 gap-12">
           {/* Upcoming */}
           <div>
@@ -377,23 +370,23 @@ const Home = () => {
               Sessions & Bootcamps
             </p>
             <h2 className="text-2xl sm:text-3xl font-bold text-white tracking-tight mb-8">
-              <span className="font-serif italic font-normal text-[1.1em] text-[#94A3B8]">Upcoming</span>{" "}
+              <span className="font-serif italic font-normal text-[1.1em] text-zinc-400">Upcoming</span>{" "}
               <span className="font-display">Workshops</span>
             </h2>
 
             <div className="space-y-3">
               {upcomingEvents.map((event) => (
                 <Link key={event.id} href="/events" className="block">
-                  <div className="p-4 rounded-xl morphic-metallic-card flex items-center gap-4 group">
-                    <div className="flex flex-col items-center justify-center w-12 h-12 rounded-lg bg-red-950/60 border border-red-400/30 shadow-[inset_0_1px_1px_rgba(254,202,202,0.2)] shrink-0">
+                  <div className="p-4 rounded-xl border border-white/10 bg-[#0A0A0A] hover:bg-[#111111] hover:border-white/20 flex items-center gap-4 group transition-colors">
+                    <div className="flex flex-col items-center justify-center w-12 h-12 rounded-lg bg-[#141414] border border-white/10 shrink-0">
                       <span className="text-[9px] uppercase font-bold text-red-400">{event.month}</span>
                       <span className="text-lg font-bold text-white font-display">{event.day}</span>
                     </div>
                     <div className="flex-1 min-w-0">
                       <h3 className="font-display font-bold text-sm text-white truncate">{event.title}</h3>
-                      <p className="text-xs text-[#64748B] mt-0.5 truncate">{event.location}</p>
+                      <p className="text-xs text-zinc-400 mt-0.5 truncate">{event.location}</p>
                     </div>
-                    <ArrowRight className="w-4 h-4 text-red-400/60 group-hover:text-red-300 transition-colors shrink-0" />
+                    <ArrowRight className="w-4 h-4 text-zinc-500 group-hover:text-white transition-colors shrink-0" />
                   </div>
                 </Link>
               ))}
@@ -406,7 +399,7 @@ const Home = () => {
               Gateway
             </p>
             <h2 className="text-2xl sm:text-3xl font-bold text-white tracking-tight mb-8">
-              <span className="font-serif italic font-normal text-[1.1em] text-[#94A3B8]">Explore</span>{" "}
+              <span className="font-serif italic font-normal text-[1.1em] text-zinc-400">Explore</span>{" "}
               <span className="font-display">Aprameya</span>
             </h2>
 
@@ -417,12 +410,12 @@ const Home = () => {
                 { label: "About Innovation Lab", desc: "Our laboratory history, faculty mentors, and roadmap", href: "/about" },
               ].map((link) => (
                 <Link key={link.href} href={link.href} className="block">
-                  <div className="p-4 rounded-xl morphic-metallic-card flex items-center justify-between group">
+                  <div className="p-4 rounded-xl border border-white/10 bg-[#0A0A0A] hover:bg-[#111111] hover:border-white/20 flex items-center justify-between group transition-colors">
                     <div>
                       <h3 className="font-display font-bold text-sm text-white">{link.label}</h3>
-                      <p className="text-xs text-[#64748B] mt-0.5">{link.desc}</p>
+                      <p className="text-xs text-zinc-400 mt-0.5">{link.desc}</p>
                     </div>
-                    <ArrowRight className="w-4 h-4 text-red-400/60 group-hover:text-red-300 transition-colors shrink-0" />
+                    <ArrowRight className="w-4 h-4 text-zinc-500 group-hover:text-white transition-colors shrink-0" />
                   </div>
                 </Link>
               ))}
@@ -444,7 +437,7 @@ const CountUp = ({ value }: { value: string }) => {
       const num = parseInt(value.replace(/\D/g, ''));
       const suffix = value.replace(/\d/g, '');
       const controls = animate(0, num, {
-        duration: 1.5,
+        duration: 1.2,
         ease: "easeOut",
         onUpdate: (v) => {
           if (ref.current) ref.current.textContent = Math.floor(v) + suffix;

@@ -58,7 +58,7 @@ const Navbar = () => {
             w-full max-w-6xl px-4 py-2.5
             rounded-xl transition-all duration-500
             ${scrolled
-              ? 'bg-[var(--bg-body)]/90 backdrop-blur-xl border border-white/[0.06] shadow-lg shadow-black/10'
+              ? 'bg-black/95 border border-white/10'
               : 'bg-transparent border-transparent'
             }
           `}

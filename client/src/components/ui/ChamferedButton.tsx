@@ -35,13 +35,13 @@ export const ChamferedButton = React.forwardRef<HTMLButtonElement, ChamferedButt
 
     const variantClasses = {
       primary:
-        'bg-gradient-to-b from-[#FFA4A4] via-[#EF4444] to-[#7F1D1D] border-t border-white border-x-red-500/50 border-b-[#200505] text-white font-bold shadow-[0_4px_22px_rgba(220,38,38,0.45),inset_0_1px_1px_rgba(255,255,255,0.8)] hover:from-[#FFFFFF] hover:via-[#F87171] hover:to-[#991B1B] hover:shadow-[0_6px_30px_rgba(239,68,68,0.65),inset_0_1px_2px_rgba(255,255,255,0.9)] active:scale-[0.97] rounded-lg',
+        'bg-[#DC2626] hover:bg-[#EF4444] active:bg-[#B91C1C] text-white font-semibold border border-red-500/30 shadow-none rounded-lg transition-colors',
       secondary:
-        'bg-[#1A050A]/80 backdrop-blur-xl border border-red-500/25 text-[#F8FAFC] font-semibold shadow-[inset_0_1px_1px_rgba(254,202,202,0.15),0_4px_16px_rgba(0,0,0,0.7)] hover:border-red-400/50 hover:bg-[#2D0A12]/90 hover:text-white active:scale-[0.97] rounded-lg',
+        'bg-[#111111] hover:bg-[#1A1A1A] active:bg-[#0D0D0D] text-white font-semibold border border-white/10 hover:border-white/20 shadow-none rounded-lg transition-colors',
       ghost:
-        'bg-transparent text-[#94A3B8] hover:text-[#FFA4A4] active:opacity-80',
+        'bg-transparent text-[#94A3B8] hover:text-white active:opacity-80 transition-colors',
       destructive:
-        'bg-red-950/70 border border-red-700 text-red-300 hover:bg-red-900 active:brightness-95 rounded-lg',
+        'bg-red-950/70 border border-red-700/50 text-red-300 hover:bg-red-900 active:brightness-95 rounded-lg transition-colors',
     }[variant];
 
     return (
