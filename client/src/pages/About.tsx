@@ -54,7 +54,7 @@ const About = () => {
       </section>
 
       {/* Mission Section */}
-      <section className="py-16 px-6 md:px-12 bg-[var(--bg-body)]">
+      <section className="py-16 px-6 md:px-12 bg-black">
         <div className="max-w-7xl mx-auto">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -62,10 +62,10 @@ const About = () => {
             transition={{ duration: 0.5 }}
             viewport={{ once: true }}
           >
-            <div className="border border-emerald-500/15 bg-[#0B130E] rounded-xl p-8 md:p-12 shadow-xl shadow-black/20">
+            <div className="morphic-metallic-card rounded-xl p-8 md:p-12">
               <div className="grid lg:grid-cols-2 gap-10 items-center">
                 <div>
-                  <p className="text-[11px] font-sans font-medium uppercase tracking-[0.15em] text-emerald-400 mb-2">
+                  <p className="text-[11px] font-sans font-semibold uppercase tracking-[0.15em] text-red-400 mb-2">
                     Our Mission
                   </p>
                   <h3 className="text-2xl md:text-3xl sm:text-4xl mb-4 text-white">
@@ -80,7 +80,7 @@ const About = () => {
                     We focus on core autonomy pillars: LiDAR-camera sensor fusion, SLAM spatial localization, embedded edge acceleration (NVIDIA Jetson, Coral TPU), and CAN-bus control systems.
                   </p>
                 </div>
-                <div className="relative rounded-lg overflow-hidden border border-emerald-500/20 bg-black aspect-[4/3]">
+                <div className="relative rounded-lg overflow-hidden border border-red-500/20 bg-black aspect-[4/3]">
                   <img
                     src="/assets/UVH.jpg"
                     alt="Aprameya Engineering Team at Hackathon"
@@ -94,7 +94,7 @@ const About = () => {
       </section>
 
       {/* Vision & Values */}
-      <section className="py-16 px-6 md:px-12 bg-[var(--bg-body)] border-t border-emerald-500/10">
+      <section className="py-16 px-6 md:px-12 bg-black border-t border-red-500/10">
         <div className="max-w-7xl mx-auto">
           <div className="grid lg:grid-cols-2 gap-8">
             {/* Vision */}
@@ -104,9 +104,9 @@ const About = () => {
               transition={{ duration: 0.5 }}
               viewport={{ once: true }}
             >
-              <div className="h-full border border-emerald-500/15 bg-[#0B130E] rounded-xl p-8 flex flex-col justify-between shadow-lg shadow-black/20">
+              <div className="h-full morphic-metallic-card rounded-xl p-8 flex flex-col justify-between">
                 <div>
-                  <p className="text-[11px] font-sans font-medium uppercase tracking-[0.15em] text-emerald-400 mb-2">
+                  <p className="text-[11px] font-sans font-semibold uppercase tracking-[0.15em] text-red-400 mb-2">
                     Long-Term Trajectory
                   </p>
                   <h3 className="text-2xl sm:text-3xl text-white mb-4">
@@ -117,7 +117,7 @@ const About = () => {
                     To establish a premier student research and prototyping lab that incubates impactful autonomous mobility solutions, fosters rigorous research publications, and competes at national and international autonomy benchmarks.
                   </p>
                 </div>
-                <div className="flex items-center text-xs text-emerald-400 font-medium pt-4 border-t border-emerald-500/10">
+                <div className="flex items-center text-xs text-red-400 font-medium pt-4 border-t border-red-500/10">
                   <Globe className="w-4 h-4 mr-2" />
                   Rigorous Engineering & Autonomous Safety
                 </div>
@@ -131,8 +131,8 @@ const About = () => {
               transition={{ duration: 0.5, delay: 0.1 }}
               viewport={{ once: true }}
             >
-              <div className="h-full border border-emerald-500/15 bg-[#0B130E] rounded-xl p-8 shadow-lg shadow-black/20">
-                <p className="text-[11px] font-sans font-medium uppercase tracking-[0.15em] text-emerald-400 mb-2">
+              <div className="h-full morphic-metallic-card rounded-xl p-8">
+                <p className="text-[11px] font-sans font-semibold uppercase tracking-[0.15em] text-red-400 mb-2">
                   Operating Principles
                 </p>
                 <h3 className="text-2xl sm:text-3xl text-white mb-6">
@@ -158,7 +158,7 @@ const About = () => {
                     }
                   ].map((value, index) => (
                     <div key={index} className="flex items-start gap-3">
-                      <div className="flex-shrink-0 w-8 h-8 bg-emerald-950/50 border border-emerald-500/20 rounded-lg flex items-center justify-center mt-0.5 text-emerald-400">
+                      <div className="flex-shrink-0 w-8 h-8 bg-red-950/60 border border-red-500/25 rounded-lg flex items-center justify-center mt-0.5 text-red-400">
                         <value.icon className="w-4 h-4" />
                       </div>
                       <div>
@@ -175,10 +175,10 @@ const About = () => {
       </section>
 
       {/* Operative Roster */}
-      <section className="py-16 px-6 md:px-12 bg-[var(--bg-body)] border-t border-emerald-500/10">
+      <section className="py-16 px-6 md:px-12 bg-black border-t border-red-500/10">
         <div className="max-w-7xl mx-auto">
           <div className="mb-8">
-            <p className="text-[11px] font-sans font-medium uppercase tracking-[0.15em] text-emerald-400 mb-2">
+            <p className="text-[11px] font-sans font-semibold uppercase tracking-[0.15em] text-red-400 mb-2">
               Leadership & Members
             </p>
             <h2 className="text-3xl md:text-4xl text-white tracking-tight">
@@ -191,10 +191,10 @@ const About = () => {
       </section>
 
       {/* Lab Location & Contact */}
-      <section className="py-16 px-6 md:px-12 bg-[var(--bg-body)] border-t border-emerald-500/10">
+      <section className="py-16 px-6 md:px-12 bg-black border-t border-red-500/10">
         <div className="max-w-7xl mx-auto">
           <div className="mb-8">
-            <p className="text-[11px] font-sans font-medium uppercase tracking-[0.15em] text-emerald-400 mb-2">
+            <p className="text-[11px] font-sans font-semibold uppercase tracking-[0.15em] text-red-400 mb-2">
               Campus Presence
             </p>
             <h2 className="text-3xl text-white">

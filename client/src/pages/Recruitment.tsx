@@ -152,9 +152,9 @@ export default function Recruitment() {
               >
                 {TECH_DOMAINS.map(({ name, icon: Icon, desc }) => (
                   <motion.div key={name} variants={stagger.item}>
-                    <div className="p-5 h-full flex flex-col justify-between border border-emerald-500/15 bg-[#0B130E] rounded-xl hover:border-emerald-400/35 hover:bg-[#0E1A13] transition-all shadow-lg shadow-black/20">
+                    <div className="p-5 h-full flex flex-col justify-between morphic-metallic-card rounded-xl transition-all">
                       <div>
-                        <div className="w-9 h-9 rounded-lg bg-emerald-950/50 border border-emerald-500/25 flex items-center justify-center text-emerald-400 mb-4">
+                        <div className="w-9 h-9 rounded-lg bg-red-950/60 border border-red-400/30 flex items-center justify-center text-red-300 mb-4 shadow-[inset_0_1px_1px_rgba(254,202,202,0.2)]">
                           <Icon size={18} />
                         </div>
                         <h3 className="font-display font-bold text-base text-white mb-2">
@@ -172,9 +172,9 @@ export default function Recruitment() {
 
             {/* Non-Tech Track */}
             <div>
-              <div className="flex items-center justify-between mb-5 pb-3 border-b border-emerald-500/10">
+              <div className="flex items-center justify-between mb-5 pb-3 border-b border-red-500/10">
                 <div className="flex items-center gap-3">
-                  <span className="px-2 py-0.5 rounded bg-emerald-950/50 border border-emerald-500/20 text-emerald-400 text-[11px] font-semibold">
+                  <span className="px-2 py-0.5 rounded bg-red-950/60 border border-red-500/30 text-red-300 text-[11px] font-semibold">
                     Track 02
                   </span>
                   <h2 className="font-display text-lg font-bold text-white">
@@ -192,9 +192,9 @@ export default function Recruitment() {
               >
                 {NON_TECH_DOMAINS.map(({ name, icon: Icon, desc }) => (
                   <motion.div key={name} variants={stagger.item}>
-                    <div className="p-5 h-full flex flex-col justify-between border border-emerald-500/15 bg-[#0B130E] rounded-xl hover:border-emerald-400/35 hover:bg-[#0E1A13] transition-all shadow-lg shadow-black/20">
+                    <div className="p-5 h-full flex flex-col justify-between morphic-metallic-card rounded-xl transition-all">
                       <div>
-                        <div className="w-9 h-9 rounded-lg bg-emerald-950/50 border border-emerald-500/25 flex items-center justify-center text-emerald-400 mb-4">
+                        <div className="w-9 h-9 rounded-lg bg-red-950/60 border border-red-400/30 flex items-center justify-center text-red-300 mb-4 shadow-[inset_0_1px_1px_rgba(254,202,202,0.2)]">
                           <Icon size={18} />
                         </div>
                         <h3 className="font-display font-bold text-base text-white mb-2">
@@ -214,7 +214,7 @@ export default function Recruitment() {
           {/* Right Column: 3-Step Pipeline & Actions */}
           <div className="space-y-6">
             {/* Timeline */}
-            <div className="p-6 border border-emerald-500/15 bg-[#0B130E] rounded-xl shadow-lg shadow-black/20">
+            <div className="p-6 morphic-metallic-card rounded-xl">
               <h3 className="font-display text-sm font-bold text-white uppercase tracking-wider mb-6">
                 Selection Process
               </h3>
@@ -224,11 +224,11 @@ export default function Recruitment() {
                   return (
                     <div key={item.step} className="flex gap-3.5">
                       <div className="flex flex-col items-center">
-                        <div className="w-7 h-7 rounded-md border border-emerald-500/20 bg-emerald-950/30 flex items-center justify-center text-emerald-400 shrink-0 text-xs font-semibold">
+                        <div className="w-7 h-7 rounded-md border border-red-400/30 bg-red-950/60 flex items-center justify-center text-red-300 shrink-0 text-xs font-semibold shadow-[inset_0_1px_1px_rgba(254,202,202,0.2)]">
                           <Icon size={14} />
                         </div>
                         {idx < PIPELINE_STEPS.length - 1 && (
-                          <div className="w-px flex-1 bg-emerald-500/15 mt-2.5" />
+                          <div className="w-px flex-1 bg-red-500/20 mt-2.5" />
                         )}
                       </div>
                       <div className="pb-2">
@@ -243,37 +243,48 @@ export default function Recruitment() {
               </div>
             </div>
 
-            {/* Action Card */}
-            <div className="p-6 border border-emerald-500/15 bg-[#0B130E] rounded-xl shadow-lg shadow-black/20">
+            {/* Application CTA Card */}
+            <div className="p-6 morphic-metallic-card rounded-xl">
+              <h3 className="font-display text-base font-bold text-white mb-2">
+                {isOpen ? 'Ready to Apply?' : 'Recruitment Closed'}
+              </h3>
+              <p className="text-xs text-[#94A3B8] leading-relaxed mb-6">
+                {isOpen
+                  ? 'Complete your profile and choose your focus tracks for the current intake cycle.'
+                  : 'Applications for this intake cycle are currently closed. Stay tuned for future drives.'}
+              </p>
+
               {isOpen ? (
                 <div className="space-y-3">
-                  <p className="text-xs text-[var(--text-secondary)] leading-relaxed">
-                    Portal is currently accepting submissions. Complete the form to submit your application for review.
-                  </p>
-                  <Link href="/recruitment/apply" className="block">
-                    <ChamferedButton variant="primary" size="md" className="w-full" rightIcon={<ArrowRight size={15} />}>
-                      Apply Now
+                  <Link href="/recruitment/apply">
+                    <ChamferedButton
+                      variant="primary"
+                      size="md"
+                      className="w-full"
+                      rightIcon={<ArrowRight size={14} />}
+                    >
+                      Start Application
                     </ChamferedButton>
                   </Link>
-                  <Link href="/recruitment/status" className="block">
-                    <ChamferedButton variant="secondary" size="md" className="w-full">
+                  <Link href="/recruitment/status">
+                    <ChamferedButton
+                      variant="secondary"
+                      size="md"
+                      className="w-full"
+                    >
                       Check Status
                     </ChamferedButton>
                   </Link>
                 </div>
               ) : (
                 <div className="space-y-3">
-                  <p className="text-xs text-[var(--text-secondary)] leading-relaxed">
-                    Recruitment is currently closed. Explore our workshops and events to connect with the team.
-                  </p>
-                  <Link href="/events" className="block">
-                    <ChamferedButton variant="secondary" size="md" className="w-full" rightIcon={<ArrowRight size={15} />}>
-                      Explore Events
-                    </ChamferedButton>
-                  </Link>
-                  <Link href="/recruitment/status" className="block">
-                    <ChamferedButton variant="ghost" size="sm" className="w-full text-xs text-[var(--text-muted)]">
-                      Check Status
+                  <Link href="/recruitment/status">
+                    <ChamferedButton
+                      variant="secondary"
+                      size="md"
+                      className="w-full"
+                    >
+                      Check Application Status
                     </ChamferedButton>
                   </Link>
                 </div>

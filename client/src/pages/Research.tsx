@@ -29,23 +29,23 @@ const Research = () => {
   }
 
   return (
-    <div className="fadeIn min-h-screen bg-[var(--bg-body)]">
+    <div className="fadeIn min-h-screen bg-black">
       {/* Header Section */}
-      <section className="relative pt-32 pb-16 px-6 md:px-12 border-b border-white/[0.04]">
+      <section className="relative pt-32 pb-16 px-6 md:px-12 border-b border-red-500/15">
         <div className="max-w-7xl mx-auto">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
           >
-            <p className="text-[11px] font-sans font-medium uppercase tracking-[0.15em] text-[var(--text-muted)] mb-3">
+            <p className="text-[11px] font-sans font-semibold uppercase tracking-[0.15em] text-red-400 mb-3">
               Publications & Benchmarks
             </p>
-            <h1 className="text-4xl sm:text-5xl md:text-6xl mb-4 tracking-tight text-[var(--text-primary)]">
-              <span className="font-serif italic font-normal text-[1.08em] text-[var(--text-secondary)]">Research &</span>{" "}
+            <h1 className="text-4xl sm:text-5xl md:text-6xl mb-4 tracking-tight text-white">
+              <span className="font-serif italic font-normal text-[1.08em] text-[#94A3B8]">Research &</span>{" "}
               <span className="font-display font-bold">Publications</span>
             </h1>
-            <p className="text-base text-[var(--text-secondary)] max-w-xl leading-relaxed">
+            <p className="text-base text-[#94A3B8] max-w-xl leading-relaxed">
               Empirical investigations, sensor fusion benchmarks, and algorithmic models produced by Aprameya researchers at KL University.
             </p>
           </motion.div>
@@ -53,7 +53,7 @@ const Research = () => {
       </section>
 
       {/* Research Content */}
-      <div className="py-12 px-6 md:px-12">
+      <div className="py-12 px-6 md:px-12 bg-black">
         <div className="max-w-7xl mx-auto">
           {researchItems.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">

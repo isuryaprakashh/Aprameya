@@ -1,5 +1,4 @@
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
-import { Card, CardContent } from '@/components/ui/card';
 import { FaUser, FaShieldAlt, FaCalendarAlt, FaTag, FaClock } from 'react-icons/fa';
 import { User, EventRegistration } from '@/lib/types';
 
@@ -15,12 +14,12 @@ export const UserOverview = ({ currentUser, userEventRegistrations, tickets = []
     const getRoleBadge = (role: string) => {
         switch (role?.toUpperCase()) {
             case 'ADMIN':
-                return 'badge-plum';
+                return 'bg-red-950/80 border border-red-400/50 text-red-200 shadow-[inset_0_1px_1px_rgba(254,202,202,0.3)]';
             case 'CORE':
             case 'CORE_TEAM':
-                return 'bg-emerald-950/70 border border-emerald-400/40 text-emerald-300';
+                return 'bg-red-950/60 border border-red-400/40 text-red-300';
             default:
-                return 'bg-emerald-950/40 border border-emerald-500/20 text-emerald-400';
+                return 'bg-red-950/40 border border-red-500/20 text-red-400';
         }
     };
 
@@ -28,8 +27,8 @@ export const UserOverview = ({ currentUser, userEventRegistrations, tickets = []
         <div className="space-y-6 animate-in fade-in duration-500">
             <div className="morphic-metallic-card p-8 rounded-2xl relative overflow-hidden group">
                 <div className="flex flex-col md:flex-row gap-6 items-start md:items-center relative z-10">
-                    <Avatar className="w-24 h-24 border-2 border-emerald-400/30 shadow-[0_0_30px_-5px_rgba(32,64,31,0.5)]">
-                        <AvatarFallback className="bg-gradient-to-br from-[#20401F] to-black text-white text-3xl font-bold font-display">
+                    <Avatar className="w-24 h-24 border-2 border-red-400/30 shadow-[0_0_30px_-5px_rgba(220,38,38,0.5)]">
+                        <AvatarFallback className="bg-gradient-to-br from-[#7F1D1D] to-black text-white text-3xl font-bold font-display">
                             {getInitials(currentUser.username)}
                         </AvatarFallback>
                     </Avatar>
@@ -44,13 +43,13 @@ export const UserOverview = ({ currentUser, userEventRegistrations, tickets = []
 
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-2 text-xs">
                             <div className="flex items-center text-[#94A3B8]">
-                                <FaUser className="mr-2 text-emerald-400" /> {currentUser.rollNumber || "No Roll Number"}
+                                <FaUser className="mr-2 text-red-400" /> {currentUser.rollNumber || "No Roll Number"}
                             </div>
                             <div className="flex items-center text-[#94A3B8]">
-                                <FaTag className="mr-2 text-emerald-400" /> {currentUser.email}
+                                <FaTag className="mr-2 text-red-400" /> {currentUser.email}
                             </div>
                             <div className="flex items-center text-[#94A3B8]">
-                                <FaClock className="mr-2 text-emerald-400" /> Member since {new Date(currentUser.created_at || Date.now()).toLocaleDateString()}
+                                <FaClock className="mr-2 text-red-400" /> Member since {new Date(currentUser.created_at || Date.now()).toLocaleDateString()}
                             </div>
                         </div>
                     </div>
@@ -59,14 +58,14 @@ export const UserOverview = ({ currentUser, userEventRegistrations, tickets = []
 
             <div className="space-y-4">
                 <div className="flex items-center gap-2">
-                    <FaShieldAlt className="text-emerald-400" />
+                    <FaShieldAlt className="text-red-400" />
                     <h3 className="text-base font-bold text-white font-display">Access Privileges</h3>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                     {(currentUser.role === 'ADMIN' || currentUser.role === 'CORE') && (
                         <div className="group relative overflow-hidden rounded-xl morphic-metallic-card p-6">
-                            <h4 className="text-emerald-400 font-bold mb-1 text-base font-display">Laboratory Administration</h4>
+                            <h4 className="text-red-400 font-bold mb-1 text-base font-display">Laboratory Administration</h4>
                             <p className="text-xs text-[#94A3B8] leading-relaxed">Full control over research projects, recruitment applicants, and events.</p>
                         </div>
                     )}
@@ -89,30 +88,30 @@ export const UserOverview = ({ currentUser, userEventRegistrations, tickets = []
                 <div className="morphic-metallic-card p-5 rounded-xl">
                     <div className="flex items-center justify-between">
                         <div>
-                            <p className="text-[10px] text-emerald-400 font-sans font-bold uppercase tracking-wider">Events Registered</p>
+                            <p className="text-[10px] text-red-400 font-sans font-bold uppercase tracking-wider">Events Registered</p>
                             <h3 className="text-2xl font-bold text-white mt-1 font-display">{userEventRegistrations.length}</h3>
                         </div>
-                        <FaCalendarAlt className="text-2xl text-emerald-500/40" />
+                        <FaCalendarAlt className="text-2xl text-red-500/40" />
                     </div>
                 </div>
 
                 <div className="morphic-metallic-card p-5 rounded-xl">
                     <div className="flex items-center justify-between">
                         <div>
-                            <p className="text-[10px] text-emerald-400 font-sans font-bold uppercase tracking-wider">Verified Passes</p>
+                            <p className="text-[10px] text-red-400 font-sans font-bold uppercase tracking-wider">Verified Passes</p>
                             <h3 className="text-2xl font-bold text-white mt-1 font-display">{tickets.length}</h3>
                         </div>
-                        <FaShieldAlt className="text-2xl text-emerald-500/40" />
+                        <FaShieldAlt className="text-2xl text-red-500/40" />
                     </div>
                 </div>
 
                 <div className="morphic-metallic-card p-5 rounded-xl">
                     <div className="flex items-center justify-between">
                         <div>
-                            <p className="text-[10px] text-emerald-400 font-sans font-bold uppercase tracking-wider">Cohort Status</p>
+                            <p className="text-[10px] text-red-400 font-sans font-bold uppercase tracking-wider">Cohort Status</p>
                             <h3 className="text-base font-bold text-white mt-1 font-display">Active Member</h3>
                         </div>
-                        <FaUser className="text-2xl text-emerald-500/40" />
+                        <FaUser className="text-2xl text-red-500/40" />
                     </div>
                 </div>
             </div>

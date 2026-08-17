@@ -62,36 +62,36 @@ const Projects = () => {
   return (
     <div className="fadeIn min-h-screen bg-[var(--bg-body)]">
       {/* Header Section */}
-      <section className="relative pt-32 pb-16 px-6 md:px-12 border-b border-white/[0.04]">
+      <section className="relative pt-32 pb-16 px-6 md:px-12 border-b border-red-500/15">
         <div className="max-w-7xl mx-auto">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
           >
-            <p className="text-[11px] font-sans font-medium uppercase tracking-[0.15em] text-[var(--text-muted)] mb-3">
+            <p className="text-[11px] font-sans font-semibold uppercase tracking-[0.15em] text-red-400 mb-3">
               Research & Hardware
             </p>
 
-            <h1 className="text-4xl sm:text-5xl md:text-6xl mb-4 tracking-tight text-[var(--text-primary)]">
-              <span className="font-serif italic font-normal text-[1.08em] text-[var(--text-secondary)]">Laboratory</span>{" "}
+            <h1 className="text-4xl sm:text-5xl md:text-6xl mb-4 tracking-tight text-white">
+              <span className="font-serif italic font-normal text-[1.08em] text-[#94A3B8]">Laboratory</span>{" "}
               <span className="font-display font-bold">Projects</span>
             </h1>
-            <p className="text-base text-[var(--text-secondary)] max-w-xl leading-relaxed">
+            <p className="text-base text-[#94A3B8] max-w-xl leading-relaxed">
               Hardware integrations, computer vision pipelines, and robotics systems built and tested by Aprameya members.
             </p>
 
             {/* Featured Project Highlight */}
             {featuredProject && (
-              <div className="mt-8 max-w-2xl border border-white/[0.06] bg-[var(--card-bg)] p-5 rounded-xl">
+              <div className="mt-8 max-w-2xl morphic-metallic-card p-5 rounded-xl">
                 <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
-                  <div className="w-10 h-10 bg-white/[0.03] flex items-center justify-center rounded-lg border border-white/[0.06] shrink-0 text-[var(--text-primary)]">
+                  <div className="w-10 h-10 bg-red-950/60 flex items-center justify-center rounded-lg border border-red-400/30 shrink-0 text-red-300 shadow-[inset_0_1px_1px_rgba(254,202,202,0.2)]">
                     <ShieldCheck className="w-5 h-5" />
                   </div>
                   <div className="flex-1">
-                    <div className="text-[10px] text-[var(--text-muted)] font-medium uppercase tracking-wider mb-0.5">Featured Project</div>
-                    <div className="text-[var(--text-primary)] font-display font-bold text-base">{featuredProject.title}</div>
-                    <div className="text-xs text-[var(--text-secondary)]">{featuredProject.category}</div>
+                    <div className="text-[10px] text-red-400 font-semibold uppercase tracking-wider mb-0.5">Featured Project</div>
+                    <div className="text-white font-display font-bold text-base">{featuredProject.title}</div>
+                    <div className="text-xs text-[#94A3B8]">{featuredProject.category}</div>
                   </div>
                   <div className="flex gap-2 ml-auto w-full sm:w-auto">
                     {user?.role === 'ADMIN' && (
@@ -111,18 +111,18 @@ const Projects = () => {
       </section>
 
       {/* Main Content Section */}
-      <section className="py-12 bg-[var(--bg-body)]">
+      <section className="py-12 bg-black">
         <div className="max-w-7xl mx-auto px-6 md:px-12">
           {projects.length > 0 ? (
             <>
               <div className="w-full relative max-w-md mb-8">
-                <Search className="absolute left-3.5 top-1/2 transform -translate-y-1/2 text-[var(--text-muted)] w-4 h-4" />
+                <Search className="absolute left-3.5 top-1/2 transform -translate-y-1/2 text-red-400/60 w-4 h-4" />
                 <Input
                   type="text"
                   placeholder="Filter by title, stack, or domain..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="pl-10 h-10 rounded-lg bg-[var(--card-bg)] border-white/[0.06] text-[var(--text-primary)] focus:border-white/[0.2] text-sm font-sans"
+                  className="pl-10 h-10 rounded-lg bg-[#1A050A]/70 border-red-500/20 text-white focus:border-red-400/50 text-sm font-sans"
                 />
               </div>
 

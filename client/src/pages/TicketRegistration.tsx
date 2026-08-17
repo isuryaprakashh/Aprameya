@@ -133,7 +133,7 @@ const TicketRegistration = () => {
         return (
             <div className="min-h-screen bg-black flex items-center justify-center p-4">
                 <div className="max-w-md w-full morphic-metallic-card p-8 text-center rounded-xl">
-                    <AlertTriangle className="w-12 h-12 text-emerald-400 mx-auto mb-4" />
+                    <AlertTriangle className="w-12 h-12 text-red-400 mx-auto mb-4" />
                     <h2 className="text-xl font-bold text-white mb-2 font-display">Login Required</h2>
                     <p className="text-xs text-[#94A3B8] mb-6">Please log in to register your attendance pass.</p>
                     <Link href="/login">
@@ -168,7 +168,7 @@ const TicketRegistration = () => {
     if (eventLoading) {
         return (
             <div className="min-h-screen bg-black flex items-center justify-center">
-                <Loader2 className="w-8 h-8 animate-spin text-emerald-400" />
+                <Loader2 className="w-8 h-8 animate-spin text-red-400" />
             </div>
         );
     }
@@ -202,7 +202,7 @@ const TicketRegistration = () => {
                     className="mb-8"
                 >
                     <Link href="/events">
-                        <span className="text-xs font-medium text-[#94A3B8] hover:text-emerald-300 transition-colors flex items-center gap-2 cursor-pointer">
+                        <span className="text-xs font-medium text-[#94A3B8] hover:text-red-300 transition-colors flex items-center gap-2 cursor-pointer">
                             <ArrowLeft className="w-4 h-4" />
                             Back to Events
                         </span>
@@ -227,7 +227,7 @@ const TicketRegistration = () => {
                                 </div>
                             )}
                             <div className="p-6">
-                                <span className="inline-block text-[10px] font-sans font-bold uppercase tracking-wider text-metallic-green bg-emerald-950/60 border border-emerald-400/30 px-2.5 py-1 rounded shadow-[inset_0_1px_1px_rgba(167,243,208,0.2)] mb-3">
+                                <span className="inline-block text-[10px] font-sans font-bold uppercase tracking-wider text-red-300 bg-red-950/60 border border-red-400/30 px-2.5 py-1 rounded shadow-[inset_0_1px_1px_rgba(254,202,202,0.2)] mb-3">
                                     {event.type}
                                 </span>
                                 <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-white mb-4 font-display">
@@ -237,15 +237,15 @@ const TicketRegistration = () => {
 
                                 <div className="space-y-3 mb-4 text-xs text-[#94A3B8]">
                                     <div className="flex items-center">
-                                        <Calendar className="w-4 h-4 mr-3 text-emerald-400" />
+                                        <Calendar className="w-4 h-4 mr-3 text-red-400" />
                                         {event.date}
                                     </div>
                                     <div className="flex items-center">
-                                        <Clock className="w-4 h-4 mr-3 text-emerald-400" />
+                                        <Clock className="w-4 h-4 mr-3 text-red-400" />
                                         {event.time}
                                     </div>
                                     <div className="flex items-center">
-                                        <MapPin className="w-4 h-4 mr-3 text-emerald-400" />
+                                        <MapPin className="w-4 h-4 mr-3 text-red-400" />
                                         {event.location}
                                     </div>
                                 </div>
@@ -253,9 +253,9 @@ const TicketRegistration = () => {
                                 <p className="text-xs text-[#94A3B8] leading-relaxed mb-4">{event.description}</p>
 
                                 {event.capacity && (
-                                    <div className="p-3 rounded-lg bg-black/50 border border-emerald-500/15">
+                                    <div className="p-3 rounded-lg bg-black/50 border border-red-500/15">
                                         <p className="text-xs text-[#94A3B8]">
-                                            <span className="text-emerald-400 font-semibold">Cohort Capacity:</span> {event.capacity} seats
+                                            <span className="text-red-400 font-semibold">Cohort Capacity:</span> {event.capacity} seats
                                         </p>
                                     </div>
                                 )}
@@ -264,9 +264,9 @@ const TicketRegistration = () => {
 
                         {/* Security Note */}
                         <div className="mt-4 flex items-start gap-3 p-4 rounded-xl morphic-metallic-card">
-                            <Shield className="w-5 h-5 text-emerald-400 mt-0.5 shrink-0" />
+                            <Shield className="w-5 h-5 text-red-400 mt-0.5 shrink-0" />
                             <div>
-                                <p className="text-xs font-semibold text-emerald-300 mb-1">Encrypted Event Pass</p>
+                                <p className="text-xs font-semibold text-red-300 mb-1">Encrypted Event Pass</p>
                                 <p className="text-xs text-[#94A3B8]">
                                     Your QR ticket is cryptographically verified for instant entry at the lab registration desk.
                                 </p>
@@ -290,10 +290,10 @@ const TicketRegistration = () => {
                                 >
                                     <div className="morphic-metallic-card rounded-xl overflow-hidden">
                                         {/* Ticket Header */}
-                                        <div className="bg-gradient-to-r from-emerald-950 via-[#20401F] to-emerald-950 p-6 text-center border-b border-emerald-400/30">
-                                            <CheckCircle2 className="w-10 h-10 text-emerald-300 mx-auto mb-2" />
+                                        <div className="bg-gradient-to-r from-red-950 via-[#7F1D1D] to-red-950 p-6 text-center border-b border-red-400/30">
+                                            <CheckCircle2 className="w-10 h-10 text-red-300 mx-auto mb-2" />
                                             <h2 className="text-xl font-bold text-white font-display">Pass Confirmed</h2>
-                                            <p className="text-emerald-200/80 text-xs mt-1">Show this QR code at registration desk</p>
+                                            <p className="text-red-200/80 text-xs mt-1">Show this QR code at registration desk</p>
                                         </div>
 
                                         <div className="p-6">
@@ -316,30 +316,30 @@ const TicketRegistration = () => {
                                             {/* Entry Code */}
                                             {showTicket.entryCode && (
                                                 <div className="text-center mb-5">
-                                                    <p className="text-[10px] uppercase tracking-wider text-emerald-400 font-bold mb-1.5">Pass Entry Code</p>
-                                                    <div className="inline-flex items-center gap-1 px-4 py-2 rounded-lg bg-black/80 border border-emerald-400/30">
-                                                        <span className="text-2xl font-bold font-mono tracking-[0.3em] text-metallic-green">{showTicket.entryCode}</span>
+                                                    <p className="text-[10px] uppercase tracking-wider text-red-400 font-bold mb-1.5">Pass Entry Code</p>
+                                                    <div className="inline-flex items-center gap-1 px-4 py-2 rounded-lg bg-black/80 border border-red-400/30">
+                                                        <span className="text-2xl font-bold font-mono tracking-[0.3em] text-metallic-red">{showTicket.entryCode}</span>
                                                     </div>
                                                 </div>
                                             )}
 
                                             {/* Ticket Details */}
-                                            <div className="space-y-3 p-4 rounded-lg bg-black/50 border border-emerald-500/15 text-xs">
+                                            <div className="space-y-3 p-4 rounded-lg bg-black/50 border border-red-500/15 text-xs">
                                                 <div className="flex justify-between">
                                                     <span className="text-[#64748B]">Name</span>
                                                     <span className="font-medium text-white">{showTicket.fullName}</span>
                                                 </div>
-                                                <div className="h-px bg-emerald-500/10" />
+                                                <div className="h-px bg-red-500/10" />
                                                 <div className="flex justify-between">
                                                     <span className="text-[#64748B]">Roll Number</span>
                                                     <span className="font-mono font-medium text-white">{showTicket.rollNumber}</span>
                                                 </div>
-                                                <div className="h-px bg-emerald-500/10" />
+                                                <div className="h-px bg-red-500/10" />
                                                 <div className="flex justify-between">
                                                     <span className="text-[#64748B]">Year</span>
                                                     <span className="font-medium text-white">Year {showTicket.year}</span>
                                                 </div>
-                                                <div className="h-px bg-emerald-500/10" />
+                                                <div className="h-px bg-red-500/10" />
                                                 <div className="flex justify-between">
                                                     <span className="text-[#64748B]">Event</span>
                                                     <span className="font-medium text-white truncate max-w-[200px]">
@@ -355,12 +355,12 @@ const TicketRegistration = () => {
                                                         onClick={downloadQR}
                                                         className="flex-1 py-2.5 rounded-lg text-xs btn-metallic-ghost flex items-center justify-center gap-1.5 cursor-pointer"
                                                     >
-                                                        <Download className="w-4 h-4 text-emerald-400" />
+                                                        <Download className="w-4 h-4 text-red-400" />
                                                         Download QR
                                                     </button>
                                                 )}
                                                 <Link href="/my-tickets" className="flex-1 block">
-                                                    <button className="w-full py-2.5 rounded-lg text-xs btn-metallic-green flex items-center justify-center gap-1.5 cursor-pointer">
+                                                    <button className="w-full py-2.5 rounded-lg text-xs btn-metallic-red flex items-center justify-center gap-1.5 cursor-pointer">
                                                         <Ticket className="w-4 h-4" />
                                                         My Passes
                                                     </button>
@@ -377,8 +377,8 @@ const TicketRegistration = () => {
                                     exit={{ opacity: 0, scale: 0.95 }}
                                 >
                                     <div className="morphic-metallic-card rounded-xl p-6 md:p-8">
-                                        <div className="flex items-center gap-2 mb-6 pb-4 border-b border-emerald-500/15">
-                                            <Ticket className="w-5 h-5 text-emerald-400" />
+                                        <div className="flex items-center gap-2 mb-6 pb-4 border-b border-red-500/15">
+                                            <Ticket className="w-5 h-5 text-red-400" />
                                             <h2 className="text-lg font-bold text-white font-display">Generate Event Pass</h2>
                                         </div>
 
@@ -399,7 +399,7 @@ const TicketRegistration = () => {
                                                         value={fullName}
                                                         onChange={(e) => setFullName(e.target.value)}
                                                         placeholder="Enter your full name"
-                                                        className="mt-1.5 bg-black/60 border-emerald-500/20 text-white text-sm focus:border-emerald-400/50"
+                                                        className="mt-1.5 bg-black/60 border-red-500/20 text-white text-sm focus:border-red-400/50"
                                                         required
                                                     />
                                                 </div>
@@ -411,7 +411,7 @@ const TicketRegistration = () => {
                                                         value={rollNumber}
                                                         onChange={(e) => setRollNumber(e.target.value.replace(/\D/g, '').slice(0, 10))}
                                                         placeholder="e.g., 2200030123"
-                                                        className="mt-1.5 bg-black/60 border-emerald-500/20 text-white font-mono text-sm focus:border-emerald-400/50"
+                                                        className="mt-1.5 bg-black/60 border-red-500/20 text-white font-mono text-sm focus:border-red-400/50"
                                                         maxLength={10}
                                                         required
                                                     />
@@ -423,10 +423,10 @@ const TicketRegistration = () => {
                                                 <div>
                                                     <Label htmlFor="year" className="text-xs text-[#94A3B8]">Year of Study *</Label>
                                                     <Select value={year} onValueChange={setYear}>
-                                                        <SelectTrigger className="mt-1.5 bg-black/60 border-emerald-500/20 text-white text-sm focus:border-emerald-400/50">
+                                                        <SelectTrigger className="mt-1.5 bg-black/60 border-red-500/20 text-white text-sm focus:border-red-400/50">
                                                             <SelectValue placeholder="Select year" />
                                                         </SelectTrigger>
-                                                        <SelectContent className="bg-[#0B130E] border-emerald-500/20 text-white">
+                                                        <SelectContent className="bg-[#1A050A] border-red-500/20 text-white">
                                                             <SelectItem value="1">1st Year</SelectItem>
                                                             <SelectItem value="2">2nd Year</SelectItem>
                                                             <SelectItem value="3">3rd Year</SelectItem>
@@ -438,7 +438,7 @@ const TicketRegistration = () => {
                                                 <button
                                                     type="submit"
                                                     disabled={isSubmitting || !fullName || rollNumber.length !== 10 || !year}
-                                                    className="w-full py-3 rounded-lg text-sm btn-metallic-green flex items-center justify-center gap-2 cursor-pointer mt-6"
+                                                    className="w-full py-3 rounded-lg text-sm btn-metallic-red flex items-center justify-center gap-2 cursor-pointer mt-6"
                                                 >
                                                     {isSubmitting ? (
                                                         <>

@@ -57,12 +57,12 @@ const Home = () => {
   return (
     <main className="overflow-x-hidden w-full max-w-full bg-black min-h-screen">
 
-      {/* ─── HERO SECTION (PURE BLACK & MORPHIC METALLIC GREEN) ─── */}
+      {/* ─── HERO SECTION (PURE BLACK & METALLIC GRADIENT RED) ─── */}
       <section className="relative min-h-[90vh] flex items-center px-6 md:px-12 pt-32 pb-20 overflow-hidden">
         
-        {/* Subtle Ambient Metallic Green Radial Lights */}
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[900px] h-[400px] bg-gradient-to-b from-emerald-500/15 via-teal-900/10 to-transparent blur-[140px] pointer-events-none" />
-        <div className="absolute top-1/3 -right-20 w-[500px] h-[500px] bg-emerald-600/8 blur-[150px] pointer-events-none" />
+        {/* Ambient Metallic Crimson / Ruby Radial Lights */}
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[900px] h-[450px] bg-gradient-to-b from-red-600/18 via-rose-950/10 to-transparent blur-[140px] pointer-events-none" />
+        <div className="absolute top-1/3 -right-24 w-[500px] h-[500px] bg-red-700/10 blur-[150px] pointer-events-none" />
 
         <div className="max-w-7xl mx-auto w-full grid lg:grid-cols-12 gap-10 lg:gap-12 items-center relative z-10">
 
@@ -73,16 +73,16 @@ const Home = () => {
             variants={stagger}
             className="lg:col-span-7 flex flex-col items-start"
           >
-            {/* Morphic Metallic Green Pill Badge */}
+            {/* Metallic Red Pill Badge */}
             <motion.div
               variants={fadeUp}
-              className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-emerald-400/30 bg-gradient-to-r from-emerald-950/60 via-black/80 to-emerald-950/60 backdrop-blur-xl shadow-[inset_0_1px_1px_rgba(167,243,208,0.25),0_4px_15px_rgba(0,0,0,0.6)] text-[11px] font-sans font-semibold uppercase tracking-[0.15em] text-emerald-300 mb-6"
+              className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-red-500/30 bg-gradient-to-r from-red-950/70 via-black/80 to-red-950/70 backdrop-blur-xl shadow-[inset_0_1px_1px_rgba(254,202,202,0.3),0_4px_15px_rgba(0,0,0,0.7)] text-[11px] font-sans font-semibold uppercase tracking-[0.15em] text-red-200 mb-6"
             >
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 shadow-[0_0_8px_#34d399] animate-pulse" />
+              <span className="w-1.5 h-1.5 rounded-full bg-red-400 shadow-[0_0_8px_#ef4444] animate-pulse" />
               KL University • Autonomous Systems & Robotics Lab
             </motion.div>
 
-            {/* Headline with High-Contrast Typography & Metallic Green Sheen */}
+            {/* Headline with Metallic Red Sheen */}
             <motion.h1
               variants={fadeUp}
               className="text-4xl sm:text-5xl md:text-6xl lg:text-[4.75rem] tracking-tight text-white leading-[1.02] mb-6"
@@ -91,10 +91,10 @@ const Home = () => {
               <span className="font-display font-bold tracking-tight text-white">APRAMEYA</span>
               <br />
               <span className="font-serif italic font-normal text-[1.12em] text-[#94A3B8]">and we build</span>{" "}
-              <span className="font-display font-bold tracking-tight text-metallic-green">autonomous systems.</span>
+              <span className="font-display font-bold tracking-tight text-metallic-red">autonomous systems.</span>
             </motion.h1>
 
-            {/* Clear value statement */}
+            {/* Value Statement */}
             <motion.p
               variants={fadeUp}
               className="text-base sm:text-lg text-[#94A3B8] font-sans max-w-xl leading-relaxed mb-8"
@@ -114,7 +114,7 @@ const Home = () => {
                 <ChamferedButton
                   variant="secondary"
                   size="lg"
-                  rightIcon={<ArrowRight className="w-4 h-4 text-emerald-400" />}
+                  rightIcon={<ArrowRight className="w-4 h-4 text-red-400" />}
                 >
                   Explore Repositories
                 </ChamferedButton>
@@ -122,15 +122,15 @@ const Home = () => {
             </motion.div>
           </motion.div>
 
-          {/* Right: Double-Bezel Morphic Metallic Framed Video */}
+          {/* Right: Double-Bezel Metallic Red Framed Video */}
           <motion.div
             initial={{ opacity: 0, scale: 0.96 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1], delay: 0.15 }}
             className="lg:col-span-5 relative"
           >
-            {/* Outer Morphic Metallic Frame */}
-            <div className="p-2.5 rounded-2xl border border-emerald-500/30 bg-gradient-to-b from-[#0e2a1a]/70 via-[#06140c]/80 to-black backdrop-blur-2xl shadow-[inset_0_1px_2px_rgba(167,243,208,0.3),0_20px_50px_rgba(0,0,0,0.9),0_0_30px_rgba(16,185,129,0.12)]">
+            {/* Outer Metallic Red Frame */}
+            <div className="p-2.5 rounded-2xl border border-red-500/30 bg-gradient-to-b from-[#2D0A12]/70 via-[#1A050A]/80 to-black backdrop-blur-2xl shadow-[inset_0_1px_2px_rgba(254,202,202,0.35),0_20px_50px_rgba(0,0,0,0.9),0_0_30px_rgba(220,38,38,0.18)]">
               {/* Inner core */}
               <div className="relative rounded-xl overflow-hidden aspect-[4/3] bg-black">
                 <video
@@ -141,12 +141,12 @@ const Home = () => {
                   className="w-full h-full object-cover"
                   src="/assets/hero-loop.mp4"
                 />
-                <div className="absolute inset-0 rounded-xl ring-1 ring-inset ring-emerald-400/25 pointer-events-none" />
+                <div className="absolute inset-0 rounded-xl ring-1 ring-inset ring-red-400/25 pointer-events-none" />
                 
-                {/* Floating Morphic Metallic Caption Pill */}
-                <div className="absolute bottom-3 left-3 right-3 px-3.5 py-2 rounded-lg bg-black/85 backdrop-blur-xl border border-emerald-500/30 text-[11px] text-[#CBD5E1] flex items-center justify-between shadow-lg shadow-black/80">
+                {/* Floating Metallic Red Caption Pill */}
+                <div className="absolute bottom-3 left-3 right-3 px-3.5 py-2 rounded-lg bg-black/85 backdrop-blur-xl border border-red-500/30 text-[11px] text-[#CBD5E1] flex items-center justify-between shadow-lg shadow-black/80">
                   <span className="font-medium">Physical Autonomous Vehicle</span>
-                  <span className="font-mono text-[10px] text-metallic-green font-bold uppercase tracking-wider">KL-AV-01</span>
+                  <span className="font-mono text-[10px] text-metallic-red font-bold uppercase tracking-wider">KL-AV-01</span>
                 </div>
               </div>
             </div>
@@ -156,7 +156,7 @@ const Home = () => {
 
 
       {/* ─── STATS BAR (PURE BLACK WITH METALLIC BEVEL) ─── */}
-      <section className="border-y border-emerald-500/15 bg-gradient-to-r from-black via-[#06140c]/50 to-black backdrop-blur-md">
+      <section className="border-y border-red-500/15 bg-gradient-to-r from-black via-[#1A050A]/50 to-black backdrop-blur-md">
         <div className="max-w-7xl mx-auto px-6 md:px-12 py-8 grid grid-cols-2 md:grid-cols-4 gap-6">
           {[
             { n: "2019", l: "Founded at KL University" },
@@ -168,7 +168,7 @@ const Home = () => {
               <div className="text-3xl md:text-4xl font-bold text-white tabular-nums font-display mb-1">
                 {s.n === "50+" ? <CountUp value={s.n} /> : s.n}
               </div>
-              <div className="text-[11px] text-emerald-400 font-sans font-semibold uppercase tracking-[0.1em]">
+              <div className="text-[11px] text-red-400 font-sans font-semibold uppercase tracking-[0.1em]">
                 {s.l}
               </div>
             </div>
@@ -177,11 +177,11 @@ const Home = () => {
       </section>
 
 
-      {/* ─── STUDENT EMPOWERMENT / HOW WE HELP YOU GROW (MORPHIC METALLIC BENTO) ─── */}
-      <section className="py-20 md:py-28 px-6 md:px-12 max-w-7xl mx-auto border-b border-emerald-500/15">
+      {/* ─── STUDENT EMPOWERMENT / HOW WE HELP YOU GROW (MORPHIC METALLIC RED BENTO) ─── */}
+      <section className="py-20 md:py-28 px-6 md:px-12 max-w-7xl mx-auto border-b border-red-500/15">
         <div className="flex flex-col md:flex-row md:items-end justify-between mb-12">
           <div>
-            <p className="text-[11px] font-sans font-semibold uppercase tracking-[0.15em] text-emerald-400 mb-2">
+            <p className="text-[11px] font-sans font-semibold uppercase tracking-[0.15em] text-red-400 mb-2">
               Member Growth & Acceleration
             </p>
             <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight text-white">
@@ -194,7 +194,7 @@ const Home = () => {
           </p>
         </div>
 
-        {/* 4-Pillar Grid with Morphic Metallic Cards */}
+        {/* 4-Pillar Grid with Morphic Metallic Red Cards */}
         <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
           {STUDENT_PILLARS.map((pillar, idx) => {
             const Icon = pillar.icon;
@@ -205,15 +205,15 @@ const Home = () => {
               >
                 <div>
                   <div className="flex items-center justify-between mb-6">
-                    <span className="font-mono text-xs text-emerald-400 font-bold tracking-wider">
+                    <span className="font-mono text-xs text-red-400 font-bold tracking-wider">
                       0{idx + 1}
                     </span>
-                    <div className="w-9 h-9 rounded-lg bg-gradient-to-b from-emerald-900/60 to-emerald-950/80 border border-emerald-400/30 flex items-center justify-center text-emerald-300 group-hover:text-white shadow-[inset_0_1px_1px_rgba(167,243,208,0.2)] transition-colors">
+                    <div className="w-9 h-9 rounded-lg bg-gradient-to-b from-red-900/60 to-red-950/80 border border-red-400/30 flex items-center justify-center text-red-300 group-hover:text-white shadow-[inset_0_1px_1px_rgba(254,202,202,0.2)] transition-colors">
                       <Icon size={18} />
                     </div>
                   </div>
 
-                  <span className="text-[10px] font-sans font-bold uppercase tracking-wider text-metallic-green mb-2 block">
+                  <span className="text-[10px] font-sans font-bold uppercase tracking-wider text-metallic-red mb-2 block">
                     {pillar.badge}
                   </span>
 
@@ -235,7 +235,7 @@ const Home = () => {
       {/* ─── HACKATHON & BENCHMARK FEATURE ─── */}
       <section className="py-20 md:py-28 px-6 md:px-12 max-w-7xl mx-auto">
         <div className="mb-10">
-          <p className="text-[11px] font-sans font-semibold uppercase tracking-[0.15em] text-emerald-400 mb-2">
+          <p className="text-[11px] font-sans font-semibold uppercase tracking-[0.15em] text-red-400 mb-2">
             Verified National Honors
           </p>
           <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight text-white">
@@ -254,15 +254,15 @@ const Home = () => {
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent pointer-events-none" />
             
-            <div className="absolute bottom-4 left-4 right-4 p-3 rounded-lg bg-black/85 backdrop-blur-xl border border-emerald-500/25 text-xs text-[#CBD5E1] shadow-lg">
+            <div className="absolute bottom-4 left-4 right-4 p-3 rounded-lg bg-black/85 backdrop-blur-xl border border-red-500/25 text-xs text-[#CBD5E1] shadow-lg">
               Team Aprameya receiving national honors at the Urban Vision Autonomous Hackathon, IISc Bengaluru.
             </div>
           </div>
 
           {/* Details */}
-          <div className="lg:col-span-5 p-8 md:p-10 flex flex-col justify-between border-t lg:border-t-0 lg:border-l border-emerald-500/20 bg-black/60 backdrop-blur-xl">
+          <div className="lg:col-span-5 p-8 md:p-10 flex flex-col justify-between border-t lg:border-t-0 lg:border-l border-red-500/20 bg-black/60 backdrop-blur-xl">
             <div>
-              <div className="inline-flex items-center gap-2 mb-5 px-3 py-1.5 rounded-lg bg-emerald-950/60 border border-emerald-400/30 text-[11px] font-sans font-semibold text-emerald-300 shadow-[inset_0_1px_1px_rgba(167,243,208,0.15)]">
+              <div className="inline-flex items-center gap-2 mb-5 px-3 py-1.5 rounded-lg bg-red-950/60 border border-red-400/30 text-[11px] font-sans font-semibold text-red-300 shadow-[inset_0_1px_1px_rgba(254,202,202,0.15)]">
                 <Award className="w-3.5 h-3.5 text-amber-400" />
                 Urban Vision Autonomous Challenge
               </div>
@@ -275,15 +275,15 @@ const Home = () => {
                 Real-time computer vision, lane tracking, dynamic obstacle avoidance, and path trajectory planning built for complex Indian traffic conditions.
               </p>
 
-              <div className="space-y-4 text-xs border-t border-emerald-500/15 pt-5">
+              <div className="space-y-4 text-xs border-t border-red-500/15 pt-5">
                 <div>
-                  <p className="text-emerald-400 font-sans font-semibold uppercase tracking-[0.1em] text-[10px] mb-1">Core Student Cohort</p>
+                  <p className="text-red-400 font-sans font-semibold uppercase tracking-[0.1em] text-[10px] mb-1">Core Student Cohort</p>
                   <p className="text-white leading-relaxed text-sm">
                     S. Sai Revanth, A. Venkata Praveen, A. Komal Sai Raj, K. Yashwanth Chowdary
                   </p>
                 </div>
                 <div>
-                  <p className="text-emerald-400 font-sans font-semibold uppercase tracking-[0.1em] text-[10px] mb-1">Faculty Mentorship</p>
+                  <p className="text-red-400 font-sans font-semibold uppercase tracking-[0.1em] text-[10px] mb-1">Faculty Mentorship</p>
                   <p className="text-white text-sm">
                     Prof. Hari Kiran Vege, Mr. Srikanth Annamareddy
                   </p>
@@ -300,7 +300,7 @@ const Home = () => {
               <ChamferedButton
                 variant="secondary"
                 size="sm"
-                rightIcon={<ExternalLink className="w-3.5 h-3.5 text-emerald-400" />}
+                rightIcon={<ExternalLink className="w-3.5 h-3.5 text-red-400" />}
               >
                 Read Press Coverage
               </ChamferedButton>
@@ -310,11 +310,11 @@ const Home = () => {
       </section>
 
 
-      {/* ─── R&D INITIATIVES (MORPHIC METALLIC GLASS CARDS) ─── */}
-      <section className="py-20 md:py-28 px-6 md:px-12 max-w-7xl mx-auto border-t border-emerald-500/15">
+      {/* ─── R&D INITIATIVES (MORPHIC METALLIC RED CARDS) ─── */}
+      <section className="py-20 md:py-28 px-6 md:px-12 max-w-7xl mx-auto border-t border-red-500/15">
         <div className="flex items-end justify-between mb-10">
           <div>
-            <p className="text-[11px] font-sans font-semibold uppercase tracking-[0.15em] text-emerald-400 mb-2">
+            <p className="text-[11px] font-sans font-semibold uppercase tracking-[0.15em] text-red-400 mb-2">
               Engineering Repositories
             </p>
             <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight text-white">
@@ -323,7 +323,7 @@ const Home = () => {
             </h2>
           </div>
           <Link href="/projects">
-            <span className="text-xs font-sans font-medium text-emerald-400 hover:text-emerald-300 transition-colors flex items-center gap-1.5 cursor-pointer">
+            <span className="text-xs font-sans font-medium text-red-400 hover:text-red-300 transition-colors flex items-center gap-1.5 cursor-pointer">
               All projects <ArrowRight className="w-3.5 h-3.5" />
             </span>
           </Link>
@@ -340,7 +340,7 @@ const Home = () => {
                       alt={item.title}
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                     />
-                    <div className="absolute top-3 left-3 px-2.5 py-1 bg-black/80 backdrop-blur-md rounded border border-emerald-400/30 text-emerald-300 text-[10px] font-sans font-bold uppercase tracking-wider shadow">
+                    <div className="absolute top-3 left-3 px-2.5 py-1 bg-black/80 backdrop-blur-md rounded border border-red-400/30 text-red-300 text-[10px] font-sans font-bold uppercase tracking-wider shadow">
                       {item.category}
                     </div>
                   </div>
@@ -355,7 +355,7 @@ const Home = () => {
                       </p>
                     </div>
 
-                    <div className="mt-5 pt-4 border-t border-emerald-500/15 flex items-center justify-between text-xs text-[#64748B] group-hover:text-emerald-300 transition-colors">
+                    <div className="mt-5 pt-4 border-t border-red-500/15 flex items-center justify-between text-xs text-[#64748B] group-hover:text-red-300 transition-colors">
                       <span className="font-sans font-medium">Explore stack</span>
                       <ArrowRight size={14} className="transform group-hover:translate-x-1 transition-transform" />
                     </div>
@@ -369,11 +369,11 @@ const Home = () => {
 
 
       {/* ─── WORKSHOPS & EXPLORE ─── */}
-      <section className="py-20 md:py-28 px-6 md:px-12 max-w-7xl mx-auto border-t border-emerald-500/15">
+      <section className="py-20 md:py-28 px-6 md:px-12 max-w-7xl mx-auto border-t border-red-500/15">
         <div className="grid lg:grid-cols-2 gap-12">
           {/* Upcoming */}
           <div>
-            <p className="text-[11px] font-sans font-semibold uppercase tracking-[0.15em] text-emerald-400 mb-2">
+            <p className="text-[11px] font-sans font-semibold uppercase tracking-[0.15em] text-red-400 mb-2">
               Sessions & Bootcamps
             </p>
             <h2 className="text-2xl sm:text-3xl font-bold text-white tracking-tight mb-8">
@@ -385,15 +385,15 @@ const Home = () => {
               {upcomingEvents.map((event) => (
                 <Link key={event.id} href="/events" className="block">
                   <div className="p-4 rounded-xl morphic-metallic-card flex items-center gap-4 group">
-                    <div className="flex flex-col items-center justify-center w-12 h-12 rounded-lg bg-emerald-950/60 border border-emerald-400/30 shadow-[inset_0_1px_1px_rgba(167,243,208,0.2)] shrink-0">
-                      <span className="text-[9px] uppercase font-bold text-emerald-400">{event.month}</span>
+                    <div className="flex flex-col items-center justify-center w-12 h-12 rounded-lg bg-red-950/60 border border-red-400/30 shadow-[inset_0_1px_1px_rgba(254,202,202,0.2)] shrink-0">
+                      <span className="text-[9px] uppercase font-bold text-red-400">{event.month}</span>
                       <span className="text-lg font-bold text-white font-display">{event.day}</span>
                     </div>
                     <div className="flex-1 min-w-0">
                       <h3 className="font-display font-bold text-sm text-white truncate">{event.title}</h3>
                       <p className="text-xs text-[#64748B] mt-0.5 truncate">{event.location}</p>
                     </div>
-                    <ArrowRight className="w-4 h-4 text-emerald-400/60 group-hover:text-emerald-300 transition-colors shrink-0" />
+                    <ArrowRight className="w-4 h-4 text-red-400/60 group-hover:text-red-300 transition-colors shrink-0" />
                   </div>
                 </Link>
               ))}
@@ -402,7 +402,7 @@ const Home = () => {
 
           {/* Explore */}
           <div>
-            <p className="text-[11px] font-sans font-semibold uppercase tracking-[0.15em] text-emerald-400 mb-2">
+            <p className="text-[11px] font-sans font-semibold uppercase tracking-[0.15em] text-red-400 mb-2">
               Gateway
             </p>
             <h2 className="text-2xl sm:text-3xl font-bold text-white tracking-tight mb-8">
@@ -422,7 +422,7 @@ const Home = () => {
                       <h3 className="font-display font-bold text-sm text-white">{link.label}</h3>
                       <p className="text-xs text-[#64748B] mt-0.5">{link.desc}</p>
                     </div>
-                    <ArrowRight className="w-4 h-4 text-emerald-400/60 group-hover:text-emerald-300 transition-colors shrink-0" />
+                    <ArrowRight className="w-4 h-4 text-red-400/60 group-hover:text-red-300 transition-colors shrink-0" />
                   </div>
                 </Link>
               ))}
