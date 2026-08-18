@@ -65,15 +65,20 @@ export default function RecruitmentApply() {
     },
   });
 
-  // Check if user already has an application
+  const [showFormAnyway, setShowFormAnyway] = useState(false);
+
+  // Check if logged-in user already has an application
   const { data: existing } = useQuery<RecruitmentApplication | null>({
-    queryKey: ['/api/recruitment/applications/mine'],
+    queryKey: ['/api/recruitment/applications/mine', user?.id],
     queryFn: async () => {
+      if (!user) return null;
       const baseUrl = import.meta.env.VITE_API_URL || '';
       const res = await fetch(`${baseUrl}/api/recruitment/applications/mine`, { credentials: 'include' });
-      if (res.status === 404) return null;
-      return res.json();
+      if (!res.ok) return null;
+      const data = await res.json();
+      return data && data.id ? data : null;
     },
+    enabled: !!user,
     retry: false,
   });
 
@@ -148,20 +153,30 @@ export default function RecruitmentApply() {
     );
   }
 
-  if (existing) {
+  if (user && existing && existing.id && !showFormAnyway) {
     return (
       <div className="min-h-screen bg-[var(--bg-body)] flex items-center justify-center px-6">
         <div className="max-w-md w-full p-8 text-center border border-white/[0.06] bg-[var(--card-bg)] rounded-xl">
           <Check className="w-10 h-10 text-emerald-400 mx-auto mb-4" />
           <h1 className="font-display text-xl font-bold mb-2">Already Applied</h1>
           <p className="text-xs text-[var(--text-secondary)] mb-6">
-            You have already submitted an application for this recruitment cycle. Check your tracker for interview status.
+            An application is already registered under your account ({existing.fullName} • {existing.rollNumber}). Check your tracker for interview status.
           </p>
-          <Link href="/recruitment/status">
-            <ChamferedButton variant="primary" size="md" className="w-full">
-              View Application Tracker
+          <div className="space-y-3">
+            <Link href="/recruitment/status">
+              <ChamferedButton variant="primary" size="md" className="w-full">
+                View Application Tracker
+              </ChamferedButton>
+            </Link>
+            <ChamferedButton
+              variant="ghost"
+              size="sm"
+              className="w-full text-xs text-[#94A3B8]"
+              onClick={() => setShowFormAnyway(true)}
+            >
+              Submit Another Application
             </ChamferedButton>
-          </Link>
+          </div>
         </div>
       </div>
     );

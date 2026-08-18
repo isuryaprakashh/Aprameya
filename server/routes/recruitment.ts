@@ -76,7 +76,7 @@ router.get('/recruitment/applications/mine', async (req, res) => {
     return res.json(app);
   }
 
-  return res.status(400).json({ error: 'Roll number or account login is required to check application status' });
+  return res.json(null);
 });
 
 // GET /api/recruitment/applications — admin only
