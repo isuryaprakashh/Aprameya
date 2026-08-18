@@ -92,13 +92,8 @@ function AppContent() {
 
               <Route path="/events/:eventId/register" component={TicketRegistration} />
 
-              <Route path="/recruitment/apply">
-                <ProtectedRoute component={RecruitmentApply} />
-              </Route>
-
-              <Route path="/recruitment/status">
-                <ProtectedRoute component={RecruitmentStatus} />
-              </Route>
+              <Route path="/recruitment/apply" component={RecruitmentApply} />
+              <Route path="/recruitment/status" component={RecruitmentStatus} />
 
               <Route path="/my-tickets">
                 <ProtectedRoute component={MyTickets} />
