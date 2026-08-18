@@ -10,10 +10,11 @@ export default {
                 sm: "calc(var(--radius) - 4px)",
             },
             fontFamily: {
-                sans: ["Inter", "sans-serif"],
-                display: ["Space Grotesk", "sans-serif"],
-                serif: ["'Instrument Serif'", "Georgia", "serif"],
-                mono: ["JetBrains Mono", "monospace"],
+                sans: ["'Geist'", "'Satoshi'", "'Plus Jakarta Sans'", "-apple-system", "BlinkMacSystemFont", "sans-serif"],
+                display: ["'Geist'", "'Space Grotesk'", "'Satoshi'", "sans-serif"],
+                tech: ["'Space Grotesk'", "'Geist'", "sans-serif"],
+                serif: ["'Geist'", "'Satoshi'", "sans-serif"],
+                mono: ["'Geist Mono'", "'JetBrains Mono'", "monospace"],
             },
             colors: {
                 background: "hsl(var(--background))",

@@ -111,9 +111,9 @@ const Events = () => {
               Schedule & Logistics
             </p>
 
-            <h1 className="text-4xl sm:text-5xl md:text-6xl mb-4 tracking-tight text-white">
-              <span className="font-serif italic font-normal text-[1.08em] text-[#94A3B8]">Workshops &</span>{" "}
-              <span className="font-display font-bold">Events</span>
+            <h1 className="text-4xl sm:text-5xl md:text-6xl mb-4 tracking-tight text-white font-display font-bold">
+              <span className="text-[#94A3B8] font-normal">Workshops &</span>{" "}
+              <span>Events</span>
             </h1>
             <p className="text-base text-[#94A3B8] max-w-xl leading-relaxed">
               Hands-on robotics sessions, ROS 2 bootcamps, and technical symposiums hosted by Aprameya at KL University.
@@ -202,7 +202,13 @@ const Events = () => {
 
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {filteredEvents.length > 0 ? (
-                  filteredEvents.map((event, index) => (
+                  filteredEvents.map((event, index) => {
+                    const parsedDate = event.date ? new Date(event.date) : null;
+                    const isValidDate = parsedDate && !isNaN(parsedDate.getTime());
+                    const displayMonth = event.month || (isValidDate ? parsedDate.toLocaleString('en-US', { month: 'short' }) : 'EVENT');
+                    const displayDay = event.day || (isValidDate ? String(parsedDate.getDate()) : '•');
+
+                    return (
                     <motion.div
                       key={event.id}
                       initial={{ opacity: 0, y: 16 }}
@@ -238,8 +244,8 @@ const Events = () => {
                               </h3>
                             </div>
                             <div className="text-center bg-red-950/50 border border-red-400/30 rounded-lg px-2.5 py-1 min-w-[48px] shrink-0">
-                              <div className="text-[9px] text-red-400 uppercase font-bold">{event.month}</div>
-                              <div className="text-base font-bold text-white font-display">{event.day}</div>
+                              <div className="text-[9px] text-red-400 uppercase font-bold">{displayMonth}</div>
+                              <div className="text-base font-bold text-white font-display">{displayDay}</div>
                             </div>
                           </div>
 
@@ -293,7 +299,8 @@ const Events = () => {
                         </div>
                       </div>
                     </motion.div>
-                  ))
+                    );
+                  })
                 ) : (
                   <div className="text-center py-16 col-span-full border border-red-500/15 rounded-xl morphic-metallic-card">
                     <p className="text-sm text-[#94A3B8]">No events matching "{searchTerm}"</p>

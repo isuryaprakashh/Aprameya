@@ -74,9 +74,9 @@ const MyTickets = () => {
                         <div className="w-10 h-10 bg-red-950/60 border border-red-400/30 rounded-xl flex items-center justify-center text-red-300 shadow-[inset_0_1px_1px_rgba(254,202,202,0.2)]">
                             <Ticket className="w-5 h-5" />
                         </div>
-                        <h1 className="text-3xl sm:text-4xl font-bold tracking-tight text-white">
-                            <span className="font-serif italic font-normal text-[1.08em] text-[#94A3B8]">My</span>{" "}
-                            <span className="font-display">Passes</span>
+                        <h1 className="text-3xl sm:text-4xl font-bold tracking-tight text-white font-display">
+                            <span className="text-[#94A3B8] font-normal">My</span>{" "}
+                            <span>Passes</span>
                         </h1>
                     </div>
                     <p className="text-xs text-[#94A3B8] ml-[52px]">

@@ -5,8 +5,9 @@
 @layer base {
   :root {
     --radius: 0.5rem;
-    --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-    --font-mono: 'JetBrains Mono', monospace;
+    --font-sans: 'Geist', 'Satoshi', 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+    --font-mono: 'Geist Mono', 'JetBrains Mono', monospace;
+    --font-display: 'Geist', 'Space Grotesk', 'Satoshi', sans-serif;
 
     --bg-body: #000000;
     --card-bg: #0A0A0A;

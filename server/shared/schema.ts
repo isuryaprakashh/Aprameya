@@ -69,9 +69,13 @@ export const insertEventSchema = z.object({
   location: z.string().min(1, "Location is required"),
   image: z.string().min(1, "Image is required"),
   user_id: z.string().optional(), // Handled by backend
-  capacity: z.number().int().positive().nullable().optional(),
-  registrationOpen: z.boolean().optional(),
-  ticketEnabled: z.boolean().optional(),
+  capacity: z.preprocess((val) => {
+    if (val === '' || val === null || val === undefined) return null;
+    const num = Number(val);
+    return isNaN(num) ? val : num;
+  }, z.number().int().min(0).nullable().optional()),
+  registrationOpen: z.boolean().optional().default(true),
+  ticketEnabled: z.boolean().optional().default(false),
 });
 
 export const insertEventRegistrationSchema = z.object({

@@ -168,9 +168,9 @@ const ForgotPassword = () => {
             <span className="font-display font-bold text-base text-[var(--text-primary)]">APRAMEYA</span>
           </Link>
           <p className="text-[11px] font-sans font-medium text-[var(--text-muted)] mb-2 uppercase tracking-[0.15em]">Account Recovery</p>
-          <h1 className="text-3xl sm:text-4xl tracking-tight text-[var(--text-primary)]">
-            <span className="font-serif italic font-normal text-[1.1em] text-[var(--text-secondary)]">Reset</span>{" "}
-            <span className="font-display font-bold">Password</span>
+          <h1 className="text-3xl sm:text-4xl tracking-tight text-[var(--text-primary)] font-display font-bold">
+            <span className="text-[var(--text-secondary)] font-normal">Reset</span>{" "}
+            <span>Password</span>
           </h1>
         </div>
 

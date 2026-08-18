@@ -32,9 +32,9 @@ export const UnderConstruction = ({
           {category}
         </p>
 
-        <h2 className="text-2xl sm:text-3xl tracking-tight text-[var(--text-primary)] mb-2">
-          <span className="font-serif italic font-normal text-[1.1em] text-[var(--text-secondary)]">In</span>{" "}
-          <span className="font-display font-bold">Active R&D</span>
+        <h2 className="text-2xl sm:text-3xl tracking-tight text-[var(--text-primary)] mb-2 font-display font-bold">
+          <span className="text-[var(--text-secondary)] font-normal">In</span>{" "}
+          <span>Active R&D</span>
         </h2>
         
         <p className="text-xs text-[var(--text-muted)] mb-4">

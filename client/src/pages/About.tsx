@@ -27,9 +27,9 @@ const About = () => {
               Organization & Team
             </p>
 
-            <h1 className="text-4xl sm:text-5xl md:text-6xl mb-4 tracking-tight text-[var(--text-primary)]">
-              <span className="font-serif italic font-normal text-[1.08em] text-[var(--text-secondary)]">About</span>{" "}
-              <span className="font-display font-bold">Aprameya</span>
+            <h1 className="text-4xl sm:text-5xl md:text-6xl mb-4 tracking-tight text-[var(--text-primary)] font-display font-bold">
+              <span className="text-[var(--text-secondary)] font-normal">About</span>{" "}
+              <span>Aprameya</span>
             </h1>
             <p className="text-base text-[var(--text-secondary)] max-w-2xl leading-relaxed mb-10">
               Founded in 2019 at KL University. Dedicated to advancing autonomous robotics, sensor fusion, and embedded AI through student-led research and competitive engineering.
@@ -68,9 +68,9 @@ const About = () => {
                   <p className="text-[11px] font-sans font-semibold uppercase tracking-[0.15em] text-red-400 mb-2">
                     Our Mission
                   </p>
-                  <h3 className="text-2xl md:text-3xl sm:text-4xl mb-4 text-white">
-                    <span className="font-serif italic font-normal text-[1.1em] text-[#94A3B8]">Applied</span>{" "}
-                    <span className="font-display font-bold">Autonomy Engineering</span>
+                  <h3 className="text-2xl md:text-3xl sm:text-4xl mb-4 text-white font-display font-bold">
+                    <span className="text-[#94A3B8] font-normal">Applied</span>{" "}
+                    <span>Autonomy Engineering</span>
                   </h3>
 
                   <p className="text-sm text-[#94A3B8] leading-relaxed mb-4">
@@ -109,9 +109,9 @@ const About = () => {
                   <p className="text-[11px] font-sans font-semibold uppercase tracking-[0.15em] text-red-400 mb-2">
                     Long-Term Trajectory
                   </p>
-                  <h3 className="text-2xl sm:text-3xl text-white mb-4">
-                    <span className="font-serif italic font-normal text-[1.1em] text-[#94A3B8]">Our</span>{" "}
-                    <span className="font-display font-bold">Vision</span>
+                  <h3 className="text-2xl sm:text-3xl text-white mb-4 font-display font-bold">
+                    <span className="text-[#94A3B8] font-normal">Our</span>{" "}
+                    <span>Vision</span>
                   </h3>
                   <p className="text-sm text-[#94A3B8] leading-relaxed mb-6">
                     To establish a premier student research and prototyping lab that incubates impactful autonomous mobility solutions, fosters rigorous research publications, and competes at national and international autonomy benchmarks.
@@ -135,9 +135,9 @@ const About = () => {
                 <p className="text-[11px] font-sans font-semibold uppercase tracking-[0.15em] text-red-400 mb-2">
                   Operating Principles
                 </p>
-                <h3 className="text-2xl sm:text-3xl text-white mb-6">
-                  <span className="font-serif italic font-normal text-[1.1em] text-[#94A3B8]">Core</span>{" "}
-                  <span className="font-display font-bold">Values</span>
+                <h3 className="text-2xl sm:text-3xl text-white mb-6 font-display font-bold">
+                  <span className="text-[#94A3B8] font-normal">Core</span>{" "}
+                  <span>Values</span>
                 </h3>
                 <div className="space-y-4">
                   {[
@@ -181,9 +181,9 @@ const About = () => {
             <p className="text-[11px] font-sans font-semibold uppercase tracking-[0.15em] text-red-400 mb-2">
               Leadership & Members
             </p>
-            <h2 className="text-3xl md:text-4xl text-white tracking-tight">
-              <span className="font-serif italic font-normal text-[1.1em] text-[#94A3B8]">Lab Leads &</span>{" "}
-              <span className="font-display font-bold">Faculty Mentors</span>
+            <h2 className="text-3xl md:text-4xl text-white tracking-tight font-display font-bold">
+              <span className="text-[#94A3B8] font-normal">Lab Leads &</span>{" "}
+              <span>Faculty Mentors</span>
             </h2>
           </div>
           <OperativeRoster />
@@ -197,9 +197,9 @@ const About = () => {
             <p className="text-[11px] font-sans font-semibold uppercase tracking-[0.15em] text-red-400 mb-2">
               Campus Presence
             </p>
-            <h2 className="text-3xl text-white">
-              <span className="font-serif italic font-normal text-[1.1em] text-[#94A3B8]">Laboratory</span>{" "}
-              <span className="font-display font-bold">Headquarters</span>
+            <h2 className="text-3xl text-white font-display font-bold">
+              <span className="text-[#94A3B8] font-normal">Laboratory</span>{" "}
+              <span>Headquarters</span>
             </h2>
           </div>
 

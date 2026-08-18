@@ -103,9 +103,9 @@ export default function Recruitment() {
           <p className="text-[11px] font-sans font-medium text-[var(--text-muted)] uppercase tracking-[0.15em] mb-3">
             Recruitment Drive
           </p>
-          <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight mb-4 text-[var(--text-primary)]">
-            <span className="font-serif italic font-normal text-[1.08em] text-[var(--text-secondary)]">Join the</span>{" "}
-            <span className="font-display">Lab Crew</span>
+          <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight mb-4 text-[var(--text-primary)] font-display">
+            <span className="text-[var(--text-secondary)] font-normal">Join the</span>{" "}
+            <span>Lab Crew</span>
           </h1>
           <p className="text-[var(--text-secondary)] max-w-2xl leading-relaxed text-base">
             We are looking for passionate engineers, designers, and operators across KL University. Choose between our Tech and Non-Tech tracks to begin your induction.

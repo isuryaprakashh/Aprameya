@@ -114,9 +114,9 @@ const Signup = () => {
             </Link>
             <div className="mb-4">
               <p className="text-[11px] font-sans font-medium text-[var(--text-muted)] mb-2 uppercase tracking-[0.15em]">Student Registration</p>
-              <h1 className="text-4xl sm:text-5xl tracking-tight text-[var(--text-primary)] leading-tight">
-                <span className="font-serif italic font-normal text-[1.1em] text-[var(--text-secondary)]">Create</span>{" "}
-                <span className="font-display font-bold">Account</span>
+              <h1 className="text-4xl sm:text-5xl tracking-tight text-[var(--text-primary)] leading-tight font-display font-bold">
+                <span className="text-[var(--text-secondary)] font-normal">Create</span>{" "}
+                <span>Account</span>
               </h1>
             </div>
             <p className="text-sm text-[var(--text-secondary)] mb-8 max-w-sm leading-relaxed">

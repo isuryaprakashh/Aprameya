@@ -57,9 +57,9 @@ const Blogs = () => {
             <p className="text-[11px] font-sans font-semibold uppercase tracking-[0.15em] text-red-400 mb-3">
               Research & Notes
             </p>
-            <h1 className="text-4xl sm:text-5xl md:text-6xl mb-4 tracking-tight text-white">
-              <span className="font-serif italic font-normal text-[1.08em] text-[#94A3B8]">Technical</span>{" "}
-              <span className="font-display font-bold">Blogs & Journals</span>
+            <h1 className="text-4xl sm:text-5xl md:text-6xl mb-4 tracking-tight text-white font-display font-bold">
+              <span className="text-[#94A3B8] font-normal">Technical</span>{" "}
+              <span>Blogs & Journals</span>
             </h1>
             <p className="text-base text-[#94A3B8] max-w-xl leading-relaxed">
               Deep dives, hardware integration notes, and system architecture breakdowns from the Aprameya development team.

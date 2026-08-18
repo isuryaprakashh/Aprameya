@@ -16,9 +16,9 @@ export default function NotFound() {
           Error 404
         </p>
 
-        <h1 className="text-4xl sm:text-5xl tracking-tight text-[var(--text-primary)] mb-3">
-          <span className="font-serif italic font-normal text-[1.1em] text-[var(--text-secondary)]">Page</span>{" "}
-          <span className="font-display font-bold">Not Found</span>
+        <h1 className="text-4xl sm:text-5xl tracking-tight text-[var(--text-primary)] mb-3 font-display font-bold">
+          <span className="text-[var(--text-secondary)] font-normal">Page</span>{" "}
+          <span>Not Found</span>
         </h1>
         
         <p className="text-sm text-[var(--text-secondary)] leading-relaxed mb-8">

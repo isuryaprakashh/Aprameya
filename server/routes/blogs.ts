@@ -36,13 +36,15 @@ router.post("/blogs", isAdminOrCore, async (req, res) => {
         });
 
         if (!blogInput.success) {
-            return res.status(400).json({ error: blogInput.error });
+            const errorMessage = blogInput.error.errors.map(e => `${e.path.join('.')}: ${e.message}`).join(', ') || "Invalid blog data";
+            return res.status(400).json({ error: errorMessage });
         }
 
         const blog = await storage.createBlog(blogInput.data);
         res.status(201).json(blog);
-    } catch (error) {
-        res.status(500).json({ error: "Failed to create blog" });
+    } catch (error: any) {
+        console.error("Failed to create blog:", error);
+        res.status(500).json({ error: error?.message || "Failed to create blog" });
     }
 });
 
@@ -55,14 +57,16 @@ router.put("/blogs/:id", isAdminOrCore, async (req, res) => {
         const userId = req.session?.userId;
         const user = await storage.getUser(userId!);
 
-        if (blog.user_id !== userId && user?.role !== UserRole.ADMIN) {
+        if (blog.user_id?.toString() !== userId?.toString() && user?.role !== UserRole.ADMIN) {
             return res.status(403).json({ error: "Not authorized to update this blog" });
         }
 
-        const updatedBlog = await storage.updateBlog(blogId, req.body);
+        const { _id, id, user_id, ...updateData } = req.body;
+        const updatedBlog = await storage.updateBlog(blogId, updateData);
         res.json(updatedBlog);
-    } catch (error) {
-        res.status(500).json({ error: "Failed to update blog" });
+    } catch (error: any) {
+        console.error("Failed to update blog:", error);
+        res.status(500).json({ error: error?.message || "Failed to update blog" });
     }
 });
 
@@ -75,14 +79,15 @@ router.delete("/blogs/:id", isAdminOrCore, async (req, res) => {
         const userId = req.session?.userId;
         const user = await storage.getUser(userId!);
 
-        if (blog.user_id !== userId && user?.role !== UserRole.ADMIN) {
+        if (blog.user_id?.toString() !== userId?.toString() && user?.role !== UserRole.ADMIN) {
             return res.status(403).json({ error: "Not authorized to delete this blog" });
         }
 
         await storage.deleteBlog(blogId);
         res.json({ success: true });
-    } catch (error) {
-        res.status(500).json({ error: "Failed to delete blog" });
+    } catch (error: any) {
+        console.error("Failed to delete blog:", error);
+        res.status(500).json({ error: error?.message || "Failed to delete blog" });
     }
 });
 

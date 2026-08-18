@@ -55,13 +55,15 @@ router.post("/events", isAdminOrCore, async (req, res) => {
         });
 
         if (!eventInput.success) {
-            return res.status(400).json({ error: eventInput.error });
+            const errorMessage = eventInput.error.errors.map(e => `${e.path.join('.')}: ${e.message}`).join(', ') || "Invalid event data";
+            return res.status(400).json({ error: errorMessage });
         }
 
         const event = await storage.createEvent(eventInput.data);
         res.status(201).json(event);
-    } catch (error) {
-        res.status(500).json({ error: "Failed to create event" });
+    } catch (error: any) {
+        console.error("Failed to create event:", error);
+        res.status(500).json({ error: error?.message || "Failed to create event" });
     }
 });
 
@@ -74,14 +76,16 @@ router.put("/events/:id", isAdminOrCore, async (req, res) => {
         const userId = req.session?.userId;
         const user = await storage.getUser(userId!);
 
-        if (event.user_id !== userId && user?.role !== UserRole.ADMIN) {
+        if (event.user_id?.toString() !== userId?.toString() && user?.role !== UserRole.ADMIN) {
             return res.status(403).json({ error: "Not authorized to update this event" });
         }
 
-        const updatedEvent = await storage.updateEvent(eventId, req.body);
+        const { _id, id, user_id, registeredCount, ...updateData } = req.body;
+        const updatedEvent = await storage.updateEvent(eventId, updateData);
         res.json(updatedEvent);
-    } catch (error) {
-        res.status(500).json({ error: "Failed to update event" });
+    } catch (error: any) {
+        console.error("Failed to update event:", error);
+        res.status(500).json({ error: error?.message || "Failed to update event" });
     }
 });
 
@@ -94,14 +98,15 @@ router.delete("/events/:id", isAdminOrCore, async (req, res) => {
         const userId = req.session?.userId;
         const user = await storage.getUser(userId!);
 
-        if (event.user_id !== userId && user?.role !== UserRole.ADMIN) {
+        if (event.user_id?.toString() !== userId?.toString() && user?.role !== UserRole.ADMIN) {
             return res.status(403).json({ error: "Not authorized to delete this event" });
         }
 
         await storage.deleteEvent(eventId);
         res.json({ success: true });
-    } catch (error) {
-        res.status(500).json({ error: "Failed to delete event" });
+    } catch (error: any) {
+        console.error("Failed to delete event:", error);
+        res.status(500).json({ error: error?.message || "Failed to delete event" });
     }
 });
 

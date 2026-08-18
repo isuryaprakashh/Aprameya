@@ -231,7 +231,7 @@ const TicketRegistration = () => {
                                     {event.type}
                                 </span>
                                 <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-white mb-4 font-display">
-                                    <span className="font-serif italic font-normal text-[1.08em] text-[#94A3B8]">Event</span>{" "}
+                                    <span className="text-[#94A3B8] font-normal">Event</span>{" "}
                                     <span>Pass</span>
                                 </h1>
 

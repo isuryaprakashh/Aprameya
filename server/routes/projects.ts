@@ -35,13 +35,15 @@ router.post("/projects", isAdminOrCore, async (req, res) => {
         });
 
         if (!projectInput.success) {
-            return res.status(400).json({ error: projectInput.error });
+            const errorMessage = projectInput.error.errors.map(e => `${e.path.join('.')}: ${e.message}`).join(', ') || "Invalid project data";
+            return res.status(400).json({ error: errorMessage });
         }
 
         const project = await storage.createProject(projectInput.data);
         res.status(201).json(project);
-    } catch (error) {
-        res.status(500).json({ error: "Failed to create project" });
+    } catch (error: any) {
+        console.error("Failed to create project:", error);
+        res.status(500).json({ error: error?.message || "Failed to create project" });
     }
 });
 
@@ -54,14 +56,16 @@ router.put("/projects/:id", isAdminOrCore, async (req, res) => {
         const userId = req.session?.userId;
         const user = await storage.getUser(userId!);
 
-        if (project.user_id !== userId && user?.role !== UserRole.ADMIN) {
+        if (project.user_id?.toString() !== userId?.toString() && user?.role !== UserRole.ADMIN) {
             return res.status(403).json({ error: "Not authorized to update this project" });
         }
 
-        const updatedProject = await storage.updateProject(projectId, req.body);
+        const { _id, id, user_id, ...updateData } = req.body;
+        const updatedProject = await storage.updateProject(projectId, updateData);
         res.json(updatedProject);
-    } catch (error) {
-        res.status(500).json({ error: "Failed to update project" });
+    } catch (error: any) {
+        console.error("Failed to update project:", error);
+        res.status(500).json({ error: error?.message || "Failed to update project" });
     }
 });
 
@@ -74,14 +78,15 @@ router.delete("/projects/:id", isAdminOrCore, async (req, res) => {
         const userId = req.session?.userId;
         const user = await storage.getUser(userId!);
 
-        if (project.user_id !== userId && user?.role !== UserRole.ADMIN) {
+        if (project.user_id?.toString() !== userId?.toString() && user?.role !== UserRole.ADMIN) {
             return res.status(403).json({ error: "Not authorized to delete this project" });
         }
 
         await storage.deleteProject(projectId);
         res.json({ success: true });
-    } catch (error) {
-        res.status(500).json({ error: "Failed to delete project" });
+    } catch (error: any) {
+        console.error("Failed to delete project:", error);
+        res.status(500).json({ error: error?.message || "Failed to delete project" });
     }
 });
 

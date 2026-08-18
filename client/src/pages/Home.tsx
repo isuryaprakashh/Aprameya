@@ -80,13 +80,13 @@ const Home = () => {
             {/* Headline */}
             <motion.h1
               variants={fadeUp}
-              className="text-4xl sm:text-5xl md:text-6xl lg:text-[4.5rem] tracking-tight text-white leading-[1.04] mb-6"
+              className="text-4xl sm:text-5xl md:text-6xl lg:text-[4.5rem] tracking-tight text-white leading-[1.04] mb-6 font-display font-bold"
             >
-              <span className="font-serif italic font-normal text-[1.1em] text-zinc-400">We are</span>{" "}
-              <span className="font-display font-bold tracking-tight text-white">APRAMEYA</span>
+              <span className="text-zinc-400 font-normal">We are</span>{" "}
+              <span className="tracking-tight text-white">APRAMEYA</span>
               <br />
-              <span className="font-serif italic font-normal text-[1.1em] text-zinc-400">and we build</span>{" "}
-              <span className="font-display font-bold tracking-tight text-red-500">autonomous systems.</span>
+              <span className="text-zinc-400 font-normal">and we build</span>{" "}
+              <span className="tracking-tight text-red-500">autonomous systems.</span>
             </motion.h1>
 
             {/* Clean Direct Value Statement (stop-slop) */}
@@ -177,9 +177,9 @@ const Home = () => {
             <p className="text-[11px] font-sans font-semibold uppercase tracking-[0.15em] text-red-400 mb-2">
               Member Growth & Acceleration
             </p>
-            <h2 className="text-3xl sm:text-4xl font-bold tracking-tight text-white">
-              <span className="font-serif italic font-normal text-[1.1em] text-zinc-400">How we help you</span>{" "}
-              <span className="font-display">learn, build & publish.</span>
+            <h2 className="text-3xl sm:text-4xl font-bold tracking-tight text-white font-display">
+              <span className="text-zinc-400 font-normal">How we help you</span>{" "}
+              <span>learn, build & publish.</span>
             </h2>
           </div>
           <p className="text-xs text-zinc-400 max-w-xs mt-4 md:mt-0 leading-relaxed">
@@ -231,9 +231,9 @@ const Home = () => {
           <p className="text-[11px] font-sans font-semibold uppercase tracking-[0.15em] text-red-400 mb-2">
             Verified National Honors
           </p>
-          <h2 className="text-3xl sm:text-4xl font-bold tracking-tight text-white">
-            <span className="font-serif italic font-normal text-[1.1em] text-zinc-400">National 3rd at</span>{" "}
-            <span className="font-display">IISc Bengaluru</span>
+          <h2 className="text-3xl sm:text-4xl font-bold tracking-tight text-white font-display">
+            <span className="text-zinc-400 font-normal">National 3rd at</span>{" "}
+            <span>IISc Bengaluru</span>
           </h2>
         </div>
 
@@ -310,9 +310,9 @@ const Home = () => {
             <p className="text-[11px] font-sans font-semibold uppercase tracking-[0.15em] text-red-400 mb-2">
               Engineering Repositories
             </p>
-            <h2 className="text-3xl sm:text-4xl font-bold tracking-tight text-white">
-              <span className="font-serif italic font-normal text-[1.1em] text-zinc-400">Active</span>{" "}
-              <span className="font-display">R&D Projects</span>
+            <h2 className="text-3xl sm:text-4xl font-bold tracking-tight text-white font-display">
+              <span className="text-zinc-400 font-normal">Active</span>{" "}
+              <span>R&D Projects</span>
             </h2>
           </div>
           <Link href="/projects">
@@ -369,9 +369,9 @@ const Home = () => {
             <p className="text-[11px] font-sans font-semibold uppercase tracking-[0.15em] text-red-400 mb-2">
               Sessions & Bootcamps
             </p>
-            <h2 className="text-2xl sm:text-3xl font-bold text-white tracking-tight mb-8">
-              <span className="font-serif italic font-normal text-[1.1em] text-zinc-400">Upcoming</span>{" "}
-              <span className="font-display">Workshops</span>
+            <h2 className="text-2xl sm:text-3xl font-bold text-white tracking-tight mb-8 font-display">
+              <span className="text-zinc-400 font-normal">Upcoming</span>{" "}
+              <span>Workshops</span>
             </h2>
 
             <div className="space-y-3">
@@ -398,9 +398,9 @@ const Home = () => {
             <p className="text-[11px] font-sans font-semibold uppercase tracking-[0.15em] text-red-400 mb-2">
               Gateway
             </p>
-            <h2 className="text-2xl sm:text-3xl font-bold text-white tracking-tight mb-8">
-              <span className="font-serif italic font-normal text-[1.1em] text-zinc-400">Explore</span>{" "}
-              <span className="font-display">Aprameya</span>
+            <h2 className="text-2xl sm:text-3xl font-bold text-white tracking-tight mb-8 font-display">
+              <span className="text-zinc-400 font-normal">Explore</span>{" "}
+              <span>Aprameya</span>
             </h2>
 
             <div className="space-y-3">

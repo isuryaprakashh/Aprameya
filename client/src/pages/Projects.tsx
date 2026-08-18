@@ -73,9 +73,9 @@ const Projects = () => {
               Research & Hardware
             </p>
 
-            <h1 className="text-4xl sm:text-5xl md:text-6xl mb-4 tracking-tight text-white">
-              <span className="font-serif italic font-normal text-[1.08em] text-[#94A3B8]">Laboratory</span>{" "}
-              <span className="font-display font-bold">Projects</span>
+            <h1 className="text-4xl sm:text-5xl md:text-6xl mb-4 tracking-tight text-white font-display font-bold">
+              <span className="text-[#94A3B8] font-normal">Laboratory</span>{" "}
+              <span>Projects</span>
             </h1>
             <p className="text-base text-[#94A3B8] max-w-xl leading-relaxed">
               Hardware integrations, computer vision pipelines, and robotics systems built and tested by Aprameya members.

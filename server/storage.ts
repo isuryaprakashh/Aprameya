@@ -260,7 +260,8 @@ export class MongoStorage implements IStorage {
   }
 
   async updateProject(id: string, project: Partial<InsertProject>): Promise<ProjectType | undefined> {
-    const updatedProject = await Project.findByIdAndUpdate(id, project, { new: true });
+    const { _id, id: projId, user_id, ...updateData }: any = project;
+    const updatedProject = await Project.findByIdAndUpdate(id, updateData, { new: true });
     return updatedProject ? this.mapDoc<ProjectType>(updatedProject) : undefined;
   }
 
@@ -294,7 +295,8 @@ export class MongoStorage implements IStorage {
   }
 
   async updateBlog(id: string, blog: Partial<InsertBlog>): Promise<BlogType | undefined> {
-    const updatedBlog = await Blog.findByIdAndUpdate(id, blog, { new: true });
+    const { _id, id: blogId, user_id, ...updateData }: any = blog;
+    const updatedBlog = await Blog.findByIdAndUpdate(id, updateData, { new: true });
     return updatedBlog ? this.mapDoc<BlogType>(updatedBlog) : undefined;
   }
 
@@ -321,7 +323,8 @@ export class MongoStorage implements IStorage {
   }
 
   async updateResearch(id: string, research: Partial<InsertResearch>): Promise<ResearchType | undefined> {
-    const updatedResearch = await Research.findByIdAndUpdate(id, research, { new: true });
+    const { _id, id: resId, user_id, ...updateData }: any = research;
+    const updatedResearch = await Research.findByIdAndUpdate(id, updateData, { new: true });
     return updatedResearch ? this.mapDoc<ResearchType>(updatedResearch) : undefined;
   }
 
@@ -348,7 +351,8 @@ export class MongoStorage implements IStorage {
   }
 
   async updateEvent(id: string, event: Partial<InsertEvent>): Promise<EventType | undefined> {
-    const updatedEvent = await Event.findByIdAndUpdate(id, event, { new: true });
+    const { _id, id: evId, user_id, registeredCount, ...updateData }: any = event;
+    const updatedEvent = await Event.findByIdAndUpdate(id, updateData, { new: true });
     return updatedEvent ? this.mapDoc<EventType>(updatedEvent) : undefined;
   }
 

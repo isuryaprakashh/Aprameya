@@ -43,6 +43,7 @@ const UserProfile = () => {
     profileData, setProfileData,
     users, eventRegistrations, events, userEventRegistrations, tickets, projects, blogs, research,
     userGrowthData, contentDistributionData,
+    isSaving,
     updateUserRole, deleteUser,
     handleSave, handleDelete
   } = useUserProfileData();
@@ -173,9 +174,9 @@ const UserProfile = () => {
           </div>
         </>}
         <div className="flex justify-end gap-3 mt-6 pt-4 border-t border-[var(--border-color)]">
-          <Button variant="ghost" onClick={() => setIsDialogOpen(false)}>Cancel</Button>
-          <Button onClick={handleSave} className="bg-[hsl(var(--accent))] text-[var(--bg-body)] hover:bg-[hsl(var(--accent))]/90">
-            <FaSave className="mr-2" /> Save Changes
+          <Button variant="ghost" onClick={() => setIsDialogOpen(false)} disabled={isSaving}>Cancel</Button>
+          <Button onClick={handleSave} disabled={isSaving} className="bg-[hsl(var(--accent))] text-[var(--bg-body)] hover:bg-[hsl(var(--accent))]/90 disabled:opacity-50">
+            <FaSave className="mr-2" /> {isSaving ? 'Saving...' : 'Save Changes'}
           </Button>
         </div>
       </div>

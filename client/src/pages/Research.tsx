@@ -41,9 +41,9 @@ const Research = () => {
             <p className="text-[11px] font-sans font-semibold uppercase tracking-[0.15em] text-red-400 mb-3">
               Publications & Benchmarks
             </p>
-            <h1 className="text-4xl sm:text-5xl md:text-6xl mb-4 tracking-tight text-white">
-              <span className="font-serif italic font-normal text-[1.08em] text-[#94A3B8]">Research &</span>{" "}
-              <span className="font-display font-bold">Publications</span>
+            <h1 className="text-4xl sm:text-5xl md:text-6xl mb-4 tracking-tight text-white font-display font-bold">
+              <span className="text-[#94A3B8] font-normal">Research &</span>{" "}
+              <span>Publications</span>
             </h1>
             <p className="text-base text-[#94A3B8] max-w-xl leading-relaxed">
               Empirical investigations, sensor fusion benchmarks, and algorithmic models produced by Aprameya researchers at KL University.
