@@ -120,7 +120,7 @@ const Signup = () => {
               </h1>
             </div>
             <p className="text-sm text-[var(--text-secondary)] mb-8 max-w-sm leading-relaxed">
-              Create an account using your official KL University College ID Number to apply for club recruitment, register for workshops, and access repositories.
+              Create an account using your official KL University College ID Number to register for workshops, access laboratory repositories, and manage your credentials.
             </p>
 
             <div className="space-y-3 border-l border-white/[0.06] pl-5 text-xs text-[var(--text-secondary)]">

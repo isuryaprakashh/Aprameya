@@ -247,6 +247,7 @@ export type ApplicationStatusType = typeof ApplicationStatus[keyof typeof Applic
 export const insertRecruitmentApplicationSchema = z.object({
   fullName: z.string().min(1, 'Full name is required'),
   rollNumber: z.string().min(1, 'Student ID / Roll number is required'),
+  email: z.string().email('Invalid email address').optional().nullable().or(z.literal('')),
   mobileNumber: z.string().min(10, 'Valid 10-digit mobile number is required'),
   department: z.string().min(1, 'Department is required'),
   specialization: z.string().min(1, 'Specialization is required'),
@@ -281,9 +282,10 @@ export type ApplicationDecision = z.infer<typeof applicationDecisionSchema>;
 export interface RecruitmentApplication {
   _id: string;
   id: string;
-  userId: string;
+  userId?: string | null;
   fullName: string;
   rollNumber: string;
+  email?: string | null;
   mobileNumber: string;
   department: string;
   specialization: string;

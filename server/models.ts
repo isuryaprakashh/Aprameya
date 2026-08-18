@@ -34,9 +34,10 @@ const passwordResetOtpSchema = new mongoose.Schema({
 export const PasswordResetOtp = mongoose.model('PasswordResetOtp', passwordResetOtpSchema);
 
 const recruitmentApplicationSchema = new mongoose.Schema({
-    userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true, unique: true },
+    userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', default: null, sparse: true },
     fullName: { type: String, required: true },
     rollNumber: { type: String, required: true },
+    email: { type: String, default: null },
     mobileNumber: { type: String, required: true },
     department: { type: String, required: true },
     specialization: { type: String, required: true },

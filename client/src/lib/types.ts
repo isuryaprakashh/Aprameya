@@ -139,9 +139,10 @@ export type ApplicationStatus = 'pending_review' | 'interview_scheduled' | 'acce
 
 export interface RecruitmentApplication {
   id: string;
-  userId: string;
+  userId?: string | null;
   fullName: string;
   rollNumber: string;
+  email?: string | null;
   mobileNumber: string;
   department: string;
   specialization: string;

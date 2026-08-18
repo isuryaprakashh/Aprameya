@@ -116,6 +116,12 @@ function Drawer({ app, onClose }: { app: RecruitmentApplication; onClose: () => 
                 {app.mobileNumber || 'N/A'}
               </span>
             </div>
+            {app.email && (
+              <div className="flex justify-between items-center">
+                <span className="text-[var(--text-secondary)]">EMAIL:</span>
+                <span className="text-[var(--text-primary)]">{app.email}</span>
+              </div>
+            )}
             <div className="flex justify-between items-center">
               <span className="text-[var(--text-secondary)]">SPECIALIZATION:</span>
               <span className="text-[var(--text-primary)]">{app.specialization || 'Core'}</span>

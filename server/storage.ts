@@ -116,8 +116,9 @@ export interface IStorage {
   // Recruitment Operations
   getRecruitmentSettings(): Promise<RecruitmentSettingsType | undefined>;
   upsertRecruitmentSettings(isOpen: boolean, updatedBy: string): Promise<RecruitmentSettingsType>;
-  createRecruitmentApplication(data: InsertRecruitmentApplication & { userId: string }): Promise<RecruitmentApplicationType>;
+  createRecruitmentApplication(data: InsertRecruitmentApplication & { userId?: string | null }): Promise<RecruitmentApplicationType>;
   getRecruitmentApplicationByUser(userId: string): Promise<RecruitmentApplicationType | undefined>;
+  getRecruitmentApplicationByRollNumber(rollNumber: string): Promise<RecruitmentApplicationType | undefined>;
   getAllRecruitmentApplications(filters?: { status?: string; domain?: string }): Promise<RecruitmentApplicationType[]>;
   getRecruitmentApplication(id: string): Promise<RecruitmentApplicationType | undefined>;
   decideRecruitmentApplication(id: string, decision: ApplicationDecision, reviewedBy: string): Promise<RecruitmentApplicationType | undefined>;
@@ -478,7 +479,7 @@ export class MongoStorage implements IStorage {
     return this.mapDoc<RecruitmentSettingsType>(settings);
   }
 
-  async createRecruitmentApplication(data: InsertRecruitmentApplication & { userId: string }): Promise<RecruitmentApplicationType> {
+  async createRecruitmentApplication(data: InsertRecruitmentApplication & { userId?: string | null }): Promise<RecruitmentApplicationType> {
     const app = new RecruitmentApplication(data);
     await app.save();
     return this.mapDoc<RecruitmentApplicationType>(app);
@@ -486,6 +487,11 @@ export class MongoStorage implements IStorage {
 
   async getRecruitmentApplicationByUser(userId: string): Promise<RecruitmentApplicationType | undefined> {
     const app = await RecruitmentApplication.findOne({ userId });
+    return app ? this.mapDoc<RecruitmentApplicationType>(app) : undefined;
+  }
+
+  async getRecruitmentApplicationByRollNumber(rollNumber: string): Promise<RecruitmentApplicationType | undefined> {
+    const app = await RecruitmentApplication.findOne({ rollNumber: rollNumber.trim() });
     return app ? this.mapDoc<RecruitmentApplicationType>(app) : undefined;
   }
 
@@ -518,10 +524,15 @@ export class MongoStorage implements IStorage {
       // Atomically update user domain/title on acceptance
       const app = await RecruitmentApplication.findById(id);
       if (app && (decision.assignedDomain || app.wing)) {
-        await User.findByIdAndUpdate(app.userId, {
+        const updatePayload = {
           domain: decision.assignedDomain || app.wing,
           title: decision.assignedTitle || 'Core Member',
-        });
+        };
+        if (app.userId) {
+          await User.findByIdAndUpdate(app.userId, updatePayload);
+        } else if (app.rollNumber) {
+          await User.findOneAndUpdate({ rollNumber: app.rollNumber }, updatePayload);
+        }
       }
     }
     const result = await RecruitmentApplication.findByIdAndUpdate(id, update, { new: true });

@@ -112,17 +112,24 @@ export default function Recruitment() {
           </p>
 
           {/* Status badge */}
-          <div className="mt-6 inline-flex items-center gap-2 px-3.5 py-1.5 rounded-lg border border-white/[0.06] bg-[var(--card-bg)] text-xs font-medium">
-            {isOpen ? (
-              <>
-                <span className="w-2 h-2 rounded-full bg-emerald-500" />
-                <span className="text-[var(--text-primary)]">Applications Open</span>
-              </>
-            ) : (
-              <>
-                <span className="w-2 h-2 rounded-full bg-[var(--text-muted)]" />
-                <span className="text-[var(--text-secondary)]">Applications Closed</span>
-              </>
+          <div className="mt-6 flex flex-wrap items-center gap-3">
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-lg border border-white/[0.06] bg-[var(--card-bg)] text-xs font-medium">
+              {isOpen ? (
+                <>
+                  <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                  <span className="text-[var(--text-primary)]">Applications Open</span>
+                </>
+              ) : (
+                <>
+                  <span className="w-2 h-2 rounded-full bg-[var(--text-muted)]" />
+                  <span className="text-[var(--text-secondary)]">Applications Closed</span>
+                </>
+              )}
+            </div>
+            {isOpen && (
+              <span className="px-3 py-1.5 rounded-lg border border-red-500/20 bg-red-950/20 text-red-300 text-xs font-mono">
+                ⚡ Direct Apply • No Account Required
+              </span>
             )}
           </div>
         </motion.div>

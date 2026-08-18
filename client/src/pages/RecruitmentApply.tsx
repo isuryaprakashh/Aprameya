@@ -24,6 +24,7 @@ const DEPARTMENTS = [
 interface FormState {
   fullName: string;
   rollNumber: string;
+  email: string;
   mobileNumber: string;
   department: string;
   specialization: string;
@@ -43,7 +44,8 @@ export default function RecruitmentApply() {
 
   const [form, setForm] = useState<FormState>({
     fullName: user?.display_name || user?.username || '',
-    rollNumber: user?.rollNumber || '',
+    rollNumber: user?.rollNumber || localStorage.getItem('recruitment_rollNumber') || '',
+    email: user?.email || '',
     mobileNumber: '',
     department: user?.department || '',
     specialization: '',
@@ -88,6 +90,7 @@ export default function RecruitmentApply() {
       const payload = {
         fullName: data.fullName.trim(),
         rollNumber: data.rollNumber.trim(),
+        email: data.email?.trim() || undefined,
         mobileNumber: data.mobileNumber.trim(),
         department: data.department.trim(),
         specialization: data.specialization.trim(),
@@ -107,15 +110,17 @@ export default function RecruitmentApply() {
         const err = await res.json();
         throw new Error(err.error || 'Submission failed');
       }
-      return res.json();
+      return { ...(await res.json()), submittedRollNumber: data.rollNumber.trim() };
     },
-    onSuccess: () => {
+    onSuccess: (data) => {
+      const roll = data.submittedRollNumber || form.rollNumber.trim();
+      localStorage.setItem('recruitment_rollNumber', roll);
       qc.invalidateQueries({ queryKey: ['/api/recruitment/applications/mine'] });
       toast({
         title: "Application Submitted Successfully",
-        description: "Your candidate profile has been queued for Face-to-Face Interview scheduling.",
+        description: "Your candidate profile has been queued for evaluation. No account required!",
       });
-      setLocation('/recruitment/status');
+      setLocation(`/recruitment/status?rollNumber=${encodeURIComponent(roll)}`);
     },
     onError: (err: Error) => {
       toast({ title: 'Submission Failed', description: err.message, variant: 'destructive' });
@@ -288,6 +293,19 @@ export default function RecruitmentApply() {
                       value={form.rollNumber}
                       onChange={e => setForm({ ...form, rollNumber: e.target.value })}
                       className="w-full h-11 px-4 rounded-xl bg-[var(--bg-body)] border border-[var(--border-color)] text-sm font-mono text-[var(--text-primary)] focus:outline-none focus:border-[hsl(var(--accent))]"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-mono text-[var(--text-secondary)] mb-2 uppercase">
+                      Official Email / Personal Email
+                    </label>
+                    <input
+                      type="email"
+                      placeholder="2300049169@kluniversity.in"
+                      value={form.email}
+                      onChange={e => setForm({ ...form, email: e.target.value })}
+                      className="w-full h-11 px-4 rounded-xl bg-[var(--bg-body)] border border-[var(--border-color)] text-sm text-[var(--text-primary)] focus:outline-none focus:border-[hsl(var(--accent))]"
                     />
                   </div>
 
@@ -530,7 +548,7 @@ export default function RecruitmentApply() {
                   </div>
                   <div className="flex justify-between">
                     <span>CONTACT:</span>
-                    <span className="text-[var(--text-primary)]">{form.mobileNumber}</span>
+                    <span className="text-[var(--text-primary)]">{form.mobileNumber}{form.email ? ` • ${form.email}` : ''}</span>
                   </div>
                   <div className="flex justify-between">
                     <span>ACADEMIC:</span>
