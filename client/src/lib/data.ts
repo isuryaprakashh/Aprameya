@@ -37,7 +37,7 @@ export const events: Event[] = [
     month: "Sep",
     year: "2026",
     time: "10:00 AM - 4:00 PM",
-    location: "R&D Block 609E, KL University",
+    location: "R609e, R&D Block, KL University",
     description: "Hands-on session covering ROS 2 nodes, LiDAR point-cloud processing, and camera-sensor calibration for autonomous mobility platforms.",
     image: "/assets/UVH.jpg",
     capacity: 60,
@@ -156,7 +156,7 @@ export const upcomingEvents = [
     day: "20",
     month: "Sep",
     date: "2026-09-20",
-    location: "R&D Block 609E, KL University"
+    location: "R609e, R&D Block, KL University"
   }
 ];
 

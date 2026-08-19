@@ -233,7 +233,7 @@ const About = () => {
                 </div>
               </div>
               <p className="text-xs text-zinc-400 leading-relaxed font-mono">
-                R&D Block 609E<br />
+                R609e, R&D Block<br />
                 KL Deemed to be University<br />
                 Green Fields, Vaddeswaram, AP - 522302
               </p>

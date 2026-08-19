@@ -407,7 +407,7 @@ const Home = () => {
               {[
                 { label: "Open Recruitment", desc: "Join Technical or Operations wings for this cycle", href: "/recruitment" },
                 { label: "Technical Dispatches", desc: "Read research paper drafts and hardware field notes", href: "/blogs" },
-                { label: "About Aprameya", desc: "Club history, R&D Block 609E workspace, and roadmap", href: "/about" },
+                { label: "About Aprameya", desc: "Club history, R609e workspace, and roadmap", href: "/about" },
               ].map((link) => (
                 <Link key={link.href} href={link.href} className="block">
                   <div className="p-4 rounded-xl border border-white/10 bg-[#0A0A0A] hover:bg-[#111111] hover:border-white/20 flex items-center justify-between group transition-colors">

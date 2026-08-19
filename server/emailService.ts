@@ -73,7 +73,7 @@ export async function sendPasswordResetOtpEmail({
 
       <div style="text-align: center; font-size: 11px; color: #52525b; border-top: 1px solid #1f1f23; padding-top: 16px;">
         <p style="margin: 0;">Official Dispatch from ${fromAddress}</p>
-        <p style="margin: 4px 0 0;">R&D Block 609E, KL University</p>
+        <p style="margin: 4px 0 0;">R609e, R&D Block, KL University</p>
       </div>
     </div>
   `;

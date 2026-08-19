@@ -16,7 +16,7 @@ export default function Footer() {
               </span>
             </div>
             <p className="text-zinc-400 text-sm leading-relaxed max-w-sm mb-6">
-              Student robotics and autonomous systems technical club at KL University (Workspace: R&D Block 609E). Building physical platforms and ROS 2 compute stacks.
+              Student robotics and autonomous systems technical club at KL University (Workspace: R609e). Building physical platforms and ROS 2 compute stacks.
             </p>
 
             {/* Social links */}
@@ -75,7 +75,7 @@ export default function Footer() {
               Club Workspace
             </h4>
             <p className="text-sm text-[#94A3B8] leading-relaxed mb-3 font-mono text-xs">
-              R&D Block 609E<br />
+              R609e, R&D Block<br />
               Department of Computer Science & Engineering<br />
               K L Deemed to be University
             </p>
