@@ -12,11 +12,11 @@ export default function Footer() {
             <div className="flex items-center gap-2.5 mb-4">
               <span className="font-display font-bold text-xl text-white tracking-tight">APRAMEYA</span>
               <span className="text-[11px] font-mono font-semibold uppercase tracking-wider text-red-400 bg-[#161616] px-2 py-0.5 rounded border border-white/10">
-                Robotics Lab
+                Robotics Club
               </span>
             </div>
             <p className="text-zinc-400 text-sm leading-relaxed max-w-sm mb-6">
-              Undergraduate robotics research and autonomous systems engineering at KL University. Building physical platforms and ROS 2 compute stacks.
+              Student robotics and autonomous systems technical club at KL University (Workspace: R&D Block 609E). Building physical platforms and ROS 2 compute stacks.
             </p>
 
             {/* Social links */}
@@ -55,7 +55,7 @@ export default function Footer() {
                 { href: "/events", label: "Events & Workshops" },
                 { href: "/recruitment", label: "Recruitment" },
                 { href: "/blogs", label: "Technical Blogs" },
-                { href: "/about", label: "About Innovation Lab" },
+                { href: "/about", label: "About Aprameya" },
               ].map((link) => (
                 <li key={link.href}>
                   <Link
@@ -72,9 +72,10 @@ export default function Footer() {
           {/* Institutional / Contact */}
           <div className="md:col-span-3 lg:col-span-3">
             <h4 className="text-white font-semibold mb-4 text-xs font-sans uppercase tracking-wider">
-              Affiliation
+              Club Workspace
             </h4>
-            <p className="text-sm text-[#94A3B8] leading-relaxed mb-3">
+            <p className="text-sm text-[#94A3B8] leading-relaxed mb-3 font-mono text-xs">
+              R&D Block 609E<br />
               Department of Computer Science & Engineering<br />
               K L Deemed to be University
             </p>
@@ -86,9 +87,9 @@ export default function Footer() {
         </div>
 
         {/* Bottom bar */}
-        <div className="pt-8 border-t border-red-500/10 flex flex-col sm:flex-row justify-between items-center gap-4 text-xs text-[#64748B]">
+        <div className="pt-8 border-t border-white/10 flex flex-col sm:flex-row justify-between items-center gap-4 text-xs text-[#64748B]">
           <div>
-            © {new Date().getFullYear()} Aprameya Innovation Lab. All rights reserved.
+            © {new Date().getFullYear()} Aprameya Club. All rights reserved.
           </div>
           <div>
             Built by Aprameya Dev Team

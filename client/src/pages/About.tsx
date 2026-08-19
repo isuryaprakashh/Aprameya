@@ -222,18 +222,18 @@ const About = () => {
               </a>
             </div>
 
-            <div className="border border-white/[0.06] bg-[var(--card-bg)] rounded-xl p-6">
+            <div className="border border-white/10 bg-[#0A0A0A] rounded-xl p-6">
               <div className="flex items-center gap-3 mb-4">
-                <div className="w-9 h-9 bg-white/[0.03] border border-white/[0.06] rounded-lg flex items-center justify-center text-[var(--text-primary)]">
-                  <MapPin className="w-4 h-4" />
+                <div className="w-9 h-9 bg-[#141414] border border-white/10 rounded-lg flex items-center justify-center text-zinc-300">
+                  <MapPin className="w-4 h-4 text-red-400" />
                 </div>
                 <div>
-                  <h3 className="font-semibold text-sm text-[var(--text-primary)]">Physical Lab</h3>
-                  <p className="text-xs text-[var(--text-muted)]">Campus Location</p>
+                  <h3 className="font-semibold text-sm text-white">Club Workspace</h3>
+                  <p className="text-xs text-zinc-400">Campus Location</p>
                 </div>
               </div>
-              <p className="text-xs text-[var(--text-secondary)] leading-relaxed">
-                Room R609, Innovation Block<br />
+              <p className="text-xs text-zinc-400 leading-relaxed font-mono">
+                R&D Block 609E<br />
                 KL Deemed to be University<br />
                 Green Fields, Vaddeswaram, AP - 522302
               </p>

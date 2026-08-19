@@ -74,7 +74,7 @@ const Home = () => {
               className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-white/10 bg-[#111111] text-[11px] font-mono text-zinc-300 mb-6"
             >
               <span className="w-1.5 h-1.5 rounded-full bg-red-500" />
-              KL University • Autonomous Systems & Robotics Lab
+              KL University • Autonomous Systems & Robotics Club
             </motion.div>
 
             {/* Headline */}
@@ -407,7 +407,7 @@ const Home = () => {
               {[
                 { label: "Open Recruitment", desc: "Join Technical or Operations wings for this cycle", href: "/recruitment" },
                 { label: "Technical Dispatches", desc: "Read research paper drafts and hardware field notes", href: "/blogs" },
-                { label: "About Innovation Lab", desc: "Our laboratory history, faculty mentors, and roadmap", href: "/about" },
+                { label: "About Aprameya", desc: "Club history, R&D Block 609E workspace, and roadmap", href: "/about" },
               ].map((link) => (
                 <Link key={link.href} href={link.href} className="block">
                   <div className="p-4 rounded-xl border border-white/10 bg-[#0A0A0A] hover:bg-[#111111] hover:border-white/20 flex items-center justify-between group transition-colors">

@@ -37,7 +37,7 @@ export const events: Event[] = [
     month: "Sep",
     year: "2026",
     time: "10:00 AM - 4:00 PM",
-    location: "Innovation Lab, Engineering Block, KL University",
+    location: "R&D Block 609E, KL University",
     description: "Hands-on session covering ROS 2 nodes, LiDAR point-cloud processing, and camera-sensor calibration for autonomous mobility platforms.",
     image: "/assets/UVH.jpg",
     capacity: 60,
@@ -63,7 +63,7 @@ export const teamMembers: TeamMember[] = [
     id: "2",
     name: "Mr. Srikanth Annamareddy",
     role: "Technical Mentor",
-    department: "Innovation & Autonomous Systems",
+    department: "Robotics & Autonomous Systems",
     year: "Faculty / Lead",
     image: "/assets/team_avatar_2.png",
     socialLinks: {
@@ -156,7 +156,7 @@ export const upcomingEvents = [
     day: "20",
     month: "Sep",
     date: "2026-09-20",
-    location: "Innovation Lab, KL University"
+    location: "R&D Block 609E, KL University"
   }
 ];
 
