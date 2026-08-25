@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import { storage } from '../storage';
+import { RecruitmentApplication } from '../models';
 import { isAuthenticated, isAdmin } from '../middleware/auth';
 import {
   insertRecruitmentApplicationSchema,
@@ -46,7 +47,7 @@ router.post('/recruitment/applications', async (req, res) => {
     }
 
     // Attach user ID if applicant happens to be logged in
-    const userId = req.session?.userId || null;
+    const userId = req.session?.userId ? req.session.userId : undefined;
     if (userId) {
       const existingByUser = await storage.getRecruitmentApplicationByUser(userId);
       if (existingByUser) {
@@ -54,8 +55,25 @@ router.post('/recruitment/applications', async (req, res) => {
       }
     }
 
-    const app = await storage.createRecruitmentApplication({ ...data, rollNumber, userId });
-    res.status(201).json(app);
+    try {
+      const app = await storage.createRecruitmentApplication({ ...data, rollNumber, userId });
+      return res.status(201).json(app);
+    } catch (saveErr: any) {
+      if (saveErr?.code === 11000) {
+        // If legacy unique index userId_1 triggered, drop legacy index and retry
+        if (saveErr?.keyPattern?.userId || saveErr?.message?.includes('userId')) {
+          try {
+            await RecruitmentApplication.collection.dropIndex('userId_1');
+          } catch (_) {}
+          const retryApp = await storage.createRecruitmentApplication({ ...data, rollNumber, userId: undefined });
+          return res.status(201).json(retryApp);
+        }
+        if (saveErr?.keyPattern?.rollNumber || saveErr?.message?.includes('rollNumber')) {
+          return res.status(409).json({ error: `An application has already been submitted for Roll Number ${rollNumber}` });
+        }
+      }
+      throw saveErr;
+    }
   } catch (err: any) {
     res.status(400).json({ error: err.message ?? 'Invalid application data' });
   }

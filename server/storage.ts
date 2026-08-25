@@ -480,7 +480,11 @@ export class MongoStorage implements IStorage {
   }
 
   async createRecruitmentApplication(data: InsertRecruitmentApplication & { userId?: string | null }): Promise<RecruitmentApplicationType> {
-    const app = new RecruitmentApplication(data);
+    const docData: Record<string, any> = { ...data };
+    if (!docData.userId) {
+      delete docData.userId;
+    }
+    const app = new RecruitmentApplication(docData);
     await app.save();
     return this.mapDoc<RecruitmentApplicationType>(app);
   }
