@@ -135,8 +135,8 @@ router.post("/teams", isAdminOrCore, async (req, res) => {
   }
 });
 
-// PUT /api/teams/:id - Update existing team member
-router.put("/teams/:id", isAdminOrCore, async (req, res) => {
+// PUT / PATCH /api/teams/:id - Update existing team member
+const handleUpdateTeamMember = async (req: any, res: any) => {
   try {
     const parsed = insertTeamMemberSchema.partial().safeParse(req.body);
     if (!parsed.success) {
@@ -153,7 +153,10 @@ router.put("/teams/:id", isAdminOrCore, async (req, res) => {
     console.error("Failed to update team member:", error);
     res.status(500).json({ error: "Failed to update team member" });
   }
-});
+};
+
+router.put("/teams/:id", isAdminOrCore, handleUpdateTeamMember);
+router.patch("/teams/:id", isAdminOrCore, handleUpdateTeamMember);
 
 // DELETE /api/teams/:id - Remove team member (Admin only)
 router.delete("/teams/:id", isAdmin, async (req, res) => {

@@ -108,7 +108,7 @@ export const useUserProfileData = () => {
         onError: (error: any) => handleAuthError(error, 'Failed to create project')
     });
     const updateProject = useMutation({
-        mutationFn: (d: any) => apiRequest(`/api/projects/${d.id}`, { method: 'PUT', body: JSON.stringify(d) }),
+        mutationFn: (d: any) => apiRequest(`/api/projects/${d.id || d._id}`, { method: 'PUT', body: JSON.stringify(d) }),
         onSuccess: () => { queryClient.invalidateQueries({ queryKey: ['/api/projects'] }); setIsDialogOpen(false); toast({ title: 'Success', description: 'Project updated' }); },
         onError: (error: any) => handleAuthError(error, 'Failed to update project')
     });
@@ -124,7 +124,7 @@ export const useUserProfileData = () => {
         onError: (error: any) => handleAuthError(error, 'Failed to create blog')
     });
     const updateBlog = useMutation({
-        mutationFn: (d: any) => apiRequest(`/api/blogs/${d.id}`, { method: 'PUT', body: JSON.stringify(d) }),
+        mutationFn: (d: any) => apiRequest(`/api/blogs/${d.id || d._id}`, { method: 'PUT', body: JSON.stringify(d) }),
         onSuccess: () => { queryClient.invalidateQueries({ queryKey: ['/api/blogs'] }); setIsDialogOpen(false); toast({ title: 'Success', description: 'Blog updated' }); },
         onError: (error: any) => handleAuthError(error, 'Failed to update blog')
     });
@@ -140,7 +140,7 @@ export const useUserProfileData = () => {
         onError: (error: any) => handleAuthError(error, 'Failed to create research')
     });
     const updateResearch = useMutation({
-        mutationFn: (d: any) => apiRequest(`/api/research/${d.id}`, { method: 'PUT', body: JSON.stringify(d) }),
+        mutationFn: (d: any) => apiRequest(`/api/research/${d.id || d._id}`, { method: 'PUT', body: JSON.stringify(d) }),
         onSuccess: () => { queryClient.invalidateQueries({ queryKey: ['/api/research'] }); setIsDialogOpen(false); toast({ title: 'Success', description: 'Research updated' }); },
         onError: (error: any) => handleAuthError(error, 'Failed to update research')
     });
@@ -156,7 +156,7 @@ export const useUserProfileData = () => {
         onError: (error: any) => handleAuthError(error, 'Failed to create event')
     });
     const updateEvent = useMutation({
-        mutationFn: (d: any) => apiRequest(`/api/events/${d.id}`, { method: 'PUT', body: JSON.stringify(d) }),
+        mutationFn: (d: any) => apiRequest(`/api/events/${d.id || d._id}`, { method: 'PUT', body: JSON.stringify(d) }),
         onSuccess: () => { queryClient.invalidateQueries({ queryKey: ['/api/events'] }); setIsDialogOpen(false); toast({ title: 'Success', description: 'Event updated successfully' }); },
         onError: (error: any) => handleAuthError(error, 'Failed to update event')
     });
@@ -172,7 +172,7 @@ export const useUserProfileData = () => {
         onError: (error: any) => handleAuthError(error, 'Failed to add team member')
     });
     const updateTeamMember = useMutation({
-        mutationFn: (d: any) => apiRequest(`/api/teams/${d.id}`, { method: 'PUT', body: JSON.stringify(d) }),
+        mutationFn: (d: any) => apiRequest(`/api/teams/${d.id || d._id}`, { method: 'PUT', body: JSON.stringify(d) }),
         onSuccess: () => { queryClient.invalidateQueries({ queryKey: ['/api/teams'] }); setIsDialogOpen(false); toast({ title: 'Success', description: 'Team member updated successfully' }); },
         onError: (error: any) => handleAuthError(error, 'Failed to update team member')
     });

@@ -150,7 +150,7 @@ export default function EventsView({ handleEdit, handleCreate, handleDelete }: E
                                                 <FaEdit className="mr-2" /> Edit
                                             </Button>
                                             <Button
-                                                onClick={() => handleDelete && handleDelete(event.id, 'event')}
+                                                onClick={() => handleDelete && handleDelete(event.id || (event as any)._id, 'event')}
                                                 variant="destructive"
                                                 size="sm"
                                                 className="bg-red-500/10 text-red-500 border border-red-500/20 hover:bg-red-500/20"

@@ -58,7 +58,7 @@ export default function ProjectsView({ handleEdit, handleCreate, handleDelete }:
                                 <p className="text-sm text-[var(--text-secondary)] line-clamp-2 mb-3">{project.description}</p>
                                 <div className="flex gap-2">
                                     <Button onClick={() => handleEdit(project, 'project')} className="flex-1 h-8 text-xs" variant="outline">Edit</Button>
-                                    <Button onClick={() => handleDelete(project.id, 'project')} className="h-8 w-8 p-0" variant="destructive"><FaTrash className="w-3 h-3" /></Button>
+                                    <Button onClick={() => handleDelete(project.id || (project as any)._id, 'project')} className="h-8 w-8 p-0" variant="destructive"><FaTrash className="w-3 h-3" /></Button>
                                 </div>
                             </div>
                         </div>
