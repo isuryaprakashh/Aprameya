@@ -1,0 +1,358 @@
+import { z } from "zod";
+
+// Define user roles as enum for type safety
+export const UserRole = {
+  ASPIRANT: "ASPIRANT",
+  CORE: "CORE",
+  ADMIN: "ADMIN",
+} as const;
+
+export type UserRoleType = typeof UserRole[keyof typeof UserRole];
+
+export const insertUserSchema = z.object({
+  username: z.string().min(1, "Username is required"),
+  password: z.string().min(1, "Password is required"),
+  email: z.string().email("Invalid email address"),
+  rollNumber: z.string().length(10, "Roll number must be exactly 10 digits").regex(/^\d{10}$/, "Roll number must contain only digits"),
+});
+
+export const updateUserProfileSchema = z.object({
+  display_name: z.string().optional(),
+  profile_image: z.string().optional(),
+  department: z.string().optional(),
+  year: z.string().optional(),
+  role_title: z.string().optional(),
+  tags: z.string().optional(),
+  linkedin: z.string().optional(),
+  github: z.string().optional(),
+  bio: z.string().optional(),
+  // Add these for profile updates
+  email: z.string().email("Invalid email address").optional(),
+  password: z.string().min(1, "Password cannot be empty").optional(),
+});
+
+export const insertProjectSchema = z.object({
+  title: z.string().min(1, "Title is required"),
+  description: z.string().min(1, "Description is required"),
+  category: z.string().min(1, "Category is required"),
+  image: z.string().min(1, "Image is required"),
+  technologies: z.union([z.string().min(1), z.array(z.string())]).transform(val => Array.isArray(val) ? val.join(', ') : val),
+  team: z.union([z.string().min(1), z.array(z.string())]).transform(val => Array.isArray(val) ? val.join(', ') : val),
+  user_id: z.string().optional(), // Handled by backend
+  is_featured: z.boolean().default(false).optional(),
+});
+
+export const insertBlogSchema = z.object({
+  title: z.string().min(1, "Title is required"),
+  excerpt: z.string().min(1, "Excerpt is required"),
+  content: z.string().min(1, "Content is required"),
+  category: z.string().min(1, "Category is required"),
+  image: z.string().min(1, "Image is required"),
+  user_id: z.string().optional(), // Handled by backend
+});
+
+export const insertResearchSchema = z.object({
+  title: z.string().min(1, "Title is required"),
+  description: z.string().min(1, "Description is required"),
+  category: z.string().min(1, "Category is required"),
+  authors: z.union([z.string().min(1), z.array(z.string())]).transform(val => Array.isArray(val) ? val.join(', ') : val),
+  image: z.string().min(1, "Image is required"),
+  user_id: z.string().optional(), // Handled by backend
+});
+
+export const insertEventSchema = z.object({
+  title: z.string().min(1, "Title is required"),
+  description: z.string().min(1, "Description is required"),
+  type: z.string().min(1, "Type is required"),
+  date: z.string().min(1, "Date is required"),
+  time: z.string().min(1, "Time is required"),
+  location: z.string().min(1, "Location is required"),
+  image: z.string().min(1, "Image is required"),
+  user_id: z.string().optional(), // Handled by backend
+  capacity: z.preprocess((val) => {
+    if (val === '' || val === null || val === undefined) return null;
+    const num = Number(val);
+    return isNaN(num) ? val : num;
+  }, z.number().int().min(0).nullable().optional()),
+  registrationOpen: z.boolean().optional().default(true),
+  ticketEnabled: z.boolean().optional().default(false),
+});
+
+export const insertEventRegistrationSchema = z.object({
+  event_id: z.string().min(1, "Event ID is required"),
+  message: z.string().optional(),
+  user_id: z.string().optional(), // Handled by backend
+});
+
+
+
+export const insertMessageSchema = z.object({
+  content: z.string().min(1, "Content is required"),
+  user_id: z.string().optional(), // Handled by backend
+});
+
+export const insertTicketRegistrationSchema = z.object({
+  fullName: z.string().min(1, "Full name is required").max(100),
+  rollNumber: z.string().length(10, "Roll number must be exactly 10 digits").regex(/^\d{10}$/, "Roll number must contain only digits"),
+  year: z.number().int().min(1).max(4),
+  eventId: z.string().min(1, "Event ID is required"),
+});
+
+// Type definitions
+export type InsertUser = z.infer<typeof insertUserSchema>;
+export type UpdateUserProfile = z.infer<typeof updateUserProfileSchema>;
+
+// We need to define the "Select" types manually or based on what Mongoose returns
+// For simplicity, we'll define them as interfaces matching the Mongoose schema + _id
+export interface User {
+  _id: string;
+  id: string;
+  username: string;
+  password?: string;
+  email: string;
+  rollNumber: string;
+  role: string;
+  created_at: Date | string;
+  display_name?: string | null;
+  profile_image?: string | null;
+  department?: string | null;
+  year?: string | null;
+  role_title?: string | null;
+  tags?: string | null;
+  linkedin?: string | null;
+  github?: string | null;
+  bio?: string | null;
+  domain?: string | null;
+  title?: string | null;
+}
+
+export type InsertProject = z.infer<typeof insertProjectSchema>;
+export interface Project {
+  _id: string;
+  id: string;
+  title: string;
+  description: string;
+  category: string;
+  image: string;
+  technologies: string;
+  team: string;
+  created_at: Date | string;
+  user_id: string;
+  is_featured?: boolean;
+}
+
+export type InsertBlog = z.infer<typeof insertBlogSchema>;
+export interface Blog {
+  _id: string;
+  id: string;
+  title: string;
+  excerpt: string;
+  content: string;
+  category: string;
+  image: string;
+  date: Date | string;
+  user_id: string;
+}
+
+export type InsertResearch = z.infer<typeof insertResearchSchema>;
+export interface Research {
+  _id: string;
+  id: string;
+  title: string;
+  description: string;
+  category: string;
+  authors: string;
+  image: string;
+  date: Date | string;
+  user_id: string;
+}
+
+export type InsertEvent = z.infer<typeof insertEventSchema>;
+export interface Event {
+  _id: string;
+  id: string;
+  title: string;
+  description: string;
+  type: string;
+  date: string;
+  time: string;
+  location: string;
+  image: string;
+  user_id: string;
+  capacity?: number | null;
+  registrationOpen?: boolean;
+  ticketEnabled?: boolean;
+}
+
+export type InsertEventRegistration = z.infer<typeof insertEventRegistrationSchema>;
+export interface EventRegistration {
+  _id: string;
+  id: string;
+  event_id: string;
+  user_id: string;
+  message?: string | null;
+  created_at: Date | string;
+}
+
+
+
+export type InsertMessage = z.infer<typeof insertMessageSchema>;
+export interface Message {
+  _id: string;
+  id: string;
+  content: string;
+  created_at: Date | string;
+  user_id: string;
+}
+
+export type InsertTicketRegistration = z.infer<typeof insertTicketRegistrationSchema>;
+export interface TicketRegistration {
+  _id: string;
+  id: string;
+  eventId: string;
+  userId: string;
+  fullName: string;
+  rollNumber: string;
+  year: number;
+  qrToken: string;
+  entryCode: string;
+  scanned: boolean;
+  scannedAt: Date | string | null;
+  scannedBy?: string | null;
+  scannedByName?: string | null;
+  createdAt: Date | string;
+}
+
+// Recruitment
+export const CLUB_DOMAINS = [
+  'Autonomy & Controls',
+  'Perception & Computer Vision',
+  'Embedded Systems & Hardware',
+  'Software & AI/ML',
+  'Mechanical & CAD',
+  'Design & Content',
+  'Operations & Sponsorship',
+] as const;
+
+export type ClubDomain = typeof CLUB_DOMAINS[number];
+
+export const ApplicationStatus = {
+  PENDING_REVIEW: 'pending_review',
+  INTERVIEW_SCHEDULED: 'interview_scheduled',
+  ACCEPTED: 'accepted',
+  REJECTED: 'rejected',
+} as const;
+export type ApplicationStatusType = typeof ApplicationStatus[keyof typeof ApplicationStatus];
+
+export const insertRecruitmentApplicationSchema = z.object({
+  fullName: z.string().min(1, 'Full name is required'),
+  rollNumber: z.string().min(1, 'Student ID / Roll number is required'),
+  email: z.string().email('Invalid email address').optional().nullable().or(z.literal('')),
+  mobileNumber: z.string().min(10, 'Valid 10-digit mobile number is required'),
+  department: z.string().min(1, 'Department is required'),
+  specialization: z.string().min(1, 'Specialization is required'),
+  branch: z.string().optional(),
+  year: z.enum(['1st', '2nd', '3rd', '4th']),
+  track: z.enum(['TECH', 'NON_TECH']),
+  wing: z.string().min(1, 'Please select a wing'),
+  domainPreferences: z.array(z.string()).optional().default([]),
+  roleInterest: z.string().optional().default(''),
+  portfolioUrl: z.string().optional().nullable().transform(val => {
+    if (!val || val.trim() === '' || val.trim() === 'https://' || val.trim() === 'http://') return null;
+    return val.trim();
+  }),
+  motivation: z.string().min(10, 'Minimum 10 characters').max(1000, 'Maximum 1000 characters'),
+});
+
+export const applicationDecisionSchema = z.object({
+  status: z.enum(['pending_review', 'interview_scheduled', 'accepted', 'rejected']),
+  assignedDomain: z.string().optional(),
+  assignedTitle: z.string().optional(),
+  reviewNotes: z.string().optional(),
+  interviewDetails: z.object({
+    date: z.string().optional().nullable(),
+    venue: z.string().optional().nullable(),
+    notes: z.string().optional().nullable(),
+  }).optional(),
+});
+
+export type InsertRecruitmentApplication = z.infer<typeof insertRecruitmentApplicationSchema>;
+export type ApplicationDecision = z.infer<typeof applicationDecisionSchema>;
+
+export interface RecruitmentApplication {
+  _id: string;
+  id: string;
+  userId?: string | null;
+  fullName: string;
+  rollNumber: string;
+  email?: string | null;
+  mobileNumber: string;
+  department: string;
+  specialization: string;
+  branch?: string | null;
+  year: string;
+  track: 'TECH' | 'NON_TECH';
+  wing: string;
+  domainPreferences?: string[];
+  roleInterest?: string;
+  portfolioUrl?: string | null;
+  motivation: string;
+  status: ApplicationStatusType;
+  interviewDetails?: {
+    date?: string | null;
+    venue?: string | null;
+    notes?: string | null;
+  } | null;
+  assignedDomain?: string | null;
+  assignedTitle?: string | null;
+  reviewedBy?: string | null;
+  reviewNotes?: string | null;
+  appliedAt: Date | string;
+  reviewedAt?: Date | string | null;
+}
+
+export interface RecruitmentSettings {
+  _id: string;
+  id: string;
+  isOpen: boolean;
+  openedAt?: Date | string | null;
+  closedAt?: Date | string | null;
+  updatedBy?: string | null;
+}
+
+export const insertTeamMemberSchema = z.object({
+  name: z.string().min(1, "Name is required"),
+  role: z.string().min(1, "Role is required"),
+  category: z.string().default("Core Team").optional(),
+  department: z.string().default("").optional(),
+  year: z.string().default("").optional(),
+  image: z.string().default("").optional(),
+  bio: z.string().default("").optional(),
+  email: z.string().default("").optional(),
+  linkedin: z.string().default("").optional(),
+  github: z.string().default("").optional(),
+  order: z.preprocess((val) => {
+    if (val === '' || val === null || val === undefined) return 0;
+    const num = Number(val);
+    return isNaN(num) ? 0 : num;
+  }, z.number().int().default(0).optional()),
+});
+
+export type InsertTeamMember = z.infer<typeof insertTeamMemberSchema>;
+export interface TeamMember {
+  _id: string;
+  id: string;
+  name: string;
+  role: string;
+  category: string;
+  department?: string;
+  year?: string;
+  image?: string;
+  bio?: string;
+  email?: string;
+  linkedin?: string;
+  github?: string;
+  order?: number;
+  created_at: Date | string;
+}
+

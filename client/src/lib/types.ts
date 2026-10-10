@@ -1,0 +1,183 @@
+export interface Project {
+  id: string;
+  title: string;
+  category: string;
+  description: string;
+  image: string;
+  technologies: string[];
+  team: string[];
+  is_featured?: boolean;
+}
+
+export interface BlogPost {
+  id: string;
+  title: string;
+  excerpt: string;
+  content: string;
+  category: string;
+  date: string;
+  image: string;
+  author: string;
+}
+
+export interface ResearchItem {
+  id: number;
+  title: string;
+  category: string;
+  description: string;
+  authors: string | string[];
+  image: string;
+  date: string;
+  link?: string;
+  content?: string;
+}
+
+export interface Event {
+  id: string;
+  title: string;
+  type: string;
+  date: string;
+  day: string;
+  month: string;
+  year: string;
+  time: string;
+  location: string;
+  description: string;
+  image: string;
+  capacity?: number | null;
+  registrationOpen?: boolean;
+  ticketEnabled?: boolean;
+  registeredCount?: number;
+}
+
+export interface TeamMember {
+  id: string;
+  _id?: string;
+  name: string;
+  role: string;
+  category?: string;
+  department?: string;
+  year?: string;
+  image?: string;
+  bio?: string;
+  email?: string;
+  linkedin?: string;
+  github?: string;
+  order?: number;
+  created_at?: string;
+  socialLinks?: {
+    linkedin?: string;
+    github?: string;
+    email?: string;
+  };
+}
+
+export interface StatItem {
+  value: string;
+  label: string;
+}
+
+export interface User {
+  id: string;
+  username: string;
+  email: string;
+  role: string;
+  rollNumber?: string;
+  password?: string;
+  created_at: string;
+  display_name?: string | null;
+  department?: string | null;
+  year?: string | null;
+  domain?: string | null;
+  title?: string | null;
+}
+
+export interface EventRegistration {
+  id: string;
+  event_id: string;
+  user_id: string;
+  registered_at?: string;
+  event?: Event;
+  user?: User;
+}
+
+export interface TicketRegistration {
+  id: string;
+  eventId: string;
+  userId?: string;
+  fullName: string;
+  rollNumber: string;
+  year: number;
+  scanned: boolean;
+  scannedAt: string | null;
+  createdAt: string;
+  qrDataUrl?: string;
+  qrToken?: string;
+  entryCode?: string;
+  event?: {
+    id: string;
+    title: string;
+    date: string;
+    time: string;
+    location: string;
+    image?: string;
+    type?: string;
+  } | null;
+}
+
+export const TECH_WINGS = [
+  'Software',
+  'Hardware',
+  'Website & Tech Support',
+] as const;
+
+export const NON_TECH_WINGS = [
+  'Event Management',
+  'Designing',
+  'Broadcasting & Media',
+] as const;
+
+export const CLUB_DOMAINS = [
+  ...TECH_WINGS,
+  ...NON_TECH_WINGS,
+] as const;
+
+export type RecruitmentTrack = 'TECH' | 'NON_TECH';
+export type ApplicationStatus = 'pending_review' | 'interview_scheduled' | 'accepted' | 'rejected';
+
+export interface RecruitmentApplication {
+  id: string;
+  userId?: string | null;
+  fullName: string;
+  rollNumber: string;
+  email?: string | null;
+  mobileNumber: string;
+  department: string;
+  specialization: string;
+  branch?: string | null;
+  year: string;
+  track: RecruitmentTrack;
+  wing: string;
+  domainPreferences?: string[];
+  roleInterest?: string;
+  portfolioUrl?: string | null;
+  motivation: string;
+  status: ApplicationStatus;
+  interviewDetails?: {
+    date?: string | null;
+    venue?: string | null;
+    notes?: string | null;
+  } | null;
+  assignedDomain?: string | null;
+  assignedTitle?: string | null;
+  reviewedBy?: string | null;
+  reviewNotes?: string | null;
+  appliedAt: string;
+  reviewedAt?: string | null;
+}
+
+export interface RecruitmentSettings {
+  isOpen: boolean;
+  openedAt?: string | null;
+  closedAt?: string | null;
+}

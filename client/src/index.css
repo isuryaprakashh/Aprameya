@@ -1,0 +1,105 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --radius: 0.5rem;
+    --font-sans: 'Geist', 'Satoshi', 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+    --font-mono: 'Geist Mono', 'JetBrains Mono', monospace;
+    --font-display: 'Geist', 'Space Grotesk', 'Satoshi', sans-serif;
+
+    --bg-body: #000000;
+    --card-bg: #0A0A0A;
+    --card-hover: #121212;
+    --border-color: rgba(255, 255, 255, 0.08);
+    --border-hover: rgba(255, 255, 255, 0.2);
+    --text-primary: #F8FAFC;
+    --text-secondary: #94A3B8;
+    --text-muted: #64748B;
+    --accent: 0 72% 51%;
+    --accent-foreground: 0 0% 100%;
+
+    --background: 0 0% 0%;
+    --foreground: 210 40% 98%;
+    --card: 0 0% 4%;
+    --card-foreground: 210 40% 98%;
+    --popover: 0 0% 4%;
+    --popover-foreground: 210 40% 98%;
+    --primary: 0 72% 51%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 0 0% 8%;
+    --secondary-foreground: 210 40% 98%;
+    --muted: 0 0% 8%;
+    --muted-foreground: 215 16% 55%;
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 0 0% 12%;
+    --input: 0 0% 12%;
+    --ring: 0 72% 51%;
+  }
+
+  body {
+    background-color: #000000;
+    color: var(--text-primary);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    overflow-x: hidden;
+  }
+}
+
+/* ─── CLEAN SOLID RED UTILITIES ─── */
+.text-metallic-red {
+  color: #EF4444;
+}
+
+.text-metallic-silver {
+  color: #E2E8F0;
+}
+
+.morphic-metallic-card,
+.metallic-red-card {
+  background-color: #0A0A0A;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.morphic-metallic-card:hover,
+.metallic-red-card:hover {
+  border-color: rgba(239, 68, 68, 0.35);
+  background-color: #0F0F0F;
+}
+
+.btn-metallic-red,
+.btn-metallic-green {
+  background-color: #DC2626;
+  border: 1px solid #EF4444;
+  color: #FFFFFF;
+  font-weight: 600;
+  transition: all 0.15s ease;
+}
+
+.btn-metallic-red:hover,
+.btn-metallic-green:hover {
+  background-color: #EF4444;
+  border-color: #F87171;
+}
+
+.btn-metallic-ghost {
+  background-color: #111111;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #F8FAFC;
+  transition: all 0.15s ease;
+}
+
+.btn-metallic-ghost:hover {
+  background-color: #1A1A1A;
+  border-color: rgba(255, 255, 255, 0.2);
+  color: #FFFFFF;
+}
+
+.badge-metallic-red {
+  background-color: #18080A;
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  color: #FCA5A5;
+}
