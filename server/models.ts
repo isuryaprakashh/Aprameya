@@ -22,10 +22,22 @@ const userSchema = new mongoose.Schema({
 
 export const User = mongoose.model('User', userSchema);
 
+const passwordResetOtpSchema = new mongoose.Schema({
+    email: { type: String, required: true },
+    userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
+    otp: { type: String, required: true },
+    expiresAt: { type: Date, required: true },
+    used: { type: Boolean, default: false },
+    createdAt: { type: Date, default: Date.now }
+});
+
+export const PasswordResetOtp = mongoose.model('PasswordResetOtp', passwordResetOtpSchema);
+
 const recruitmentApplicationSchema = new mongoose.Schema({
-    userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true, unique: true },
+    userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', default: null },
     fullName: { type: String, required: true },
     rollNumber: { type: String, required: true },
+    email: { type: String, default: null },
     mobileNumber: { type: String, required: true },
     department: { type: String, required: true },
     specialization: { type: String, required: true },
@@ -159,3 +171,21 @@ const messageSchema = new mongoose.Schema({
 });
 
 export const Message = mongoose.model('Message', messageSchema);
+
+const teamMemberSchema = new mongoose.Schema({
+    name: { type: String, required: true },
+    role: { type: String, required: true },
+    category: { type: String, default: 'Core Team' },
+    department: { type: String, default: '' },
+    year: { type: String, default: '' },
+    image: { type: String, default: '' },
+    bio: { type: String, default: '' },
+    email: { type: String, default: '' },
+    linkedin: { type: String, default: '' },
+    github: { type: String, default: '' },
+    order: { type: Number, default: 0 },
+    created_at: { type: Date, default: Date.now },
+});
+
+export const TeamMember = mongoose.model('TeamMember', teamMemberSchema);
+

@@ -2,287 +2,429 @@ import { Link } from 'wouter';
 import { featuredItems, upcomingEvents } from '../lib/data';
 import { motion, useInView, animate } from 'framer-motion';
 import { useEffect, useRef } from 'react';
-import { Trophy, ExternalLink, Award, ArrowRight, Activity } from 'lucide-react';
-import { useTheme } from '@/components/theme-provider';
-import HudFrame from '@/components/ui/HudFrame';
+import { ExternalLink, Award, ArrowRight, BookOpen, Cpu, Trophy, Sparkles } from 'lucide-react';
 import ChamferedButton from '@/components/ui/ChamferedButton';
 
-const fadeInUp = {
-  hidden: { opacity: 0, y: 24 },
+const fadeUp = {
+  hidden: { opacity: 0, y: 16 },
   visible: {
     opacity: 1,
     y: 0,
-    transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1] }
+    transition: { duration: 0.4, ease: [0.16, 1, 0.3, 1] }
   }
 };
 
-const staggerContainer = {
+const stagger = {
   hidden: { opacity: 0 },
   visible: {
     opacity: 1,
-    transition: {
-      staggerChildren: 0.1
-    }
+    transition: { staggerChildren: 0.06 }
   }
 };
 
+const STUDENT_PILLARS = [
+  {
+    tag: "RESEARCH & PUBLICATIONS",
+    title: "Write Research Papers",
+    desc: "Formulate algorithms, run simulations, and submit verified findings to IEEE and autonomy conferences.",
+    icon: BookOpen,
+    badge: "Academic Writing"
+  },
+  {
+    tag: "HARDWARE & SENSORS",
+    title: "Build Autonomous Platforms",
+    desc: "Engineer drive-by-wire vehicles with LiDAR-camera fusion, SLAM localization, and ROS 2 compute stacks.",
+    icon: Cpu,
+    badge: "Hardware R&D"
+  },
+  {
+    tag: "NATIONAL PODIUMS",
+    title: "Compete at National Hackathons",
+    desc: "Team Aprameya ranked 3rd in India at IISc Bengaluru, testing autonomy algorithms under tight benchmark constraints.",
+    icon: Trophy,
+    badge: "Competitions"
+  },
+  {
+    tag: "MENTORSHIP & SKILLS",
+    title: "Upskill in Robotics & AI",
+    desc: "Hands-on training in PyTorch, embedded Linux, NVIDIA Jetson edge inference, and collaborative GitHub workflows.",
+    icon: Sparkles,
+    badge: "Engineering Track"
+  }
+];
+
 const Home = () => {
-  const { theme } = useTheme();
-
   return (
-    <div className="min-h-screen w-full relative z-10 pb-32 pt-32 px-6 md:px-12 max-w-7xl mx-auto font-sans overflow-x-hidden">
-      {/* Hero Section */}
-      <section className="min-h-[70vh] flex flex-col justify-center items-start relative mb-24">
-        <div className="hero-glow opacity-50 pointer-events-none"></div>
+    <main className="overflow-x-hidden w-full max-w-full bg-black min-h-screen">
 
-        <div className="w-full grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+      {/* ─── HERO SECTION (CLEAN SOLID BLACK & RED) ─── */}
+      <section className="relative min-h-[85vh] flex items-center px-6 md:px-12 pt-32 pb-20">
+        <div className="max-w-7xl mx-auto w-full grid lg:grid-cols-12 gap-10 lg:gap-12 items-center">
+
+          {/* Left: Typographic Stack */}
           <motion.div
             initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true }}
-            variants={staggerContainer}
-            className="lg:col-span-7 relative z-10"
+            animate="visible"
+            variants={stagger}
+            className="lg:col-span-7 flex flex-col items-start"
           >
-            <motion.div variants={fadeInUp} className="mb-6 flex items-center gap-3">
-              <span className="w-2 h-2 rounded-full bg-[hsl(var(--accent))] animate-pulse"></span>
-              <span className="text-xs font-mono text-[hsl(var(--accent))] tracking-widest uppercase">
-                KL University • Innovation Lab
-              </span>
+            {/* Clean Solid Pill Badge */}
+            <motion.div
+              variants={fadeUp}
+              className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-white/10 bg-[#111111] text-[11px] font-mono text-zinc-300 mb-6"
+            >
+              <span className="w-1.5 h-1.5 rounded-full bg-red-500" />
+              KL University • Autonomous Systems & Robotics Club
             </motion.div>
 
-            <motion.h1 variants={fadeInUp} className="font-display text-5xl sm:text-7xl lg:text-8xl font-bold tracking-tight text-[var(--text-primary)] mb-6 leading-[0.95] max-w-5xl">
-              APRAMEYA
-              <span className="block font-sans text-2xl sm:text-4xl font-normal text-[var(--text-secondary)] mt-3 tracking-normal">
-                Autonomous Systems & AI Laboratory
-              </span>
+            {/* Headline */}
+            <motion.h1
+              variants={fadeUp}
+              className="text-4xl sm:text-5xl md:text-6xl lg:text-[4.5rem] tracking-tight text-white leading-[1.04] mb-6 font-display font-bold"
+            >
+              <span className="text-zinc-400 font-normal">We are</span>{" "}
+              <span className="tracking-tight text-white">APRAMEYA</span>
+              <br />
+              <span className="text-zinc-400 font-normal">and we build</span>{" "}
+              <span className="tracking-tight text-red-500">autonomous systems.</span>
             </motion.h1>
 
-            <motion.p variants={fadeInUp} className="text-base sm:text-lg text-[var(--text-secondary)] max-w-xl leading-relaxed mb-10 border-l-2 border-[var(--border-color)] pl-5 font-mono text-sm">
-              Undergraduate research, ROS 2 software pipelines, and hardware prototyping for next-generation autonomous mobility platforms.
+            {/* Clean Direct Value Statement (stop-slop) */}
+            <motion.p
+              variants={fadeUp}
+              className="text-base sm:text-lg text-zinc-400 font-sans max-w-xl leading-relaxed mb-8"
+            >
+              We develop physical self-driving platforms, publish peer-reviewed papers in academic journals, compete in national autonomy hackathons, and train undergraduate engineers.
             </motion.p>
 
-            <motion.div variants={fadeInUp} className="flex flex-wrap items-center gap-4">
+            {/* Action Group */}
+            <motion.div variants={fadeUp} className="flex flex-wrap items-center gap-3">
               <Link href="/recruitment">
                 <ChamferedButton variant="primary" size="lg">
-                  Join The Flight Crew
+                  Join Aprameya
                 </ChamferedButton>
               </Link>
 
               <Link href="/projects">
-                <ChamferedButton variant="secondary" size="lg" rightIcon={<ArrowRight className="w-4 h-4 text-[hsl(var(--accent))]" />}>
-                  Laboratory Stacks
+                <ChamferedButton
+                  variant="secondary"
+                  size="lg"
+                  rightIcon={<ArrowRight className="w-4 h-4 text-zinc-400" />}
+                >
+                  Explore Repositories
                 </ChamferedButton>
               </Link>
             </motion.div>
           </motion.div>
 
-          {/* Hero Logo / Emblem */}
+          {/* Right: Clean Solid Framed Video */}
           <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
-            className="hidden lg:flex lg:col-span-5 items-center justify-center relative z-10"
+            initial={{ opacity: 0, scale: 0.98 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1], delay: 0.1 }}
+            className="lg:col-span-5 relative"
           >
-            <HudFrame
-              label="SYS_EMBLEM // VECTOR"
-              status="ACTIVE"
-              className="p-8 w-full max-w-sm"
-            >
-              <img
-                src={theme === 'dark' ? '/logo-white.png' : '/logo-black.png'}
-                alt="Aprameya Club Emblem"
-                className="w-full max-w-xs xl:max-w-sm object-contain py-4"
-              />
-              <div className="pt-4 border-t border-[var(--border-color)] flex items-center justify-between text-[11px] font-mono text-[var(--text-secondary)]">
-                <span>LAB EST. 2019</span>
-                <span className="text-[hsl(var(--accent))] flex items-center gap-1.5">
-                  <Activity className="w-3 h-3" /> ACTIVE NODE
-                </span>
+            <div className="p-2 rounded-xl border border-white/10 bg-[#0A0A0A]">
+              <div className="relative rounded-lg overflow-hidden aspect-[4/3] bg-black">
+                <video
+                  autoPlay
+                  loop
+                  muted
+                  playsInline
+                  className="w-full h-full object-cover"
+                  src="/assets/hero-loop.mp4"
+                />
+                <div className="absolute inset-0 rounded-lg ring-1 ring-inset ring-white/10 pointer-events-none" />
+                
+                {/* Clean Caption Pill */}
+                <div className="absolute bottom-3 left-3 right-3 px-3 py-1.5 rounded bg-black/90 border border-white/10 text-[11px] text-zinc-300 flex items-center justify-between">
+                  <span>Physical Autonomous Vehicle</span>
+                  <span className="font-mono text-[10px] text-red-400 font-bold">KL-AV-01</span>
+                </div>
               </div>
-            </HudFrame>
+            </div>
           </motion.div>
         </div>
       </section>
 
-      {/* Verified Achievement Section */}
-      <motion.section
-        initial="hidden"
-        whileInView="visible"
-        viewport={{ once: true, margin: "-80px" }}
-        variants={fadeInUp}
-        className="mb-32"
-      >
-        <div className="flex items-end justify-between mb-8 border-b border-[var(--border-color)] pb-4">
-          <div className="flex items-center gap-3">
-            <span className="flex items-center justify-center w-7 h-7 rounded-lg bg-[hsl(var(--accent))]/10 text-[hsl(var(--accent))] border border-[hsl(var(--accent))]/20">
-              <Trophy className="w-3.5 h-3.5" />
-            </span>
-            <h2 className="font-display text-xl md:text-2xl font-bold text-[var(--text-primary)] tracking-tight">Verified Honors</h2>
+
+      {/* ─── STATS BAR (CLEAN SOLID BLACK) ─── */}
+      <section className="border-y border-white/10 bg-black">
+        <div className="max-w-7xl mx-auto px-6 md:px-12 py-8 grid grid-cols-2 md:grid-cols-4 gap-6">
+          {[
+            { n: "2019", l: "Founded at KL University" },
+            { n: "50+",  l: "Active Student Engineers" },
+            { n: "3rd",  l: "National Rank at IISc" },
+            { n: "100%", l: "Applied Hardware R&D" }
+          ].map((s, i) => (
+            <div key={i}>
+              <div className="text-3xl md:text-4xl font-bold text-white tabular-nums font-display mb-1">
+                {s.n === "50+" ? <CountUp value={s.n} /> : s.n}
+              </div>
+              <div className="text-[11px] text-zinc-400 font-sans font-semibold uppercase tracking-[0.08em]">
+                {s.l}
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+
+      {/* ─── STUDENT EMPOWERMENT / HOW WE HELP YOU GROW ─── */}
+      <section className="py-20 md:py-24 px-6 md:px-12 max-w-7xl mx-auto border-b border-white/10">
+        <div className="flex flex-col md:flex-row md:items-end justify-between mb-12">
+          <div>
+            <p className="text-[11px] font-sans font-semibold uppercase tracking-[0.15em] text-red-400 mb-2">
+              Member Growth & Acceleration
+            </p>
+            <h2 className="text-3xl sm:text-4xl font-bold tracking-tight text-white font-display">
+              <span className="text-zinc-400 font-normal">How we help you</span>{" "}
+              <span>learn, build & publish.</span>
+            </h2>
           </div>
-          <span className="font-mono text-xs text-[var(--text-secondary)] uppercase">National Benchmark</span>
+          <p className="text-xs text-zinc-400 max-w-xs mt-4 md:mt-0 leading-relaxed">
+            Aprameya trains undergraduates in autonomy engineering, academic paper writing, and competitive robotics.
+          </p>
         </div>
 
-        <HudFrame label="HONOR_INDEX // 01" status="BENCHMARK_TOP_3" className="overflow-hidden p-0">
-          <div className="grid md:grid-cols-12 gap-0">
-            {/* Achievement Content */}
-            <div className="md:col-span-7 p-8 md:p-12 flex flex-col justify-center relative z-10">
-              <div className="inline-flex items-center gap-2 mb-6 self-start px-3 py-1 rounded-full bg-[hsl(var(--accent))]/10 border border-[hsl(var(--accent))]/20 text-[hsl(var(--accent))] text-xs font-mono font-bold tracking-wide">
-                <Award className="w-3.5 h-3.5" />
-                <span>NATIONAL 3RD PLACE • IISC BENGALURU</span>
-              </div>
-
-              <h3 className="font-display text-2xl md:text-4xl font-bold mb-4 text-[var(--text-primary)] leading-tight">
-                Urban Vision Autonomous Hackathon
-              </h3>
-
-              <p className="text-[var(--text-secondary)] mb-6 text-sm leading-relaxed max-w-xl font-mono">
-                The Aprameya team engineered real-time computer vision and trajectory-planning models for complex urban traffic density, securing national top honors among premier institutes across India.
-              </p>
-
-              <div className="grid grid-cols-2 gap-6 mb-8 border-t border-[var(--border-color)] pt-6">
+        {/* 4-Pillar Grid with Clean Solid Cards */}
+        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
+          {STUDENT_PILLARS.map((pillar, idx) => {
+            const Icon = pillar.icon;
+            return (
+              <div
+                key={idx}
+                className="p-6 rounded-xl border border-white/10 bg-[#0A0A0A] hover:bg-[#111111] hover:border-white/20 flex flex-col justify-between transition-colors duration-200 group"
+              >
                 <div>
-                  <h4 className="text-[11px] font-mono text-[var(--text-primary)] mb-3 uppercase tracking-wider opacity-60">Competing Team</h4>
-                  <ul className="space-y-1.5 text-xs text-[var(--text-secondary)] font-mono">
-                    <li>• Singavarapu Sai Revanth</li>
-                    <li>• Akula Venkata Praveen</li>
-                    <li>• Atmakuri Komal Sai Raj</li>
-                    <li>• Kamsani Yashwanth Chowdary</li>
-                  </ul>
-                </div>
-                <div>
-                  <h4 className="text-[11px] font-mono text-[var(--text-primary)] mb-3 uppercase tracking-wider opacity-60">Mentorship</h4>
-                  <ul className="space-y-1.5 text-xs text-[var(--text-secondary)] font-mono">
-                    <li>• Prof. Hari Kiran Vege</li>
-                    <li>• Mr. Srikanth Annamareddy</li>
-                  </ul>
+                  <div className="flex items-center justify-between mb-6">
+                    <span className="font-mono text-xs text-red-400 font-bold">
+                      0{idx + 1}
+                    </span>
+                    <div className="w-8 h-8 rounded bg-[#161616] border border-white/10 flex items-center justify-center text-zinc-300 group-hover:text-white">
+                      <Icon size={16} />
+                    </div>
+                  </div>
+
+                  <span className="text-[10px] font-sans font-semibold uppercase tracking-wider text-red-400 mb-2 block">
+                    {pillar.badge}
+                  </span>
+
+                  <h3 className="font-display font-bold text-base text-white mb-2 leading-snug">
+                    {pillar.title}
+                  </h3>
+
+                  <p className="text-xs text-zinc-400 leading-relaxed">
+                    {pillar.desc}
+                  </p>
                 </div>
               </div>
+            );
+          })}
+        </div>
+      </section>
 
-              <a href="https://www.apnnews.com/klef-team-aprameya-among-top-winners-in-indias-premier-ai-hackathon/" target="_blank" rel="noopener noreferrer" className="self-start">
-                <ChamferedButton variant="secondary" size="sm" rightIcon={<ExternalLink className="w-3.5 h-3.5 text-[hsl(var(--accent))]" />}>
-                  Press Coverage
-                </ChamferedButton>
-              </a>
-            </div>
 
-            {/* Achievement Image */}
-            <div className="md:col-span-5 relative h-full min-h-[280px] border-t md:border-t-0 md:border-l border-[var(--border-color)] bg-black/40">
-              <img
-                src="/assets/UVH.jpg"
-                alt="Urban Vision Hackathon Team at IISc Bengaluru"
-                className="absolute inset-0 w-full h-full object-cover"
-              />
+      {/* ─── HACKATHON & BENCHMARK FEATURE ─── */}
+      <section className="py-20 md:py-24 px-6 md:px-12 max-w-7xl mx-auto">
+        <div className="mb-10">
+          <p className="text-[11px] font-sans font-semibold uppercase tracking-[0.15em] text-red-400 mb-2">
+            Verified National Honors
+          </p>
+          <h2 className="text-3xl sm:text-4xl font-bold tracking-tight text-white font-display">
+            <span className="text-zinc-400 font-normal">National 3rd at</span>{" "}
+            <span>IISc Bengaluru</span>
+          </h2>
+        </div>
+
+        <div className="grid lg:grid-cols-12 gap-0 rounded-xl border border-white/10 bg-[#0A0A0A] overflow-hidden">
+          {/* Photo */}
+          <div className="lg:col-span-7 relative min-h-[320px] lg:min-h-[400px] overflow-hidden group">
+            <img
+              src="/assets/UVH.jpg"
+              alt="Aprameya team receiving national awards at IISc Bengaluru"
+              className="absolute inset-0 w-full h-full object-cover"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent pointer-events-none" />
+            
+            <div className="absolute bottom-4 left-4 right-4 p-3 rounded bg-black/90 border border-white/10 text-xs text-zinc-300">
+              Team Aprameya receiving national honors at the Urban Vision Autonomous Hackathon, IISc Bengaluru.
             </div>
           </div>
-        </HudFrame>
-      </motion.section>
 
-      {/* Featured Section */}
-      <section className="mb-32">
-        <div className="flex items-end justify-between mb-8 border-b border-[var(--border-color)] pb-4">
-          <h2 className="font-display text-xl md:text-2xl font-bold text-[var(--text-primary)] tracking-tight">Active R&D Initiatives</h2>
+          {/* Details */}
+          <div className="lg:col-span-5 p-8 md:p-10 flex flex-col justify-between border-t lg:border-t-0 lg:border-l border-white/10 bg-[#0A0A0A]">
+            <div>
+              <div className="inline-flex items-center gap-2 mb-5 px-2.5 py-1 rounded bg-[#161616] border border-white/10 text-[11px] font-sans text-zinc-300">
+                <Award className="w-3.5 h-3.5 text-red-400" />
+                Urban Vision Autonomous Challenge
+              </div>
+
+              <h3 className="font-display text-xl font-bold text-white mb-3">
+                High-Density Autonomous Navigation
+              </h3>
+
+              <p className="text-sm text-zinc-400 leading-relaxed mb-6">
+                Real-time computer vision, lane tracking, dynamic obstacle avoidance, and path trajectory planning built for complex Indian traffic conditions.
+              </p>
+
+              <div className="space-y-3 text-xs border-t border-white/10 pt-5">
+                <div>
+                  <p className="text-zinc-500 font-sans font-semibold uppercase tracking-[0.08em] text-[10px] mb-0.5">Core Student Cohort</p>
+                  <p className="text-white text-sm">
+                    S. Sai Revanth, A. Venkata Praveen, A. Komal Sai Raj, K. Yashwanth Chowdary
+                  </p>
+                </div>
+                <div>
+                  <p className="text-zinc-500 font-sans font-semibold uppercase tracking-[0.08em] text-[10px] mb-0.5">Faculty Mentorship</p>
+                  <p className="text-white text-sm">
+                    Prof. Hari Kiran Vege, Mr. Srikanth Annamareddy
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <a
+              href="https://www.apnnews.com/klef-team-aprameya-among-top-winners-in-indias-premier-ai-hackathon/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="mt-6 self-start"
+            >
+              <ChamferedButton
+                variant="secondary"
+                size="sm"
+                rightIcon={<ExternalLink className="w-3.5 h-3.5 text-zinc-400" />}
+              >
+                Read Press Coverage
+              </ChamferedButton>
+            </a>
+          </div>
+        </div>
+      </section>
+
+
+      {/* ─── R&D INITIATIVES ─── */}
+      <section className="py-20 md:py-24 px-6 md:px-12 max-w-7xl mx-auto border-t border-white/10">
+        <div className="flex items-end justify-between mb-10">
+          <div>
+            <p className="text-[11px] font-sans font-semibold uppercase tracking-[0.15em] text-red-400 mb-2">
+              Engineering Repositories
+            </p>
+            <h2 className="text-3xl sm:text-4xl font-bold tracking-tight text-white font-display">
+              <span className="text-zinc-400 font-normal">Active</span>{" "}
+              <span>R&D Projects</span>
+            </h2>
+          </div>
           <Link href="/projects">
-            <span className="text-xs font-mono text-[var(--text-secondary)] cursor-pointer hover:text-[hsl(var(--accent))] transition-colors flex items-center gap-1.5">
-              ALL PROJECTS <ArrowRight className="w-3 h-3" />
+            <span className="text-xs font-sans font-medium text-zinc-400 hover:text-white transition-colors flex items-center gap-1.5 cursor-pointer">
+              All projects <ArrowRight className="w-3.5 h-3.5" />
             </span>
           </Link>
         </div>
 
-        <motion.div
-          className="grid md:grid-cols-3 gap-6"
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, margin: "-40px" }}
-          variants={staggerContainer}
-        >
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
           {featuredItems.map((item) => (
             <Link key={item.id} href={item.link} className="block h-full">
-              <motion.div variants={fadeInUp} className="group h-full cursor-pointer">
-                <div className="hud-card machined-panel h-full flex flex-col hover:border-[hsl(var(--accent))]/50 transition-colors duration-300 rounded-xl overflow-hidden">
-                  <div className="relative h-48 overflow-hidden border-b border-[var(--border-color)] bg-black/40">
+              <div className="group h-full cursor-pointer">
+                <div className="h-full flex flex-col rounded-xl border border-white/10 bg-[#0A0A0A] hover:bg-[#111111] hover:border-white/20 overflow-hidden transition-colors duration-200">
+                  <div className="relative h-48 overflow-hidden bg-black">
                     <img
                       src={item.image}
                       alt={item.title}
-                      className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-500"
+                      className="w-full h-full object-cover"
                     />
-                    <div className="absolute top-3 left-3 z-20 px-2.5 py-1 bg-black/70 backdrop-blur-md rounded-md border border-white/10 text-white text-[10px] font-mono tracking-wider uppercase">
+                    <div className="absolute top-3 left-3 px-2 py-0.5 bg-black/90 rounded border border-white/10 text-white text-[10px] font-sans font-semibold uppercase tracking-wider">
                       {item.category}
                     </div>
                   </div>
 
-                  <div className="p-6 flex-grow flex flex-col">
-                    <h3 className="font-display font-bold text-lg mb-2 text-[var(--text-primary)] group-hover:text-[hsl(var(--accent))] transition-colors">
-                      {item.title}
-                    </h3>
-                    <p className="text-xs text-[var(--text-secondary)] leading-relaxed flex-grow line-clamp-3 font-mono">
-                      {item.description}
-                    </p>
+                  <div className="p-5 flex-1 flex flex-col justify-between">
+                    <div>
+                      <h3 className="font-display font-bold text-white text-base mb-2">
+                        {item.title}
+                      </h3>
+                      <p className="text-xs text-zinc-400 leading-relaxed line-clamp-3">
+                        {item.description}
+                      </p>
+                    </div>
+
+                    <div className="mt-5 pt-4 border-t border-white/10 flex items-center justify-between text-xs text-zinc-400 group-hover:text-white transition-colors">
+                      <span className="font-sans font-medium">Explore stack</span>
+                      <ArrowRight size={14} className="transform group-hover:translate-x-0.5 transition-transform" />
+                    </div>
                   </div>
                 </div>
-              </motion.div>
+              </div>
             </Link>
           ))}
-        </motion.div>
+        </div>
       </section>
 
-      {/* Events & Telemetry Grid */}
-      <div className="grid lg:grid-cols-2 gap-12 mb-24">
-        {/* Upcoming Events */}
-        <section>
-          <div className="flex items-center gap-2 mb-6">
-            <div className="w-2 h-2 rounded-full bg-[hsl(var(--accent))] animate-pulse"></div>
-            <h2 className="font-display text-lg font-bold text-[var(--text-primary)] tracking-tight">Scheduled Workshops</h2>
-          </div>
 
-          <div className="space-y-4">
-            {upcomingEvents.map((event) => (
-              <div key={event.id} className="hud-card machined-panel p-5 flex items-center gap-5 rounded-xl group hover:border-[hsl(var(--accent))]/50 transition-colors">
-                <div className="flex flex-col items-center justify-center w-14 h-14 rounded-lg bg-[var(--bg-body)] border border-[var(--border-color)] shrink-0">
-                  <span className="text-[10px] uppercase font-bold text-[hsl(var(--accent))] font-mono">{event.month}</span>
-                  <span className="text-lg font-bold text-[var(--text-primary)] font-mono">{event.day}</span>
-                </div>
-                <div className="flex-1">
-                  <h3 className="font-display font-semibold text-sm text-[var(--text-primary)] group-hover:text-[hsl(var(--accent))] transition-colors">{event.title}</h3>
-                  <p className="text-xs text-[var(--text-secondary)] mt-1 font-mono">{event.location}</p>
-                </div>
-                <Link href="/events">
-                  <ArrowRight className="w-4 h-4 text-[var(--text-secondary)] group-hover:text-[hsl(var(--accent))] transition-colors" />
+      {/* ─── WORKSHOPS & EXPLORE ─── */}
+      <section className="py-20 md:py-24 px-6 md:px-12 max-w-7xl mx-auto border-t border-white/10">
+        <div className="grid lg:grid-cols-2 gap-12">
+          {/* Upcoming */}
+          <div>
+            <p className="text-[11px] font-sans font-semibold uppercase tracking-[0.15em] text-red-400 mb-2">
+              Sessions & Bootcamps
+            </p>
+            <h2 className="text-2xl sm:text-3xl font-bold text-white tracking-tight mb-8 font-display">
+              <span className="text-zinc-400 font-normal">Upcoming</span>{" "}
+              <span>Workshops</span>
+            </h2>
+
+            <div className="space-y-3">
+              {upcomingEvents.map((event) => (
+                <Link key={event.id} href="/events" className="block">
+                  <div className="p-4 rounded-xl border border-white/10 bg-[#0A0A0A] hover:bg-[#111111] hover:border-white/20 flex items-center gap-4 group transition-colors">
+                    <div className="flex flex-col items-center justify-center w-12 h-12 rounded-lg bg-[#141414] border border-white/10 shrink-0">
+                      <span className="text-[9px] uppercase font-bold text-red-400">{event.month}</span>
+                      <span className="text-lg font-bold text-white font-display">{event.day}</span>
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <h3 className="font-display font-bold text-sm text-white truncate">{event.title}</h3>
+                      <p className="text-xs text-zinc-400 mt-0.5 truncate">{event.location}</p>
+                    </div>
+                    <ArrowRight className="w-4 h-4 text-zinc-500 group-hover:text-white transition-colors shrink-0" />
+                  </div>
                 </Link>
-              </div>
-            ))}
-          </div>
-        </section>
-
-        {/* System Telemetry */}
-        <section>
-          <div className="flex items-center gap-2 mb-6">
-            <Activity className="w-4 h-4 text-[var(--text-secondary)]" />
-            <h2 className="font-display text-lg font-bold text-[var(--text-primary)] tracking-tight">Laboratory Metrics</h2>
+              ))}
+            </div>
           </div>
 
-          <div className="grid grid-cols-2 gap-px bg-[var(--border-color)] border border-[var(--border-color)] w-full rounded-2xl overflow-hidden">
-            {[
-              { label: "FOUNDED", value: "2019" },
-              { label: "ACTIVE MEMBERS", value: "50+" },
-              { label: "NATIONAL RANK", value: "3rd" },
-              { label: "HANDS-ON R&D", value: "100%" }
-            ].map((stat, idx) => (
-              <div key={idx} className="bg-[var(--card-bg)] p-6 hover:bg-[var(--bg-body)] transition-colors group">
-                <div className="font-display text-2xl md:text-3xl font-bold text-[var(--text-primary)] mb-1 group-hover:text-[hsl(var(--accent))] transition-colors">
-                  {stat.label === "FOUNDED" || stat.label === "NATIONAL RANK" || stat.label === "HANDS-ON R&D" ? (
-                    stat.value
-                  ) : (
-                    <CountUp value={stat.value} />
-                  )}
-                </div>
-                <div className="text-[10px] text-[var(--text-secondary)] uppercase tracking-widest font-mono">{stat.label}</div>
-              </div>
-            ))}
+          {/* Explore */}
+          <div>
+            <p className="text-[11px] font-sans font-semibold uppercase tracking-[0.15em] text-red-400 mb-2">
+              Gateway
+            </p>
+            <h2 className="text-2xl sm:text-3xl font-bold text-white tracking-tight mb-8 font-display">
+              <span className="text-zinc-400 font-normal">Explore</span>{" "}
+              <span>Aprameya</span>
+            </h2>
+
+            <div className="space-y-3">
+              {[
+                { label: "Open Recruitment", desc: "Join Technical or Operations wings for this cycle", href: "/recruitment" },
+                { label: "Technical Dispatches", desc: "Read research paper drafts and hardware field notes", href: "/blogs" },
+                { label: "About Aprameya", desc: "Club history, R609e workspace, and roadmap", href: "/about" },
+              ].map((link) => (
+                <Link key={link.href} href={link.href} className="block">
+                  <div className="p-4 rounded-xl border border-white/10 bg-[#0A0A0A] hover:bg-[#111111] hover:border-white/20 flex items-center justify-between group transition-colors">
+                    <div>
+                      <h3 className="font-display font-bold text-sm text-white">{link.label}</h3>
+                      <p className="text-xs text-zinc-400 mt-0.5">{link.desc}</p>
+                    </div>
+                    <ArrowRight className="w-4 h-4 text-zinc-500 group-hover:text-white transition-colors shrink-0" />
+                  </div>
+                </Link>
+              ))}
+            </div>
           </div>
-        </section>
-      </div>
-    </div>
+        </div>
+      </section>
+
+    </main>
   );
 };
 
@@ -292,19 +434,15 @@ const CountUp = ({ value }: { value: string }) => {
 
   useEffect(() => {
     if (isInView && ref.current) {
-      const numericValue = parseInt(value.replace(/\D/g, ''));
+      const num = parseInt(value.replace(/\D/g, ''));
       const suffix = value.replace(/\d/g, '');
-
-      const controls = animate(0, numericValue, {
-        duration: 2.0,
+      const controls = animate(0, num, {
+        duration: 1.2,
         ease: "easeOut",
-        onUpdate: (latest) => {
-          if (ref.current) {
-            ref.current.textContent = Math.floor(latest).toString() + suffix;
-          }
+        onUpdate: (v) => {
+          if (ref.current) ref.current.textContent = Math.floor(v) + suffix;
         },
       });
-
       return () => controls.stop();
     }
   }, [isInView, value]);

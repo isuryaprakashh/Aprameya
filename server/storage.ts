@@ -8,7 +8,9 @@ import {
   TicketRegistration,
   RecruitmentApplication,
   RecruitmentSettings,
-  Message
+  PasswordResetOtp,
+  Message,
+  TeamMember
 } from "./models";
 import {
   type User as UserType,
@@ -33,6 +35,8 @@ import {
   type InsertRecruitmentApplication,
   type ApplicationDecision,
   type RecruitmentSettings as RecruitmentSettingsType,
+  type TeamMember as TeamMemberType,
+  type InsertTeamMember,
   UserRole,
   type UserRoleType
 } from "./shared/schema";
@@ -41,13 +45,21 @@ export interface IStorage {
   // User Operations
   getUser(id: string): Promise<UserType | undefined>;
   getUserByUsername(username: string): Promise<UserType | undefined>;
+  getUserByEmail(email: string): Promise<UserType | undefined>;
+  getUserByIdentifier(identifier: string): Promise<UserType | undefined>;
   createUser(user: InsertUser): Promise<UserType>;
+  updateUserPassword(userId: string, newPassword: string): Promise<boolean>;
   updateUserRole(userId: string, newRole: UserRoleType): Promise<UserType | undefined>;
   updateUserProfile(userId: string, profileData: UpdateUserProfile): Promise<UserType | undefined>;
   updateUserDomainTitle(userId: string, domain: string, title: string): Promise<UserType | undefined>;
   getAllUsers(): Promise<UserType[]>;
   getUsersByRole(role: UserRoleType): Promise<UserType[]>;
   deleteUser(userId: string): Promise<boolean>;
+
+  // Password Reset OTP Operations
+  createPasswordResetOtp(userId: string, email: string, otp: string): Promise<any>;
+  getValidPasswordResetOtp(email: string, otp: string): Promise<any | null>;
+  markPasswordResetOtpUsed(otpId: string): Promise<void>;
 
   // Project Operations
   getProject(id: string): Promise<ProjectType | undefined>;
@@ -107,11 +119,19 @@ export interface IStorage {
   // Recruitment Operations
   getRecruitmentSettings(): Promise<RecruitmentSettingsType | undefined>;
   upsertRecruitmentSettings(isOpen: boolean, updatedBy: string): Promise<RecruitmentSettingsType>;
-  createRecruitmentApplication(data: InsertRecruitmentApplication & { userId: string }): Promise<RecruitmentApplicationType>;
+  createRecruitmentApplication(data: InsertRecruitmentApplication & { userId?: string | null }): Promise<RecruitmentApplicationType>;
   getRecruitmentApplicationByUser(userId: string): Promise<RecruitmentApplicationType | undefined>;
+  getRecruitmentApplicationByRollNumber(rollNumber: string): Promise<RecruitmentApplicationType | undefined>;
   getAllRecruitmentApplications(filters?: { status?: string; domain?: string }): Promise<RecruitmentApplicationType[]>;
   getRecruitmentApplication(id: string): Promise<RecruitmentApplicationType | undefined>;
   decideRecruitmentApplication(id: string, decision: ApplicationDecision, reviewedBy: string): Promise<RecruitmentApplicationType | undefined>;
+
+  // Team Member Operations
+  getTeamMember(id: string): Promise<TeamMemberType | undefined>;
+  getAllTeamMembers(): Promise<TeamMemberType[]>;
+  createTeamMember(member: InsertTeamMember): Promise<TeamMemberType>;
+  updateTeamMember(id: string, member: Partial<InsertTeamMember>): Promise<TeamMemberType | undefined>;
+  deleteTeamMember(id: string): Promise<boolean>;
 }
 
 export class MongoStorage implements IStorage {
@@ -135,14 +155,73 @@ export class MongoStorage implements IStorage {
     return user ? this.mapDoc<UserType>(user) : undefined;
   }
 
+  async getUserByEmail(email: string): Promise<UserType | undefined> {
+    const user = await User.findOne({ email: email.toLowerCase().trim() });
+    return user ? this.mapDoc<UserType>(user) : undefined;
+  }
+
+  async getUserByIdentifier(identifier: string): Promise<UserType | undefined> {
+    const cleanId = identifier.trim();
+    const user = await User.findOne({
+      $or: [
+        { username: cleanId },
+        { rollNumber: cleanId },
+        { email: cleanId.toLowerCase() }
+      ]
+    });
+    return user ? this.mapDoc<UserType>(user) : undefined;
+  }
+
+  async updateUserPassword(userId: string, newPassword: string): Promise<boolean> {
+    const result = await User.findByIdAndUpdate(userId, { password: newPassword });
+    return !!result;
+  }
+
+  async createPasswordResetOtp(userId: string, email: string, otp: string): Promise<any> {
+    // Invalidate previous active OTPs for this user/email
+    await PasswordResetOtp.updateMany(
+      { email: email.toLowerCase().trim(), used: false },
+      { used: true }
+    );
+
+    const expiresAt = new Date(Date.now() + 10 * 60 * 1000); // 10 minutes
+    const record = new PasswordResetOtp({
+      userId,
+      email: email.toLowerCase().trim(),
+      otp,
+      expiresAt,
+      used: false
+    });
+    await record.save();
+    return record;
+  }
+
+  async getValidPasswordResetOtp(email: string, otp: string): Promise<any | null> {
+    const record = await PasswordResetOtp.findOne({
+      email: email.toLowerCase().trim(),
+      otp: otp.trim(),
+      used: false,
+      expiresAt: { $gt: new Date() }
+    });
+    return record;
+  }
+
+  async markPasswordResetOtpUsed(otpId: string): Promise<void> {
+    await PasswordResetOtp.findByIdAndUpdate(otpId, { used: true });
+  }
+
   async getUsersByRole(role: UserRoleType): Promise<UserType[]> {
     const users = await User.find({ role });
     return users.map(u => this.mapDoc<UserType>(u));
   }
 
   async createUser(insertUser: InsertUser): Promise<UserType> {
+    const rollNo = (insertUser.rollNumber || insertUser.username).trim();
     const user = new User({
       ...insertUser,
+      username: insertUser.username.trim(),
+      rollNumber: rollNo,
+      email: insertUser.email.toLowerCase().trim(),
       role: UserRole.ASPIRANT
     });
     await user.save();
@@ -192,7 +271,8 @@ export class MongoStorage implements IStorage {
   }
 
   async updateProject(id: string, project: Partial<InsertProject>): Promise<ProjectType | undefined> {
-    const updatedProject = await Project.findByIdAndUpdate(id, project, { new: true });
+    const { _id, id: projId, user_id, ...updateData }: any = project;
+    const updatedProject = await Project.findByIdAndUpdate(id, updateData, { new: true });
     return updatedProject ? this.mapDoc<ProjectType>(updatedProject) : undefined;
   }
 
@@ -226,7 +306,8 @@ export class MongoStorage implements IStorage {
   }
 
   async updateBlog(id: string, blog: Partial<InsertBlog>): Promise<BlogType | undefined> {
-    const updatedBlog = await Blog.findByIdAndUpdate(id, blog, { new: true });
+    const { _id, id: blogId, user_id, ...updateData }: any = blog;
+    const updatedBlog = await Blog.findByIdAndUpdate(id, updateData, { new: true });
     return updatedBlog ? this.mapDoc<BlogType>(updatedBlog) : undefined;
   }
 
@@ -253,7 +334,8 @@ export class MongoStorage implements IStorage {
   }
 
   async updateResearch(id: string, research: Partial<InsertResearch>): Promise<ResearchType | undefined> {
-    const updatedResearch = await Research.findByIdAndUpdate(id, research, { new: true });
+    const { _id, id: resId, user_id, ...updateData }: any = research;
+    const updatedResearch = await Research.findByIdAndUpdate(id, updateData, { new: true });
     return updatedResearch ? this.mapDoc<ResearchType>(updatedResearch) : undefined;
   }
 
@@ -280,7 +362,8 @@ export class MongoStorage implements IStorage {
   }
 
   async updateEvent(id: string, event: Partial<InsertEvent>): Promise<EventType | undefined> {
-    const updatedEvent = await Event.findByIdAndUpdate(id, event, { new: true });
+    const { _id, id: evId, user_id, registeredCount, ...updateData }: any = event;
+    const updatedEvent = await Event.findByIdAndUpdate(id, updateData, { new: true });
     return updatedEvent ? this.mapDoc<EventType>(updatedEvent) : undefined;
   }
 
@@ -406,14 +489,23 @@ export class MongoStorage implements IStorage {
     return this.mapDoc<RecruitmentSettingsType>(settings);
   }
 
-  async createRecruitmentApplication(data: InsertRecruitmentApplication & { userId: string }): Promise<RecruitmentApplicationType> {
-    const app = new RecruitmentApplication(data);
+  async createRecruitmentApplication(data: InsertRecruitmentApplication & { userId?: string | null }): Promise<RecruitmentApplicationType> {
+    const docData: Record<string, any> = { ...data };
+    if (!docData.userId) {
+      delete docData.userId;
+    }
+    const app = new RecruitmentApplication(docData);
     await app.save();
     return this.mapDoc<RecruitmentApplicationType>(app);
   }
 
   async getRecruitmentApplicationByUser(userId: string): Promise<RecruitmentApplicationType | undefined> {
     const app = await RecruitmentApplication.findOne({ userId });
+    return app ? this.mapDoc<RecruitmentApplicationType>(app) : undefined;
+  }
+
+  async getRecruitmentApplicationByRollNumber(rollNumber: string): Promise<RecruitmentApplicationType | undefined> {
+    const app = await RecruitmentApplication.findOne({ rollNumber: rollNumber.trim() });
     return app ? this.mapDoc<RecruitmentApplicationType>(app) : undefined;
   }
 
@@ -446,14 +538,46 @@ export class MongoStorage implements IStorage {
       // Atomically update user domain/title on acceptance
       const app = await RecruitmentApplication.findById(id);
       if (app && (decision.assignedDomain || app.wing)) {
-        await User.findByIdAndUpdate(app.userId, {
+        const updatePayload = {
           domain: decision.assignedDomain || app.wing,
           title: decision.assignedTitle || 'Core Member',
-        });
+        };
+        if (app.userId) {
+          await User.findByIdAndUpdate(app.userId, updatePayload);
+        } else if (app.rollNumber) {
+          await User.findOneAndUpdate({ rollNumber: app.rollNumber }, updatePayload);
+        }
       }
     }
     const result = await RecruitmentApplication.findByIdAndUpdate(id, update, { new: true });
     return result ? this.mapDoc<RecruitmentApplicationType>(result) : undefined;
+  }
+
+  // Team Member Operations
+  async getTeamMember(id: string): Promise<TeamMemberType | undefined> {
+    const member = await TeamMember.findById(id);
+    return member ? this.mapDoc<TeamMemberType>(member) : undefined;
+  }
+
+  async getAllTeamMembers(): Promise<TeamMemberType[]> {
+    const members = await TeamMember.find().sort({ order: 1, created_at: -1 });
+    return members.map(m => this.mapDoc<TeamMemberType>(m));
+  }
+
+  async createTeamMember(insertMember: InsertTeamMember): Promise<TeamMemberType> {
+    const member = new TeamMember(insertMember);
+    await member.save();
+    return this.mapDoc<TeamMemberType>(member);
+  }
+
+  async updateTeamMember(id: string, memberData: Partial<InsertTeamMember>): Promise<TeamMemberType | undefined> {
+    const member = await TeamMember.findByIdAndUpdate(id, memberData, { new: true });
+    return member ? this.mapDoc<TeamMemberType>(member) : undefined;
+  }
+
+  async deleteTeamMember(id: string): Promise<boolean> {
+    const result = await TeamMember.findByIdAndDelete(id);
+    return !!result;
   }
 }
 

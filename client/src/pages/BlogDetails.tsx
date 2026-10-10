@@ -65,7 +65,7 @@ const BlogDetails = () => {
                                     {new Date(blog.date).toLocaleDateString()}
                                 </div>
                             </div>
-                            <h1 className="text-4xl md:text-5xl font-bold text-[var(--text-primary)] mb-4 leading-tight max-w-4xl">
+                            <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight text-[var(--text-primary)] mb-4 leading-tight max-w-4xl font-display">
                                 {blog.title}
                             </h1>
                             <div className="flex items-center gap-2 text-[var(--text-secondary)]">

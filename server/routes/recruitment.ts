@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import { storage } from '../storage';
+import { RecruitmentApplication } from '../models';
 import { isAuthenticated, isAdmin } from '../middleware/auth';
 import {
   insertRecruitmentApplicationSchema,
@@ -28,33 +29,72 @@ router.put('/recruitment/settings', isAdmin, async (req, res) => {
   }
 });
 
-// POST /api/recruitment/applications — authenticated
-router.post('/recruitment/applications', isAuthenticated, async (req, res) => {
+// POST /api/recruitment/applications — public (no account required)
+router.post('/recruitment/applications', async (req, res) => {
   try {
     const settings = await storage.getRecruitmentSettings();
     if (!settings?.isOpen) {
       return res.status(423).json({ error: 'Recruitment is currently closed' });
     }
 
-    const userId = req.session.userId!;
-    const existing = await storage.getRecruitmentApplicationByUser(userId);
-    if (existing) {
-      return res.status(409).json({ error: 'Application already submitted' });
+    const data = insertRecruitmentApplicationSchema.parse(req.body);
+    const rollNumber = data.rollNumber.trim();
+
+    // Check if application already submitted for this roll number
+    const existingByRoll = await storage.getRecruitmentApplicationByRollNumber(rollNumber);
+    if (existingByRoll) {
+      return res.status(409).json({ error: `An application has already been submitted for Roll Number ${rollNumber}` });
     }
 
-    const data = insertRecruitmentApplicationSchema.parse(req.body);
-    const app = await storage.createRecruitmentApplication({ ...data, userId });
-    res.status(201).json(app);
+    // Attach user ID if applicant happens to be logged in
+    const userId = req.session?.userId ? req.session.userId : undefined;
+    if (userId) {
+      const existingByUser = await storage.getRecruitmentApplicationByUser(userId);
+      if (existingByUser) {
+        return res.status(409).json({ error: 'You have already submitted an application for this recruitment cycle' });
+      }
+    }
+
+    try {
+      const app = await storage.createRecruitmentApplication({ ...data, rollNumber, userId });
+      return res.status(201).json(app);
+    } catch (saveErr: any) {
+      if (saveErr?.code === 11000) {
+        // If legacy unique index userId_1 triggered, drop legacy index and retry
+        if (saveErr?.keyPattern?.userId || saveErr?.message?.includes('userId')) {
+          try {
+            await RecruitmentApplication.collection.dropIndex('userId_1');
+          } catch (_) {}
+          const retryApp = await storage.createRecruitmentApplication({ ...data, rollNumber, userId: undefined });
+          return res.status(201).json(retryApp);
+        }
+        if (saveErr?.keyPattern?.rollNumber || saveErr?.message?.includes('rollNumber')) {
+          return res.status(409).json({ error: `An application has already been submitted for Roll Number ${rollNumber}` });
+        }
+      }
+      throw saveErr;
+    }
   } catch (err: any) {
     res.status(400).json({ error: err.message ?? 'Invalid application data' });
   }
 });
 
-// GET /api/recruitment/applications/mine — authenticated
-router.get('/recruitment/applications/mine', isAuthenticated, async (req, res) => {
-  const app = await storage.getRecruitmentApplicationByUser(req.session.userId!);
-  if (!app) return res.status(404).json({ error: 'No application found' });
-  res.json(app);
+// GET /api/recruitment/applications/mine — public with rollNumber query or session
+router.get('/recruitment/applications/mine', async (req, res) => {
+  const rollNumber = (req.query.rollNumber as string)?.trim();
+  if (rollNumber) {
+    const app = await storage.getRecruitmentApplicationByRollNumber(rollNumber);
+    if (!app) return res.status(404).json({ error: 'No application found for this Roll Number' });
+    return res.json(app);
+  }
+
+  if (req.session?.userId) {
+    const app = await storage.getRecruitmentApplicationByUser(req.session.userId);
+    if (!app) return res.status(404).json({ error: 'No application found' });
+    return res.json(app);
+  }
+
+  return res.json(null);
 });
 
 // GET /api/recruitment/applications — admin only

@@ -52,12 +52,20 @@ export interface Event {
 
 export interface TeamMember {
   id: string;
+  _id?: string;
   name: string;
   role: string;
-  department: string;
-  year: string;
-  image: string;
-  socialLinks: {
+  category?: string;
+  department?: string;
+  year?: string;
+  image?: string;
+  bio?: string;
+  email?: string;
+  linkedin?: string;
+  github?: string;
+  order?: number;
+  created_at?: string;
+  socialLinks?: {
     linkedin?: string;
     github?: string;
     email?: string;
@@ -139,9 +147,10 @@ export type ApplicationStatus = 'pending_review' | 'interview_scheduled' | 'acce
 
 export interface RecruitmentApplication {
   id: string;
-  userId: string;
+  userId?: string | null;
   fullName: string;
   rollNumber: string;
+  email?: string | null;
   mobileNumber: string;
   department: string;
   specialization: string;

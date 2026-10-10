@@ -8,6 +8,8 @@ import eventsRouter from "./routes/events";
 import messagesRouter from "./routes/messages";
 import ticketsRouter from "./routes/tickets";
 import recruitmentRouter from "./routes/recruitment";
+import researchRouter from "./routes/research";
+import teamsRouter from "./routes/teams";
 
 import 'express-session';
 
@@ -42,6 +44,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.use("/api", messagesRouter);
   app.use("/api", ticketsRouter);
   app.use("/api", recruitmentRouter);
+  app.use("/api", researchRouter);
+  app.use("/api", teamsRouter);
+
 
   const httpServer = createServer(app);
 

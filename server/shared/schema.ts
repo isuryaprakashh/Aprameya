@@ -36,8 +36,8 @@ export const insertProjectSchema = z.object({
   description: z.string().min(1, "Description is required"),
   category: z.string().min(1, "Category is required"),
   image: z.string().min(1, "Image is required"),
-  technologies: z.string().min(1, "Technologies are required"),
-  team: z.string().min(1, "Team is required"),
+  technologies: z.union([z.string().min(1), z.array(z.string())]).transform(val => Array.isArray(val) ? val.join(', ') : val),
+  team: z.union([z.string().min(1), z.array(z.string())]).transform(val => Array.isArray(val) ? val.join(', ') : val),
   user_id: z.string().optional(), // Handled by backend
   is_featured: z.boolean().default(false).optional(),
 });
@@ -55,7 +55,7 @@ export const insertResearchSchema = z.object({
   title: z.string().min(1, "Title is required"),
   description: z.string().min(1, "Description is required"),
   category: z.string().min(1, "Category is required"),
-  authors: z.string().min(1, "Authors are required"),
+  authors: z.union([z.string().min(1), z.array(z.string())]).transform(val => Array.isArray(val) ? val.join(', ') : val),
   image: z.string().min(1, "Image is required"),
   user_id: z.string().optional(), // Handled by backend
 });
@@ -69,9 +69,13 @@ export const insertEventSchema = z.object({
   location: z.string().min(1, "Location is required"),
   image: z.string().min(1, "Image is required"),
   user_id: z.string().optional(), // Handled by backend
-  capacity: z.number().int().positive().nullable().optional(),
-  registrationOpen: z.boolean().optional(),
-  ticketEnabled: z.boolean().optional(),
+  capacity: z.preprocess((val) => {
+    if (val === '' || val === null || val === undefined) return null;
+    const num = Number(val);
+    return isNaN(num) ? val : num;
+  }, z.number().int().min(0).nullable().optional()),
+  registrationOpen: z.boolean().optional().default(true),
+  ticketEnabled: z.boolean().optional().default(false),
 });
 
 export const insertEventRegistrationSchema = z.object({
@@ -243,6 +247,7 @@ export type ApplicationStatusType = typeof ApplicationStatus[keyof typeof Applic
 export const insertRecruitmentApplicationSchema = z.object({
   fullName: z.string().min(1, 'Full name is required'),
   rollNumber: z.string().min(1, 'Student ID / Roll number is required'),
+  email: z.string().email('Invalid email address').optional().nullable().or(z.literal('')),
   mobileNumber: z.string().min(10, 'Valid 10-digit mobile number is required'),
   department: z.string().min(1, 'Department is required'),
   specialization: z.string().min(1, 'Specialization is required'),
@@ -277,9 +282,10 @@ export type ApplicationDecision = z.infer<typeof applicationDecisionSchema>;
 export interface RecruitmentApplication {
   _id: string;
   id: string;
-  userId: string;
+  userId?: string | null;
   fullName: string;
   rollNumber: string;
+  email?: string | null;
   mobileNumber: string;
   department: string;
   specialization: string;
@@ -313,3 +319,40 @@ export interface RecruitmentSettings {
   closedAt?: Date | string | null;
   updatedBy?: string | null;
 }
+
+export const insertTeamMemberSchema = z.object({
+  name: z.string().min(1, "Name is required"),
+  role: z.string().min(1, "Role is required"),
+  category: z.string().default("Core Team").optional(),
+  department: z.string().default("").optional(),
+  year: z.string().default("").optional(),
+  image: z.string().default("").optional(),
+  bio: z.string().default("").optional(),
+  email: z.string().default("").optional(),
+  linkedin: z.string().default("").optional(),
+  github: z.string().default("").optional(),
+  order: z.preprocess((val) => {
+    if (val === '' || val === null || val === undefined) return 0;
+    const num = Number(val);
+    return isNaN(num) ? 0 : num;
+  }, z.number().int().default(0).optional()),
+});
+
+export type InsertTeamMember = z.infer<typeof insertTeamMemberSchema>;
+export interface TeamMember {
+  _id: string;
+  id: string;
+  name: string;
+  role: string;
+  category: string;
+  department?: string;
+  year?: string;
+  image?: string;
+  bio?: string;
+  email?: string;
+  linkedin?: string;
+  github?: string;
+  order?: number;
+  created_at: Date | string;
+}
+

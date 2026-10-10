@@ -34,7 +34,7 @@ router.get("/users/core-team", async (req, res) => {
     }
 });
 
-router.patch("/users/profile", async (req, res) => {
+router.patch(["/users/profile", "/user/profile"], async (req, res) => {
     const userId = req.session?.userId;
     if (!userId) return res.status(401).json({ error: "Not authenticated" });
 

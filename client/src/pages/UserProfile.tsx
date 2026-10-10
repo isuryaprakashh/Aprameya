@@ -1,12 +1,13 @@
-import { lazy, Suspense, useEffect } from 'react';
+import { lazy, Suspense, useEffect, useRef } from 'react';
 import { useLocation } from 'wouter';
 import { useAuth } from "@/context/AuthContext";
 import { useToast } from '@/hooks/use-toast';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
-import { FaBars, FaSave, FaArrowLeft } from 'react-icons/fa';
+import { FaBars, FaSave, FaArrowLeft, FaUpload } from 'react-icons/fa';
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
+import { Input } from '@/components/ui/input';
 
 // Extracted Components
 import { Sidebar } from './UserProfile/components/Sidebar';
@@ -27,6 +28,7 @@ const BlogsView = lazy(() => import('./UserProfile/views/BlogsView'));
 const ResearchView = lazy(() => import('./UserProfile/views/ResearchView'));
 const RecruitmentView = lazy(() => import('./UserProfile/views/RecruitmentView'));
 const RosterView = lazy(() => import('./UserProfile/views/RosterView'));
+const TeamsView = lazy(() => import('./UserProfile/views/TeamsView'));
 import AdminScanQR from './AdminScanQR';
 
 const UserProfile = () => {
@@ -43,7 +45,9 @@ const UserProfile = () => {
     profileData, setProfileData,
     users, eventRegistrations, events, userEventRegistrations, tickets, projects, blogs, research,
     userGrowthData, contentDistributionData,
+    isSaving,
     updateUserRole, deleteUser,
+    updateProfile,
     handleSave, handleDelete
   } = useUserProfileData();
 
@@ -87,9 +91,7 @@ const UserProfile = () => {
       updateData.password = profileData.newPassword;
     }
     if (Object.keys(updateData).length > 0) {
-      // Call mutation here
-      // The actual mutation call seems missing in original code's handler, 
-      // but sticking to the request scope, I will just ensure data flow for tickets.
+      updateProfile.mutate(updateData);
     } else {
       toast({ title: 'Info', description: 'No changes to update' });
     }
@@ -113,8 +115,95 @@ const UserProfile = () => {
     else if (type === 'blog') Object.assign(newItem, { title: '', excerpt: '', content: '', category: '', image: '' });
     else if (type === 'research') Object.assign(newItem, { title: '', description: '', category: '', authors: '', image: '' });
     else if (type === 'event') Object.assign(newItem, { title: '', description: '', type: '', date: '', time: '', location: '', image: '', ticketEnabled: false, capacity: '' });
+    else if (type === 'team') Object.assign(newItem, { name: '', role: '', category: 'Core Team', department: '', year: '', image: '', bio: '', email: '', linkedin: '', github: '', order: 0 });
     setSelectedItem(newItem);
     setIsDialogOpen(true);
+  };
+
+  const ImageUploadField = ({ label, id, value, onChange }: { label: string; id: string; value: string; onChange: (url: string) => void }) => {
+    const fileRef = useRef<HTMLInputElement>(null);
+
+    const handleFile = (e: React.ChangeEvent<HTMLInputElement>) => {
+      const file = e.target.files?.[0];
+      if (!file) return;
+      if (!file.type.startsWith('image/')) {
+        toast({ title: 'Invalid File', description: 'Please choose an image file (PNG, JPG, WEBP).', variant: 'destructive' });
+        return;
+      }
+      const reader = new FileReader();
+      reader.onload = (ev) => {
+        const raw = ev.target?.result as string;
+        if (!raw) return;
+        const img = new Image();
+        img.src = raw;
+        img.onload = () => {
+          const canvas = document.createElement('canvas');
+          const maxDim = 1200;
+          let w = img.width;
+          let h = img.height;
+          if (w > maxDim || h > maxDim) {
+            if (w > h) {
+              h = Math.round((h * maxDim) / w);
+              w = maxDim;
+            } else {
+              w = Math.round((w * maxDim) / h);
+              h = maxDim;
+            }
+          }
+          canvas.width = w;
+          canvas.height = h;
+          const ctx = canvas.getContext('2d');
+          ctx?.drawImage(img, 0, 0, w, h);
+          const compressed = canvas.toDataURL('image/jpeg', 0.85);
+          onChange(compressed);
+          toast({ title: 'Image Uploaded', description: 'Photo loaded and ready to save.' });
+        };
+      };
+      reader.readAsDataURL(file);
+    };
+
+    return (
+      <div className="space-y-1.5">
+        <Label className="text-xs font-mono text-[var(--text-secondary)]">{label}</Label>
+        <div className="flex flex-col sm:flex-row gap-3 items-start">
+          {value ? (
+            <div className="relative w-24 h-20 rounded-xl overflow-hidden border border-[var(--border-color)] bg-black/40 shrink-0 group">
+              <img src={value} alt="Preview" className="w-full h-full object-cover" />
+              <button
+                type="button"
+                onClick={() => onChange('')}
+                className="absolute inset-0 bg-black/70 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-red-400 text-xs font-semibold"
+              >
+                Remove
+              </button>
+            </div>
+          ) : (
+            <div className="w-24 h-20 rounded-xl border border-dashed border-[var(--border-color)] flex items-center justify-center text-[10px] font-mono text-[var(--text-secondary)]/50 shrink-0 text-center px-1">
+              No Image
+            </div>
+          )}
+          <div className="flex-1 space-y-2 w-full">
+            <input type="file" ref={fileRef} onChange={handleFile} accept="image/*" className="hidden" />
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              onClick={() => fileRef.current?.click()}
+              className="text-xs h-8 border-[var(--border-color)] hover:border-[hsl(var(--accent))] hover:text-[hsl(var(--accent))]"
+            >
+              <FaUpload className="mr-1.5 h-3 w-3" /> Upload from Computer
+            </Button>
+            <Input
+              id={id}
+              placeholder="Or paste image URL (https://...)"
+              value={value || ''}
+              onChange={(e) => onChange(e.target.value)}
+              className="bg-[var(--bg-body)] border-[var(--border-color)] text-xs rounded-xl"
+            />
+          </div>
+        </div>
+      </div>
+    );
   };
 
   const renderForm = () => {
@@ -128,24 +217,23 @@ const UserProfile = () => {
           <FormField label="Title" id="title" value={selectedItem.title} onChange={(e: any) => inputChange('title', e.target.value)} />
           <FormField label="Category" id="category" value={selectedItem.category} onChange={(e: any) => inputChange('category', e.target.value)} />
           <FormField label="Description" id="description" value={selectedItem.description} onChange={(e: any) => inputChange('description', e.target.value)} isTextArea />
-          <FormField label="Technologies" id="technologies" value={selectedItem.technologies} onChange={(e: any) => inputChange('technologies', e.target.value)} />
-          <FormField label="Team" id="team" value={selectedItem.team} onChange={(e: any) => inputChange('team', e.target.value)} />
-          <FormField label="Image URL" id="image" value={selectedItem.image} onChange={(e: any) => inputChange('image', e.target.value)} />
+          <FormField label="Technologies (comma separated)" id="technologies" value={selectedItem.technologies} onChange={(e: any) => inputChange('technologies', e.target.value)} />
+          <FormField label="Team Members (comma separated)" id="team" value={selectedItem.team} onChange={(e: any) => inputChange('team', e.target.value)} />
+          <ImageUploadField label="Project Banner / Image" id="image" value={selectedItem.image || ''} onChange={(url) => inputChange('image', url)} />
         </>}
         {contentType === 'blog' && <>
           <FormField label="Title" id="title" value={selectedItem.title} onChange={(e: any) => inputChange('title', e.target.value)} />
           <FormField label="Excerpt" id="excerpt" value={selectedItem.excerpt} onChange={(e: any) => inputChange('excerpt', e.target.value)} />
           <FormField label="Content" id="content" value={selectedItem.content} onChange={(e: any) => inputChange('content', e.target.value)} isTextArea rows={8} />
           <FormField label="Category" id="category" value={selectedItem.category} onChange={(e: any) => inputChange('category', e.target.value)} />
-          <FormField label="Image URL" id="image" value={selectedItem.image} onChange={(e: any) => inputChange('image', e.target.value)} />
+          <ImageUploadField label="Blog Featured Image" id="image" value={selectedItem.image || ''} onChange={(url) => inputChange('image', url)} />
         </>}
         {contentType === 'research' && <>
           <FormField label="Title" id="title" value={selectedItem.title} onChange={(e: any) => inputChange('title', e.target.value)} />
           <FormField label="Category" id="category" value={selectedItem.category} onChange={(e: any) => inputChange('category', e.target.value)} />
           <FormField label="Description" id="description" value={selectedItem.description} onChange={(e: any) => inputChange('description', e.target.value)} isTextArea />
-          <FormField label="Authors" id="authors" value={selectedItem.authors} onChange={(e: any) => inputChange('authors', e.target.value)} />
-
-          <FormField label="Image URL" id="image" value={selectedItem.image} onChange={(e: any) => inputChange('image', e.target.value)} />
+          <FormField label="Authors (comma separated)" id="authors" value={selectedItem.authors} onChange={(e: any) => inputChange('authors', e.target.value)} />
+          <ImageUploadField label="Research Publication Image" id="image" value={selectedItem.image || ''} onChange={(url) => inputChange('image', url)} />
         </>}
         {contentType === 'event' && <>
           <FormField label="Title" id="title" value={selectedItem.title} onChange={(e: any) => inputChange('title', e.target.value)} />
@@ -156,10 +244,10 @@ const UserProfile = () => {
             <FormField label="Time" id="time" value={selectedItem.time} onChange={(e: any) => inputChange('time', e.target.value)} />
           </div>
           <FormField label="Location" id="location" value={selectedItem.location} onChange={(e: any) => inputChange('location', e.target.value)} />
-          <div className="grid grid-cols-2 gap-4">
-            <FormField label="Image URL" id="image" value={selectedItem.image} onChange={(e: any) => inputChange('image', e.target.value)} />
+          <div className="grid grid-cols-2 gap-4 items-end">
             <FormField label="Capacity" id="capacity" type="number" value={selectedItem.capacity || ''} onChange={(e: any) => inputChange('capacity', e.target.value)} />
           </div>
+          <ImageUploadField label="Event Banner Image" id="image" value={selectedItem.image || ''} onChange={(url) => inputChange('image', url)} />
           <div className="flex flex-row items-center justify-between rounded-lg border border-[var(--border-color)] p-4 shadow-sm">
             <div className="space-y-0.5">
               <Label htmlFor="ticketEnabled" className="text-base text-[var(--text-primary)]">Enable Ticket System</Label>
@@ -172,10 +260,29 @@ const UserProfile = () => {
             />
           </div>
         </>}
+        {contentType === 'team' && <>
+          <FormField label="Full Name" id="name" value={selectedItem.name || ''} onChange={(e: any) => inputChange('name', e.target.value)} />
+          <FormField label="Role / Designation" id="role" value={selectedItem.role || ''} onChange={(e: any) => inputChange('role', e.target.value)} />
+          <div className="grid grid-cols-2 gap-4">
+            <FormField label="Category" id="category" value={selectedItem.category || ''} onChange={(e: any) => inputChange('category', e.target.value)} />
+            <FormField label="Department" id="department" value={selectedItem.department || ''} onChange={(e: any) => inputChange('department', e.target.value)} />
+          </div>
+          <div className="grid grid-cols-2 gap-4">
+            <FormField label="Year / Batch" id="year" value={selectedItem.year || ''} onChange={(e: any) => inputChange('year', e.target.value)} />
+            <FormField label="Display Order" id="order" type="number" value={selectedItem.order ?? 0} onChange={(e: any) => inputChange('order', e.target.value)} />
+          </div>
+          <ImageUploadField label="Team Member Photo" id="image" value={selectedItem.image || ''} onChange={(url) => inputChange('image', url)} />
+          <FormField label="Bio / Summary" id="bio" value={selectedItem.bio || ''} onChange={(e: any) => inputChange('bio', e.target.value)} isTextArea />
+          <div className="grid grid-cols-3 gap-3">
+            <FormField label="Email" id="email" value={selectedItem.email || ''} onChange={(e: any) => inputChange('email', e.target.value)} />
+            <FormField label="LinkedIn URL" id="linkedin" value={selectedItem.linkedin || ''} onChange={(e: any) => inputChange('linkedin', e.target.value)} />
+            <FormField label="GitHub URL" id="github" value={selectedItem.github || ''} onChange={(e: any) => inputChange('github', e.target.value)} />
+          </div>
+        </>}
         <div className="flex justify-end gap-3 mt-6 pt-4 border-t border-[var(--border-color)]">
-          <Button variant="ghost" onClick={() => setIsDialogOpen(false)}>Cancel</Button>
-          <Button onClick={handleSave} className="bg-[hsl(var(--accent))] text-[var(--bg-body)] hover:bg-[hsl(var(--accent))]/90">
-            <FaSave className="mr-2" /> Save Changes
+          <Button variant="ghost" onClick={() => setIsDialogOpen(false)} disabled={isSaving}>Cancel</Button>
+          <Button onClick={handleSave} disabled={isSaving} className="bg-[hsl(var(--accent))] text-[var(--bg-body)] hover:bg-[hsl(var(--accent))]/90 disabled:opacity-50">
+            <FaSave className="mr-2" /> {isSaving ? 'Saving...' : 'Save Changes'}
           </Button>
         </div>
       </div>
@@ -261,6 +368,11 @@ const UserProfile = () => {
           <RosterView />
         </Suspense>;
 
+      case 'teams':
+        return <Suspense fallback={<div className="text-center py-12 text-[var(--text-secondary)]">Loading...</div>}>
+          <TeamsView />
+        </Suspense>;
+
       default:
         return null;
     }
@@ -302,20 +414,51 @@ const UserProfile = () => {
         </header>
 
         <main className="flex-1 overflow-y-auto p-4 md:p-8 custom-scrollbar">
-          {renderContent()}
+          {selectedItem && isDialogOpen ? (
+            <div className="space-y-6 max-w-4xl mx-auto pb-16 animate-fadeIn">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-[var(--border-color)]">
+                <div>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => { setIsDialogOpen(false); setSelectedItem(null); }}
+                    className="text-xs text-[var(--text-secondary)] hover:text-[hsl(var(--accent))] mb-1 -ml-2 gap-1.5"
+                  >
+                    <FaArrowLeft className="w-3 h-3" /> Back to Dashboard
+                  </Button>
+                  <h2 className="text-2xl font-bold tracking-tight text-[var(--text-primary)]">
+                    {selectedItem?.id ? 'Edit' : 'Create'} {selectedItem?.contentType?.charAt(0).toUpperCase() + selectedItem?.contentType?.slice(1)}
+                  </h2>
+                  <p className="text-xs text-[var(--text-secondary)] font-mono mt-0.5">
+                    Configure details and parameters below
+                  </p>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Button
+                    variant="outline"
+                    onClick={() => { setIsDialogOpen(false); setSelectedItem(null); }}
+                    disabled={isSaving}
+                    className="text-xs h-9 rounded-xl border-[var(--border-color)]"
+                  >
+                    Cancel
+                  </Button>
+                  <Button
+                    onClick={handleSave}
+                    disabled={isSaving}
+                    className="bg-[hsl(var(--accent))] text-[var(--bg-body)] hover:bg-[hsl(var(--accent))]/90 text-xs h-9 px-4 rounded-xl font-medium"
+                  >
+                    <FaSave className="mr-1.5 h-3 w-3" /> {isSaving ? 'Saving...' : 'Save Changes'}
+                  </Button>
+                </div>
+              </div>
+              <div className="rounded-2xl border border-[var(--border-color)] bg-[var(--card-bg)] p-6">
+                {renderForm()}
+              </div>
+            </div>
+          ) : (
+            renderContent()
+          )}
         </main>
-
-        <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-          <DialogContent className="max-w-2xl bg-[var(--card-bg)] border-[var(--border-color)] text-[var(--text-primary)]">
-            <DialogHeader>
-              <DialogTitle>{selectedItem?.id ? 'Edit' : 'Create'} {selectedItem?.contentType?.charAt(0).toUpperCase() + selectedItem?.contentType?.slice(1)}</DialogTitle>
-              <DialogDescription>
-                Make changes to the item here. Click save when you're done.
-              </DialogDescription>
-            </DialogHeader>
-            {renderForm()}
-          </DialogContent>
-        </Dialog>
       </div>
     </div>
   );

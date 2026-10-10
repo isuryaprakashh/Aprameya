@@ -3,7 +3,7 @@ import { useState, useMemo } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { apiRequest } from '@/lib/queryClient';
 import { useToast } from '@/hooks/use-toast';
-import { EventRegistration, Project, BlogPost, ResearchItem, Event, User } from '@/lib/types';
+import { EventRegistration, Project, BlogPost, ResearchItem, Event, User, TeamMember } from '@/lib/types';
 import { useAuth } from "@/context/AuthContext";
 
 interface EventRegistrationsData {
@@ -59,11 +59,13 @@ export const useUserProfileData = () => {
     const { data: projects = [] } = useQuery<Project[]>({ queryKey: ['/api/projects'], staleTime: 5000 });
     const { data: blogs = [] } = useQuery<BlogPost[]>({ queryKey: ['/api/blogs'], staleTime: 5000 });
     const { data: research = [] } = useQuery<ResearchItem[]>({ queryKey: ['/api/research'], staleTime: 5000 });
+    const { data: teamMembers = [] } = useQuery<TeamMember[]>({ queryKey: ['/api/teams'], staleTime: 5000 });
 
     // -- MUTATIONS --
     const updateUserRole = useMutation({
         mutationFn: ({ userId, role }: { userId: string, role: string }) => apiRequest(`/api/users/${userId}/role`, { method: 'PATCH', body: JSON.stringify({ role }) }),
         onSuccess: () => { queryClient.invalidateQueries({ queryKey: ['/api/users'] }); toast({ title: 'Success', description: 'User role updated' }); },
+        onError: (error: any) => { toast({ title: 'Error', description: error.message || 'Failed to update role', variant: 'destructive' }); }
     });
 
     const deleteUser = useMutation({
@@ -78,24 +80,110 @@ export const useUserProfileData = () => {
         }
     });
 
-    const createProject = useMutation({ mutationFn: (d: any) => apiRequest('/api/projects', { method: 'POST', body: JSON.stringify(d) }), onSuccess: () => { queryClient.invalidateQueries({ queryKey: ['/api/projects'] }); setIsDialogOpen(false); toast({ title: 'Success', description: 'Project created' }); } });
-    const updateProject = useMutation({ mutationFn: (d: any) => apiRequest(`/api/projects/${d.id}`, { method: 'PUT', body: JSON.stringify(d) }), onSuccess: () => { queryClient.invalidateQueries({ queryKey: ['/api/projects'] }); setIsDialogOpen(false); toast({ title: 'Success', description: 'Project updated' }); } });
-    const deleteProject = useMutation({ mutationFn: (id: string) => apiRequest(`/api/projects/${id}`, { method: 'DELETE' }), onSuccess: () => { queryClient.invalidateQueries({ queryKey: ['/api/projects'] }); toast({ title: 'Success', description: 'Project deleted' }); } });
+    const handleAuthError = (err: any, fallbackMsg: string) => {
+        const msg = err.message || '';
+        if (msg.toLowerCase().includes('not authenticated') || msg.includes('401')) {
+            toast({
+                title: 'Session Expired',
+                description: 'Your login session is not active or has expired. Redirecting to login...',
+                variant: 'destructive',
+            });
+            setTimeout(() => {
+                window.location.href = '/login?redirect=/dashboard';
+            }, 1200);
+        } else if (msg.toLowerCase().includes('not authorized') || msg.includes('403')) {
+            toast({
+                title: 'Access Denied',
+                description: 'You do not have the required permissions for this action.',
+                variant: 'destructive',
+            });
+        } else {
+            toast({ title: 'Error', description: msg || fallbackMsg, variant: 'destructive' });
+        }
+    };
 
-    const createBlog = useMutation({ mutationFn: (d: any) => apiRequest('/api/blogs', { method: 'POST', body: JSON.stringify(d) }), onSuccess: () => { queryClient.invalidateQueries({ queryKey: ['/api/blogs'] }); setIsDialogOpen(false); toast({ title: 'Success', description: 'Blog created' }); } });
-    const updateBlog = useMutation({ mutationFn: (d: any) => apiRequest(`/api/blogs/${d.id}`, { method: 'PUT', body: JSON.stringify(d) }), onSuccess: () => { queryClient.invalidateQueries({ queryKey: ['/api/blogs'] }); setIsDialogOpen(false); toast({ title: 'Success', description: 'Blog updated' }); } });
-    const deleteBlog = useMutation({ mutationFn: (id: string) => apiRequest(`/api/blogs/${id}`, { method: 'DELETE' }), onSuccess: () => { queryClient.invalidateQueries({ queryKey: ['/api/blogs'] }); toast({ title: 'Success', description: 'Blog deleted' }); } });
+    const createProject = useMutation({
+        mutationFn: (d: any) => apiRequest('/api/projects', { method: 'POST', body: JSON.stringify(d) }),
+        onSuccess: () => { queryClient.invalidateQueries({ queryKey: ['/api/projects'] }); setIsDialogOpen(false); toast({ title: 'Success', description: 'Project created' }); },
+        onError: (error: any) => handleAuthError(error, 'Failed to create project')
+    });
+    const updateProject = useMutation({
+        mutationFn: (d: any) => apiRequest(`/api/projects/${d.id}`, { method: 'PUT', body: JSON.stringify(d) }),
+        onSuccess: () => { queryClient.invalidateQueries({ queryKey: ['/api/projects'] }); setIsDialogOpen(false); toast({ title: 'Success', description: 'Project updated' }); },
+        onError: (error: any) => handleAuthError(error, 'Failed to update project')
+    });
+    const deleteProject = useMutation({
+        mutationFn: (id: string) => apiRequest(`/api/projects/${id}`, { method: 'DELETE' }),
+        onSuccess: () => { queryClient.invalidateQueries({ queryKey: ['/api/projects'] }); toast({ title: 'Success', description: 'Project deleted' }); },
+        onError: (error: any) => handleAuthError(error, 'Failed to delete project')
+    });
 
-    const createResearch = useMutation({ mutationFn: (d: any) => apiRequest('/api/research', { method: 'POST', body: JSON.stringify(d) }), onSuccess: () => { queryClient.invalidateQueries({ queryKey: ['/api/research'] }); setIsDialogOpen(false); toast({ title: 'Success', description: 'Research created' }); } });
-    const updateResearch = useMutation({ mutationFn: (d: any) => apiRequest(`/api/research/${d.id}`, { method: 'PUT', body: JSON.stringify(d) }), onSuccess: () => { queryClient.invalidateQueries({ queryKey: ['/api/research'] }); setIsDialogOpen(false); toast({ title: 'Success', description: 'Research updated' }); } });
-    const deleteResearch = useMutation({ mutationFn: (id: string) => apiRequest(`/api/research/${id}`, { method: 'DELETE' }), onSuccess: () => { queryClient.invalidateQueries({ queryKey: ['/api/research'] }); toast({ title: 'Success', description: 'Research deleted' }); } });
+    const createBlog = useMutation({
+        mutationFn: (d: any) => apiRequest('/api/blogs', { method: 'POST', body: JSON.stringify(d) }),
+        onSuccess: () => { queryClient.invalidateQueries({ queryKey: ['/api/blogs'] }); setIsDialogOpen(false); toast({ title: 'Success', description: 'Blog created' }); },
+        onError: (error: any) => handleAuthError(error, 'Failed to create blog')
+    });
+    const updateBlog = useMutation({
+        mutationFn: (d: any) => apiRequest(`/api/blogs/${d.id}`, { method: 'PUT', body: JSON.stringify(d) }),
+        onSuccess: () => { queryClient.invalidateQueries({ queryKey: ['/api/blogs'] }); setIsDialogOpen(false); toast({ title: 'Success', description: 'Blog updated' }); },
+        onError: (error: any) => handleAuthError(error, 'Failed to update blog')
+    });
+    const deleteBlog = useMutation({
+        mutationFn: (id: string) => apiRequest(`/api/blogs/${id}`, { method: 'DELETE' }),
+        onSuccess: () => { queryClient.invalidateQueries({ queryKey: ['/api/blogs'] }); toast({ title: 'Success', description: 'Blog deleted' }); },
+        onError: (error: any) => handleAuthError(error, 'Failed to delete blog')
+    });
 
-    const createEvent = useMutation({ mutationFn: (d: any) => apiRequest('/api/events', { method: 'POST', body: JSON.stringify(d) }), onSuccess: () => { queryClient.invalidateQueries({ queryKey: ['/api/events'] }); setIsDialogOpen(false); toast({ title: 'Success', description: 'Event created' }); } });
-    const updateEvent = useMutation({ mutationFn: (d: any) => apiRequest(`/api/events/${d.id}`, { method: 'PUT', body: JSON.stringify(d) }), onSuccess: () => { queryClient.invalidateQueries({ queryKey: ['/api/events'] }); setIsDialogOpen(false); toast({ title: 'Success', description: 'Event updated' }); } });
-    const deleteEvent = useMutation({ mutationFn: (id: string) => apiRequest(`/api/events/${id}`, { method: 'DELETE' }), onSuccess: () => { queryClient.invalidateQueries({ queryKey: ['/api/events'] }); toast({ title: 'Success', description: 'Event deleted' }); } });
+    const createResearch = useMutation({
+        mutationFn: (d: any) => apiRequest('/api/research', { method: 'POST', body: JSON.stringify(d) }),
+        onSuccess: () => { queryClient.invalidateQueries({ queryKey: ['/api/research'] }); setIsDialogOpen(false); toast({ title: 'Success', description: 'Research created' }); },
+        onError: (error: any) => handleAuthError(error, 'Failed to create research')
+    });
+    const updateResearch = useMutation({
+        mutationFn: (d: any) => apiRequest(`/api/research/${d.id}`, { method: 'PUT', body: JSON.stringify(d) }),
+        onSuccess: () => { queryClient.invalidateQueries({ queryKey: ['/api/research'] }); setIsDialogOpen(false); toast({ title: 'Success', description: 'Research updated' }); },
+        onError: (error: any) => handleAuthError(error, 'Failed to update research')
+    });
+    const deleteResearch = useMutation({
+        mutationFn: (id: string) => apiRequest(`/api/research/${id}`, { method: 'DELETE' }),
+        onSuccess: () => { queryClient.invalidateQueries({ queryKey: ['/api/research'] }); toast({ title: 'Success', description: 'Research deleted' }); },
+        onError: (error: any) => handleAuthError(error, 'Failed to delete research')
+    });
+
+    const createEvent = useMutation({
+        mutationFn: (d: any) => apiRequest('/api/events', { method: 'POST', body: JSON.stringify(d) }),
+        onSuccess: () => { queryClient.invalidateQueries({ queryKey: ['/api/events'] }); setIsDialogOpen(false); toast({ title: 'Success', description: 'Event created successfully' }); },
+        onError: (error: any) => handleAuthError(error, 'Failed to create event')
+    });
+    const updateEvent = useMutation({
+        mutationFn: (d: any) => apiRequest(`/api/events/${d.id}`, { method: 'PUT', body: JSON.stringify(d) }),
+        onSuccess: () => { queryClient.invalidateQueries({ queryKey: ['/api/events'] }); setIsDialogOpen(false); toast({ title: 'Success', description: 'Event updated successfully' }); },
+        onError: (error: any) => handleAuthError(error, 'Failed to update event')
+    });
+    const deleteEvent = useMutation({
+        mutationFn: (id: string) => apiRequest(`/api/events/${id}`, { method: 'DELETE' }),
+        onSuccess: () => { queryClient.invalidateQueries({ queryKey: ['/api/events'] }); toast({ title: 'Success', description: 'Event deleted' }); },
+        onError: (error: any) => handleAuthError(error, 'Failed to delete event')
+    });
+
+    const createTeamMember = useMutation({
+        mutationFn: (d: any) => apiRequest('/api/teams', { method: 'POST', body: JSON.stringify(d) }),
+        onSuccess: () => { queryClient.invalidateQueries({ queryKey: ['/api/teams'] }); setIsDialogOpen(false); toast({ title: 'Success', description: 'Team member added successfully' }); },
+        onError: (error: any) => handleAuthError(error, 'Failed to add team member')
+    });
+    const updateTeamMember = useMutation({
+        mutationFn: (d: any) => apiRequest(`/api/teams/${d.id}`, { method: 'PUT', body: JSON.stringify(d) }),
+        onSuccess: () => { queryClient.invalidateQueries({ queryKey: ['/api/teams'] }); setIsDialogOpen(false); toast({ title: 'Success', description: 'Team member updated successfully' }); },
+        onError: (error: any) => handleAuthError(error, 'Failed to update team member')
+    });
+    const deleteTeamMember = useMutation({
+        mutationFn: (id: string) => apiRequest(`/api/teams/${id}`, { method: 'DELETE' }),
+        onSuccess: () => { queryClient.invalidateQueries({ queryKey: ['/api/teams'] }); toast({ title: 'Success', description: 'Team member deleted' }); },
+        onError: (error: any) => handleAuthError(error, 'Failed to delete team member')
+    });
 
     const updateProfile = useMutation({
-        mutationFn: (userData: any) => apiRequest('/api/user/profile', { method: 'PATCH', body: JSON.stringify(userData) }),
+        mutationFn: (userData: any) => apiRequest('/api/users/profile', { method: 'PATCH', body: JSON.stringify(userData) }),
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['/api/me'] });
             toast({ title: 'Success', description: 'Profile updated successfully' });
@@ -112,6 +200,9 @@ export const useUserProfileData = () => {
             queryClient.invalidateQueries({ queryKey: ['/api/event-registrations/my'] });
             toast({ title: 'Success', description: 'You have been registered for the event successfully' });
         },
+        onError: (error: any) => {
+            toast({ title: 'Error', description: error.message || 'Failed to register for event', variant: 'destructive' });
+        }
     });
 
     const cancelEventRegistration = useMutation({
@@ -120,7 +211,16 @@ export const useUserProfileData = () => {
             queryClient.invalidateQueries({ queryKey: ['/api/event-registrations/my'] });
             toast({ title: 'Success', description: 'Event registration cancelled successfully' });
         },
+        onError: (error: any) => {
+            toast({ title: 'Error', description: error.message || 'Failed to cancel registration', variant: 'destructive' });
+        }
     });
+
+    const isSaving = createProject.isPending || updateProject.isPending ||
+        createBlog.isPending || updateBlog.isPending ||
+        createResearch.isPending || updateResearch.isPending ||
+        createEvent.isPending || updateEvent.isPending ||
+        createTeamMember.isPending || updateTeamMember.isPending;
 
     // -- HANDLERS --
     const handleSave = () => {
@@ -128,24 +228,62 @@ export const useUserProfileData = () => {
         const { contentType, ...item } = selectedItem;
 
         if (contentType === 'project') {
+            if (!item.title?.trim()) { toast({ title: 'Validation Error', description: 'Project title is required', variant: 'destructive' }); return; }
+            if (!item.category?.trim()) { toast({ title: 'Validation Error', description: 'Project category is required', variant: 'destructive' }); return; }
+            if (!item.description?.trim()) { toast({ title: 'Validation Error', description: 'Project description is required', variant: 'destructive' }); return; }
+            if (!item.image?.trim()) { toast({ title: 'Validation Error', description: 'Project image is required', variant: 'destructive' }); return; }
+
             if (typeof item.technologies === 'string') item.technologies = item.technologies.split(',').map((t: string) => t.trim()).filter(Boolean);
             if (typeof item.team === 'string') item.team = item.team.split(',').map((t: string) => t.trim()).filter(Boolean);
-        } else if (contentType === 'research') {
-            if (typeof item.authors === 'string') item.authors = item.authors.split(',').map((t: string) => t.trim()).filter(Boolean);
-        }
+            item.id ? updateProject.mutate(item) : createProject.mutate(item);
+        } else if (contentType === 'blog') {
+            if (!item.title?.trim()) { toast({ title: 'Validation Error', description: 'Blog title is required', variant: 'destructive' }); return; }
+            if (!item.excerpt?.trim()) { toast({ title: 'Validation Error', description: 'Blog excerpt is required', variant: 'destructive' }); return; }
+            if (!item.content?.trim()) { toast({ title: 'Validation Error', description: 'Blog content is required', variant: 'destructive' }); return; }
+            if (!item.category?.trim()) { toast({ title: 'Validation Error', description: 'Blog category is required', variant: 'destructive' }); return; }
+            if (!item.image?.trim()) { toast({ title: 'Validation Error', description: 'Blog image is required', variant: 'destructive' }); return; }
 
-        if (contentType === 'project') item.id ? updateProject.mutate(item) : createProject.mutate(item);
-        else if (contentType === 'blog') item.id ? updateBlog.mutate(item) : createBlog.mutate(item);
-        else if (contentType === 'research') item.id ? updateResearch.mutate(item) : createResearch.mutate(item);
-        else if (contentType === 'event') {
+            item.id ? updateBlog.mutate(item) : createBlog.mutate(item);
+        } else if (contentType === 'research') {
+            if (!item.title?.trim()) { toast({ title: 'Validation Error', description: 'Research title is required', variant: 'destructive' }); return; }
+            if (!item.category?.trim()) { toast({ title: 'Validation Error', description: 'Research category is required', variant: 'destructive' }); return; }
+            if (!item.description?.trim()) { toast({ title: 'Validation Error', description: 'Research description is required', variant: 'destructive' }); return; }
+            if (!item.image?.trim()) { toast({ title: 'Validation Error', description: 'Research image is required', variant: 'destructive' }); return; }
+
+            if (typeof item.authors === 'string') item.authors = item.authors.split(',').map((t: string) => t.trim()).filter(Boolean);
+            item.id ? updateResearch.mutate(item) : createResearch.mutate(item);
+        } else if (contentType === 'event') {
+            if (!item.title?.trim()) { toast({ title: 'Validation Error', description: 'Event title is required', variant: 'destructive' }); return; }
+            if (!item.type?.trim()) { toast({ title: 'Validation Error', description: 'Event type is required', variant: 'destructive' }); return; }
+            if (!item.description?.trim()) { toast({ title: 'Validation Error', description: 'Event description is required', variant: 'destructive' }); return; }
+            if (!item.date?.trim()) { toast({ title: 'Validation Error', description: 'Event date is required', variant: 'destructive' }); return; }
+            if (!item.time?.trim()) { toast({ title: 'Validation Error', description: 'Event time is required', variant: 'destructive' }); return; }
+            if (!item.location?.trim()) { toast({ title: 'Validation Error', description: 'Event location is required', variant: 'destructive' }); return; }
+            if (!item.image?.trim()) { toast({ title: 'Validation Error', description: 'Event image URL is required', variant: 'destructive' }); return; }
+
             // Convert capacity to number if it exists
-            if (item.capacity) {
-                item.capacity = parseInt(String(item.capacity), 10);
-                if (isNaN(item.capacity)) item.capacity = null;
+            if (item.capacity !== undefined && item.capacity !== null && item.capacity !== '') {
+                const parsed = parseInt(String(item.capacity), 10);
+                item.capacity = isNaN(parsed) ? null : parsed;
             } else {
                 item.capacity = null;
             }
+
+            item.ticketEnabled = !!item.ticketEnabled;
+
             item.id ? updateEvent.mutate(item) : createEvent.mutate(item);
+        } else if (contentType === 'team') {
+            if (!item.name?.trim()) { toast({ title: 'Validation Error', description: 'Team member name is required', variant: 'destructive' }); return; }
+            if (!item.role?.trim()) { toast({ title: 'Validation Error', description: 'Team member role is required', variant: 'destructive' }); return; }
+
+            if (item.order !== undefined && item.order !== null && item.order !== '') {
+                const parsed = parseInt(String(item.order), 10);
+                item.order = isNaN(parsed) ? 0 : parsed;
+            } else {
+                item.order = 0;
+            }
+
+            item.id ? updateTeamMember.mutate(item) : createTeamMember.mutate(item);
         }
     };
 
@@ -155,6 +293,7 @@ export const useUserProfileData = () => {
         else if (type === 'blog') deleteBlog.mutate(id);
         else if (type === 'research') deleteResearch.mutate(id);
         else if (type === 'event') deleteEvent.mutate(id);
+        else if (type === 'team') deleteTeamMember.mutate(id);
     };
 
     // -- COMPUTED --
@@ -182,13 +321,15 @@ export const useUserProfileData = () => {
         isDialogOpen, setIsDialogOpen,
         userToDelete, setUserToDelete,
         profileData, setProfileData,
-        users, eventRegistrations, events, userEventRegistrations, tickets, projects, blogs, research,
+        users, eventRegistrations, events, userEventRegistrations, tickets, projects, blogs, research, teamMembers,
         userGrowthData, contentDistributionData,
+        isSaving,
         updateUserRole, deleteUser,
         createProject, updateProject, deleteProject,
         createBlog, updateBlog, deleteBlog,
         createResearch, updateResearch, deleteResearch,
         createEvent, updateEvent, deleteEvent,
+        createTeamMember, updateTeamMember, deleteTeamMember,
         updateProfile, registerForEvent, cancelEventRegistration,
         handleSave, handleDelete
     };

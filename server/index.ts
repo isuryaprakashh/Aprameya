@@ -4,6 +4,7 @@ import { registerRoutes } from "./routes";
 import { connectDB } from "./db";
 import session from 'express-session';
 import memorystore from 'memorystore';
+import MongoStore from 'connect-mongo';
 import { fileURLToPath } from 'url';
 import cors from 'cors';
 
@@ -21,8 +22,8 @@ app.set('trust proxy', 1);
 
 import cookieParser from 'cookie-parser';
 
-app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
+app.use(express.json({ limit: '10mb' }));
+app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 app.use(cookieParser());
 
 // Configure Helmet for security headers
@@ -73,17 +74,24 @@ app.use(cors({
   allowedHeaders: ["Content-Type", "Authorization", "Cookie"]
 }));
 
-// Set up in-memory session store
-const MemoryStore = memorystore(session);
-
 // Robust production check for Render
 const isProduction = process.env.NODE_ENV === 'production' || process.env.RENDER === 'true';
 
+// Set up persistent session store in MongoDB
+const sessionStore = process.env.MONGODB_URI
+  ? MongoStore.create({
+      mongoUrl: process.env.MONGODB_URI,
+      collectionName: 'sessions',
+      ttl: 30 * 24 * 60 * 60, // 30 days
+      autoRemove: 'native'
+    })
+  : new (memorystore(session))({
+      checkPeriod: 86400000
+    });
+
 app.use(session({
   name: "aprameya.sid", // Explicit cookie name
-  store: new MemoryStore({
-    checkPeriod: 86400000 // prune expired entries every 24h
-  }),
+  store: sessionStore,
   secret: process.env.SESSION_SECRET || 'aprameya-session-secret',
   resave: false,
   saveUninitialized: false,
