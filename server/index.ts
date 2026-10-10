@@ -57,12 +57,14 @@ app.use(cors({
     // Allow requests with no origin (like mobile apps or curl requests)
     if (!origin) return callback(null, true);
 
-    if (allowedOrigins.indexOf(origin) !== -1) {
-      return callback(null, true);
-    }
-
-    // Check for Vercel preview deployments
-    if (origin.endsWith('.vercel.app')) {
+    const cleanOrigin = origin.replace(/\/$/, "");
+    if (
+      allowedOrigins.includes(origin) ||
+      allowedOrigins.includes(cleanOrigin) ||
+      origin.startsWith("http://localhost:") ||
+      origin.startsWith("http://127.0.0.1:") ||
+      origin.endsWith(".vercel.app")
+    ) {
       return callback(null, true);
     }
 
@@ -100,7 +102,7 @@ app.use(session({
     maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days
     secure: isProduction, // True in Prod, False in Dev (allows local IP testing on mobile)
     httpOnly: true,
-    sameSite: 'lax', // Lax is correct since requests go through same-origin Vercel proxy
+    sameSite: isProduction ? 'none' : 'lax', // None for Cross-Site (Prod), Lax for Same-Site (Dev)
     domain: undefined,
     path: '/',
   },

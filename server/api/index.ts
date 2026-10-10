@@ -1,13 +1,15 @@
 import type { IncomingMessage, ServerResponse } from 'http';
 import { app, registerRoutes } from '../index';
+import { connectDB } from '../db';
 
-// Initialize routes once
-let routesRegistered = false;
+// Initialize DB and routes once
+let initialized = false;
 
 export default async function handler(req: IncomingMessage, res: ServerResponse) {
-    if (!routesRegistered) {
+    if (!initialized) {
+        await connectDB();
         await registerRoutes(app);
-        routesRegistered = true;
+        initialized = true;
     }
 
     app(req as any, res as any);
