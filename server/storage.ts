@@ -1,3 +1,4 @@
+import mongoose from "mongoose";
 import {
   User,
   Project,
@@ -555,8 +556,25 @@ export class MongoStorage implements IStorage {
 
   // Team Member Operations
   async getTeamMember(id: string): Promise<TeamMemberType | undefined> {
-    const member = await TeamMember.findById(id);
-    return member ? this.mapDoc<TeamMemberType>(member) : undefined;
+    try {
+      let member = null;
+      if (mongoose.Types.ObjectId.isValid(id)) {
+        member = await TeamMember.findById(id);
+      }
+      if (!member) {
+        const num = Number(id);
+        if (!isNaN(num) && num > 0) {
+          member = await TeamMember.findOne({ order: num });
+        }
+      }
+      if (!member) {
+        member = await TeamMember.findOne({ name: new RegExp(`^${id}$`, 'i') });
+      }
+      return member ? this.mapDoc<TeamMemberType>(member) : undefined;
+    } catch (err) {
+      console.error("Error in getTeamMember:", err);
+      return undefined;
+    }
   }
 
   async getAllTeamMembers(): Promise<TeamMemberType[]> {

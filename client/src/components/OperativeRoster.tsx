@@ -30,7 +30,7 @@ const OperativeRoster = () => {
                                 <img
                                     src={member.image}
                                     alt={member.name}
-                                    className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500 group-hover:scale-105"
+                                    className="w-full h-full object-cover object-top transition-transform duration-500 group-hover:scale-105"
                                     onError={(e) => {
                                         (e.currentTarget as HTMLImageElement).src = '/assets/team_avatar_1.png';
                                     }}
@@ -40,7 +40,7 @@ const OperativeRoster = () => {
                                     {member.name.substring(0, 2).toUpperCase()}
                                 </div>
                             )}
-                            <div className="absolute inset-0 bg-gradient-to-t from-[#1A050A] via-transparent to-transparent pointer-events-none" />
+                            <div className="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-[#1A050A] to-transparent pointer-events-none" />
                             {member.year && (
                                 <span className="absolute top-3 left-3 text-[10px] font-sans font-semibold uppercase tracking-wider text-red-300 bg-black/80 backdrop-blur-md border border-red-500/20 px-2 py-0.5 rounded">
                                     {member.year}

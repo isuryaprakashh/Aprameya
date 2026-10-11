@@ -48,7 +48,7 @@ export const OperativeCard = ({ className, children, image, name, role, clearanc
                     <img
                         src={image}
                         alt={name}
-                        className="operative-img w-full h-full object-cover grayscale transition-all duration-500 group-hover:grayscale-0"
+                        className="operative-img w-full h-full object-cover object-top transition-all duration-500"
                     />
                     <div className="absolute inset-0 bg-[repeating-linear-gradient(0deg,transparent,transparent_2px,rgba(0,0,0,0.2)_3px)] pointer-events-none opacity-30" />
                 </div>

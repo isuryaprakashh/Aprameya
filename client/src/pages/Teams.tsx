@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useLocation } from 'wouter';
 import { useQuery } from '@tanstack/react-query';
 import { motion } from 'framer-motion';
 import { TeamMember } from '@/lib/types';
@@ -20,6 +21,7 @@ const CATEGORIES = ['All', 'Faculty Mentors', 'Core Team', 'Technical Leads', 'A
 export default function Teams() {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('All');
+  const [, setLocation] = useLocation();
 
   const { data: dbMembers = [], isLoading } = useQuery<TeamMember[]>({
     queryKey: ['/api/teams'],
@@ -187,6 +189,7 @@ export default function Teams() {
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-6">
             {filteredMembers.map((member, index) => {
+              const memberId = member.id || member._id || String(member.order || index + 1);
               const socialLinks = member.socialLinks || {};
               const email = member.email || socialLinks.email;
               const linkedin = member.linkedin || socialLinks.linkedin;
@@ -198,18 +201,19 @@ export default function Teams() {
                   initial={{ opacity: 0, y: 15 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.35, delay: index * 0.05 }}
-                  className="rounded-xl border border-[var(--border-color)] bg-[var(--card-bg)] overflow-hidden transition-all duration-300 hover:border-[hsl(var(--accent))]/40 hover:shadow-[0_8px_30px_rgb(0,0,0,0.12)] group flex flex-col justify-between"
+                  onClick={() => setLocation(`/teams/${memberId}`)}
+                  className="rounded-xl border border-[var(--border-color)] bg-[var(--card-bg)] overflow-hidden transition-all duration-300 hover:border-[hsl(var(--accent))]/50 hover:shadow-[0_12px_36px_rgb(0,0,0,0.25)] group flex flex-col justify-between cursor-pointer"
                 >
                   <div>
-                    {/* Portrait Photo Container */}
-                    <div className="relative h-64 overflow-hidden bg-black/60">
+                    {/* Portrait Photo Container - VIVID, NATURAL, NO GRAYSCALE */}
+                    <div className="relative h-72 sm:h-80 overflow-hidden bg-zinc-950">
                       {member.image ? (
                         <img
                           src={member.image}
                           alt={member.name}
-                          className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500 group-hover:scale-105"
+                          className="w-full h-full object-cover object-top transition-transform duration-500 group-hover:scale-105"
                           onError={(e) => {
-                            // If image fails, fallback to a stylized initials block
+                            // If image fails, fallback to a stylized avatar
                             (e.currentTarget as HTMLImageElement).src = '/assets/team_avatar_1.png';
                           }}
                         />
@@ -220,44 +224,56 @@ export default function Teams() {
                       )}
 
                       {/* Top Badges */}
-                      <div className="absolute top-3 left-3 right-3 flex items-center justify-between pointer-events-none">
+                      <div className="absolute top-3 left-3 right-3 flex items-center justify-between pointer-events-none z-10">
                         {member.year && (
-                          <span className="text-[10px] font-mono font-semibold uppercase tracking-wider text-red-300 bg-black/85 backdrop-blur-md border border-red-500/25 px-2.5 py-0.5 rounded">
+                          <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-red-300 bg-black/85 backdrop-blur-md border border-red-500/25 px-2.5 py-0.5 rounded shadow">
                             {member.year}
                           </span>
                         )}
                         {member.category && (
-                          <span className="text-[10px] font-mono font-semibold uppercase tracking-wider text-[hsl(var(--accent))] bg-black/85 backdrop-blur-md border border-[hsl(var(--accent))]/30 px-2.5 py-0.5 rounded ml-auto">
+                          <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-[hsl(var(--accent))] bg-black/85 backdrop-blur-md border border-[hsl(var(--accent))]/30 px-2.5 py-0.5 rounded ml-auto shadow">
                             {member.category}
                           </span>
                         )}
                       </div>
 
-                      {/* Bottom Gradient Fade */}
-                      <div className="absolute inset-0 bg-gradient-to-t from-[var(--card-bg)] via-transparent to-transparent pointer-events-none" />
+                      {/* Subtle Bottom Gradient Fade for seamless contrast */}
+                      <div className="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-[var(--card-bg)] to-transparent pointer-events-none" />
                     </div>
 
                     {/* Member Details */}
                     <div className="p-6">
-                      <h3 className="font-display font-bold text-lg text-[var(--text-primary)] mb-1 group-hover:text-[hsl(var(--accent))] transition-colors">
-                        {member.name}
-                      </h3>
-                      <p className="text-xs font-mono text-[hsl(var(--accent))] mb-3">
+                      <div className="flex items-start justify-between gap-2 mb-1">
+                        <h3 className="font-display font-bold text-lg text-[var(--text-primary)] group-hover:text-[hsl(var(--accent))] transition-colors">
+                          {member.name}
+                        </h3>
+                        {member.order !== undefined && member.order > 0 && (
+                          <span className="text-[10px] font-mono px-1.5 py-0.5 rounded border border-[var(--border-color)] text-[var(--text-muted)] shrink-0">
+                            #{member.order}
+                          </span>
+                        )}
+                      </div>
+
+                      <p className="text-xs font-mono text-[hsl(var(--accent))] mb-3 font-semibold">
                         {member.role}
                       </p>
 
                       {member.department && (
-                        <p className="text-xs text-[var(--text-secondary)] mb-3 leading-relaxed">
+                        <p className="text-xs text-[var(--text-secondary)] mb-2.5 leading-relaxed">
                           <span className="text-[var(--text-muted)] font-mono text-[11px]">Dept:</span>{" "}
                           {member.department}
                         </p>
                       )}
 
                       {member.bio && (
-                        <p className="text-xs text-[var(--text-secondary)] line-clamp-3 leading-relaxed mb-4">
+                        <p className="text-xs text-[var(--text-secondary)] line-clamp-3 leading-relaxed mb-3">
                           {member.bio}
                         </p>
                       )}
+
+                      <div className="pt-1 flex items-center text-[11px] font-mono text-[hsl(var(--accent))] opacity-80 group-hover:opacity-100 group-hover:translate-x-1 transition-all">
+                        <span>View Profile & Credentials →</span>
+                      </div>
                     </div>
                   </div>
 
@@ -271,6 +287,7 @@ export default function Teams() {
                       {email && (
                         <a
                           href={`mailto:${email}`}
+                          onClick={(e) => e.stopPropagation()}
                           className="text-[var(--text-muted)] hover:text-[var(--text-primary)] transition-colors p-1"
                           title={email}
                           aria-label="Email"
@@ -283,6 +300,7 @@ export default function Teams() {
                           href={linkedin}
                           target="_blank"
                           rel="noopener noreferrer"
+                          onClick={(e) => e.stopPropagation()}
                           className="text-[var(--text-muted)] hover:text-[#0A66C2] transition-colors p-1"
                           title="LinkedIn"
                           aria-label="LinkedIn"
@@ -295,6 +313,7 @@ export default function Teams() {
                           href={github}
                           target="_blank"
                           rel="noopener noreferrer"
+                          onClick={(e) => e.stopPropagation()}
                           className="text-[var(--text-muted)] hover:text-[var(--text-primary)] transition-colors p-1"
                           title="GitHub"
                           aria-label="GitHub"

@@ -16,8 +16,27 @@ import {
   FaSave,
   FaUpload,
   FaImage,
-  FaCheck
+  FaCheck,
+  FaQrcode,
+  FaEye,
+  FaDownload,
+  FaCopy,
+  FaExternalLinkAlt
 } from 'react-icons/fa';
+import { QRCodeCanvas } from 'qrcode.react';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from '@/components/ui/dialog';
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem,
+} from '@/components/ui/dropdown-menu';
 import { TeamMember } from '@/lib/types';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { apiRequest } from '@/lib/queryClient';
@@ -43,6 +62,8 @@ export default function TeamsView() {
   const [viewMode, setViewMode] = useState<'list' | 'editor'>('list');
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('All');
+  const [qrModalMember, setQrModalMember] = useState<TeamMember | null>(null);
+  const [copiedLink, setCopiedLink] = useState(false);
 
   // Form state
   const [formData, setFormData] = useState<Partial<TeamMember>>({
@@ -247,6 +268,88 @@ export default function TeamsView() {
   const handleDelete = (id: string) => {
     if (window.confirm('Are you sure you want to delete this team member?')) {
       deleteMutation.mutate(id);
+    }
+  };
+
+  const handleViewQr = (member: TeamMember) => {
+    setQrModalMember(member);
+  };
+
+  const handleCopyQrLink = async (member: TeamMember) => {
+    const memberId = member.id || member._id;
+    const url = `${window.location.origin}/teams/${memberId}`;
+    try {
+      await navigator.clipboard.writeText(url);
+      setCopiedLink(true);
+      toast({ title: 'Link Copied', description: 'Team member profile link copied to clipboard' });
+      setTimeout(() => setCopiedLink(false), 2500);
+    } catch {
+      toast({ title: 'Copy Failed', description: 'Could not access clipboard', variant: 'destructive' });
+    }
+  };
+
+  const handleDownloadQr = (member: TeamMember) => {
+    const memberId = member.id || member._id;
+    try {
+      const existingCanvas = document.getElementById(`qr-admin-hidden-${memberId}`) as HTMLCanvasElement;
+      if (!existingCanvas) {
+        toast({ title: 'Error', description: 'QR Canvas not initialized', variant: 'destructive' });
+        return;
+      }
+
+      // Render high-res export image with badge frame
+      const exportCanvas = document.createElement('canvas');
+      const qrSize = 400;
+      const padding = 40;
+      exportCanvas.width = qrSize + padding * 2;
+      exportCanvas.height = qrSize + padding * 2 + 100;
+      const ctx = exportCanvas.getContext('2d');
+      if (!ctx) return;
+
+      // Dark background
+      ctx.fillStyle = '#0a0d14';
+      ctx.fillRect(0, 0, exportCanvas.width, exportCanvas.height);
+
+      // Border glow
+      ctx.strokeStyle = '#22c55e';
+      ctx.lineWidth = 4;
+      ctx.strokeRect(8, 8, exportCanvas.width - 16, exportCanvas.height - 16);
+
+      // Member name & role
+      ctx.fillStyle = '#ffffff';
+      ctx.font = 'bold 22px system-ui, -apple-system, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText(member.name, exportCanvas.width / 2, 45);
+
+      ctx.fillStyle = '#22c55e';
+      ctx.font = '14px monospace';
+      ctx.fillText(member.role, exportCanvas.width / 2, 68);
+
+      // White container for QR code
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(padding - 10, 85, qrSize + 20, qrSize + 20);
+      ctx.drawImage(existingCanvas, padding, 95, qrSize, qrSize);
+
+      // Footer branding
+      ctx.fillStyle = '#94a3b8';
+      ctx.font = 'bold 12px monospace';
+      ctx.fillText('APRAMEYA AUTONOMOUS SYSTEMS LAB', exportCanvas.width / 2, exportCanvas.height - 25);
+
+      const dataUrl = exportCanvas.toDataURL('image/png');
+      const a = document.createElement('a');
+      a.href = dataUrl;
+      a.download = `${member.name.toLowerCase().replace(/[^a-z0-9]/g, '_')}_qr_code.png`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+
+      toast({
+        title: 'QR Code Downloaded',
+        description: `Successfully downloaded QR badge for ${member.name}.`,
+      });
+    } catch (err) {
+      console.error('Download QR error:', err);
+      toast({ title: 'Download Error', description: 'Failed to download QR code image', variant: 'destructive' });
     }
   };
 
@@ -713,7 +816,7 @@ export default function TeamsView() {
                       <img
                         src={member.image}
                         alt={member.name}
-                        className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-300"
+                        className="w-full h-full object-cover object-top transition-all duration-300"
                         onError={(e) => {
                           (e.currentTarget as HTMLImageElement).src = '/assets/team_avatar_1.png';
                         }}
@@ -801,11 +904,50 @@ export default function TeamsView() {
 
               {/* Action Buttons */}
               <div className="flex items-center justify-end gap-2 mt-4 pt-3 border-t border-[var(--border-color)]">
+                {/* Hidden QR Canvas for high-res export */}
+                <div className="hidden">
+                  <QRCodeCanvas
+                    id={`qr-admin-hidden-${member.id || member._id}`}
+                    value={`${window.location.origin}/teams/${member.id || member._id}`}
+                    size={400}
+                    level="H"
+                    includeMargin={true}
+                  />
+                </div>
+
+                {/* QR Code Feature Dropdown beside Edit Profile & Photo */}
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      className="h-8 text-xs px-2.5 sm:px-3 border-[var(--border-color)] hover:border-[hsl(var(--accent))]/50 hover:text-[hsl(var(--accent))] rounded-lg gap-1.5 transition-colors"
+                      title="Link to QR Code"
+                    >
+                      <FaQrcode className="h-3 w-3 text-[hsl(var(--accent))]" /> QR Code
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end" className="bg-[var(--card-bg)] border-[var(--border-color)] text-[var(--text-primary)] min-w-[170px] p-1.5 rounded-xl shadow-2xl">
+                    <DropdownMenuItem
+                      onClick={() => handleViewQr(member)}
+                      className="cursor-pointer text-xs flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-[hsl(var(--accent))]/15 hover:text-[hsl(var(--accent))] focus:bg-[hsl(var(--accent))]/15 focus:text-[hsl(var(--accent))]"
+                    >
+                      <FaEye className="w-3.5 h-3.5 text-[hsl(var(--accent))]" /> View QR Code
+                    </DropdownMenuItem>
+                    <DropdownMenuItem
+                      onClick={() => handleDownloadQr(member)}
+                      className="cursor-pointer text-xs flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-[hsl(var(--accent))]/15 hover:text-[hsl(var(--accent))] focus:bg-[hsl(var(--accent))]/15 focus:text-[hsl(var(--accent))]"
+                    >
+                      <FaDownload className="w-3.5 h-3.5 text-[hsl(var(--accent))]" /> Download QR Code
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+
                 <Button
                   size="sm"
                   variant="outline"
                   onClick={() => startEdit(member)}
-                  className="h-8 text-xs px-3 border-[var(--border-color)] hover:border-[hsl(var(--accent))]/40 hover:text-[hsl(var(--accent))] rounded-lg gap-1.5"
+                  className="h-8 text-xs px-2.5 sm:px-3 border-[var(--border-color)] hover:border-[hsl(var(--accent))]/40 hover:text-[hsl(var(--accent))] rounded-lg gap-1.5"
                 >
                   <FaEdit className="h-3 w-3" /> Edit Profile & Photo
                 </Button>
@@ -813,7 +955,8 @@ export default function TeamsView() {
                   size="sm"
                   variant="ghost"
                   onClick={() => handleDelete(member.id || member._id!)}
-                  className="h-8 text-xs px-2.5 text-red-400 hover:text-red-300 hover:bg-red-500/10 rounded-lg"
+                  className="h-8 text-xs px-2 text-red-400 hover:text-red-300 hover:bg-red-500/10 rounded-lg"
+                  title="Delete Member"
                 >
                   <FaTrash className="h-3 w-3" />
                 </Button>
@@ -822,6 +965,73 @@ export default function TeamsView() {
           ))}
         </div>
       )}
+
+      {/* Super Admin QR Code Viewer Dialog */}
+      <Dialog open={!!qrModalMember} onOpenChange={(open) => !open && setQrModalMember(null)}>
+        {qrModalMember && (
+          <DialogContent className="sm:max-w-md bg-[var(--card-bg)] border-[var(--border-color)] text-[var(--text-primary)] rounded-2xl p-6">
+            <DialogHeader className="text-center space-y-2">
+              <div className="w-12 h-12 rounded-xl bg-[hsl(var(--accent))]/10 border border-[hsl(var(--accent))]/30 text-[hsl(var(--accent))] flex items-center justify-center mx-auto">
+                <FaQrcode className="w-6 h-6" />
+              </div>
+              <DialogTitle className="text-xl font-bold font-display text-[var(--text-primary)]">
+                {qrModalMember.name}
+              </DialogTitle>
+              <DialogDescription className="text-xs text-[var(--text-secondary)] font-mono">
+                {qrModalMember.role} — Profile QR Code
+              </DialogDescription>
+            </DialogHeader>
+
+            {/* QR Canvas Frame */}
+            <div className="flex flex-col items-center justify-center py-4">
+              <div className="p-4 bg-white rounded-2xl shadow-2xl border border-white/20">
+                <QRCodeCanvas
+                  value={`${window.location.origin}/teams/${qrModalMember.id || qrModalMember._id}`}
+                  size={240}
+                  level="H"
+                  includeMargin={true}
+                />
+              </div>
+              <p className="text-[11px] font-mono text-[var(--text-muted)] mt-3">
+                Scan with mobile camera to open profile page
+              </p>
+            </div>
+
+            {/* URL Link with Copy Button */}
+            <div className="p-3 bg-black/40 rounded-xl border border-[var(--border-color)] flex items-center justify-between gap-2">
+              <span className="text-xs font-mono text-[var(--text-secondary)] truncate">
+                {`${window.location.origin}/teams/${qrModalMember.id || qrModalMember._id}`}
+              </span>
+              <Button
+                size="sm"
+                variant="ghost"
+                onClick={() => handleCopyQrLink(qrModalMember)}
+                className="h-7 text-xs px-2.5 text-[hsl(var(--accent))] hover:bg-[hsl(var(--accent))]/10 shrink-0"
+                title="Copy Link"
+              >
+                {copiedLink ? <FaCheck className="w-3.5 h-3.5 text-emerald-400" /> : <FaCopy className="w-3.5 h-3.5" />}
+              </Button>
+            </div>
+
+            {/* Modal Actions */}
+            <div className="flex items-center gap-3 pt-2">
+              <Button
+                variant="outline"
+                onClick={() => window.open(`/teams/${qrModalMember.id || qrModalMember._id}`, '_blank')}
+                className="flex-1 border-[var(--border-color)] text-xs h-10 rounded-xl gap-1.5"
+              >
+                <FaExternalLinkAlt className="w-3 h-3" /> Open Page
+              </Button>
+              <Button
+                onClick={() => handleDownloadQr(qrModalMember)}
+                className="flex-1 bg-[hsl(var(--accent))] text-[var(--bg-body)] hover:bg-[hsl(var(--accent))]/90 text-xs h-10 rounded-xl font-semibold gap-1.5 shadow-[0_0_20px_-5px_hsl(var(--accent)/0.4)]"
+              >
+                <FaDownload className="w-3.5 h-3.5" /> Download QR
+              </Button>
+            </div>
+          </DialogContent>
+        )}
+      </Dialog>
     </div>
   );
 }
