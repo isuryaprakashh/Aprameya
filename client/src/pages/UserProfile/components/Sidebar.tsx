@@ -13,23 +13,28 @@ import {
     FaQrcode,
     FaUserPlus,
     FaIdCard,
-    FaUserTie
+    FaUserTie,
+    FaUser,
+    FaShieldAlt
 } from 'react-icons/fa';
 
 interface SidebarContentProps {
     activeView: string;
     setActiveView: (view: string) => void;
+    panelMode?: 'admin' | 'user';
+    setPanelMode?: (mode: 'admin' | 'user') => void;
     isMobile?: boolean;
     closeMobile?: () => void;
 }
 
-const SidebarContent = ({ activeView, setActiveView, isMobile, closeMobile }: SidebarContentProps) => {
+const SidebarContent = ({ activeView, setActiveView, panelMode = 'admin', setPanelMode, isMobile, closeMobile }: SidebarContentProps) => {
     const { user } = useAuth();
     const isAdmin = user?.role === 'ADMIN';
     const isCore = user?.role === 'CORE';
-    const hasAccess = isAdmin || isCore;
+    const hasAdminAccess = isAdmin || isCore;
+    const isUserMode = panelMode === 'user';
 
-    const menuItems = hasAccess ? [
+    const menuItems = hasAdminAccess && !isUserMode ? [
         ...(isAdmin ? [{ id: 'overview', label: 'Overview', icon: FaChartLine }, { id: 'users', label: 'Users', icon: FaUsers }] : []),
         ...(isCore ? [{ id: 'overview', label: 'Overview', icon: FaHome }] : []),
         { id: 'teams', label: 'Teams', icon: FaUserTie },
@@ -41,7 +46,7 @@ const SidebarContent = ({ activeView, setActiveView, isMobile, closeMobile }: Si
         { id: 'roster', label: 'Roster', icon: FaIdCard },
         { id: 'scan', label: 'Scan QR', icon: FaQrcode },
     ] : [
-        { id: 'overview', label: 'Overview', icon: FaHome },
+        { id: 'overview', label: 'User Overview', icon: FaHome },
         { id: 'registrations', label: 'My Registrations', icon: FaClipboardList },
         { id: 'settings', label: 'Settings', icon: FaCog },
     ];
@@ -63,9 +68,11 @@ const SidebarContent = ({ activeView, setActiveView, isMobile, closeMobile }: Si
                     <Link href="/" className="w-8 h-8 rounded-lg bg-[hsl(var(--accent))] flex items-center justify-center hover:opacity-80 transition-opacity">
                         <span className="font-bold text-[var(--bg-body)]">A</span>
                     </Link>
-                    <h1 className="text-lg font-bold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-[var(--text-primary)] to-[hsl(var(--accent))]">
-                        {isAdmin ? 'Admin' : 'Dashboard'}
-                    </h1>
+                    <div>
+                        <h1 className="text-base font-bold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-[var(--text-primary)] to-[hsl(var(--accent))]">
+                            {isAdmin ? (isUserMode ? 'User View' : 'Admin Panel') : 'Dashboard'}
+                        </h1>
+                    </div>
                 </div>
             </div>
 
@@ -86,6 +93,38 @@ const SidebarContent = ({ activeView, setActiveView, isMobile, closeMobile }: Si
                     ))}
                 </nav>
             </div>
+
+            {/* Bottom Actions: View Home Page & View User Panel Toggle */}
+            <div className="p-3 border-t border-[var(--border-color)] space-y-2 bg-black/20">
+                {hasAdminAccess && setPanelMode && (
+                    <button
+                        onClick={() => {
+                            const nextMode = isUserMode ? 'admin' : 'user';
+                            setPanelMode(nextMode);
+                            setActiveView('overview');
+                            if (isMobile && closeMobile) closeMobile();
+                        }}
+                        className="w-full flex items-center justify-center gap-2 px-3 py-2 rounded-xl text-xs font-mono font-semibold transition-all border border-[hsl(var(--accent))]/30 bg-[hsl(var(--accent))]/10 text-[hsl(var(--accent))] hover:bg-[hsl(var(--accent))]/20 hover:border-[hsl(var(--accent))]/50 shadow-sm"
+                    >
+                        {isUserMode ? (
+                            <>
+                                <FaShieldAlt className="w-3.5 h-3.5" /> Back to Admin Panel
+                            </>
+                        ) : (
+                            <>
+                                <FaUser className="w-3.5 h-3.5" /> View User Panel
+                            </>
+                        )}
+                    </button>
+                )}
+
+                <Link
+                    href="/"
+                    className="w-full flex items-center justify-center gap-2 px-3 py-2 rounded-xl text-xs font-mono font-medium transition-all border border-[var(--border-color)] bg-[var(--card-bg)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:border-white/20 hover:bg-white/5"
+                >
+                    <FaHome className="w-3.5 h-3.5 text-[hsl(var(--accent))]" /> View Home Page
+                </Link>
+            </div>
         </div>
     );
 };
@@ -93,15 +132,17 @@ const SidebarContent = ({ activeView, setActiveView, isMobile, closeMobile }: Si
 interface SidebarProps {
     activeView: string;
     setActiveView: (view: string) => void;
+    panelMode?: 'admin' | 'user';
+    setPanelMode?: (mode: 'admin' | 'user') => void;
     isMobileOpen: boolean;
     setIsMobileOpen: (open: boolean) => void;
 }
 
-export const Sidebar = ({ activeView, setActiveView, isMobileOpen, setIsMobileOpen }: SidebarProps) => {
+export const Sidebar = ({ activeView, setActiveView, panelMode, setPanelMode, isMobileOpen, setIsMobileOpen }: SidebarProps) => {
     return (
         <>
             <div className="hidden md:block w-64 h-full flex-shrink-0">
-                <SidebarContent activeView={activeView} setActiveView={setActiveView} />
+                <SidebarContent activeView={activeView} setActiveView={setActiveView} panelMode={panelMode} setPanelMode={setPanelMode} />
             </div>
 
             <Sheet open={isMobileOpen} onOpenChange={setIsMobileOpen}>
@@ -109,6 +150,8 @@ export const Sidebar = ({ activeView, setActiveView, isMobileOpen, setIsMobileOp
                     <SidebarContent
                         activeView={activeView}
                         setActiveView={setActiveView}
+                        panelMode={panelMode}
+                        setPanelMode={setPanelMode}
                         isMobile={true}
                         closeMobile={() => setIsMobileOpen(false)}
                     />

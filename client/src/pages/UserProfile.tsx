@@ -1,10 +1,10 @@
-import { lazy, Suspense, useEffect, useRef } from 'react';
+import { lazy, Suspense, useEffect, useRef, useState } from 'react';
 import { useLocation } from 'wouter';
 import { useAuth } from "@/context/AuthContext";
 import { useToast } from '@/hooks/use-toast';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
-import { FaBars, FaSave, FaArrowLeft, FaUpload } from 'react-icons/fa';
+import { FaBars, FaSave, FaArrowLeft, FaUpload, FaHome, FaUser, FaShieldAlt } from 'react-icons/fa';
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
@@ -50,6 +50,8 @@ const UserProfile = () => {
     updateProfile,
     handleSave, handleDelete
   } = useUserProfileData();
+
+  const [panelMode, setPanelMode] = useState<'admin' | 'user'>('admin');
 
   // Helper functions
   const getInitials = (username: string) => username.substring(0, 2).toUpperCase();
@@ -292,7 +294,7 @@ const UserProfile = () => {
   const renderContent = () => {
     switch (activeView) {
       case 'overview':
-        if (currentUser?.role === 'ADMIN') {
+        if (currentUser?.role === 'ADMIN' && panelMode !== 'user') {
           return <AdminStats
             users={users}
             projects={projects}
@@ -399,18 +401,87 @@ const UserProfile = () => {
       className="flex h-screen bg-[var(--bg-body)] text-[var(--text-primary)] font-sans selection:bg-[hsl(var(--accent))]/30 overflow-hidden"
       data-accent={accentColor}
     >
-      <Sidebar activeView={activeView} setActiveView={setActiveView} isMobileOpen={isMobileOpen} setIsMobileOpen={setIsMobileOpen} />
+      <Sidebar
+        activeView={activeView}
+        setActiveView={setActiveView}
+        panelMode={panelMode}
+        setPanelMode={setPanelMode}
+        isMobileOpen={isMobileOpen}
+        setIsMobileOpen={setIsMobileOpen}
+      />
 
       <div className="flex-1 flex flex-col overflow-hidden">
+        {/* Desktop Header with View User Panel and View Home Page */}
+        <header className="hidden md:flex items-center justify-between px-8 py-3.5 border-b border-[var(--border-color)] bg-[var(--card-bg)]/60 backdrop-blur-md">
+          <div className="flex items-center gap-3">
+            <span className="text-xs font-mono px-2.5 py-1 rounded-lg bg-[hsl(var(--accent))]/10 border border-[hsl(var(--accent))]/30 text-[hsl(var(--accent))] font-bold uppercase tracking-wider">
+              {currentUser.role === 'ADMIN' ? (panelMode === 'user' ? 'USER PANEL (STUDENT VIEW)' : 'ADMIN PANEL') : 'USER DASHBOARD'}
+            </span>
+            <span className="text-xs text-[var(--text-muted)] font-mono">
+              Signed in as <strong className="text-[var(--text-primary)]">{currentUser.username}</strong>
+            </span>
+          </div>
+
+          <div className="flex items-center gap-2.5">
+            {currentUser.role === 'ADMIN' && (
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => {
+                  setPanelMode(panelMode === 'user' ? 'admin' : 'user');
+                  setActiveView('overview');
+                }}
+                className="h-8 text-xs rounded-xl border-[hsl(var(--accent))]/40 bg-[hsl(var(--accent))]/10 hover:bg-[hsl(var(--accent))]/20 text-[hsl(var(--accent))] font-medium gap-1.5"
+              >
+                {panelMode === 'user' ? (
+                  <>
+                    <FaShieldAlt className="w-3 h-3" /> Back to Admin Panel
+                  </>
+                ) : (
+                  <>
+                    <FaUser className="w-3 h-3" /> View User Panel
+                  </>
+                )}
+              </Button>
+            )}
+
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => navigate('/')}
+              className="h-8 text-xs rounded-xl border-[var(--border-color)] hover:border-[hsl(var(--accent))]/50 hover:text-[hsl(var(--accent))] gap-1.5"
+            >
+              <FaHome className="w-3.5 h-3.5 text-[hsl(var(--accent))]" /> View Home Page
+            </Button>
+          </div>
+        </header>
+
         {/* Mobile Header */}
-        <header className="md:hidden flex items-center gap-2 p-3 border-b border-[var(--border-color)] bg-[var(--card-bg)]/80 backdrop-blur-md">
-          <Button variant="ghost" size="icon" className="shrink-0" onClick={() => navigate('/')}>
-            <FaArrowLeft className="w-4 h-4" />
+        <header className="md:hidden flex items-center justify-between p-3 border-b border-[var(--border-color)] bg-[var(--card-bg)]/80 backdrop-blur-md gap-2">
+          <Button variant="ghost" size="sm" className="h-8 px-2 text-xs gap-1" onClick={() => navigate('/')}>
+            <FaHome className="w-3.5 h-3.5 text-[hsl(var(--accent))]" /> Home
           </Button>
-          <span className="font-bold text-base flex-1 text-center">Dashboard</span>
-          <Button variant="ghost" size="icon" className="shrink-0" onClick={() => setIsMobileOpen(true)}>
-            <FaBars className="w-4 h-4" />
-          </Button>
+          <span className="font-bold text-xs font-mono uppercase tracking-wider text-[var(--text-primary)] truncate">
+            {currentUser.role === 'ADMIN' ? (panelMode === 'user' ? 'User View' : 'Admin') : 'Dashboard'}
+          </span>
+          <div className="flex items-center gap-1">
+            {currentUser.role === 'ADMIN' && (
+              <Button
+                variant="ghost"
+                size="sm"
+                className="h-8 px-2 text-[11px] text-[hsl(var(--accent))]"
+                onClick={() => {
+                  setPanelMode(panelMode === 'user' ? 'admin' : 'user');
+                  setActiveView('overview');
+                }}
+              >
+                {panelMode === 'user' ? 'Admin' : 'User Panel'}
+              </Button>
+            )}
+            <Button variant="ghost" size="icon" className="h-8 w-8 shrink-0" onClick={() => setIsMobileOpen(true)}>
+              <FaBars className="w-4 h-4" />
+            </Button>
+          </div>
         </header>
 
         <main className="flex-1 overflow-y-auto p-4 md:p-8 custom-scrollbar">
