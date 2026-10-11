@@ -43,8 +43,8 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { apiRequest } from '@/lib/queryClient';
 import { useToast } from '@/hooks/use-toast';
 
-const CATEGORIES = ['All', 'Faculty Mentors', 'Core Team', 'Technical Leads', 'Advisors', 'Alumni'];
-const FORM_CATEGORIES = ['Faculty Mentors', 'Core Team', 'Technical Leads', 'Advisors', 'Alumni'];
+const CATEGORIES = ['All', 'Club Leads', 'Mentors', 'Advisors'];
+const FORM_CATEGORIES = ['Club Leads', 'Mentors', 'Advisors'];
 
 const PRESET_AVATARS = [
   { label: 'Avatar 1', url: '/assets/team_avatar_1.png' },
@@ -157,10 +157,17 @@ export default function TeamsView() {
 
   // Open Editor for Creating
   const startCreate = () => {
+    const defaultCat =
+      selectedCategory === 'Mentors'
+        ? 'Mentors'
+        : selectedCategory === 'Advisors'
+        ? 'Advisors'
+        : 'Club Leads';
+
     setFormData({
       name: '',
       role: '',
-      category: 'Core Team',
+      category: defaultCat,
       department: '',
       year: '',
       image: '/assets/team_avatar_1.png',
@@ -354,17 +361,43 @@ export default function TeamsView() {
     }
   };
 
+  const isMentor = (m: TeamMember) => {
+    const c = (m.category || '').toLowerCase();
+    const r = (m.role || '').toLowerCase();
+    const y = (m.year || '').toLowerCase();
+    return (
+      c.includes('mentor') ||
+      c.includes('faculty') ||
+      r.includes('mentor') ||
+      r.includes('faculty') ||
+      y.includes('faculty')
+    );
+  };
+
+  const isAdvisor = (m: TeamMember) => {
+    const c = (m.category || '').toLowerCase();
+    const r = (m.role || '').toLowerCase();
+    return !isMentor(m) && (c.includes('advisor') || r.includes('advisor'));
+  };
+
+  const isClubLead = (m: TeamMember) => {
+    return !isMentor(m) && !isAdvisor(m);
+  };
+
   const filteredMembers = teamMembers.filter((m) => {
     const matchesSearch =
       m.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       m.role.toLowerCase().includes(searchTerm.toLowerCase()) ||
       (m.department && m.department.toLowerCase().includes(searchTerm.toLowerCase()));
 
-    const matchesCategory =
-      selectedCategory === 'All' ||
-      (m.category && m.category.toLowerCase() === selectedCategory.toLowerCase());
+    if (!matchesSearch) return false;
 
-    return matchesSearch && matchesCategory;
+    if (selectedCategory === 'All') return true;
+    if (selectedCategory === 'Mentors') return isMentor(m);
+    if (selectedCategory === 'Club Leads') return isClubLead(m);
+    if (selectedCategory === 'Advisors') return isAdvisor(m);
+
+    return true;
   });
 
   // ==========================================
@@ -583,7 +616,7 @@ export default function TeamsView() {
                     </Label>
                     <select
                       id="memberCategory"
-                      value={formData.category || 'Core Team'}
+                      value={formData.category || 'Club Leads'}
                       onChange={(e) => handleInputChange('category', e.target.value)}
                       className="mt-1 w-full px-3 py-2.5 rounded-xl bg-[var(--bg-body)] border border-[var(--border-color)] text-sm text-[var(--text-primary)] focus:outline-none focus:border-[hsl(var(--accent))]"
                     >
