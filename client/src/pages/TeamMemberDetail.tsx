@@ -1,5 +1,5 @@
-import { useState, useRef } from 'react';
-import { useRoute, Link, useLocation } from 'wouter';
+import { useState } from 'react';
+import { useRoute, useLocation } from 'wouter';
 import { useQuery } from '@tanstack/react-query';
 import { motion } from 'framer-motion';
 import { QRCodeCanvas } from 'qrcode.react';
@@ -15,7 +15,6 @@ import {
   FaQrcode,
   FaDownload,
   FaCopy,
-  FaShareAlt,
   FaUserTie,
   FaGraduationCap,
   FaUniversity,
@@ -40,7 +39,6 @@ export default function TeamMemberDetail() {
 
   const [isQrModalOpen, setIsQrModalOpen] = useState(false);
   const [copiedLink, setCopiedLink] = useState(false);
-  const qrRef = useRef<HTMLDivElement>(null);
 
   // 1. Fetch from specific member endpoint
   const { data: dbMember, isLoading: isMemberLoading } = useQuery<TeamMember>({
