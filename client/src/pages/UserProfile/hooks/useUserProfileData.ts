@@ -1,5 +1,5 @@
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { apiRequest } from '@/lib/queryClient';
 import { useToast } from '@/hooks/use-toast';
@@ -25,10 +25,31 @@ export const useUserProfileData = () => {
 
     // Profile Edit State
     const [profileData, setProfileData] = useState({
-        email: '',
+        username: currentUser?.username || '',
+        display_name: currentUser?.display_name || '',
+        profile_image: currentUser?.profile_image || '',
+        bio: currentUser?.bio || '',
+        department: currentUser?.department || '',
+        year: currentUser?.year || '',
+        email: currentUser?.email || '',
         newPassword: '',
         confirmPassword: '',
     });
+
+    useEffect(() => {
+        if (currentUser) {
+            setProfileData(prev => ({
+                ...prev,
+                username: currentUser.username || '',
+                display_name: currentUser.display_name || '',
+                profile_image: currentUser.profile_image || '',
+                bio: currentUser.bio || '',
+                department: currentUser.department || '',
+                year: currentUser.year || '',
+                email: currentUser.email || '',
+            }));
+        }
+    }, [currentUser]);
 
     // -- QUERIES --
     const { data: users = [] } = useQuery<User[]>({
@@ -187,11 +208,23 @@ export const useUserProfileData = () => {
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['/api/me'] });
             toast({ title: 'Success', description: 'Profile updated successfully' });
-            setProfileData({ email: '', newPassword: '', confirmPassword: '' });
+            setProfileData(prev => ({ ...prev, newPassword: '', confirmPassword: '' }));
         },
         onError: (error: any) => {
             toast({ title: 'Error', description: error.message || 'Failed to update profile', variant: 'destructive' });
         },
+    });
+
+    const updateUser = useMutation({
+        mutationFn: ({ userId, ...data }: { userId: string } & any) =>
+            apiRequest(`/api/users/${userId}`, { method: 'PATCH', body: JSON.stringify(data) }),
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['/api/users'] });
+            toast({ title: 'Success', description: 'User details updated successfully' });
+        },
+        onError: (error: any) => {
+            toast({ title: 'Error', description: error.message || 'Failed to update user', variant: 'destructive' });
+        }
     });
 
     const registerForEvent = useMutation({
@@ -324,7 +357,7 @@ export const useUserProfileData = () => {
         users, eventRegistrations, events, userEventRegistrations, tickets, projects, blogs, research, teamMembers,
         userGrowthData, contentDistributionData,
         isSaving,
-        updateUserRole, deleteUser,
+        updateUserRole, deleteUser, updateUser,
         createProject, updateProject, deleteProject,
         createBlog, updateBlog, deleteBlog,
         createResearch, updateResearch, deleteResearch,

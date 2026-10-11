@@ -4,6 +4,7 @@ import { useQuery } from '@tanstack/react-query';
 import { motion } from 'framer-motion';
 import { TeamMember } from '@/lib/types';
 import { teamMembers as fallbackTeamMembers } from '@/lib/data';
+import { getMemberSlug } from '@/lib/slugs';
 import {
   FaLinkedin,
   FaGithub,
@@ -201,7 +202,7 @@ export default function Teams() {
                   initial={{ opacity: 0, y: 15 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.35, delay: index * 0.05 }}
-                  onClick={() => setLocation(`/teams/${memberId}`)}
+                  onClick={() => setLocation(`/team/${getMemberSlug(member.name, memberId)}`)}
                   className="rounded-xl border border-[var(--border-color)] bg-[var(--card-bg)] overflow-hidden transition-all duration-300 hover:border-[hsl(var(--accent))]/50 hover:shadow-[0_12px_36px_rgb(0,0,0,0.25)] group flex flex-col justify-between cursor-pointer"
                 >
                   <div>

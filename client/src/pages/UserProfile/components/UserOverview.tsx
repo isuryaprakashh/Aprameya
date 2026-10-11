@@ -1,5 +1,5 @@
-import { Avatar, AvatarFallback } from '@/components/ui/avatar';
-import { FaUser, FaShieldAlt, FaCalendarAlt, FaTag, FaClock } from 'react-icons/fa';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { FaUser, FaShieldAlt, FaCalendarAlt, FaTag, FaClock, FaInfoCircle } from 'react-icons/fa';
 import { User, EventRegistration } from '@/lib/types';
 
 interface UserOverviewProps {
@@ -23,20 +23,28 @@ export const UserOverview = ({ currentUser, userEventRegistrations, tickets = []
         }
     };
 
+    const displayName = currentUser.display_name || currentUser.username;
+
     const renderUserCard = () => (
         <div className="space-y-6 animate-in fade-in duration-500">
             <div className="morphic-metallic-card p-8 rounded-2xl relative overflow-hidden group">
                 <div className="flex flex-col md:flex-row gap-6 items-start md:items-center relative z-10">
-                    <Avatar className="w-24 h-24 border-2 border-red-400/30 shadow-[0_0_30px_-5px_rgba(220,38,38,0.5)]">
+                    <Avatar className="w-24 h-24 border-2 border-red-400/30 shadow-[0_0_30px_-5px_rgba(220,38,38,0.5)] shrink-0">
+                        <AvatarImage src={currentUser.profile_image || ''} alt={displayName} className="object-cover" />
                         <AvatarFallback className="bg-gradient-to-br from-[#7F1D1D] to-black text-white text-3xl font-bold font-display">
-                            {getInitials(currentUser.username)}
+                            {getInitials(displayName)}
                         </AvatarFallback>
                     </Avatar>
 
                     <div className="flex-1 space-y-3">
                         <div className="flex flex-col md:flex-row md:items-center gap-3">
-                            <h2 className="text-3xl font-bold text-white tracking-tight font-display">{currentUser.username}</h2>
-                            <span className={`${getRoleBadge(currentUser.role)} px-3 py-1 text-xs uppercase tracking-wider font-semibold rounded-lg shadow-sm`}>
+                            <div>
+                                <h2 className="text-3xl font-bold text-white tracking-tight font-display">{displayName}</h2>
+                                {currentUser.display_name && (
+                                    <p className="text-xs font-mono text-zinc-400">@{currentUser.username}</p>
+                                )}
+                            </div>
+                            <span className={`${getRoleBadge(currentUser.role)} px-3 py-1 text-xs uppercase tracking-wider font-semibold rounded-lg shadow-sm w-fit`}>
                                 {currentUser.role} ACCESS
                             </span>
                         </div>
@@ -52,6 +60,15 @@ export const UserOverview = ({ currentUser, userEventRegistrations, tickets = []
                                 <FaClock className="mr-2 text-red-400" /> Member since {new Date(currentUser.created_at || Date.now()).toLocaleDateString()}
                             </div>
                         </div>
+
+                        {currentUser.bio && (
+                            <div className="pt-3 border-t border-white/[0.08] mt-3">
+                                <p className="text-[11px] font-mono uppercase tracking-wider text-red-400/90 mb-1 flex items-center gap-1.5">
+                                    <FaInfoCircle className="w-3 h-3" /> About
+                                </p>
+                                <p className="text-xs text-zinc-300 leading-relaxed whitespace-pre-wrap">{currentUser.bio}</p>
+                            </div>
+                        )}
                     </div>
                 </div>
             </div>

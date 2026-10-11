@@ -46,7 +46,7 @@ const UserProfile = () => {
     users, eventRegistrations, events, userEventRegistrations, tickets, projects, blogs, research,
     userGrowthData, contentDistributionData,
     isSaving,
-    updateUserRole, deleteUser,
+    updateUserRole, deleteUser, updateUser,
     updateProfile,
     handleSave, handleDelete
   } = useUserProfileData();
@@ -86,8 +86,26 @@ const UserProfile = () => {
       return;
     }
     const updateData: any = {};
+    if (profileData.username !== undefined && profileData.username.trim() && profileData.username.trim() !== currentUser?.username) {
+      updateData.username = profileData.username.trim();
+    }
+    if (profileData.display_name !== undefined && profileData.display_name !== (currentUser?.display_name || '')) {
+      updateData.display_name = profileData.display_name.trim();
+    }
+    if (profileData.profile_image !== undefined && profileData.profile_image !== (currentUser?.profile_image || '')) {
+      updateData.profile_image = profileData.profile_image;
+    }
+    if (profileData.bio !== undefined && profileData.bio !== (currentUser?.bio || '')) {
+      updateData.bio = profileData.bio;
+    }
+    if (profileData.department !== undefined && profileData.department !== (currentUser?.department || '')) {
+      updateData.department = profileData.department;
+    }
+    if (profileData.year !== undefined && profileData.year !== (currentUser?.year || '')) {
+      updateData.year = profileData.year;
+    }
     if (profileData.email && profileData.email !== currentUser?.email) {
-      updateData.email = profileData.email;
+      updateData.email = profileData.email.trim();
     }
     if (profileData.newPassword) {
       updateData.password = profileData.newPassword;
@@ -319,6 +337,7 @@ const UserProfile = () => {
         return <UserManagement
           users={users}
           updateUserRole={updateUserRole}
+          updateUser={updateUser}
           deleteUser={deleteUser}
           userToDelete={userToDelete}
           setUserToDelete={setUserToDelete}

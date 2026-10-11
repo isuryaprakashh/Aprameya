@@ -5,6 +5,7 @@ import { motion } from 'framer-motion';
 import { QRCodeCanvas } from 'qrcode.react';
 import { TeamMember } from '@/lib/types';
 import { teamMembers as fallbackTeamMembers } from '@/lib/data';
+import { getMemberSlug, isMemberMatch } from '@/lib/slugs';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
 import {
@@ -66,23 +67,19 @@ export default function TeamMemberDetail() {
 
   // Comprehensive fallback strategy:
   // 1. Direct fetch match
-  // 2. List match by id or _id
-  // 3. List match by numeric order
-  // 4. List match by normalized name
-  // 5. Hardcoded fallback list in data.ts
+  // 2. Slug / identifier match across all database team members
+  // 3. Fallback list match in data.ts
   const member: TeamMember | undefined =
     dbMember ||
-    allMembers.find((m) => m.id === memberId || m._id === memberId) ||
-    allMembers.find((m) => String(m.order) === memberId) ||
-    allMembers.find((m) => m.name.toLowerCase().replace(/\s+/g, '-') === memberId.toLowerCase()) ||
-    (fallbackTeamMembers as any[]).find((m) => m.id === memberId || String(m.order) === memberId) ||
-    (fallbackTeamMembers as any[]).find((m) => m.name.toLowerCase().replace(/\s+/g, '-') === memberId.toLowerCase());
+    allMembers.find((m) => isMemberMatch(m, memberId)) ||
+    (fallbackTeamMembers as any[]).find((m) => isMemberMatch(m, memberId));
 
   const isLoading = (isMemberLoading || isListLoading) && !member;
 
-  // Build the permanent public link for this team member
+  // Build the permanent public link for this team member using their clean name slug
   const currentOrigin = typeof window !== 'undefined' ? window.location.origin : '';
-  const memberPublicUrl = `${currentOrigin}/teams/${member?.id || member?._id || memberId}`;
+  const memberSlug = getMemberSlug(member?.name, member?.id || member?._id || memberId);
+  const memberPublicUrl = `${currentOrigin}/team/${memberSlug}`;
 
   // Copy Profile URL to Clipboard
   const handleCopyLink = async () => {
@@ -204,7 +201,7 @@ export default function TeamMemberDetail() {
           </p>
           <div className="flex flex-col sm:flex-row gap-3 justify-center">
             <Button
-              onClick={() => setLocation('/teams')}
+              onClick={() => setLocation('/team')}
               className="bg-[hsl(var(--accent))] text-[var(--bg-body)] hover:bg-[hsl(var(--accent))]/90 text-xs rounded-xl font-semibold px-5"
             >
               <FaArrowLeft className="mr-2 h-3.5 w-3.5" /> Return to Team Roster
@@ -252,7 +249,7 @@ export default function TeamMemberDetail() {
             <Button
               variant="ghost"
               size="sm"
-              onClick={() => setLocation('/teams')}
+              onClick={() => setLocation('/team')}
               className="text-xs text-[var(--text-secondary)] hover:text-[hsl(var(--accent))] rounded-xl px-3 gap-2 border border-white/[0.05] hover:border-[hsl(var(--accent))]/30 transition-all"
             >
               <FaArrowLeft className="w-3 h-3" /> Back to Team Roster
@@ -578,7 +575,7 @@ export default function TeamMemberDetail() {
             <div className="pt-4 flex flex-wrap items-center justify-between gap-4">
               <Button
                 variant="outline"
-                onClick={() => setLocation('/teams')}
+                onClick={() => setLocation('/team')}
                 className="border-[var(--border-color)] hover:border-[hsl(var(--accent))]/50 hover:text-[hsl(var(--accent))] text-xs rounded-xl px-5 h-10"
               >
                 <FaArrowLeft className="mr-2 h-3.5 w-3.5" /> Explore All Team Members
