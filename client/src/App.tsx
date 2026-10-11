@@ -13,6 +13,7 @@ import Blogs from "./pages/Blogs";
 import BlogDetails from "./pages/BlogDetails";
 import Events from "./pages/Events";
 import Teams from "./pages/Teams";
+import TeamMemberDetail from "./pages/TeamMemberDetail";
 import About from "./pages/About";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
@@ -84,6 +85,8 @@ function AppContent() {
               <Route path="/blogs" component={Blogs} />
               <Route path="/blogs/:id" component={BlogDetails} />
               <Route path="/events" component={Events} />
+              <Route path="/teams/:id" component={TeamMemberDetail} />
+              <Route path="/team/:id" component={TeamMemberDetail} />
               <Route path="/teams" component={Teams} />
               <Route path="/team" component={Teams} />
               <Route path="/recruitment" component={Recruitment} />

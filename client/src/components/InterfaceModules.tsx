@@ -174,7 +174,7 @@ export const IDCard = () => {
             <div className="shimmer pointer-events-none"></div>
             <div className="h-32 w-full bg-gradient-to-b from-[var(--text-primary)]/5 to-transparent relative border-b border-[var(--border-color)]">
                 <div className="absolute -bottom-8 left-8 w-16 h-16 rounded-xl overflow-hidden border-4 border-[var(--card-bg)]">
-                    <img src="https://images.unsplash.com/photo-1535295972055-1c762f4483e5?q=80&w=800&auto=format&fit=crop" className="w-full h-full object-cover grayscale" alt="Profile" />
+                    <img src="https://images.unsplash.com/photo-1535295972055-1c762f4483e5?q=80&w=800&auto=format&fit=crop" className="w-full h-full object-cover" alt="Profile" />
                 </div>
                 <div className="absolute top-6 right-6 text-[var(--text-secondary)]">
                     <ShieldCheck className="w-6 h-6" />
