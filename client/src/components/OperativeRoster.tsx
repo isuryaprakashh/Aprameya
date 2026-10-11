@@ -68,7 +68,7 @@ const OperativeRoster = () => {
 
             <div className="mt-8 text-center">
                 <Link
-                    href="/teams"
+                    href="/team"
                     className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl border border-white/10 text-xs font-mono text-zinc-300 hover:text-white hover:border-red-500/40 bg-zinc-950/60 transition-colors"
                 >
                     View All Laboratory Personnel & Members →

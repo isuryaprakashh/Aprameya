@@ -53,7 +53,7 @@ export default function Footer() {
                 { href: "/", label: "Home" },
                 { href: "/projects", label: "Projects" },
                 { href: "/events", label: "Events & Workshops" },
-                { href: "/teams", label: "Teams" },
+                { href: "/team", label: "Team" },
                 { href: "/recruitment", label: "Recruitment" },
                 { href: "/blogs", label: "Technical Blogs" },
                 { href: "/about", label: "About Aprameya" },

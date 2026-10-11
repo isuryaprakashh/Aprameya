@@ -44,12 +44,35 @@ router.patch(["/users/profile", "/user/profile"], async (req, res) => {
             return res.status(400).json({ error: "Invalid profile data", details: profileData.error });
         }
 
-        const updatedUser = await storage.updateUserProfile(userId, profileData.data);
+        const dataToUpdate = { ...profileData.data };
+
+        // Validate username uniqueness if provided
+        if (dataToUpdate.username) {
+            const trimmedUsername = dataToUpdate.username.trim();
+            const existing = await storage.getUserByUsername(trimmedUsername);
+            if (existing && existing.id !== userId) {
+                return res.status(400).json({ error: "Username is already taken by another account" });
+            }
+            dataToUpdate.username = trimmedUsername;
+        }
+
+        // Validate email uniqueness if provided
+        if (dataToUpdate.email) {
+            const cleanEmail = dataToUpdate.email.toLowerCase().trim();
+            const existing = await storage.getUserByEmail(cleanEmail);
+            if (existing && existing.id !== userId) {
+                return res.status(400).json({ error: "Email is already taken by another account" });
+            }
+            dataToUpdate.email = cleanEmail;
+        }
+
+        const updatedUser = await storage.updateUserProfile(userId, dataToUpdate);
         if (!updatedUser) return res.status(500).json({ error: "Failed to update profile" });
 
         const { password, ...userWithoutPassword } = updatedUser;
         res.json(userWithoutPassword);
     } catch (error) {
+        console.error("Error in updateUserProfile:", error);
         res.status(500).json({ error: "Failed to update user profile" });
     }
 });
@@ -66,6 +89,71 @@ router.get("/users", isAdmin, async (req, res) => {
         res.json(safeUsers);
     } catch (error) {
         res.status(500).json({ error: "Failed to fetch users" });
+    }
+});
+
+// Admin edit user details: PATCH /api/users/:userId
+router.patch("/users/:userId", isAdmin, async (req, res) => {
+    try {
+        const { userId } = req.params;
+        const targetUser = await storage.getUser(userId);
+        if (!targetUser) {
+            return res.status(404).json({ error: "User not found" });
+        }
+
+        const {
+            username,
+            email,
+            rollNumber,
+            role,
+            display_name,
+            profile_image,
+            bio,
+            department,
+            year
+        } = req.body;
+
+        const updateData: any = {};
+
+        if (username !== undefined && username.trim() !== targetUser.username) {
+            const trimmed = username.trim();
+            if (!trimmed) return res.status(400).json({ error: "Username cannot be empty" });
+            const existing = await storage.getUserByUsername(trimmed);
+            if (existing && existing.id !== userId) {
+                return res.status(400).json({ error: "Username is already taken" });
+            }
+            updateData.username = trimmed;
+        }
+
+        if (email !== undefined && email.toLowerCase().trim() !== targetUser.email) {
+            const cleanEmail = email.toLowerCase().trim();
+            if (!cleanEmail) return res.status(400).json({ error: "Email cannot be empty" });
+            const existing = await storage.getUserByEmail(cleanEmail);
+            if (existing && existing.id !== userId) {
+                return res.status(400).json({ error: "Email is already taken" });
+            }
+            updateData.email = cleanEmail;
+        }
+
+        if (rollNumber !== undefined) updateData.rollNumber = rollNumber.trim();
+        if (display_name !== undefined) updateData.display_name = display_name;
+        if (profile_image !== undefined) updateData.profile_image = profile_image;
+        if (bio !== undefined) updateData.bio = bio;
+        if (department !== undefined) updateData.department = department;
+        if (year !== undefined) updateData.year = year;
+
+        if (role && Object.values(UserRole).includes(role)) {
+            updateData.role = role;
+        }
+
+        const updatedUser = await storage.updateUserProfile(userId, updateData);
+        if (!updatedUser) return res.status(500).json({ error: "Failed to update user" });
+
+        const { password, ...safeUser } = updatedUser;
+        res.json(safeUser);
+    } catch (error) {
+        console.error("Error updating user details:", error);
+        res.status(500).json({ error: "Failed to update user details" });
     }
 });
 

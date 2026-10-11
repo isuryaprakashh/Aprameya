@@ -79,6 +79,7 @@ export interface StatItem {
 
 export interface User {
   id: string;
+  _id?: string;
   username: string;
   email: string;
   role: string;
@@ -86,6 +87,8 @@ export interface User {
   password?: string;
   created_at: string;
   display_name?: string | null;
+  profile_image?: string | null;
+  bio?: string | null;
   department?: string | null;
   year?: string | null;
   domain?: string | null;

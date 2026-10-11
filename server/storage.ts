@@ -568,7 +568,19 @@ export class MongoStorage implements IStorage {
         }
       }
       if (!member) {
-        member = await TeamMember.findOne({ name: new RegExp(`^${id}$`, 'i') });
+        const decoded = decodeURIComponent(id).trim();
+        // Match exact or with spaces/dashes/underscores interchangeably
+        const pattern = decoded.replace(/[-_\s]+/g, '[-_\\s]+');
+        member = await TeamMember.findOne({ name: new RegExp(`^${pattern}$`, 'i') });
+      }
+      if (!member) {
+        // Fallback: check stripped alphanumeric match across all members
+        const cleanId = decodeURIComponent(id).toLowerCase().replace(/[^a-z0-9]/g, '');
+        if (cleanId) {
+          const all = await TeamMember.find();
+          const found = all.find(m => m.name.toLowerCase().replace(/[^a-z0-9]/g, '') === cleanId);
+          if (found) member = found;
+        }
       }
       return member ? this.mapDoc<TeamMemberType>(member) : undefined;
     } catch (err) {

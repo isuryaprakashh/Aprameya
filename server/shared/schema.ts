@@ -17,6 +17,7 @@ export const insertUserSchema = z.object({
 });
 
 export const updateUserProfileSchema = z.object({
+  username: z.string().min(1, "Username cannot be empty").optional(),
   display_name: z.string().optional(),
   profile_image: z.string().optional(),
   department: z.string().optional(),

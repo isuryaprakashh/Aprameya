@@ -24,6 +24,7 @@ import {
   FaExternalLinkAlt
 } from 'react-icons/fa';
 import { QRCodeCanvas } from 'qrcode.react';
+import { getMemberSlug } from '@/lib/slugs';
 import {
   Dialog,
   DialogContent,
@@ -276,8 +277,8 @@ export default function TeamsView() {
   };
 
   const handleCopyQrLink = async (member: TeamMember) => {
-    const memberId = member.id || member._id;
-    const url = `${window.location.origin}/teams/${memberId}`;
+    const slug = getMemberSlug(member.name, member.id || member._id);
+    const url = `${window.location.origin}/team/${slug}`;
     try {
       await navigator.clipboard.writeText(url);
       setCopiedLink(true);
@@ -908,7 +909,7 @@ export default function TeamsView() {
                 <div className="hidden">
                   <QRCodeCanvas
                     id={`qr-admin-hidden-${member.id || member._id}`}
-                    value={`${window.location.origin}/teams/${member.id || member._id}`}
+                    value={`${window.location.origin}/team/${getMemberSlug(member.name, member.id || member._id)}`}
                     size={400}
                     level="H"
                     includeMargin={true}
@@ -986,7 +987,7 @@ export default function TeamsView() {
             <div className="flex flex-col items-center justify-center py-4">
               <div className="p-4 bg-white rounded-2xl shadow-2xl border border-white/20">
                 <QRCodeCanvas
-                  value={`${window.location.origin}/teams/${qrModalMember.id || qrModalMember._id}`}
+                  value={`${window.location.origin}/team/${getMemberSlug(qrModalMember.name, qrModalMember.id || qrModalMember._id)}`}
                   size={240}
                   level="H"
                   includeMargin={true}
@@ -1000,7 +1001,7 @@ export default function TeamsView() {
             {/* URL Link with Copy Button */}
             <div className="p-3 bg-black/40 rounded-xl border border-[var(--border-color)] flex items-center justify-between gap-2">
               <span className="text-xs font-mono text-[var(--text-secondary)] truncate">
-                {`${window.location.origin}/teams/${qrModalMember.id || qrModalMember._id}`}
+                {`${window.location.origin}/team/${getMemberSlug(qrModalMember.name, qrModalMember.id || qrModalMember._id)}`}
               </span>
               <Button
                 size="sm"
@@ -1017,7 +1018,7 @@ export default function TeamsView() {
             <div className="flex items-center gap-3 pt-2">
               <Button
                 variant="outline"
-                onClick={() => window.open(`/teams/${qrModalMember.id || qrModalMember._id}`, '_blank')}
+                onClick={() => window.open(`/team/${getMemberSlug(qrModalMember.name, qrModalMember.id || qrModalMember._id)}`, '_blank')}
                 className="flex-1 border-[var(--border-color)] text-xs h-10 rounded-xl gap-1.5"
               >
                 <FaExternalLinkAlt className="w-3 h-3" /> Open Page

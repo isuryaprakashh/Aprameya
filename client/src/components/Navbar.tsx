@@ -28,7 +28,11 @@ const Navbar = () => {
 
   const toggleMobileMenu = () => setMobileMenuOpen(!mobileMenuOpen);
   const closeMobileMenu = () => setMobileMenuOpen(false);
-  const isActive = (path: string) => location === path;
+  const isActive = (path: string) => {
+    if (location === path) return true;
+    if (path === '/team' && (location === '/teams' || location.startsWith('/team/') || location.startsWith('/teams/'))) return true;
+    return false;
+  };
 
   const handleLogout = () => {
     logoutMutation.mutate();
@@ -39,7 +43,7 @@ const Navbar = () => {
     { href: '/', label: 'Home' },
     { href: '/projects', label: 'Projects' },
     { href: '/events', label: 'Events' },
-    { href: '/teams', label: 'Teams' },
+    { href: '/team', label: 'Team' },
     { href: '/recruitment', label: 'Recruitment' },
     { href: '/blogs', label: 'Blogs' },
     { href: '/about', label: 'About' },

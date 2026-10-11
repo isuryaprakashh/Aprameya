@@ -37,7 +37,7 @@ const SidebarContent = ({ activeView, setActiveView, panelMode = 'admin', setPan
     const menuItems = hasAdminAccess && !isUserMode ? [
         ...(isAdmin ? [{ id: 'overview', label: 'Overview', icon: FaChartLine }, { id: 'users', label: 'Users', icon: FaUsers }] : []),
         ...(isCore ? [{ id: 'overview', label: 'Overview', icon: FaHome }] : []),
-        { id: 'teams', label: 'Teams', icon: FaUserTie },
+        { id: 'teams', label: 'Team', icon: FaUserTie },
         { id: 'projects', label: 'Projects', icon: FaProjectDiagram },
         { id: 'blogs', label: 'Blogs', icon: FaBlog },
         { id: 'events', label: 'Events', icon: FaCalendarAlt },
