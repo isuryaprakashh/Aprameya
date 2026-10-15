@@ -1,46 +1,91 @@
-/**
- * AprameyaLoader — animated SVG stroke loader derived from the Aprameya emblem.
- * Path is a best-effort trace of the PNG logo. Hot-swap the `d` attribute
- * when the original SVG source is available. The component interface is stable.
- *
- * Usage: <AprameyaLoader size={32} />
- */
+import { motion } from 'framer-motion';
+
 interface AprameyaLoaderProps {
   size?: number;
   className?: string;
+  showText?: boolean;
 }
 
-export default function AprameyaLoader({ size = 32, className = '' }: AprameyaLoaderProps) {
+export default function AprameyaLoader({
+  size = 32,
+  className = '',
+  showText = false,
+}: AprameyaLoaderProps) {
+  // Inline/small button loader
+  if (size < 36) {
+    return (
+      <div
+        className={`relative inline-flex items-center justify-center ${className}`}
+        style={{ width: size, height: size }}
+        role="status"
+        aria-label="Loading"
+      >
+        <motion.div
+          animate={{ rotate: 360 }}
+          transition={{ repeat: Infinity, duration: 1.5, ease: 'linear' }}
+          className="w-full h-full rounded-full border-2 border-red-500/20 border-t-red-500"
+        />
+        <div className="absolute w-2/3 h-2/3 rounded-full overflow-hidden p-0.5 flex items-center justify-center">
+          <img src="/logo-white.png" alt="" className="w-full h-full object-contain opacity-90" />
+        </div>
+      </div>
+    );
+  }
+
+  // Medium / Page Section Loader
   return (
-    <svg
-      width={size}
-      height={size}
-      viewBox="0 0 100 100"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-      className={className}
-      aria-label="Loading"
+    <div
+      className={`flex flex-col items-center justify-center gap-4 py-8 select-none ${className}`}
       role="status"
+      aria-label="Loading"
     >
-      {/* Stylized "A" / schematic mark — approximate path from PNG.
-          Replace the `d` value below with the real path from the SVG source. */}
-      <path
-        d="M 50 10
-           L 15 80
-           L 28 80
-           L 38 58
-           L 62 58
-           L 72 80
-           L 85 80
-           Z
-           M 42 46 L 50 26 L 58 46 Z"
-        stroke="hsl(var(--accent))"
-        strokeWidth="2"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        fill="none"
-        className="logo-draw-path"
-      />
-    </svg>
+      <div className="relative flex items-center justify-center" style={{ width: size * 1.8, height: size * 1.8 }}>
+        {/* Outer Rotating Radar Ring */}
+        <motion.div
+          animate={{ rotate: 360 }}
+          transition={{ repeat: Infinity, duration: 8, ease: 'linear' }}
+          className="absolute inset-0 rounded-full border border-dashed border-red-500/40"
+        />
+
+        {/* Counter-Rotating Concentric Ring */}
+        <motion.div
+          animate={{ rotate: -360 }}
+          transition={{ repeat: Infinity, duration: 5, ease: 'linear' }}
+          className="absolute inset-2 rounded-full border border-dotted border-white/20"
+        />
+
+        {/* Center Logo Frame */}
+        <div
+          className="relative rounded-xl bg-[#0A0A0A] border border-red-500/30 flex items-center justify-center shadow-[0_0_25px_-4px_rgba(239,68,68,0.4)] overflow-hidden"
+          style={{ width: size * 1.1, height: size * 1.1 }}
+        >
+          {/* Laser Scanline */}
+          <motion.div
+            animate={{ y: ['-100%', '200%'] }}
+            transition={{ repeat: Infinity, duration: 1.6, ease: 'easeInOut' }}
+            className="absolute left-0 right-0 h-[1.5px] bg-gradient-to-r from-transparent via-red-400 to-transparent shadow-[0_0_6px_#EF4444]"
+          />
+          <img
+            src="/logo-white.png"
+            alt="Aprameya"
+            className="w-4/5 h-4/5 object-contain filter drop-shadow-[0_0_8px_rgba(255,255,255,0.3)]"
+          />
+        </div>
+      </div>
+
+      <div className="text-center space-y-1">
+        <p className="font-display font-bold text-sm tracking-[0.2em] text-white">
+          APRAMEYA
+        </p>
+        <p className="font-mono text-[10px] tracking-[0.2em] text-red-500 uppercase font-semibold">
+          AI & Autonomous Systems
+        </p>
+        {showText && (
+          <p className="font-mono text-[10px] text-zinc-500 animate-pulse">
+            Processing telemetry...
+          </p>
+        )}
+      </div>
+    </div>
   );
 }

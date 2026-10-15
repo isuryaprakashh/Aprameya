@@ -26,6 +26,8 @@ const BlogsView = lazy(() => import('./UserProfile/views/BlogsView'));
 const RecruitmentView = lazy(() => import('./UserProfile/views/RecruitmentView'));
 const TeamsView = lazy(() => import('./UserProfile/views/TeamsView'));
 import AdminScanQR from './AdminScanQR';
+import AprameyaLoadingScreen from '@/components/AprameyaLoadingScreen';
+import AprameyaLoader from '@/components/AprameyaLoader';
 
 const UserProfile = () => {
   const { toast } = useToast();
@@ -359,17 +361,17 @@ const UserProfile = () => {
         />;
 
       case 'events':
-        return <Suspense fallback={<div className="text-center py-12 text-[var(--text-secondary)]">Loading...</div>}>
+        return <Suspense fallback={<AprameyaLoader size={36} showText={true} />}>
           <EventsView handleEdit={handleEdit} handleCreate={handleCreate} handleDelete={handleDelete} />
         </Suspense>;
 
       case 'projects':
-        return <Suspense fallback={<div className="text-center py-12 text-[var(--text-secondary)]">Loading...</div>}>
+        return <Suspense fallback={<AprameyaLoader size={36} showText={true} />}>
           <ProjectsView handleEdit={handleEdit} handleCreate={handleCreate} handleDelete={handleDelete} />
         </Suspense>;
 
       case 'blogs':
-        return <Suspense fallback={<div className="text-center py-12 text-[var(--text-secondary)]">Loading...</div>}>
+        return <Suspense fallback={<AprameyaLoader size={36} showText={true} />}>
           <BlogsView handleEdit={handleEdit} handleCreate={handleCreate} handleDelete={handleDelete} />
         </Suspense>;
 
@@ -377,12 +379,12 @@ const UserProfile = () => {
         return <AdminScanQR isEmbedded={true} />;
 
       case 'recruitment':
-        return <Suspense fallback={<div className="text-center py-12 text-[var(--text-secondary)]">Loading...</div>}>
+        return <Suspense fallback={<AprameyaLoader size={36} showText={true} />}>
           <RecruitmentView />
         </Suspense>;
 
       case 'teams':
-        return <Suspense fallback={<div className="text-center py-12 text-[var(--text-secondary)]">Loading...</div>}>
+        return <Suspense fallback={<AprameyaLoader size={36} showText={true} />}>
           <TeamsView />
         </Suspense>;
 
@@ -392,7 +394,7 @@ const UserProfile = () => {
   };
 
   if (authLoading) {
-    return <div className="flex h-screen items-center justify-center text-[var(--text-primary)]">Loading profile...</div>;
+    return <AprameyaLoadingScreen minDuration={1000} message="AUTHENTICATING OPERATIVE PROFILE..." />;
   }
 
   if (!currentUser) {
