@@ -46,79 +46,8 @@ export const events: Event[] = [
   }
 ];
 
-// Verified Faculty Mentors and Core Team Leads
-export const teamMembers: TeamMember[] = [
-  {
-    id: "1",
-    name: "Prof. Hari Kiran Vege",
-    role: "Faculty Advisor & Mentor",
-    department: "Computer Science & Engineering",
-    year: "Faculty",
-    image: "/assets/team_avatar_1.png",
-    socialLinks: {
-      email: "vegeharikiran@kluniversity.in"
-    }
-  },
-  {
-    id: "2",
-    name: "Mr. Srikanth Annamareddy",
-    role: "Technical Mentor",
-    department: "Robotics & Autonomous Systems",
-    year: "Faculty / Lead",
-    image: "/assets/team_avatar_2.png",
-    socialLinks: {
-      email: "srikanth.a@kluniversity.in"
-    }
-  },
-  {
-    id: "3",
-    name: "Singavarapu Sai Revanth",
-    role: "Core Team Lead",
-    department: "Computer Science",
-    year: "Core Team",
-    image: "/assets/team_avatar_3.png",
-    socialLinks: {
-      linkedin: "https://linkedin.com",
-      github: "https://github.com"
-    }
-  },
-  {
-    id: "4",
-    name: "Akula Venkata Praveen",
-    role: "Perception & Vision Lead",
-    department: "Computer Science",
-    year: "Core Team",
-    image: "/assets/team_avatar_4.png",
-    socialLinks: {
-      linkedin: "https://linkedin.com",
-      github: "https://github.com"
-    }
-  },
-  {
-    id: "5",
-    name: "Atmakuri Komal Sai Raj",
-    role: "Embedded & Systems Lead",
-    department: "Electronics & Computer Engineering",
-    year: "Core Team",
-    image: "/assets/team_avatar_1.png",
-    socialLinks: {
-      linkedin: "https://linkedin.com",
-      github: "https://github.com"
-    }
-  },
-  {
-    id: "6",
-    name: "Kamsani Yashwanth Chowdary",
-    role: "Integration & Testing Lead",
-    department: "Computer Science",
-    year: "Core Team",
-    image: "/assets/team_avatar_2.png",
-    socialLinks: {
-      linkedin: "https://linkedin.com",
-      github: "https://github.com"
-    }
-  }
-];
+// Verified Faculty Mentors and Core Team Leads (loaded dynamically from MongoDB)
+export const teamMembers: TeamMember[] = [];
 
 // Verified club metrics
 export const stats: StatItem[] = [
