@@ -33,8 +33,7 @@ export const UnderConstruction = ({
         </p>
 
         <h2 className="text-2xl sm:text-3xl tracking-tight text-[var(--text-primary)] mb-2 font-display font-bold">
-          <span className="text-[var(--text-secondary)] font-normal">In</span>{" "}
-          <span>Active R&D</span>
+          {title}
         </h2>
         
         <p className="text-xs text-[var(--text-muted)] mb-4">

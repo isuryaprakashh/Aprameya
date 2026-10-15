@@ -302,7 +302,7 @@ export default function RecruitmentView() {
 
         <div className="flex items-center gap-4">
           <ChamferedButton
-            variant="command"
+            variant="secondary"
             size="md"
             onClick={handleExportCsv}
             leftIcon={<Download size={14} className="text-[hsl(var(--accent))]" />}

@@ -1,4 +1,4 @@
-import { Link } from 'wouter';
+import { Link, useLocation } from 'wouter';
 import { useAuth } from "@/context/AuthContext";
 import { Sheet, SheetContent } from '@/components/ui/sheet';
 import {
@@ -7,16 +7,21 @@ import {
     FaProjectDiagram,
     FaBlog,
     FaCalendarAlt,
-    FaClipboardList,
     FaHome,
     FaCog,
     FaQrcode,
     FaUserPlus,
-    FaIdCard,
     FaUserTie,
     FaUser,
     FaShieldAlt
 } from 'react-icons/fa';
+
+interface MenuItem {
+    id: string;
+    label: string;
+    icon: React.ComponentType<{ className?: string }>;
+    href?: string;
+}
 
 interface SidebarContentProps {
     activeView: string;
@@ -29,33 +34,36 @@ interface SidebarContentProps {
 
 const SidebarContent = ({ activeView, setActiveView, panelMode = 'admin', setPanelMode, isMobile, closeMobile }: SidebarContentProps) => {
     const { user } = useAuth();
+    const [, navigate] = useLocation();
     const isAdmin = user?.role === 'ADMIN';
     const isCore = user?.role === 'CORE';
     const hasAdminAccess = isAdmin || isCore;
     const isUserMode = panelMode === 'user';
 
-    const menuItems = hasAdminAccess && !isUserMode ? [
+    const menuItems: MenuItem[] = hasAdminAccess && !isUserMode ? [
         ...(isAdmin ? [{ id: 'overview', label: 'Overview', icon: FaChartLine }, { id: 'users', label: 'Users', icon: FaUsers }] : []),
         ...(isCore ? [{ id: 'overview', label: 'Overview', icon: FaHome }] : []),
         { id: 'teams', label: 'Team', icon: FaUserTie },
         { id: 'projects', label: 'Projects', icon: FaProjectDiagram },
         { id: 'blogs', label: 'Blogs', icon: FaBlog },
         { id: 'events', label: 'Events', icon: FaCalendarAlt },
-        { id: 'registrations', label: 'Registrations', icon: FaClipboardList },
         { id: 'recruitment', label: 'Recruitment', icon: FaUserPlus },
-        { id: 'roster', label: 'Roster', icon: FaIdCard },
         { id: 'scan', label: 'Scan QR', icon: FaQrcode },
     ] : [
         { id: 'overview', label: 'User Overview', icon: FaHome },
-        { id: 'registrations', label: 'My Registrations', icon: FaClipboardList },
+        { id: 'my-tickets', label: 'My Event Passes', icon: FaQrcode, href: '/my-tickets' },
         { id: 'settings', label: 'Settings', icon: FaCog },
     ];
 
     // Deduplicate items just in case
     const uniqueItems = Array.from(new Map(menuItems.map(item => [item.id, item])).values());
 
-    const handleNavigation = (viewId: string) => {
-        setActiveView(viewId);
+    const handleNavigation = (item: MenuItem) => {
+        if (item.href) {
+            navigate(item.href);
+        } else {
+            setActiveView(item.id);
+        }
         if (isMobile && closeMobile) {
             closeMobile();
         }
@@ -81,7 +89,7 @@ const SidebarContent = ({ activeView, setActiveView, panelMode = 'admin', setPan
                     {uniqueItems.map((item) => (
                         <button
                             key={item.id}
-                            onClick={() => handleNavigation(item.id)}
+                            onClick={() => handleNavigation(item)}
                             className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-300 relative overflow-hidden group ${activeView === item.id
                                 ? 'bg-[hsl(var(--accent))]/10 text-[hsl(var(--accent))] shadow-[0_0_20px_-5px_hsl(var(--accent)/0.3)]'
                                 : 'text-[var(--text-secondary)] hover:text-[hsl(var(--accent))] hover:bg-[hsl(var(--accent))]/5'

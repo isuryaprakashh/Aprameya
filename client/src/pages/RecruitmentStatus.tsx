@@ -4,7 +4,7 @@ import { Link } from 'wouter';
 import { motion } from 'framer-motion';
 import {
   ArrowLeft, Clock, CheckCircle, XCircle,
-  ShieldCheck, Search, RefreshCw, Calendar, MapPin
+  ShieldCheck, Search, RefreshCw, Calendar
 } from 'lucide-react';
 import { RecruitmentApplication } from '@/lib/types';
 import ChamferedButton from '@/components/ui/ChamferedButton';

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Link, useLocation } from 'wouter';
+import { useLocation } from 'wouter';
 import { Event, EventRegistration } from '../lib/types';
 import { useQuery } from '@tanstack/react-query';
 import {

@@ -1,11 +1,8 @@
-import { Card, CardContent } from '@/components/ui/card';
 import {
-  Eye,
   Mail,
   MapPin,
   Users,
   Lightbulb,
-  Heart,
   Globe,
   Star
 } from 'lucide-react';

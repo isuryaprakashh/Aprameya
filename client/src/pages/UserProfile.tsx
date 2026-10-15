@@ -3,7 +3,6 @@ import { useLocation } from 'wouter';
 import { useAuth } from "@/context/AuthContext";
 import { useToast } from '@/hooks/use-toast';
 import { Button } from '@/components/ui/button';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { FaBars, FaSave, FaArrowLeft, FaUpload, FaHome, FaUser, FaShieldAlt } from 'react-icons/fa';
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
@@ -22,12 +21,9 @@ import { useUserProfileData } from './UserProfile/hooks/useUserProfileData';
 
 // Lazy-loaded views for better code splitting
 const EventsView = lazy(() => import('./UserProfile/views/EventsView'));
-const RegistrationsView = lazy(() => import('./UserProfile/views/RegistrationsView'));
 const ProjectsView = lazy(() => import('./UserProfile/views/ProjectsView'));
 const BlogsView = lazy(() => import('./UserProfile/views/BlogsView'));
-const ResearchView = lazy(() => import('./UserProfile/views/ResearchView'));
 const RecruitmentView = lazy(() => import('./UserProfile/views/RecruitmentView'));
-const RosterView = lazy(() => import('./UserProfile/views/RosterView'));
 const TeamsView = lazy(() => import('./UserProfile/views/TeamsView'));
 import AdminScanQR from './AdminScanQR';
 
@@ -52,6 +48,17 @@ const UserProfile = () => {
   } = useUserProfileData();
 
   const [panelMode, setPanelMode] = useState<'admin' | 'user'>('admin');
+  const mainScrollRef = useRef<HTMLElement>(null);
+
+  // Automatically scroll user dashboard container and window to top on view/mode change
+  useEffect(() => {
+    if (mainScrollRef.current) {
+      mainScrollRef.current.scrollTop = 0;
+    }
+    window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+    if (document.documentElement) document.documentElement.scrollTop = 0;
+    if (document.body) document.body.scrollTop = 0;
+  }, [activeView, panelMode, selectedItem, isDialogOpen]);
 
   // Helper functions
   const getInitials = (username: string) => username.substring(0, 2).toUpperCase();
@@ -356,11 +363,6 @@ const UserProfile = () => {
           <EventsView handleEdit={handleEdit} handleCreate={handleCreate} handleDelete={handleDelete} />
         </Suspense>;
 
-      case 'registrations':
-        return <Suspense fallback={<div className="text-center py-12 text-[var(--text-secondary)]">Loading...</div>}>
-          <RegistrationsView tickets={tickets} />
-        </Suspense>;
-
       case 'projects':
         return <Suspense fallback={<div className="text-center py-12 text-[var(--text-secondary)]">Loading...</div>}>
           <ProjectsView handleEdit={handleEdit} handleCreate={handleCreate} handleDelete={handleDelete} />
@@ -371,22 +373,12 @@ const UserProfile = () => {
           <BlogsView handleEdit={handleEdit} handleCreate={handleCreate} handleDelete={handleDelete} />
         </Suspense>;
 
-      case 'research':
-        return <Suspense fallback={<div className="text-center py-12 text-[var(--text-secondary)]">Loading...</div>}>
-          <ResearchView handleEdit={handleEdit} handleCreate={handleCreate} handleDelete={handleDelete} />
-        </Suspense>;
-
       case 'scan':
         return <AdminScanQR isEmbedded={true} />;
 
       case 'recruitment':
         return <Suspense fallback={<div className="text-center py-12 text-[var(--text-secondary)]">Loading...</div>}>
           <RecruitmentView />
-        </Suspense>;
-
-      case 'roster':
-        return <Suspense fallback={<div className="text-center py-12 text-[var(--text-secondary)]">Loading...</div>}>
-          <RosterView />
         </Suspense>;
 
       case 'teams':
@@ -503,7 +495,7 @@ const UserProfile = () => {
           </div>
         </header>
 
-        <main className="flex-1 overflow-y-auto p-4 md:p-8 custom-scrollbar">
+        <main ref={mainScrollRef} className="flex-1 overflow-y-auto p-4 md:p-8 custom-scrollbar">
           {selectedItem && isDialogOpen ? (
             <div className="space-y-6 max-w-4xl mx-auto pb-16 animate-fadeIn">
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-[var(--border-color)]">
