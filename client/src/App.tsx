@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { Route, Switch, Redirect, useLocation } from "wouter";
 import { Toaster } from "@/components/ui/toaster";
 
@@ -7,7 +6,6 @@ import { AuthProvider, useAuth } from "@/context/AuthContext";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 import ScrollToTop from "./components/ScrollToTop";
-import AprameyaLoadingScreen from "./components/AprameyaLoadingScreen";
 
 import DashboardRouter from "./components/DashboardRouter";
 import Home from "./pages/Home";
@@ -45,7 +43,11 @@ const ProtectedRoute = ({ component: Component, roles, ...rest }: ProtectedRoute
   const { user, isLoading } = useAuth();
 
   if (isLoading) {
-    return <AprameyaLoadingScreen minDuration={1000} message="VERIFYING LABORATORY ACCESS CLEARANCE..." />;
+    return (
+      <div className="min-h-screen bg-black flex items-center justify-center">
+        <div className="w-8 h-8 rounded-full border-2 border-red-500 border-t-transparent animate-spin" />
+      </div>
+    );
   }
 
   if (!user) {
@@ -61,30 +63,11 @@ const ProtectedRoute = ({ component: Component, roles, ...rest }: ProtectedRoute
 
 function AppContent() {
   const [location] = useLocation();
-  const [isInitialLoading, setIsInitialLoading] = useState(() => {
-    if (typeof window !== 'undefined') {
-      return !sessionStorage.getItem('aprameya_intro_completed');
-    }
-    return false;
-  });
   const isStandalone = STANDALONE_ROUTES.includes(location);
   const isDashboard = location.startsWith('/dashboard') || location.startsWith('/profile');
 
-  const handleLoadingComplete = () => {
-    setIsInitialLoading(false);
-    if (typeof window !== 'undefined') {
-      sessionStorage.setItem('aprameya_intro_completed', 'true');
-    }
-  };
-
   return (
     <>
-      {isInitialLoading && (
-        <AprameyaLoadingScreen
-          minDuration={1000}
-          onComplete={handleLoadingComplete}
-        />
-      )}
       <ScrollToTop />
 
       {/* Standalone routes (no header/footer) */}

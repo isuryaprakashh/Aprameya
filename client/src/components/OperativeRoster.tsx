@@ -1,6 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { teamMembers as fallbackMembers } from '../lib/data';
 import { TeamMember } from '../lib/types';
+import { getMemberSlug } from '@/lib/slugs';
 import { Link } from 'wouter';
 
 const OperativeRoster = () => {
@@ -12,59 +13,68 @@ const OperativeRoster = () => {
             if (!res.ok) throw new Error('Failed to fetch teams');
             return res.json();
         },
-        staleTime: 5000,
+        staleTime: 30000,
     });
 
-    const members = dbMembers.length > 0 ? dbMembers : (fallbackMembers as any[]);
+    const members = (dbMembers.length > 0 ? dbMembers : (fallbackMembers as any[]))
+        .slice()
+        .sort((a, b) => (a.order ?? 999) - (b.order ?? 999));
+
+    // Show leading personnel on About page, invite to explore full team page
+    const displayMembers = members.slice(0, 8);
 
     return (
         <div className="w-full">
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-                {members.map((member) => (
-                    <div
-                        key={member.id || member._id}
-                        className="rounded-xl morphic-metallic-card overflow-hidden transition-all duration-300 group flex flex-col"
-                    >
-                        <div className="relative h-64 overflow-hidden bg-black flex items-center justify-center">
-                            {member.image ? (
-                                <img
-                                    src={member.image}
-                                    alt={member.name}
-                                    className="w-full h-full object-cover object-top transition-transform duration-500 group-hover:scale-105"
-                                    onError={(e) => {
-                                        (e.currentTarget as HTMLImageElement).style.display = 'none';
-                                        const fb = e.currentTarget.parentElement?.querySelector('.operative-fallback-initials') as HTMLElement;
-                                        if (fb) fb.style.display = 'flex';
-                                    }}
-                                />
-                            ) : null}
-                            <div className={`w-full h-full items-center justify-center bg-zinc-950 font-display text-4xl font-bold text-zinc-600 operative-fallback-initials ${member.image ? 'hidden' : 'flex'}`}>
-                                {member.name.substring(0, 2).toUpperCase()}
-                            </div>
-                            <div className="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-[#1A050A] to-transparent pointer-events-none" />
-                            {member.year && (
-                                <span className="absolute top-3 left-3 text-[10px] font-sans font-semibold uppercase tracking-wider text-red-300 bg-black/80 backdrop-blur-md border border-red-500/20 px-2 py-0.5 rounded">
-                                    {member.year}
-                                </span>
-                            )}
-                        </div>
+                {displayMembers.map((member) => {
+                    const memberId = member.id || member._id;
+                    const slug = getMemberSlug(member.name, memberId);
+                    return (
+                        <Link key={memberId} href={`/team/${slug}`}>
+                            <div className="rounded-xl morphic-metallic-card overflow-hidden transition-all duration-300 hover:border-red-500/50 hover:shadow-[0_8px_30px_rgba(239,68,68,0.2)] group flex flex-col cursor-pointer h-full">
+                                <div className="relative h-64 overflow-hidden bg-black flex items-center justify-center">
+                                    {member.image ? (
+                                        <img
+                                            src={member.image}
+                                            alt={member.name}
+                                            className="w-full h-full object-cover object-top transition-transform duration-500 group-hover:scale-105"
+                                            onError={(e) => {
+                                                (e.currentTarget as HTMLImageElement).style.display = 'none';
+                                                const fb = e.currentTarget.parentElement?.querySelector('.operative-fallback-initials') as HTMLElement;
+                                                if (fb) fb.style.display = 'flex';
+                                            }}
+                                        />
+                                    ) : null}
+                                    <div className={`w-full h-full items-center justify-center bg-zinc-950 font-display text-4xl font-bold text-zinc-600 operative-fallback-initials ${member.image ? 'hidden' : 'flex'}`}>
+                                        {member.name.substring(0, 2).toUpperCase()}
+                                    </div>
+                                    <div className="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-[#1A050A] to-transparent pointer-events-none" />
+                                    {member.year && (
+                                        <span className="absolute top-3 left-3 text-[10px] font-sans font-semibold uppercase tracking-wider text-red-300 bg-black/80 backdrop-blur-md border border-red-500/20 px-2 py-0.5 rounded">
+                                            {member.year}
+                                        </span>
+                                    )}
+                                </div>
 
-                        <div className="p-5 flex-1 flex flex-col justify-between">
-                            <div>
-                                <h3 className="font-display font-bold text-base text-white mb-1 group-hover:text-metallic-red transition-colors">
-                                    {member.name}
-                                </h3>
-                                <p className="text-xs text-red-400 font-mono mb-3">
-                                    {member.role}
-                                </p>
-                            </div>
+                                <div className="p-5 flex-1 flex flex-col justify-between">
+                                    <div>
+                                        <h3 className="font-display font-bold text-base text-white mb-1 group-hover:text-red-400 transition-colors">
+                                            {member.name}
+                                        </h3>
+                                        <p className="text-xs text-red-400 font-mono mb-3">
+                                            {member.role}
+                                        </p>
+                                    </div>
 
-                            <div className="pt-3 border-t border-red-500/10 text-[11px] text-[#94A3B8]">
-                                <span>{member.department || 'Aprameya Lab'}</span>
+                                    <div className="pt-3 border-t border-red-500/10 text-[11px] text-[#94A3B8] flex items-center justify-between">
+                                        <span className="truncate">{member.department || 'Aprameya Lab'}</span>
+                                        <span className="text-[10px] text-zinc-500 font-mono group-hover:text-red-400 transition-colors">View →</span>
+                                    </div>
+                                </div>
                             </div>
-                        </div>
-                    </div>
-                ))}
+                        </Link>
+                    );
+                })}
             </div>
 
             <div className="mt-8 text-center">
@@ -72,7 +82,7 @@ const OperativeRoster = () => {
                     href="/team"
                     className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl border border-white/10 text-xs font-mono text-zinc-300 hover:text-white hover:border-red-500/40 bg-zinc-950/60 transition-colors"
                 >
-                    View All Laboratory Personnel & Members →
+                    View All {members.length} Laboratory Personnel & Members →
                 </Link>
             </div>
         </div>
