@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useLocation } from 'wouter';
 import { useQuery } from '@tanstack/react-query';
-import { Search, ShieldCheck, ArrowRight } from 'lucide-react';
+import { Search, ShieldCheck } from 'lucide-react';
 import ProjectCard from '../components/ProjectCard';
 import ProjectModal from '../components/ProjectModal';
 import UnderConstruction from '../components/UnderConstruction';

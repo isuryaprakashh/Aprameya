@@ -5,6 +5,7 @@ import { ThemeProvider } from "@/components/theme-provider";
 import { AuthProvider, useAuth } from "@/context/AuthContext";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
+import ScrollToTop from "./components/ScrollToTop";
 
 import DashboardRouter from "./components/DashboardRouter";
 import Home from "./pages/Home";
@@ -63,6 +64,7 @@ function AppContent() {
 
   return (
     <>
+      <ScrollToTop />
 
       {/* Standalone routes (no header/footer) */}
       {isStandalone && (

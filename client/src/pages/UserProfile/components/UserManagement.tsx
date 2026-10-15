@@ -38,7 +38,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { FaTrash, FaEdit, FaUser, FaUpload, FaSave, FaSearch } from 'react-icons/fa';
+import { FaTrash, FaEdit, FaUpload, FaSave, FaSearch } from 'react-icons/fa';
 import { User } from '@/lib/types';
 import { UseMutationResult } from '@tanstack/react-query';
 import { useToast } from '@/hooks/use-toast';

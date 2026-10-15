@@ -3,7 +3,7 @@ import { useLocation, Link } from 'wouter';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowRight, ArrowLeft, Check, Lock, Cpu, Sparkles } from 'lucide-react';
-import { TECH_WINGS, NON_TECH_WINGS, RecruitmentSettings, RecruitmentApplication } from '@/lib/types';
+import { TECH_WINGS, NON_TECH_WINGS, RecruitmentSettings } from '@/lib/types';
 import { useAuth } from '@/context/AuthContext';
 import { useToast } from '@/hooks/use-toast';
 import { apiRequest } from '@/lib/queryClient';

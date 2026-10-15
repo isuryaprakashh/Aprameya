@@ -22,17 +22,17 @@ const TeamMemberCard = ({ member }: TeamMemberCardProps) => {
         <p className="text-[hsl(var(--accent))] mb-3 text-sm uppercase tracking-wider">{member.role}</p>
         <p className="text-[var(--text-secondary)] mb-4 text-xs">{member.department}, {member.year}</p>
         <div className="flex justify-center space-x-3">
-          {member.socialLinks.linkedin && (
+          {member.socialLinks?.linkedin && (
             <a href={member.socialLinks.linkedin} className="text-[var(--text-secondary)] hover:text-[hsl(var(--accent))] transition-colors">
               <FaLinkedinIn />
             </a>
           )}
-          {member.socialLinks.github && (
+          {member.socialLinks?.github && (
             <a href={member.socialLinks.github} className="text-[var(--text-secondary)] hover:text-[hsl(var(--accent))] transition-colors">
               <FaGithub />
             </a>
           )}
-          {member.socialLinks.email && (
+          {member.socialLinks?.email && (
             <a href={member.socialLinks.email} className="text-[var(--text-secondary)] hover:text-[hsl(var(--accent))] transition-colors">
               <FaEnvelope />
             </a>
