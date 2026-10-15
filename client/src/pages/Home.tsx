@@ -33,7 +33,7 @@ const STUDENT_PILLARS = [
   {
     tag: "HARDWARE & SENSORS",
     title: "Build Autonomous Platforms",
-    desc: "Engineer drive-by-wire vehicles with LiDAR-camera fusion, SLAM localization, and ROS 2 compute stacks.",
+    desc: "Engineer drive-by-wire vehicles with LiDAR-camera fusion, SLAM localization, and autonomous vehicle platforms.",
     icon: Cpu,
     badge: "Hardware R&D"
   },

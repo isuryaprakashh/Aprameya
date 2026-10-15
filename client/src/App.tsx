@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Route, Switch, Redirect, useLocation } from "wouter";
 import { Toaster } from "@/components/ui/toaster";
 
@@ -6,6 +7,7 @@ import { AuthProvider, useAuth } from "@/context/AuthContext";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 import ScrollToTop from "./components/ScrollToTop";
+import AprameyaLoadingScreen from "./components/AprameyaLoadingScreen";
 
 import DashboardRouter from "./components/DashboardRouter";
 import Home from "./pages/Home";
@@ -66,8 +68,29 @@ function AppContent() {
   const isStandalone = STANDALONE_ROUTES.includes(location);
   const isDashboard = location.startsWith('/dashboard') || location.startsWith('/profile');
 
+  // Landing intro screen is strictly reserved for the home page ('/') and only once per session
+  const [isHomeIntroVisible, setIsHomeIntroVisible] = useState(() => {
+    if (typeof window !== 'undefined') {
+      return window.location.pathname === '/' && !sessionStorage.getItem('aprameya_home_intro_seen');
+    }
+    return false;
+  });
+
+  const handleHomeIntroComplete = () => {
+    setIsHomeIntroVisible(false);
+    if (typeof window !== 'undefined') {
+      sessionStorage.setItem('aprameya_home_intro_seen', 'true');
+    }
+  };
+
   return (
     <>
+      {location === '/' && isHomeIntroVisible && (
+        <AprameyaLoadingScreen
+          minDuration={1200}
+          onComplete={handleHomeIntroComplete}
+        />
+      )}
       <ScrollToTop />
 
       {/* Standalone routes (no header/footer) */}
