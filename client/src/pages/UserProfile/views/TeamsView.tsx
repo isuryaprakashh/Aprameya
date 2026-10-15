@@ -21,7 +21,9 @@ import {
   FaEye,
   FaDownload,
   FaCopy,
-  FaExternalLinkAlt
+  FaExternalLinkAlt,
+  FaArrowUp,
+  FaArrowDown
 } from 'react-icons/fa';
 import { QRCodeCanvas } from 'qrcode.react';
 import { getMemberSlug } from '@/lib/slugs';
@@ -39,6 +41,7 @@ import {
   DropdownMenuItem,
 } from '@/components/ui/dropdown-menu';
 import { TeamMember } from '@/lib/types';
+import { teamMembers as fallbackTeamMembers } from '@/lib/data';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { apiRequest } from '@/lib/queryClient';
 import { useToast } from '@/hooks/use-toast';
@@ -86,10 +89,21 @@ export default function TeamsView() {
     queryKey: ['/api/teams'],
     queryFn: async () => {
       const baseUrl = import.meta.env.VITE_API_URL || '';
-      const res = await fetch(`${baseUrl}/api/teams`, { credentials: 'include' });
-      if (!res.ok) throw new Error('Failed to fetch team members');
-      return res.json();
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 6000);
+      try {
+        const res = await fetch(`${baseUrl}/api/teams`, { credentials: 'include', signal: controller.signal });
+        clearTimeout(timeoutId);
+        if (!res.ok) return fallbackTeamMembers as TeamMember[];
+        const data = await res.json();
+        return Array.isArray(data) && data.length > 0 ? data : (fallbackTeamMembers as TeamMember[]);
+      } catch {
+        clearTimeout(timeoutId);
+        return fallbackTeamMembers as TeamMember[];
+      }
     },
+    initialData: fallbackTeamMembers as TeamMember[],
+    staleTime: 60000,
   });
 
   // Mutations
@@ -154,7 +168,63 @@ export default function TeamsView() {
     },
   });
 
-  const isSaving = createMutation.isPending || updateMutation.isPending;
+  const [isReordering, setIsReordering] = useState(false);
+
+  const reorderMutation = useMutation({
+    mutationFn: (orders: { id: string; order: number }[]) =>
+      apiRequest('/api/teams/reorder', {
+        method: 'POST',
+        body: JSON.stringify({ orders }),
+      }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/teams'] });
+      toast({ title: 'Order Saved', description: 'Team roster order updated successfully.' });
+    },
+    onError: (err: any) => {
+      toast({ title: 'Error', description: err.message || 'Failed to save order', variant: 'destructive' });
+    },
+    onSettled: () => {
+      setIsReordering(false);
+    },
+  });
+
+  const handleMoveOrder = (member: TeamMember, direction: 'up' | 'down') => {
+    const memberId = member.id || member._id;
+    const currentIndex = filteredMembers.findIndex((m) => (m.id || m._id) === memberId);
+    if (currentIndex === -1) return;
+
+    const targetIndex = direction === 'up' ? currentIndex - 1 : currentIndex + 1;
+    if (targetIndex < 0 || targetIndex >= filteredMembers.length) return;
+
+    setIsReordering(true);
+
+    const newItems = [...filteredMembers];
+    const [moved] = newItems.splice(currentIndex, 1);
+    newItems.splice(targetIndex, 0, moved);
+
+    const ordersToSave = newItems.map((m, idx) => ({
+      id: (m.id || m._id)!,
+      order: idx + 1,
+    }));
+
+    // Optimistically update query cache for instant feedback
+    queryClient.setQueryData<TeamMember[]>(['/api/teams'], (old = []) => {
+      const orderMap = new Map(ordersToSave.map((o) => [o.id, o.order]));
+      return old
+        .map((m) => {
+          const id = m.id || m._id;
+          if (id && orderMap.has(id)) {
+            return { ...m, order: orderMap.get(id)! };
+          }
+          return m;
+        })
+        .sort((a, b) => (a.order ?? 999) - (b.order ?? 999));
+    });
+
+    reorderMutation.mutate(ordersToSave);
+  };
+
+  const isSaving = createMutation.isPending || updateMutation.isPending || isReordering;
 
   // Open Editor for Creating
   const startCreate = () => {
@@ -399,7 +469,7 @@ export default function TeamsView() {
     if (selectedCategory === 'Advisors') return isAdvisor(m);
 
     return true;
-  });
+  }).slice().sort((a, b) => (a.order ?? 999) - (b.order ?? 999));
 
   // ==========================================
   // FULL PAGE EDITOR VIEW (No Popup Dialog)
@@ -816,7 +886,7 @@ export default function TeamsView() {
       </div>
 
       {/* Content Area */}
-      {isLoading ? (
+      {isLoading && teamMembers.length === 0 ? (
         <WanderingEyesLoader
           size="md"
           text="LOADING TEAM ROSTER"
@@ -840,7 +910,7 @@ export default function TeamsView() {
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {filteredMembers.map((member) => (
+          {filteredMembers.map((member, index) => (
             <div
               key={member.id || member._id}
               className="rounded-xl border border-[var(--border-color)] bg-[var(--card-bg)] p-5 flex flex-col justify-between hover:border-[hsl(var(--accent))]/30 transition-all duration-300 group relative overflow-hidden"
@@ -864,15 +934,34 @@ export default function TeamsView() {
                   </div>
 
                   <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-2 flex-wrap">
+                    <div className="flex items-center justify-between gap-2 flex-wrap">
                       <h4 className="font-semibold text-sm text-[var(--text-primary)] truncate">
                         {member.name}
                       </h4>
-                      {member.order !== undefined && member.order > 0 && (
-                        <span className="text-[10px] font-mono px-1.5 py-0.2 rounded border border-[var(--border-color)] text-[var(--text-muted)]">
-                          #{member.order}
+                      {/* Interactive Reordering Controls */}
+                      <div className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-lg border border-[var(--border-color)] bg-black/50 text-[var(--text-muted)] text-[10px] font-mono shadow-sm shrink-0">
+                        <button
+                          type="button"
+                          disabled={index === 0 || isReordering}
+                          onClick={() => handleMoveOrder(member, 'up')}
+                          className="hover:text-red-400 disabled:opacity-20 disabled:hover:text-[var(--text-muted)] p-1 rounded transition-colors active:scale-95"
+                          title="Move member up in order"
+                        >
+                          <FaArrowUp className="w-2.5 h-2.5" />
+                        </button>
+                        <span className="font-bold px-1 text-red-400">
+                          #{member.order !== undefined && member.order > 0 ? member.order : index + 1}
                         </span>
-                      )}
+                        <button
+                          type="button"
+                          disabled={index === filteredMembers.length - 1 || isReordering}
+                          onClick={() => handleMoveOrder(member, 'down')}
+                          className="hover:text-red-400 disabled:opacity-20 disabled:hover:text-[var(--text-muted)] p-1 rounded transition-colors active:scale-95"
+                          title="Move member down in order"
+                        >
+                          <FaArrowDown className="w-2.5 h-2.5" />
+                        </button>
+                      </div>
                     </div>
                     <p className="text-xs text-[hsl(var(--accent))] font-medium mt-0.5 truncate">
                       {member.role}
@@ -940,8 +1029,35 @@ export default function TeamsView() {
               </div>
 
               {/* Action Buttons */}
-              <div className="flex items-center justify-end gap-2 mt-4 pt-3 border-t border-[var(--border-color)]">
-                {/* Hidden QR Canvas for high-res export */}
+              <div className="flex items-center justify-between gap-2 mt-4 pt-3 border-t border-[var(--border-color)]">
+                {/* Quick Reorder Buttons */}
+                <div className="flex items-center gap-1">
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    type="button"
+                    disabled={index === 0 || isReordering}
+                    onClick={() => handleMoveOrder(member, 'up')}
+                    className="h-8 w-8 p-0 border-[var(--border-color)] hover:border-red-500/50 hover:text-red-400 rounded-lg transition-colors"
+                    title="Move Member Up in Order"
+                  >
+                    <FaArrowUp className="h-3 w-3" />
+                  </Button>
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    type="button"
+                    disabled={index === filteredMembers.length - 1 || isReordering}
+                    onClick={() => handleMoveOrder(member, 'down')}
+                    className="h-8 w-8 p-0 border-[var(--border-color)] hover:border-red-500/50 hover:text-red-400 rounded-lg transition-colors"
+                    title="Move Member Down in Order"
+                  >
+                    <FaArrowDown className="h-3 w-3" />
+                  </Button>
+                </div>
+
+                <div className="flex items-center gap-2">
+                  {/* Hidden QR Canvas for high-res export */}
                 <div className="hidden">
                   <QRCodeCanvas
                     id={`qr-admin-hidden-${member.id || member._id}`}
@@ -997,6 +1113,7 @@ export default function TeamsView() {
                 >
                   <FaTrash className="h-3 w-3" />
                 </Button>
+                </div>
               </div>
             </div>
           ))}

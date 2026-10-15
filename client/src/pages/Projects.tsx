@@ -7,6 +7,7 @@ import ProjectModal from '../components/ProjectModal';
 import UnderConstruction from '../components/UnderConstruction';
 import WanderingEyesLoader from '../components/WanderingEyesLoader';
 import { Project } from '../lib/types';
+import { projects as fallbackProjects } from '../lib/data';
 import { Input } from '@/components/ui/input';
 import ChamferedButton from '@/components/ui/ChamferedButton';
 import { motion } from 'framer-motion';
@@ -15,15 +16,22 @@ const Projects = () => {
   const { data: projects = [], isLoading } = useQuery<Project[]>({
     queryKey: ['/api/projects'],
     queryFn: async () => {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 5000);
       try {
         const baseUrl = import.meta.env.VITE_API_URL || '';
-        const res = await fetch(`${baseUrl}/api/projects`);
-        if (!res.ok) return [];
-        return res.json();
+        const res = await fetch(`${baseUrl}/api/projects`, { signal: controller.signal });
+        clearTimeout(timeoutId);
+        if (!res.ok) return fallbackProjects;
+        const data = await res.json();
+        return Array.isArray(data) && data.length > 0 ? data : fallbackProjects;
       } catch {
-        return [];
+        clearTimeout(timeoutId);
+        return fallbackProjects;
       }
     },
+    initialData: fallbackProjects,
+    staleTime: 60000,
   });
 
   const { data: user } = useQuery<any>({ queryKey: ['/api/me'] });
@@ -51,7 +59,7 @@ const Projects = () => {
 
   const featuredProject = projects.find(p => p.is_featured) || (projects.length > 0 ? projects[0] : null);
 
-  if (isLoading) {
+  if (isLoading && projects.length === 0) {
     return (
       <WanderingEyesLoader
         fullPage

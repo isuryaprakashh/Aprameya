@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useLocation } from 'wouter';
 import { Event, EventRegistration } from '../lib/types';
+import { events as fallbackEvents } from '../lib/data';
 import { useQuery } from '@tanstack/react-query';
 import {
   Calendar,
@@ -23,6 +24,23 @@ const Events = () => {
   const { toast } = useToast();
   const { data: events = [], isLoading } = useQuery<Event[]>({
     queryKey: ['/api/events'],
+    queryFn: async () => {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 5000);
+      try {
+        const baseUrl = import.meta.env.VITE_API_URL || '';
+        const res = await fetch(`${baseUrl}/api/events`, { credentials: 'include', signal: controller.signal });
+        clearTimeout(timeoutId);
+        if (!res.ok) return fallbackEvents;
+        const data = await res.json();
+        return Array.isArray(data) && data.length > 0 ? data : fallbackEvents;
+      } catch {
+        clearTimeout(timeoutId);
+        return fallbackEvents;
+      }
+    },
+    initialData: fallbackEvents,
+    staleTime: 60000,
   });
   const { user } = useAuth();
   const { data: userRegistrations = [] } = useQuery<EventRegistration[]>({
@@ -98,7 +116,7 @@ const Events = () => {
 
   const eventTypes = ['all', ...Array.from(new Set(events.map(e => e.type)))];
 
-  if (isLoading) {
+  if (isLoading && events.length === 0) {
     return (
       <WanderingEyesLoader
         fullPage

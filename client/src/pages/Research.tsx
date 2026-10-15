@@ -10,9 +10,24 @@ const Research = () => {
   const { toast } = useToast();
   const { data: researchItems = [], isLoading, error } = useQuery<ResearchItem[]>({
     queryKey: ['/api/research'],
+    queryFn: async () => {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 5000);
+      try {
+        const baseUrl = import.meta.env.VITE_API_URL || '';
+        const res = await fetch(`${baseUrl}/api/research`, { signal: controller.signal });
+        clearTimeout(timeoutId);
+        if (!res.ok) return [];
+        return res.json();
+      } catch {
+        clearTimeout(timeoutId);
+        return [];
+      }
+    },
+    staleTime: 60000,
   });
 
-  if (isLoading) {
+  if (isLoading && researchItems.length === 0) {
     return (
       <WanderingEyesLoader
         fullPage

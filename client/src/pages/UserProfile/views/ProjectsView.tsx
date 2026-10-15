@@ -5,6 +5,7 @@ import { Badge } from '@/components/ui/badge';
 import { FaProjectDiagram, FaPlus, FaTrash, FaArrowRight } from 'react-icons/fa';
 import { useQuery } from '@tanstack/react-query';
 import { Project } from '@/lib/types';
+import { projects as fallbackProjects } from '@/lib/data';
 import { useAuth } from '@/context/AuthContext';
 import { useState } from 'react';
 import ProjectModal from '@/components/ProjectModal';
@@ -22,7 +23,8 @@ export default function ProjectsView({ handleEdit, handleCreate, handleDelete }:
 
     const { data: projects = [] } = useQuery<Project[]>({
         queryKey: ['/api/projects'],
-        staleTime: 5000,
+        initialData: fallbackProjects,
+        staleTime: 60000,
     });
 
     const handleViewDetails = (project: Project) => {
