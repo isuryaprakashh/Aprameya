@@ -7,6 +7,7 @@ import { useAuth } from '@/context/AuthContext';
 import { useToast } from '@/hooks/use-toast';
 import { apiRequest } from '@/lib/queryClient';
 import { Event, TicketRegistration as TicketType } from '@/lib/types';
+import WanderingEyesLoader from '@/components/WanderingEyesLoader';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import {
@@ -167,9 +168,12 @@ const TicketRegistration = () => {
 
     if (eventLoading) {
         return (
-            <div className="min-h-screen bg-black flex items-center justify-center">
-                <Loader2 className="w-8 h-8 animate-spin text-red-400" />
-            </div>
+            <WanderingEyesLoader
+                fullPage
+                size="md"
+                text="PREPARING PASS DISPATCH TERMINAL"
+                subtext="VERIFYING EVENT CLEARANCE & TICKET AVAILABILITY"
+            />
         );
     }
 

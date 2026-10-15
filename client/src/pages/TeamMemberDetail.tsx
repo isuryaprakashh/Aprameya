@@ -7,6 +7,7 @@ import { TeamMember } from '@/lib/types';
 import { teamMembers as fallbackTeamMembers } from '@/lib/data';
 import { getMemberSlug, isMemberMatch } from '@/lib/slugs';
 import { Button } from '@/components/ui/button';
+import WanderingEyesLoader from '@/components/WanderingEyesLoader';
 import { useToast } from '@/hooks/use-toast';
 import {
   FaLinkedin,
@@ -177,12 +178,12 @@ export default function TeamMemberDetail() {
   // Loading State
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-[var(--bg-body)] text-[var(--text-primary)] flex flex-col items-center justify-center pt-24 pb-16 px-6">
-        <div className="w-12 h-12 rounded-full border-2 border-[hsl(var(--accent))] border-t-transparent animate-spin mb-4" />
-        <p className="font-mono text-xs text-[var(--text-muted)] tracking-widest uppercase">
-          RETRIEVING PERSONNEL TELEMETRY...
-        </p>
-      </div>
+      <WanderingEyesLoader
+        fullPage
+        size="md"
+        text="RETRIEVING PERSONNEL TELEMETRY"
+        subtext="ACCESSING RESEARCH LAB DOSSIER"
+      />
     );
   }
 

@@ -27,7 +27,7 @@ const RecruitmentView = lazy(() => import('./UserProfile/views/RecruitmentView')
 const TeamsView = lazy(() => import('./UserProfile/views/TeamsView'));
 import AdminScanQR from './AdminScanQR';
 import AprameyaLoadingScreen from '@/components/AprameyaLoadingScreen';
-import AprameyaLoader from '@/components/AprameyaLoader';
+import WanderingEyesLoader from '@/components/WanderingEyesLoader';
 
 const UserProfile = () => {
   const { toast } = useToast();
@@ -361,17 +361,17 @@ const UserProfile = () => {
         />;
 
       case 'events':
-        return <Suspense fallback={<AprameyaLoader size={36} showText={true} />}>
+        return <Suspense fallback={<WanderingEyesLoader size="md" text="LOADING EVENTS MODULE" subtext="INITIALIZING CALENDAR ENGINE" />}>
           <EventsView handleEdit={handleEdit} handleCreate={handleCreate} handleDelete={handleDelete} />
         </Suspense>;
 
       case 'projects':
-        return <Suspense fallback={<AprameyaLoader size={36} showText={true} />}>
+        return <Suspense fallback={<WanderingEyesLoader size="md" text="LOADING PROJECTS MODULE" subtext="FETCHING RESEARCH REPOSITORIES" />}>
           <ProjectsView handleEdit={handleEdit} handleCreate={handleCreate} handleDelete={handleDelete} />
         </Suspense>;
 
       case 'blogs':
-        return <Suspense fallback={<AprameyaLoader size={36} showText={true} />}>
+        return <Suspense fallback={<WanderingEyesLoader size="md" text="LOADING ARTICLES MODULE" subtext="PARSING RESEARCH MANUSCRIPTS" />}>
           <BlogsView handleEdit={handleEdit} handleCreate={handleCreate} handleDelete={handleDelete} />
         </Suspense>;
 
@@ -379,12 +379,12 @@ const UserProfile = () => {
         return <AdminScanQR isEmbedded={true} />;
 
       case 'recruitment':
-        return <Suspense fallback={<AprameyaLoader size={36} showText={true} />}>
+        return <Suspense fallback={<WanderingEyesLoader size="md" text="LOADING RECRUITMENT PIPELINE" subtext="FETCHING CANDIDATE QUEUE" />}>
           <RecruitmentView />
         </Suspense>;
 
       case 'teams':
-        return <Suspense fallback={<AprameyaLoader size={36} showText={true} />}>
+        return <Suspense fallback={<WanderingEyesLoader size="md" text="LOADING TEAM ROSTER MODULE" subtext="ACCESSING OPERATIVE DIRECTORY" />}>
           <TeamsView />
         </Suspense>;
 

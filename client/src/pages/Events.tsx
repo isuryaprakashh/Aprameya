@@ -13,7 +13,7 @@ import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import UnderConstruction from '../components/UnderConstruction';
-import AprameyaLoader from '../components/AprameyaLoader';
+import WanderingEyesLoader from '../components/WanderingEyesLoader';
 import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
 import { useAuth } from '@/context/AuthContext';
@@ -100,9 +100,12 @@ const Events = () => {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-[var(--bg-body)] flex items-center justify-center">
-        <AprameyaLoader size={44} showText={true} />
-      </div>
+      <WanderingEyesLoader
+        fullPage
+        size="md"
+        text="EXPLORING EVENTS & WORKSHOPS"
+        subtext="FETCHING SCHEDULE & REGISTRATION TELEMETRY"
+      />
     );
   }
 

@@ -7,6 +7,7 @@ import { apiRequest } from '@/lib/queryClient';
 import { useToast } from '@/hooks/use-toast';
 import { Event, EventRegistration } from '@/lib/types';
 import { useAuth } from '@/context/AuthContext';
+import WanderingEyesLoader from '@/components/WanderingEyesLoader';
 
 interface EventsViewProps {
     handleEdit?: (item: Event, type: string) => void;
@@ -20,7 +21,7 @@ export default function EventsView({ handleEdit, handleCreate, handleDelete }: E
     const { user: currentUser } = useAuth();
     // ... existing hooks
 
-    const { data: events = [] } = useQuery<Event[]>({
+    const { data: events = [], isLoading } = useQuery<Event[]>({
         queryKey: ['/api/events'],
         staleTime: 5000,
     });
@@ -100,8 +101,19 @@ export default function EventsView({ handleEdit, handleCreate, handleDelete }: E
                     )}
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {events.map((event, index) => {
+                {isLoading ? (
+                    <WanderingEyesLoader
+                        size="md"
+                        text="FETCHING EVENT ROSTER"
+                        subtext="SYNCHRONIZING UPCOMING SESSIONS & WORKSHOPS"
+                    />
+                ) : events.length === 0 ? (
+                    <div className="p-12 text-center text-[var(--text-secondary)] font-mono text-sm">
+                        NO EVENTS SCHEDULED AT THIS TIME
+                    </div>
+                ) : (
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        {events.map((event, index) => {
                         const isRegistered = isRegisteredForEvent(event.id);
                         const registrationId = getRegistrationId(event.id);
 
@@ -180,7 +192,8 @@ export default function EventsView({ handleEdit, handleCreate, handleDelete }: E
                             </motion.div>
                         );
                     })}
-                </div>
+                    </div>
+                )}
             </div>
         </div>
     );

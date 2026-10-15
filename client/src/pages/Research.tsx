@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { ResearchItem } from '@/lib/types';
-import AprameyaLoader from '../components/AprameyaLoader';
+import WanderingEyesLoader from '../components/WanderingEyesLoader';
 import ResearchCard from '../components/ResearchCard';
 import UnderConstruction from '../components/UnderConstruction';
 import { motion } from 'framer-motion';
@@ -14,9 +14,12 @@ const Research = () => {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-[var(--bg-body)] flex items-center justify-center">
-        <AprameyaLoader size={40} />
-      </div>
+      <WanderingEyesLoader
+        fullPage
+        size="md"
+        text="SEARCHING RESEARCH PUBLICATIONS"
+        subtext="FETCHING WHITEPAPERS, CITATIONS & PATENTS"
+      />
     );
   }
 

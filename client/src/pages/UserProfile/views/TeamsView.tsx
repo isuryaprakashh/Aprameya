@@ -42,6 +42,7 @@ import { TeamMember } from '@/lib/types';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { apiRequest } from '@/lib/queryClient';
 import { useToast } from '@/hooks/use-toast';
+import WanderingEyesLoader from '@/components/WanderingEyesLoader';
 
 const CATEGORIES = ['All', 'Club Leads', 'Mentors', 'Advisors'];
 const FORM_CATEGORIES = ['Club Leads', 'Mentors', 'Advisors'];
@@ -816,9 +817,11 @@ export default function TeamsView() {
 
       {/* Content Area */}
       {isLoading ? (
-        <div className="p-12 text-center text-sm font-mono text-[var(--text-muted)] animate-pulse">
-          Loading team roster...
-        </div>
+        <WanderingEyesLoader
+          size="md"
+          text="LOADING TEAM ROSTER"
+          subtext="SYNCHRONIZING OPERATIVES & MENTORS"
+        />
       ) : filteredMembers.length === 0 ? (
         <div className="p-12 text-center rounded-xl border border-[var(--border-color)] bg-[var(--card-bg)]">
           <p className="font-mono text-xs text-[var(--text-muted)] mb-2">STATUS: 204 NO_CONTENT</p>

@@ -16,6 +16,7 @@ import {
   FaAward
 } from 'react-icons/fa';
 import UnderConstruction from '@/components/UnderConstruction';
+import WanderingEyesLoader from '@/components/WanderingEyesLoader';
 
 export default function Teams() {
   const [searchTerm, setSearchTerm] = useState('');
@@ -177,11 +178,11 @@ export default function Teams() {
 
         {/* Member Grid Loading & Empty States */}
         {isLoading && dbMembers.length === 0 ? (
-          <div className="py-24 text-center">
-            <p className="font-mono text-sm text-[var(--text-muted)] animate-pulse">
-              SYNCING LABORATORY ROSTER...
-            </p>
-          </div>
+          <WanderingEyesLoader
+            size="md"
+            text="SYNCING LABORATORY ROSTER"
+            subtext="SCANNING FACULTY MENTORS & DIVISION LEADS"
+          />
         ) : filteredMembers.length === 0 ? (
           <UnderConstruction
             title="NO MATCHING PERSONNEL FOUND"

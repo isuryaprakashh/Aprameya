@@ -8,7 +8,7 @@ import { motion } from 'framer-motion';
 import { Input } from '@/components/ui/input';
 import UnderConstruction from '@/components/UnderConstruction';
 import BlogCard from '@/components/BlogCard';
-import AprameyaLoader from '@/components/AprameyaLoader';
+import WanderingEyesLoader from '@/components/WanderingEyesLoader';
 
 const Blogs = () => {
   const { data: blogPosts = [], isLoading } = useQuery<BlogPost[]>({
@@ -38,9 +38,12 @@ const Blogs = () => {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-[var(--bg-body)] flex items-center justify-center">
-        <AprameyaLoader size={40} />
-      </div>
+      <WanderingEyesLoader
+        fullPage
+        size="md"
+        text="LOADING TECHNICAL ARTICLES"
+        subtext="FETCHING RESEARCH INSIGHTS & POSTS"
+      />
     );
   }
 

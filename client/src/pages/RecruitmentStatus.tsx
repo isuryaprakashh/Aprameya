@@ -8,6 +8,7 @@ import {
 } from 'lucide-react';
 import { RecruitmentApplication } from '@/lib/types';
 import ChamferedButton from '@/components/ui/ChamferedButton';
+import WanderingEyesLoader from '@/components/WanderingEyesLoader';
 
 type StatusMeta = {
   label: string;
@@ -140,9 +141,12 @@ export default function RecruitmentStatus() {
         </form>
 
         {isLoading && (
-          <div className="p-12 text-center text-xs text-[var(--text-secondary)] flex items-center justify-center gap-2 border border-white/[0.06] bg-[var(--card-bg)] rounded-xl">
-            <RefreshCw className="w-4 h-4 animate-spin text-red-500" />
-            Checking candidate record...
+          <div className="border border-white/[0.06] bg-[var(--card-bg)] rounded-xl overflow-hidden">
+            <WanderingEyesLoader
+              size="sm"
+              text="CHECKING CANDIDATE RECORD"
+              subtext="QUERYING AUTONOMOUS RECRUITMENT DATABASE"
+            />
           </div>
         )}
 
