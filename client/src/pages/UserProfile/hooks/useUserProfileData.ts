@@ -4,7 +4,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { apiRequest } from '@/lib/queryClient';
 import { useToast } from '@/hooks/use-toast';
 import { EventRegistration, Project, BlogPost, ResearchItem, Event, User, TeamMember } from '@/lib/types';
-import { teamMembers as fallbackTeamMembers, projects as fallbackProjects, events as fallbackEvents } from '@/lib/data';
+import { projects as fallbackProjects, events as fallbackEvents } from '@/lib/data';
 import { useAuth } from "@/context/AuthContext";
 
 interface EventRegistrationsData {
@@ -81,7 +81,7 @@ export const useUserProfileData = () => {
     const { data: projects = [] } = useQuery<Project[]>({ queryKey: ['/api/projects'], initialData: fallbackProjects, staleTime: 60000 });
     const { data: blogs = [] } = useQuery<BlogPost[]>({ queryKey: ['/api/blogs'], staleTime: 5000 });
     const { data: research = [] } = useQuery<ResearchItem[]>({ queryKey: ['/api/research'], staleTime: 5000 });
-    const { data: teamMembers = [] } = useQuery<TeamMember[]>({ queryKey: ['/api/teams'], initialData: fallbackTeamMembers as TeamMember[], staleTime: 60000 });
+    const { data: teamMembers = [] } = useQuery<TeamMember[]>({ queryKey: ['/api/teams'], staleTime: 30000 });
 
     // -- MUTATIONS --
     const updateUserRole = useMutation({

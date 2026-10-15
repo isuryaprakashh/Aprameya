@@ -10,6 +10,7 @@ dotenv.config({ path: path.resolve(__dirname, '..', '.env') });
 import express, { type Request, Response, NextFunction } from "express";
 import { registerRoutes } from "./routes";
 import { connectDB } from "./db";
+import { preloadTeamsCache } from "./routes/teams";
 import session from 'express-session';
 import memorystore from 'memorystore';
 import MongoStore from 'connect-mongo';
@@ -139,12 +140,11 @@ app.use((req, res, next) => {
     capturedJsonResponse = bodyJson;
     return originalResJson.apply(res, [bodyJson, ...args]);
   };
-
   res.on("finish", () => {
     const duration = Date.now() - start;
     if (path.startsWith("/api")) {
       let logLine = `${req.method} ${path} ${res.statusCode} in ${duration}ms`;
-      if (capturedJsonResponse) {
+      if (capturedJsonResponse && !path.startsWith("/api/teams")) {
         logLine += ` :: ${JSON.stringify(capturedJsonResponse)}`;
       }
 
@@ -167,6 +167,7 @@ export { app, registerRoutes };
   // Only connect to DB and start listener if running directly (not imported as Vercel function)
   if (process.env.NODE_ENV !== 'production' || process.argv[1] === fileURLToPath(import.meta.url)) {
     await connectDB();
+    preloadTeamsCache().catch(console.error);
     const server = await registerRoutes(app);
 
     app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {

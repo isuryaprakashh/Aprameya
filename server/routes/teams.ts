@@ -12,7 +12,7 @@ const DEFAULT_TEAM_MEMBERS = [
     category: "Faculty Mentors",
     department: "Computer Science & Engineering",
     year: "Faculty",
-    image: "/assets/team_avatar_1.png",
+    image: "",
     email: "vegeharikiran@kluniversity.in",
     linkedin: "",
     github: "",
@@ -25,7 +25,7 @@ const DEFAULT_TEAM_MEMBERS = [
     category: "Faculty Mentors",
     department: "Robotics & Autonomous Systems",
     year: "Faculty / Lead",
-    image: "/assets/team_avatar_2.png",
+    image: "",
     email: "srikanth.a@kluniversity.in",
     linkedin: "",
     github: "",
@@ -38,7 +38,7 @@ const DEFAULT_TEAM_MEMBERS = [
     category: "Core Team",
     department: "Computer Science",
     year: "Core Team",
-    image: "/assets/team_avatar_3.png",
+    image: "",
     email: "",
     linkedin: "https://linkedin.com",
     github: "https://github.com",
@@ -51,7 +51,7 @@ const DEFAULT_TEAM_MEMBERS = [
     category: "Core Team",
     department: "Computer Science",
     year: "Core Team",
-    image: "/assets/team_avatar_4.png",
+    image: "",
     email: "",
     linkedin: "https://linkedin.com",
     github: "https://github.com",
@@ -64,7 +64,7 @@ const DEFAULT_TEAM_MEMBERS = [
     category: "Core Team",
     department: "Electronics & Computer Engineering",
     year: "Core Team",
-    image: "/assets/team_avatar_1.png",
+    image: "",
     email: "",
     linkedin: "https://linkedin.com",
     github: "https://github.com",
@@ -77,7 +77,7 @@ const DEFAULT_TEAM_MEMBERS = [
     category: "Core Team",
     department: "Computer Science",
     year: "Core Team",
-    image: "/assets/team_avatar_2.png",
+    image: "",
     email: "",
     linkedin: "https://linkedin.com",
     github: "https://github.com",
@@ -96,10 +96,24 @@ export const invalidateTeamsCache = () => {
   lastCacheTime = 0;
 };
 
+export const preloadTeamsCache = async () => {
+  try {
+    const members = await storage.getAllTeamMembers();
+    if (members && members.length > 0) {
+      cachedTeamMembers = members;
+      lastCacheTime = Date.now();
+      console.log(`Preloaded ${members.length} team members into in-memory cache.`);
+    }
+  } catch (err) {
+    console.error("Failed to preload team members cache:", err);
+  }
+};
+
 // GET /api/teams - List all team members (auto-seeds defaults if empty)
 router.get("/teams", async (_req, res) => {
   try {
     if (cachedTeamMembers && (Date.now() - lastCacheTime < CACHE_TTL_MS)) {
+      res.set('Cache-Control', 'public, max-age=60, stale-while-revalidate=300');
       return res.json(cachedTeamMembers);
     }
 
@@ -116,10 +130,12 @@ router.get("/teams", async (_req, res) => {
     cachedTeamMembers = members;
     lastCacheTime = Date.now();
 
+    res.set('Cache-Control', 'public, max-age=60, stale-while-revalidate=300');
     res.json(members);
   } catch (error) {
     console.error("Failed to fetch team members:", error);
     if (cachedTeamMembers) {
+      res.set('Cache-Control', 'public, max-age=60, stale-while-revalidate=300');
       return res.json(cachedTeamMembers);
     }
     res.status(500).json({ error: "Failed to fetch team members" });

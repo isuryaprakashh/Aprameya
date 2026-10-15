@@ -41,7 +41,6 @@ import {
   DropdownMenuItem,
 } from '@/components/ui/dropdown-menu';
 import { TeamMember } from '@/lib/types';
-import { teamMembers as fallbackTeamMembers } from '@/lib/data';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { apiRequest } from '@/lib/queryClient';
 import { useToast } from '@/hooks/use-toast';
@@ -51,10 +50,6 @@ const CATEGORIES = ['All', 'Club Leads', 'Mentors', 'Advisors'];
 const FORM_CATEGORIES = ['Club Leads', 'Mentors', 'Advisors'];
 
 const PRESET_AVATARS = [
-  { label: 'Avatar 1', url: '/assets/team_avatar_1.png' },
-  { label: 'Avatar 2', url: '/assets/team_avatar_2.png' },
-  { label: 'Avatar 3', url: '/assets/team_avatar_3.png' },
-  { label: 'Avatar 4', url: '/assets/team_avatar_4.png' },
   { label: 'Lab UVH', url: '/assets/UVH.jpg' },
 ];
 
@@ -90,20 +85,19 @@ export default function TeamsView() {
     queryFn: async () => {
       const baseUrl = import.meta.env.VITE_API_URL || '';
       const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 6000);
+      const timeoutId = setTimeout(() => controller.abort(), 15000);
       try {
         const res = await fetch(`${baseUrl}/api/teams`, { credentials: 'include', signal: controller.signal });
         clearTimeout(timeoutId);
-        if (!res.ok) return fallbackTeamMembers as TeamMember[];
+        if (!res.ok) throw new Error('Failed to fetch teams');
         const data = await res.json();
-        return Array.isArray(data) && data.length > 0 ? data : (fallbackTeamMembers as TeamMember[]);
-      } catch {
+        return Array.isArray(data) ? data : [];
+      } catch (err) {
         clearTimeout(timeoutId);
-        return fallbackTeamMembers as TeamMember[];
+        throw err;
       }
     },
-    initialData: fallbackTeamMembers as TeamMember[],
-    staleTime: 60000,
+    staleTime: 30000,
   });
 
   // Mutations
@@ -241,7 +235,7 @@ export default function TeamsView() {
       category: defaultCat,
       department: '',
       year: '',
-      image: '/assets/team_avatar_1.png',
+      image: '',
       bio: '',
       email: '',
       linkedin: '',
@@ -539,7 +533,7 @@ export default function TeamsView() {
                     alt={formData.name || 'Team member'}
                     className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
                     onError={(e) => {
-                      (e.currentTarget as HTMLImageElement).src = '/assets/team_avatar_1.png';
+                      (e.currentTarget as HTMLElement).style.display = 'none';
                     }}
                   />
                 ) : (
@@ -589,7 +583,7 @@ export default function TeamsView() {
                 <div>
                   <Label className="text-xs text-[var(--text-secondary)] font-mono">Or Image URL / Path</Label>
                   <Input
-                    placeholder="/assets/team_avatar_1.png or https://..."
+                    placeholder="https://... or upload photo above"
                     value={formData.image || ''}
                     onChange={(e) => handleInputChange('image', e.target.value)}
                     className="mt-1 bg-[var(--bg-body)] border-[var(--border-color)] text-xs rounded-xl"
@@ -925,12 +919,15 @@ export default function TeamsView() {
                         alt={member.name}
                         className="w-full h-full object-cover object-top transition-all duration-300"
                         onError={(e) => {
-                          (e.currentTarget as HTMLImageElement).src = '/assets/team_avatar_1.png';
+                          (e.currentTarget as HTMLImageElement).style.display = 'none';
+                          const fb = e.currentTarget.parentElement?.querySelector('.member-fallback-tie') as HTMLElement;
+                          if (fb) fb.style.display = 'flex';
                         }}
                       />
-                    ) : (
+                    ) : null}
+                    <div className={`w-full h-full items-center justify-center member-fallback-tie ${member.image ? 'hidden' : 'flex'}`}>
                       <FaUserTie className="w-6 h-6 text-[var(--text-muted)]" />
-                    )}
+                    </div>
                   </div>
 
                   <div className="flex-1 min-w-0">

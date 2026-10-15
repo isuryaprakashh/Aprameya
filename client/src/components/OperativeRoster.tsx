@@ -25,21 +25,22 @@ const OperativeRoster = () => {
                         key={member.id || member._id}
                         className="rounded-xl morphic-metallic-card overflow-hidden transition-all duration-300 group flex flex-col"
                     >
-                        <div className="relative h-64 overflow-hidden bg-black">
+                        <div className="relative h-64 overflow-hidden bg-black flex items-center justify-center">
                             {member.image ? (
                                 <img
                                     src={member.image}
                                     alt={member.name}
                                     className="w-full h-full object-cover object-top transition-transform duration-500 group-hover:scale-105"
                                     onError={(e) => {
-                                        (e.currentTarget as HTMLImageElement).src = '/assets/team_avatar_1.png';
+                                        (e.currentTarget as HTMLImageElement).style.display = 'none';
+                                        const fb = e.currentTarget.parentElement?.querySelector('.operative-fallback-initials') as HTMLElement;
+                                        if (fb) fb.style.display = 'flex';
                                     }}
                                 />
-                            ) : (
-                                <div className="w-full h-full flex items-center justify-center bg-zinc-950 font-display text-4xl font-bold text-zinc-700">
-                                    {member.name.substring(0, 2).toUpperCase()}
-                                </div>
-                            )}
+                            ) : null}
+                            <div className={`w-full h-full items-center justify-center bg-zinc-950 font-display text-4xl font-bold text-zinc-600 operative-fallback-initials ${member.image ? 'hidden' : 'flex'}`}>
+                                {member.name.substring(0, 2).toUpperCase()}
+                            </div>
                             <div className="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-[#1A050A] to-transparent pointer-events-none" />
                             {member.year && (
                                 <span className="absolute top-3 left-3 text-[10px] font-sans font-semibold uppercase tracking-wider text-red-300 bg-black/80 backdrop-blur-md border border-red-500/20 px-2 py-0.5 rounded">

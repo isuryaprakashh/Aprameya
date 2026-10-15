@@ -301,17 +301,18 @@ export default function TeamMemberDetail() {
                     alt={member.name}
                     className="w-full h-full object-cover object-top transition-transform duration-700 group-hover:scale-105"
                     onError={(e) => {
-                      (e.currentTarget as HTMLImageElement).src = '/assets/team_avatar_1.png';
+                      (e.currentTarget as HTMLImageElement).style.display = 'none';
+                      const fb = e.currentTarget.parentElement?.querySelector('.detail-fallback-tie') as HTMLElement;
+                      if (fb) fb.style.display = 'flex';
                     }}
                   />
-                ) : (
-                  <div className="w-full h-full flex flex-col items-center justify-center bg-zinc-950 text-zinc-600 p-8">
-                    <FaUserTie className="w-24 h-24 mb-4 text-zinc-700" />
-                    <span className="font-display text-4xl font-bold tracking-wider text-zinc-600">
-                      {member.name.substring(0, 2).toUpperCase()}
-                    </span>
-                  </div>
-                )}
+                ) : null}
+                <div className={`w-full h-full flex flex-col items-center justify-center bg-zinc-950 text-zinc-600 p-8 detail-fallback-tie ${member.image ? 'hidden' : 'flex'}`}>
+                  <FaUserTie className="w-24 h-24 mb-4 text-zinc-700" />
+                  <span className="font-display text-4xl font-bold tracking-wider text-zinc-600">
+                    {member.name.substring(0, 2).toUpperCase()}
+                  </span>
+                </div>
 
                 {/* Badges on Portrait */}
                 <div className="absolute top-4 left-4 right-4 flex items-center justify-between pointer-events-none z-10">

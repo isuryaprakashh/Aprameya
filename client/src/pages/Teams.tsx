@@ -22,32 +22,31 @@ export default function Teams() {
   const [searchTerm, setSearchTerm] = useState('');
   const [, setLocation] = useLocation();
 
-  const { data: dbMembers = [] } = useQuery<TeamMember[]>({
+  const { data: dbMembers, isLoading } = useQuery<TeamMember[]>({
     queryKey: ['/api/teams'],
     queryFn: async () => {
       const baseUrl = import.meta.env.VITE_API_URL || '';
       const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 6000);
+      const timeoutId = setTimeout(() => controller.abort(), 15000);
       try {
         const res = await fetch(`${baseUrl}/api/teams`, { 
           credentials: 'include',
           signal: controller.signal 
         });
         clearTimeout(timeoutId);
-        if (!res.ok) return fallbackTeamMembers as TeamMember[];
+        if (!res.ok) throw new Error('Failed to fetch teams');
         const data = await res.json();
-        return Array.isArray(data) && data.length > 0 ? data : (fallbackTeamMembers as TeamMember[]);
-      } catch {
+        return Array.isArray(data) ? data : [];
+      } catch (err) {
         clearTimeout(timeoutId);
-        return fallbackTeamMembers as TeamMember[];
+        throw err;
       }
     },
-    initialData: fallbackTeamMembers as TeamMember[],
-    staleTime: 60000,
+    staleTime: 30000,
   });
 
   // Use DB members if loaded and non-empty, otherwise use verified fallback data from data.ts
-  const members: TeamMember[] = (dbMembers && dbMembers.length > 0 ? dbMembers : (fallbackTeamMembers as any[]))
+  const members: TeamMember[] = ((dbMembers && dbMembers.length > 0) ? dbMembers : (fallbackTeamMembers as any[]))
     .slice()
     .sort((a, b) => (a.order ?? 999) - (b.order ?? 999));
 
@@ -192,11 +191,16 @@ export default function Teams() {
         </div>
 
         {/* Member Grid Loading & Empty States */}
-        {members.length === 0 ? (
+        {isLoading && members.length === 0 ? (
           <WanderingEyesLoader
             size="md"
             text="SYNCING LABORATORY ROSTER"
             subtext="SCANNING FACULTY MENTORS & DIVISION LEADS"
+          />
+        ) : members.length === 0 ? (
+          <UnderConstruction
+            title="NO PERSONNEL LISTED"
+            description="The laboratory roster is currently being updated. Please check back shortly."
           />
         ) : filteredMembers.length === 0 ? (
           <UnderConstruction
@@ -288,21 +292,22 @@ export default function Teams() {
       >
         <div>
           {/* Portrait Photo Container - VIVID, NATURAL, NO GRAYSCALE */}
-          <div className="relative h-72 sm:h-80 overflow-hidden bg-zinc-950">
+          <div className="relative h-72 sm:h-80 overflow-hidden bg-zinc-950 flex items-center justify-center">
             {member.image ? (
               <img
                 src={member.image}
                 alt={member.name}
                 className="w-full h-full object-cover object-top transition-transform duration-500 group-hover:scale-105"
                 onError={(e) => {
-                  (e.currentTarget as HTMLImageElement).src = '/assets/team_avatar_1.png';
+                  (e.currentTarget as HTMLImageElement).style.display = 'none';
+                  const fb = e.currentTarget.parentElement?.querySelector('.member-fallback-initials') as HTMLElement;
+                  if (fb) fb.style.display = 'flex';
                 }}
               />
-            ) : (
-              <div className="w-full h-full flex items-center justify-center bg-zinc-950 font-display text-4xl font-bold text-zinc-700">
-                {member.name.substring(0, 2).toUpperCase()}
-              </div>
-            )}
+            ) : null}
+            <div className={`w-full h-full items-center justify-center bg-zinc-950 font-display text-4xl font-bold text-zinc-600 member-fallback-initials ${member.image ? 'hidden' : 'flex'}`}>
+              {member.name.substring(0, 2).toUpperCase()}
+            </div>
 
             {/* Top Badges */}
             <div className="absolute top-3 left-3 right-3 flex items-center justify-between pointer-events-none z-10">
