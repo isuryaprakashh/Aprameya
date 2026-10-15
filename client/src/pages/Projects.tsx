@@ -13,26 +13,27 @@ import ChamferedButton from '@/components/ui/ChamferedButton';
 import { motion } from 'framer-motion';
 
 const Projects = () => {
-  const { data: projects = [], isLoading } = useQuery<Project[]>({
+  const { data: dbProjects = [], isLoading } = useQuery<Project[]>({
     queryKey: ['/api/projects'],
     queryFn: async () => {
       const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 5000);
+      const timeoutId = setTimeout(() => controller.abort(), 10000);
       try {
         const baseUrl = import.meta.env.VITE_API_URL || '';
         const res = await fetch(`${baseUrl}/api/projects`, { signal: controller.signal });
         clearTimeout(timeoutId);
-        if (!res.ok) return fallbackProjects;
+        if (!res.ok) return [];
         const data = await res.json();
-        return Array.isArray(data) && data.length > 0 ? data : fallbackProjects;
+        return Array.isArray(data) ? data : [];
       } catch {
         clearTimeout(timeoutId);
-        return fallbackProjects;
+        return [];
       }
     },
-    initialData: fallbackProjects,
-    staleTime: 60000,
+    staleTime: 30000,
   });
+
+  const projects = dbProjects.length > 0 ? dbProjects : fallbackProjects;
 
   const { data: user } = useQuery<any>({ queryKey: ['/api/me'] });
   const [, setLocation] = useLocation();
