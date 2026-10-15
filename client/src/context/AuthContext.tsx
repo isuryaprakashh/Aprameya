@@ -25,13 +25,20 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     } = useQuery<User | null>({
         queryKey: ["/api/me"],
         queryFn: async () => {
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), 4000);
             try {
                 const baseUrl = import.meta.env.VITE_API_URL || "";
-                const res = await fetch(`${baseUrl}/api/me`, { credentials: "include" });
+                const res = await fetch(`${baseUrl}/api/me`, { 
+                    credentials: "include",
+                    signal: controller.signal 
+                });
+                clearTimeout(timeoutId);
                 if (res.status === 401) return null;
                 if (!res.ok) throw new Error("Failed to fetch user");
                 return await res.json();
             } catch (e) {
+                clearTimeout(timeoutId);
                 return null;
             }
         },

@@ -6,6 +6,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { apiRequest } from '@/lib/queryClient';
 import { useToast } from '@/hooks/use-toast';
 import { Event, EventRegistration } from '@/lib/types';
+import { events as fallbackEvents } from '@/lib/data';
 import { useAuth } from '@/context/AuthContext';
 import WanderingEyesLoader from '@/components/WanderingEyesLoader';
 
@@ -23,7 +24,8 @@ export default function EventsView({ handleEdit, handleCreate, handleDelete }: E
 
     const { data: events = [], isLoading } = useQuery<Event[]>({
         queryKey: ['/api/events'],
-        staleTime: 5000,
+        initialData: fallbackEvents as Event[],
+        staleTime: 60000,
     });
 
     const { data: userEventRegistrations = [] } = useQuery<EventRegistration[]>({
@@ -101,7 +103,7 @@ export default function EventsView({ handleEdit, handleCreate, handleDelete }: E
                     )}
                 </div>
 
-                {isLoading ? (
+                {isLoading && events.length === 0 ? (
                     <WanderingEyesLoader
                         size="md"
                         text="FETCHING EVENT ROSTER"

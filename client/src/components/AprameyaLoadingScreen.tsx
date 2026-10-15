@@ -37,12 +37,16 @@ export const AprameyaLoadingScreen = ({
       setProgress(rawProgress);
 
       if (elapsed >= minDuration) {
-        clearInterval(timer);
-        setProgress(100);
-        setTimeout(() => {
-          setIsFinished(true);
-          if (onComplete) onComplete();
-        }, 350);
+        if (onComplete) {
+          clearInterval(timer);
+          setProgress(100);
+          setTimeout(() => {
+            setIsFinished(true);
+            onComplete();
+          }, 350);
+        } else {
+          setProgress(98);
+        }
       }
     }, intervalTime);
 

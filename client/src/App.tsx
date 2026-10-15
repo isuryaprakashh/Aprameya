@@ -61,16 +61,28 @@ const ProtectedRoute = ({ component: Component, roles, ...rest }: ProtectedRoute
 
 function AppContent() {
   const [location] = useLocation();
-  const [isInitialLoading, setIsInitialLoading] = useState(true);
+  const [isInitialLoading, setIsInitialLoading] = useState(() => {
+    if (typeof window !== 'undefined') {
+      return !sessionStorage.getItem('aprameya_intro_completed');
+    }
+    return false;
+  });
   const isStandalone = STANDALONE_ROUTES.includes(location);
   const isDashboard = location.startsWith('/dashboard') || location.startsWith('/profile');
+
+  const handleLoadingComplete = () => {
+    setIsInitialLoading(false);
+    if (typeof window !== 'undefined') {
+      sessionStorage.setItem('aprameya_intro_completed', 'true');
+    }
+  };
 
   return (
     <>
       {isInitialLoading && (
         <AprameyaLoadingScreen
-          minDuration={3000}
-          onComplete={() => setIsInitialLoading(false)}
+          minDuration={1000}
+          onComplete={handleLoadingComplete}
         />
       )}
       <ScrollToTop />

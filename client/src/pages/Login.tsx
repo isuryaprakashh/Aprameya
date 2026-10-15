@@ -7,6 +7,7 @@ import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Eye, EyeOff, Lock, User, Shield, CheckCircle2 } from 'lucide-react';
 import { motion } from 'framer-motion';
 import ChamferedButton from '@/components/ui/ChamferedButton';
+import { queryClient } from '@/lib/queryClient';
 
 const Login = () => {
   const [formData, setFormData] = useState({
@@ -61,6 +62,10 @@ const Login = () => {
       }
 
       const userData = await response.json();
+      queryClient.setQueryData(["/api/me"], userData);
+      if (typeof window !== 'undefined') {
+        sessionStorage.setItem('aprameya_intro_completed', 'true');
+      }
       if (userData.role === 'ADMIN' || userData.role === 'CORE') {
         window.location.href = '/dashboard';
       } else {

@@ -22,19 +22,34 @@ export default function Teams() {
   const [searchTerm, setSearchTerm] = useState('');
   const [, setLocation] = useLocation();
 
-  const { data: dbMembers = [], isLoading } = useQuery<TeamMember[]>({
+  const { data: dbMembers = [] } = useQuery<TeamMember[]>({
     queryKey: ['/api/teams'],
     queryFn: async () => {
       const baseUrl = import.meta.env.VITE_API_URL || '';
-      const res = await fetch(`${baseUrl}/api/teams`, { credentials: 'include' });
-      if (!res.ok) throw new Error('Failed to fetch team members');
-      return res.json();
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 6000);
+      try {
+        const res = await fetch(`${baseUrl}/api/teams`, { 
+          credentials: 'include',
+          signal: controller.signal 
+        });
+        clearTimeout(timeoutId);
+        if (!res.ok) return fallbackTeamMembers as TeamMember[];
+        const data = await res.json();
+        return Array.isArray(data) && data.length > 0 ? data : (fallbackTeamMembers as TeamMember[]);
+      } catch {
+        clearTimeout(timeoutId);
+        return fallbackTeamMembers as TeamMember[];
+      }
     },
-    staleTime: 5000,
+    initialData: fallbackTeamMembers as TeamMember[],
+    staleTime: 60000,
   });
 
   // Use DB members if loaded and non-empty, otherwise use verified fallback data from data.ts
-  const members: TeamMember[] = dbMembers.length > 0 ? dbMembers : (fallbackTeamMembers as any[]);
+  const members: TeamMember[] = (dbMembers && dbMembers.length > 0 ? dbMembers : (fallbackTeamMembers as any[]))
+    .slice()
+    .sort((a, b) => (a.order ?? 999) - (b.order ?? 999));
 
   const isMentor = (m: TeamMember) => {
     const c = (m.category || '').toLowerCase();
@@ -177,7 +192,7 @@ export default function Teams() {
         </div>
 
         {/* Member Grid Loading & Empty States */}
-        {isLoading && dbMembers.length === 0 ? (
+        {members.length === 0 ? (
           <WanderingEyesLoader
             size="md"
             text="SYNCING LABORATORY ROSTER"

@@ -86,9 +86,23 @@ const DEFAULT_TEAM_MEMBERS = [
   }
 ];
 
+// In-memory cache for high-speed delivery of team roster (eliminates 4.5s MongoDB Atlas latency)
+let cachedTeamMembers: any[] | null = null;
+let lastCacheTime = 0;
+const CACHE_TTL_MS = 5 * 60 * 1000; // 5 minutes cache
+
+export const invalidateTeamsCache = () => {
+  cachedTeamMembers = null;
+  lastCacheTime = 0;
+};
+
 // GET /api/teams - List all team members (auto-seeds defaults if empty)
 router.get("/teams", async (_req, res) => {
   try {
+    if (cachedTeamMembers && (Date.now() - lastCacheTime < CACHE_TTL_MS)) {
+      return res.json(cachedTeamMembers);
+    }
+
     let members = await storage.getAllTeamMembers();
 
     if (members.length === 0) {
@@ -99,9 +113,15 @@ router.get("/teams", async (_req, res) => {
       members = await storage.getAllTeamMembers();
     }
 
+    cachedTeamMembers = members;
+    lastCacheTime = Date.now();
+
     res.json(members);
   } catch (error) {
     console.error("Failed to fetch team members:", error);
+    if (cachedTeamMembers) {
+      return res.json(cachedTeamMembers);
+    }
     res.status(500).json({ error: "Failed to fetch team members" });
   }
 });
@@ -119,6 +139,29 @@ router.get("/teams/:id", async (req, res) => {
   }
 });
 
+// POST /api/teams/reorder - Bulk update team member order (Core or Admin)
+router.post("/teams/reorder", isAdminOrCore, async (req, res) => {
+  try {
+    const { orders } = req.body;
+    if (!Array.isArray(orders)) {
+      return res.status(400).json({ error: "orders must be an array of { id, order }" });
+    }
+
+    for (const item of orders) {
+      if (item.id && typeof item.order === 'number') {
+        await storage.updateTeamMember(item.id, { order: item.order });
+      }
+    }
+
+    invalidateTeamsCache();
+    const updatedMembers = await storage.getAllTeamMembers();
+    res.json({ success: true, members: updatedMembers });
+  } catch (error) {
+    console.error("Failed to reorder team members:", error);
+    res.status(500).json({ error: "Failed to reorder team members" });
+  }
+});
+
 // POST /api/teams - Create a new team member (Core or Admin)
 router.post("/teams", isAdminOrCore, async (req, res) => {
   try {
@@ -128,6 +171,7 @@ router.post("/teams", isAdminOrCore, async (req, res) => {
     }
 
     const member = await storage.createTeamMember(parsed.data);
+    invalidateTeamsCache();
     res.status(201).json(member);
   } catch (error) {
     console.error("Failed to create team member:", error);
@@ -148,6 +192,7 @@ const handleUpdateTeamMember = async (req: any, res: any) => {
       return res.status(404).json({ error: "Team member not found" });
     }
 
+    invalidateTeamsCache();
     res.json(updated);
   } catch (error) {
     console.error("Failed to update team member:", error);
@@ -165,6 +210,7 @@ router.delete("/teams/:id", isAdmin, async (req, res) => {
     if (!success) {
       return res.status(404).json({ error: "Team member not found" });
     }
+    invalidateTeamsCache();
     res.json({ success: true, message: "Team member deleted successfully" });
   } catch (error) {
     console.error("Failed to delete team member:", error);

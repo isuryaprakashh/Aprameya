@@ -7,6 +7,7 @@ import { useAuth } from '@/context/AuthContext';
 import { useToast } from '@/hooks/use-toast';
 import { apiRequest } from '@/lib/queryClient';
 import { Event, TicketRegistration as TicketType } from '@/lib/types';
+import { events as fallbackEvents } from '@/lib/data';
 import WanderingEyesLoader from '@/components/WanderingEyesLoader';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -63,6 +64,26 @@ const TicketRegistration = () => {
 
     const { data: event, isLoading: eventLoading, error: eventError } = useQuery<Event>({
         queryKey: [`/api/events/${eventId}`],
+        queryFn: async () => {
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), 5000);
+            try {
+                const res = await fetch(`/api/events/${eventId}`, { signal: controller.signal });
+                clearTimeout(timeoutId);
+                if (!res.ok) {
+                    const fallback = fallbackEvents.find(e => e.id === eventId);
+                    if (fallback) return fallback;
+                    throw new Error('Event not found');
+                }
+                return res.json();
+            } catch (err) {
+                clearTimeout(timeoutId);
+                const fallback = fallbackEvents.find(e => e.id === eventId);
+                if (fallback) return fallback;
+                throw err;
+            }
+        },
+        initialData: () => fallbackEvents.find(e => e.id === eventId),
         enabled: !!eventId,
     });
 
@@ -166,7 +187,7 @@ const TicketRegistration = () => {
         );
     }
 
-    if (eventLoading) {
+    if (eventLoading && !event) {
         return (
             <WanderingEyesLoader
                 fullPage

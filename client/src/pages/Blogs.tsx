@@ -14,15 +14,20 @@ const Blogs = () => {
   const { data: blogPosts = [], isLoading } = useQuery<BlogPost[]>({
     queryKey: ['/api/blogs'],
     queryFn: async () => {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 5000);
       try {
         const baseUrl = import.meta.env.VITE_API_URL || '';
-        const res = await fetch(`${baseUrl}/api/blogs`);
+        const res = await fetch(`${baseUrl}/api/blogs`, { signal: controller.signal });
+        clearTimeout(timeoutId);
         if (!res.ok) return [];
         return res.json();
       } catch {
+        clearTimeout(timeoutId);
         return [];
       }
     },
+    staleTime: 60000,
   });
 
   const [searchTerm, setSearchTerm] = useState('');
