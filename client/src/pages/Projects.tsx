@@ -5,7 +5,7 @@ import { Search, ShieldCheck } from 'lucide-react';
 import ProjectCard from '../components/ProjectCard';
 import ProjectModal from '../components/ProjectModal';
 import UnderConstruction from '../components/UnderConstruction';
-import AprameyaLoader from '../components/AprameyaLoader';
+import WanderingEyesLoader from '../components/WanderingEyesLoader';
 import { Project } from '../lib/types';
 import { Input } from '@/components/ui/input';
 import ChamferedButton from '@/components/ui/ChamferedButton';
@@ -53,9 +53,12 @@ const Projects = () => {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-[var(--bg-body)] flex items-center justify-center">
-        <AprameyaLoader size={40} />
-      </div>
+      <WanderingEyesLoader
+        fullPage
+        size="md"
+        text="SCANNING RESEARCH PROJECTS"
+        subtext="RETRIEVING AUTONOMOUS REPOSITORIES & BLUEPRINTS"
+      />
     );
   }
 

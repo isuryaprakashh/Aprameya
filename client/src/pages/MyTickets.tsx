@@ -13,11 +13,11 @@ import {
     ChevronDown,
     ChevronUp,
     Download,
-    Loader2,
     QrCode,
     CheckCircle2,
 } from 'lucide-react';
 import ChamferedButton from '@/components/ui/ChamferedButton';
+import WanderingEyesLoader from '@/components/WanderingEyesLoader';
 
 const MyTickets = () => {
     const { user } = useAuth();
@@ -55,9 +55,12 @@ const MyTickets = () => {
 
     if (isLoading) {
         return (
-            <div className="min-h-screen bg-black flex items-center justify-center">
-                <Loader2 className="w-8 h-8 animate-spin text-red-400" />
-            </div>
+            <WanderingEyesLoader
+                fullPage
+                size="md"
+                text="RETRIEVING EVENT PASSES"
+                subtext="FETCHING SECURE TICKET CRYPTO-HASHES"
+            />
         );
     }
 

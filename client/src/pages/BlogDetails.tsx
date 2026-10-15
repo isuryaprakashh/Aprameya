@@ -1,7 +1,8 @@
 import { useRoute } from "wouter";
 import { useQuery } from "@tanstack/react-query";
 import { BlogPost } from "@/lib/types";
-import { Loader2, Calendar, User, ArrowLeft, Share2 } from "lucide-react";
+import { Calendar, User, ArrowLeft, Share2 } from "lucide-react";
+import WanderingEyesLoader from "@/components/WanderingEyesLoader";
 import { Button } from "@/components/ui/button";
 import { Link } from "wouter";
 import { motion } from "framer-motion";
@@ -18,9 +19,12 @@ const BlogDetails = () => {
 
     if (isLoading) {
         return (
-            <div className="min-h-screen bg-[var(--bg-body)] flex items-center justify-center">
-                <Loader2 className="w-8 h-8 animate-spin text-[hsl(var(--accent))]" />
-            </div>
+            <WanderingEyesLoader
+                fullPage
+                size="md"
+                text="PARSING RESEARCH ARTICLE"
+                subtext="LOADING EDITORIAL TELEMETRY"
+            />
         );
     }
 
