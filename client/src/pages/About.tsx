@@ -7,7 +7,6 @@ import {
   Star
 } from 'lucide-react';
 import { motion } from 'framer-motion';
-import OperativeRoster from '../components/OperativeRoster';
 
 const About = () => {
   return (
@@ -168,22 +167,6 @@ const About = () => {
               </div>
             </motion.div>
           </div>
-        </div>
-      </section>
-
-      {/* Operative Roster */}
-      <section className="py-16 px-6 md:px-12 bg-black border-t border-red-500/10">
-        <div className="max-w-7xl mx-auto">
-          <div className="mb-8">
-            <p className="text-[11px] font-sans font-semibold uppercase tracking-[0.15em] text-red-400 mb-2">
-              Leadership & Members
-            </p>
-            <h2 className="text-3xl md:text-4xl text-white tracking-tight font-display font-bold">
-              <span className="text-[#94A3B8] font-normal">Lab Leads &</span>{" "}
-              <span>Faculty Mentors</span>
-            </h2>
-          </div>
-          <OperativeRoster />
         </div>
       </section>
 
