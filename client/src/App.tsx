@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Route, Switch, Redirect, useLocation } from "wouter";
 import { Toaster } from "@/components/ui/toaster";
 
@@ -6,6 +7,7 @@ import { AuthProvider, useAuth } from "@/context/AuthContext";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 import ScrollToTop from "./components/ScrollToTop";
+import AprameyaLoadingScreen from "./components/AprameyaLoadingScreen";
 
 import DashboardRouter from "./components/DashboardRouter";
 import Home from "./pages/Home";
@@ -43,7 +45,7 @@ const ProtectedRoute = ({ component: Component, roles, ...rest }: ProtectedRoute
   const { user, isLoading } = useAuth();
 
   if (isLoading) {
-    return <div className="flex justify-center items-center h-64">Loading...</div>;
+    return <AprameyaLoadingScreen minDuration={1000} message="VERIFYING LABORATORY ACCESS CLEARANCE..." />;
   }
 
   if (!user) {
@@ -59,11 +61,18 @@ const ProtectedRoute = ({ component: Component, roles, ...rest }: ProtectedRoute
 
 function AppContent() {
   const [location] = useLocation();
+  const [isInitialLoading, setIsInitialLoading] = useState(true);
   const isStandalone = STANDALONE_ROUTES.includes(location);
   const isDashboard = location.startsWith('/dashboard') || location.startsWith('/profile');
 
   return (
     <>
+      {isInitialLoading && (
+        <AprameyaLoadingScreen
+          minDuration={3000}
+          onComplete={() => setIsInitialLoading(false)}
+        />
+      )}
       <ScrollToTop />
 
       {/* Standalone routes (no header/footer) */}

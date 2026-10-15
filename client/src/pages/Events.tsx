@@ -13,6 +13,7 @@ import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import UnderConstruction from '../components/UnderConstruction';
+import AprameyaLoader from '../components/AprameyaLoader';
 import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
 import { useAuth } from '@/context/AuthContext';
@@ -20,7 +21,7 @@ import ChamferedButton from '@/components/ui/ChamferedButton';
 
 const Events = () => {
   const { toast } = useToast();
-  const { data: events = [] } = useQuery<Event[]>({
+  const { data: events = [], isLoading } = useQuery<Event[]>({
     queryKey: ['/api/events'],
   });
   const { user } = useAuth();
@@ -96,6 +97,14 @@ const Events = () => {
   });
 
   const eventTypes = ['all', ...Array.from(new Set(events.map(e => e.type)))];
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-[var(--bg-body)] flex items-center justify-center">
+        <AprameyaLoader size={44} showText={true} />
+      </div>
+    );
+  }
 
   return (
     <div className="fadeIn min-h-screen bg-[var(--bg-body)]">
