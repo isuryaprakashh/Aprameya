@@ -126,27 +126,17 @@ export const Recruitment: React.FC = () => {
           {DOMAIN_ROLES.map((role, idx) => (
             <div
               key={idx}
-              className="p-6 rounded-[var(--r-3)] border border-hairline bg-surface-1 flex flex-col justify-between hover:border-hairline-2 transition-colors duration-fast"
+              className="p-6 rounded-[var(--r-3)] border border-hairline bg-surface-1 flex flex-col hover:border-hairline-2 transition-colors duration-fast"
             >
-              <div>
-                <div className="flex items-center justify-between mb-3">
-                  <Tag size="dense">{role.track}</Tag>
-                </div>
-                <h3 className="font-sans font-medium text-[18px] text-paper tracking-[-0.01em] mb-2">
-                  {role.domain}
-                </h3>
-                <p className="font-sans text-[13px] text-text-2 leading-relaxed">
-                  {role.desc}
-                </p>
+              <div className="flex items-center justify-between mb-3">
+                <Tag size="dense">{role.track}</Tag>
               </div>
-
-              <div className="pt-6 mt-6 border-t border-hairline">
-                <Link href="/recruitment/apply" className="w-full block">
-                  <Button variant="secondary" size="sm" className="w-full">
-                    Apply for this domain
-                  </Button>
-                </Link>
-              </div>
+              <h3 className="font-sans font-medium text-[18px] text-paper tracking-[-0.01em] mb-2">
+                {role.domain}
+              </h3>
+              <p className="font-sans text-[13px] text-text-2 leading-relaxed">
+                {role.desc}
+              </p>
             </div>
           ))}
         </div>
