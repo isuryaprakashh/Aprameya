@@ -112,7 +112,7 @@ export default function TeamMemberDetail() {
           <User className="size-10 text-signal mx-auto mb-4" />
           <h1 className="text-xl font-medium text-paper mb-2">Member not found</h1>
           <p className="text-sm text-text-2 mb-6">
-            The requested team member profile does not exist in the active roster.
+            The requested team member profile does not exist.
           </p>
           <Link href="/team">
             <Button variant="primary">Return to team</Button>
@@ -145,7 +145,7 @@ export default function TeamMemberDetail() {
         <div className="flex items-center gap-2 text-xs text-mute">
           <Link href="/team" className="hover:text-paper transition-colors flex items-center gap-1.5">
             <ArrowLeft className="size-3.5" />
-            <span>Team roster</span>
+            <span>Team</span>
           </Link>
           <span className="text-hairline">/</span>
           <span className="text-paper truncate max-w-[200px]">{member.name}</span>
@@ -231,10 +231,10 @@ export default function TeamMemberDetail() {
               </a>
             )}
             {email && (
-              <a href={`mailto:${email}`}>
-                <Button variant="secondary" size="sm" className="gap-2 text-xs">
-                  <Mail className="size-3.5" />
-                  <span>Email</span>
+              <a href={`mailto:${email}`} className="max-w-full">
+                <Button variant="secondary" size="sm" className="gap-2 text-xs max-w-full">
+                  <Mail className="size-3.5 shrink-0" />
+                  <span className="truncate">{email}</span>
                 </Button>
               </a>
             )}

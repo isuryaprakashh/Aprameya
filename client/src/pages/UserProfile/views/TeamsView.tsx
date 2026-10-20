@@ -455,7 +455,7 @@ export default function TeamsView() {
               onClick={() => setViewMode('list')}
               className="text-xs text-[var(--text-secondary)] hover:text-[hsl(var(--accent))] mb-2 -ml-2 gap-1.5"
             >
-              <FaArrowLeft className="w-3 h-3" /> Back to Team Roster
+              <FaArrowLeft className="w-3 h-3" /> Back to Team
             </Button>
             <h2 className="text-2xl sm:text-3xl font-display font-bold text-[var(--text-primary)]">
               {isEditing ? `Edit Team Member: ${formData.name}` : 'Add New Team Member'}
@@ -828,7 +828,7 @@ export default function TeamsView() {
       {isLoading && teamMembers.length === 0 ? (
         <div className="py-16 flex flex-col items-center justify-center gap-2">
           <Ring size={20} />
-          <span className="text-xs text-mute font-sans">Loading team roster...</span>
+          <span className="text-xs text-mute font-sans">Loading team...</span>
         </div>
       ) : filteredMembers.length === 0 ? (
         <div className="p-12 text-center rounded-[var(--r-lg)] border border-[var(--border)] bg-[var(--surface)]">
