@@ -56,6 +56,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         },
         onSuccess: (user: User) => {
             queryClient.setQueryData(["/api/me"], user);
+            queryClient.invalidateQueries({ queryKey: ["/api/me"] });
             toast({
                 title: "Welcome back!",
                 description: `Logged in as ${user.username}`,
@@ -80,6 +81,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         },
         onSuccess: (user: User) => {
             queryClient.setQueryData(["/api/me"], user);
+            queryClient.invalidateQueries({ queryKey: ["/api/me"] });
             toast({
                 title: "Welcome!",
                 description: "Account created successfully",
@@ -100,6 +102,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         },
         onSuccess: () => {
             queryClient.setQueryData(["/api/me"], null);
+            queryClient.invalidateQueries({ queryKey: ["/api/me"] });
             toast({
                 title: "Logged out",
                 description: "See you soon!",

@@ -6,9 +6,11 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { queryClient } from '@/lib/queryClient';
+import { useAuth } from '@/context/AuthContext';
 
 export default function Login() {
   const [, setLocation] = useLocation();
+  const { user } = useAuth();
   const [formData, setFormData] = useState({
     username: '',
     password: '',
@@ -17,6 +19,12 @@ export default function Login() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
+
+  useEffect(() => {
+    if (user) {
+      setLocation('/dashboard');
+    }
+  }, [user, setLocation]);
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
@@ -57,13 +65,12 @@ export default function Login() {
       }
 
       const userData = await response.json();
-      await queryClient.invalidateQueries({ queryKey: ['/api/user'] });
+      
+      // Update cache immediately so user is visible across Header, Dock, ProtectedRoute without requiring page reload
+      queryClient.setQueryData(['/api/me'], userData);
+      await queryClient.invalidateQueries({ queryKey: ['/api/me'] });
 
-      if (userData.role === 'admin') {
-        setLocation('/dashboard');
-      } else {
-        setLocation('/dashboard');
-      }
+      setLocation('/dashboard');
     } catch {
       setError('Connection failed. Please verify the server is running.');
     } finally {
