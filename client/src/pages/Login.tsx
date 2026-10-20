@@ -22,7 +22,7 @@ export default function Login() {
 
   useEffect(() => {
     if (user) {
-      setLocation('/dashboard');
+      setLocation('/');
     }
   }, [user, setLocation]);
 
@@ -70,7 +70,7 @@ export default function Login() {
       queryClient.setQueryData(['/api/me'], userData);
       await queryClient.invalidateQueries({ queryKey: ['/api/me'] });
 
-      setLocation('/dashboard');
+      setLocation('/');
     } catch {
       setError('Connection failed. Please verify the server is running.');
     } finally {
