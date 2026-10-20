@@ -79,13 +79,13 @@ export default function Login() {
   };
 
   return (
-    <main className="min-h-screen bg-ink flex items-center justify-center p-6 text-paper">
+    <main className="flex-1 min-h-[calc(100dvh-64px)] flex flex-col items-center justify-center p-4 sm:p-6 pb-24 text-paper">
       {/* 400px Centered Card (§8.10) */}
-      <div className="w-full max-w-[400px] border border-hairline p-8 bg-surface-1">
+      <div className="w-full max-w-[400px] border border-hairline p-6 sm:p-8 bg-surface-1 -mt-16 sm:-mt-24 shadow-sm">
         {/* Header */}
         <div className="flex flex-col items-center text-center mb-6">
           <Link href="/" className="mb-4 inline-block">
-            <Logo size="md" color="light" showText={false} />
+            <Logo size="md" showText={false} />
           </Link>
           <h1 className="text-2xl font-medium tracking-tight text-paper">
             Welcome back
