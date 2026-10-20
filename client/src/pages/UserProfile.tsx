@@ -326,6 +326,7 @@ const UserProfile = () => {
         </Suspense>;
 
       case 'teams':
+        if (currentUser?.role !== 'ADMIN') return null;
         return <Suspense fallback={<div className="py-20 flex flex-col items-center justify-center gap-2"><Ring size={20} /><span className="text-xs text-mute font-sans">Loading team...</span></div>}>
           <TeamsView />
         </Suspense>;

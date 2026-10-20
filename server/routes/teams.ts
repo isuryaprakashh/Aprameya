@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { storage } from "../storage";
 import { insertTeamMemberSchema } from "../shared/schema";
-import { isAdminOrCore, isAdmin } from "../middleware/auth";
+import { isAdmin } from "../middleware/auth";
 
 const router = Router();
 
@@ -155,8 +155,8 @@ router.get("/teams/:id", async (req, res) => {
   }
 });
 
-// POST /api/teams/reorder - Bulk update team member order (Core or Admin)
-router.post("/teams/reorder", isAdminOrCore, async (req, res) => {
+// POST /api/teams/reorder - Bulk update team member order (Admin only)
+router.post("/teams/reorder", isAdmin, async (req, res) => {
   try {
     const { orders } = req.body;
     if (!Array.isArray(orders)) {
@@ -178,8 +178,8 @@ router.post("/teams/reorder", isAdminOrCore, async (req, res) => {
   }
 });
 
-// POST /api/teams - Create a new team member (Core or Admin)
-router.post("/teams", isAdminOrCore, async (req, res) => {
+// POST /api/teams - Create a new team member (Admin only)
+router.post("/teams", isAdmin, async (req, res) => {
   try {
     const parsed = insertTeamMemberSchema.safeParse(req.body);
     if (!parsed.success) {
@@ -195,7 +195,7 @@ router.post("/teams", isAdminOrCore, async (req, res) => {
   }
 });
 
-// PUT / PATCH /api/teams/:id - Update existing team member
+// PUT / PATCH /api/teams/:id - Update existing team member (Admin only)
 const handleUpdateTeamMember = async (req: any, res: any) => {
   try {
     const parsed = insertTeamMemberSchema.partial().safeParse(req.body);
@@ -216,8 +216,8 @@ const handleUpdateTeamMember = async (req: any, res: any) => {
   }
 };
 
-router.put("/teams/:id", isAdminOrCore, handleUpdateTeamMember);
-router.patch("/teams/:id", isAdminOrCore, handleUpdateTeamMember);
+router.put("/teams/:id", isAdmin, handleUpdateTeamMember);
+router.patch("/teams/:id", isAdmin, handleUpdateTeamMember);
 
 // DELETE /api/teams/:id - Remove team member (Admin only)
 router.delete("/teams/:id", isAdmin, async (req, res) => {

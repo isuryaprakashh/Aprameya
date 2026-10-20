@@ -47,6 +47,7 @@ import { useToast } from '@/hooks/use-toast';
 import { Ring } from '@/components/ui/ring';
 import { FormActions } from '@/components/ui/FormActions';
 import { compressImage } from '@/lib/imageUtils';
+import { useAuth } from '@/context/AuthContext';
 
 const CATEGORIES = ['All', 'Club Leads', 'Mentors', 'Advisors'];
 const FORM_CATEGORIES = ['Club Leads', 'Mentors', 'Advisors'];
@@ -56,6 +57,9 @@ const PRESET_AVATARS = [
 ];
 
 export default function TeamsView() {
+  const { user } = useAuth();
+  const isAdmin = user?.role === 'ADMIN';
+
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -63,6 +67,17 @@ export default function TeamsView() {
   // View state: 'list' | 'editor'
   const [viewMode, setViewMode] = useState<'list' | 'editor'>('list');
   const [searchTerm, setSearchTerm] = useState('');
+
+  if (!isAdmin) {
+    return (
+      <div className="p-12 text-center rounded-[var(--r-lg)] border border-hairline bg-surface-1">
+        <h3 className="font-display font-medium text-lg text-paper mb-2">Access Restricted</h3>
+        <p className="text-xs text-mute font-mono">
+          Only administrators have permission to edit and manage team members data.
+        </p>
+      </div>
+    );
+  }
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [qrModalMember, setQrModalMember] = useState<TeamMember | null>(null);
   const [copiedLink, setCopiedLink] = useState(false);

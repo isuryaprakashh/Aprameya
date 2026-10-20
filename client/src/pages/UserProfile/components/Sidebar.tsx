@@ -55,12 +55,12 @@ const SidebarContent = ({
             ? [
                 { id: 'overview', label: 'Overview', icon: LayoutDashboard },
                 { id: 'users', label: 'Users & Roles', icon: Users },
+                { id: 'teams', label: 'Team', icon: Users },
               ]
             : []),
           ...(isCore ? [{ id: 'overview', label: 'Overview', icon: LayoutDashboard }] : []),
           { id: 'projects', label: 'Projects', icon: FolderGit2 },
           { id: 'events', label: 'Events', icon: Calendar },
-          { id: 'teams', label: 'Team', icon: Users },
           { id: 'blogs', label: 'Blogs', icon: BookOpen },
           { id: 'recruitment', label: 'Applications', icon: UserPlus },
           { id: 'scan', label: 'Scan QR', icon: QrCode },
