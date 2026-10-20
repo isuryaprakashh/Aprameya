@@ -1,10 +1,13 @@
-import { useState } from 'react';
-import { Link } from 'wouter';
-import Logo from '../components/icons/Logo';
+import React, { useState } from 'react';
+import { Link, useLocation } from 'wouter';
+import Logo from '@/components/icons/Logo';
 import { Eye, EyeOff } from 'lucide-react';
-import ChamferedButton from '@/components/ui/ChamferedButton';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 
-const Signup = () => {
+export default function Signup() {
+  const [, setLocation] = useLocation();
   const [formData, setFormData] = useState({
     collegeId: '',
     fullName: '',
@@ -35,7 +38,7 @@ const Signup = () => {
     const cleanCollegeId = formData.collegeId.trim();
 
     if (!cleanCollegeId) {
-      setError('Please enter your College ID Number (Roll Number)');
+      setError('Please enter your College ID number');
       setIsLoading(false);
       return;
     }
@@ -60,194 +63,191 @@ const Signup = () => {
 
     try {
       const baseUrl = import.meta.env.VITE_API_URL || '';
-      const response = await fetch(`${baseUrl}/api/register`, {
+      const response = await fetch(`${baseUrl}/api/signup`, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
         body: JSON.stringify({
           username: cleanCollegeId,
-          rollNumber: cleanCollegeId,
-          display_name: formData.fullName.trim() || cleanCollegeId,
-          email: formData.email.trim().toLowerCase(),
           password: formData.password,
+          email: formData.email.trim(),
+          name: formData.fullName.trim(),
+          role: 'aspirant',
         }),
       });
 
       if (!response.ok) {
         const errorData = await response.json();
-        setError(errorData.error || 'Failed to sign up');
+        setError(errorData.error || 'Failed to create account. User may already exist.');
         return;
       }
 
-      window.location.href =
-        '/login?message=Account created successfully! Please log in with your College ID.';
+      setLocation('/login?message=Account+created+successfully.+Please+sign+in.');
     } catch {
-      setError('Network error. Please try again.');
+      setError('Connection failed. Please verify the server is running.');
     } finally {
       setIsLoading(false);
     }
   };
 
   return (
-    <main className="min-h-screen flex items-center justify-center px-6 py-24 bg-bg text-text">
-      {/* Centered 400px card (Section 5.8) */}
-      <div className="w-full max-w-[420px] rounded-lg border border-border p-8 bg-surface">
+    <main className="min-h-screen bg-ink flex items-center justify-center p-6 text-paper">
+      {/* 400px Centered Card (§8.10) */}
+      <div className="w-full max-w-[400px] border border-hairline p-8 bg-surface-1">
         <div className="flex flex-col items-center text-center mb-6">
           <Link href="/" className="mb-4 inline-block">
             <Logo size="md" color="light" showText={false} />
           </Link>
-          <h2 className="font-display font-medium text-2xl tracking-tight text-text mb-1">
-            Create account
-          </h2>
-          <p className="text-xs text-text-3 font-mono">
-            DEFAULT ASPIRANT ROLE · PORTAL ACCESS
+          <h1 className="text-2xl font-medium tracking-tight text-paper">
+            Create your account
+          </h1>
+          <p className="mt-1 text-xs text-mute font-sans">
+            Aspirant access for events, workshops and recruitment
           </p>
         </div>
 
         {error && (
-          <div className="mb-5 p-3 rounded-md border border-red-line bg-red-soft text-xs text-red-text font-body">
+          <div className="mb-5 p-3 border border-signal-line bg-signal-soft text-xs text-signal-text font-sans">
             {error}
           </div>
         )}
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-xs font-body font-medium text-text mb-1.5" htmlFor="collegeId">
-              College ID Number (Roll No)
-            </label>
-            <input
+            <Label htmlFor="collegeId" className="text-xs text-mute">
+              College ID number (Roll No)
+            </Label>
+            <Input
               id="collegeId"
               type="text"
               required
               value={formData.collegeId}
               onChange={handleInputChange}
               placeholder="e.g. 2300049169"
-              className="w-full h-[44px] px-3.5 rounded-md border border-border-strong bg-transparent text-sm text-text placeholder:text-text-3 focus:outline-none focus:border-focus-ring font-mono"
+              className="mt-1.5 font-mono"
             />
           </div>
 
           <div>
-            <label className="block text-xs font-body font-medium text-text mb-1.5" htmlFor="fullName">
-              Full Name
-            </label>
-            <input
+            <Label htmlFor="fullName" className="text-xs text-mute">
+              Full name
+            </Label>
+            <Input
               id="fullName"
               type="text"
               required
               value={formData.fullName}
               onChange={handleInputChange}
               placeholder="e.g. Surya Prakash"
-              className="w-full h-[44px] px-3.5 rounded-md border border-border-strong bg-transparent text-sm text-text placeholder:text-text-3 focus:outline-none focus:border-focus-ring"
+              className="mt-1.5"
             />
           </div>
 
           <div>
-            <label className="block text-xs font-body font-medium text-text mb-1.5" htmlFor="email">
-              College Email Address
-            </label>
-            <input
+            <Label htmlFor="email" className="text-xs text-mute">
+              College email address
+            </Label>
+            <Input
               id="email"
               type="email"
               required
               value={formData.email}
               onChange={handleInputChange}
               placeholder="id@kluniversity.in"
-              className="w-full h-[44px] px-3.5 rounded-md border border-border-strong bg-transparent text-sm text-text placeholder:text-text-3 focus:outline-none focus:border-focus-ring"
+              className="mt-1.5"
             />
           </div>
 
           <div>
-            <label className="block text-xs font-body font-medium text-text mb-1.5" htmlFor="password">
+            <Label htmlFor="password" className="text-xs text-mute">
               Password
-            </label>
-            <div className="relative">
-              <input
+            </Label>
+            <div className="relative mt-1.5">
+              <Input
                 id="password"
                 type={showPassword ? 'text' : 'password'}
                 required
                 value={formData.password}
                 onChange={handleInputChange}
                 placeholder="At least 6 characters"
-                className="w-full h-[44px] pl-3.5 pr-10 rounded-md border border-border-strong bg-transparent text-sm text-text placeholder:text-text-3 focus:outline-none focus:border-focus-ring"
+                className="pr-10"
               />
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-text-3 hover:text-text cursor-pointer"
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-mute hover:text-paper cursor-pointer"
                 aria-label="Toggle password visibility"
               >
-                {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                {showPassword ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
               </button>
             </div>
           </div>
 
           <div>
-            <label className="block text-xs font-body font-medium text-text mb-1.5" htmlFor="confirmPassword">
-              Confirm Password
-            </label>
-            <div className="relative">
-              <input
+            <Label htmlFor="confirmPassword" className="text-xs text-mute">
+              Confirm password
+            </Label>
+            <div className="relative mt-1.5">
+              <Input
                 id="confirmPassword"
                 type={showConfirmPassword ? 'text' : 'password'}
                 required
                 value={formData.confirmPassword}
                 onChange={handleInputChange}
                 placeholder="Repeat password"
-                className="w-full h-[44px] pl-3.5 pr-10 rounded-md border border-border-strong bg-transparent text-sm text-text placeholder:text-text-3 focus:outline-none focus:border-focus-ring"
+                className="pr-10"
               />
               <button
                 type="button"
                 onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-text-3 hover:text-text cursor-pointer"
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-mute hover:text-paper cursor-pointer"
                 aria-label="Toggle confirm password visibility"
               >
-                {showConfirmPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                {showConfirmPassword ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
               </button>
             </div>
           </div>
 
-          <div className="flex items-start gap-2 pt-2">
+          <div className="flex items-start gap-2 pt-1">
             <input
               id="agreeToTerms"
               type="checkbox"
               checked={formData.agreeToTerms}
               onChange={handleInputChange}
-              className="mt-1 w-4 h-4 accent-red cursor-pointer"
+              className="mt-1 size-3.5 accent-signal cursor-pointer"
             />
-            <label htmlFor="agreeToTerms" className="text-xs text-text-2 leading-relaxed cursor-pointer">
-              I agree to adhere to the Aprameya club research ethics and laboratory policies.
+            <label htmlFor="agreeToTerms" className="text-xs text-text-2 leading-relaxed cursor-pointer font-sans">
+              I agree to adhere to Aprameya ASC research ethics and laboratory policies.
             </label>
           </div>
 
           <div className="pt-2">
-            <ChamferedButton
+            <Button
               type="submit"
               variant="primary"
               size="lg"
               className="w-full"
-              isLoading={isLoading}
+              loading={isLoading}
             >
               Create account
-            </ChamferedButton>
+            </Button>
           </div>
         </form>
 
-        <div className="mt-6 pt-6 border-t border-border text-center space-y-2">
-          <p className="text-xs text-text-2">
+        <div className="mt-6 pt-6 border-t border-hairline text-center space-y-2 text-xs">
+          <p className="text-text-2">
             Already have an account?{' '}
             <Link href="/login">
-              <span className="text-text font-medium hover:underline cursor-pointer">
+              <span className="text-paper font-medium hover:underline cursor-pointer">
                 Sign in
               </span>
             </Link>
           </p>
-          <p className="text-[11px] font-mono text-text-3">
+          <p className="text-mute">
             New aspirant?{' '}
             <Link href="/recruitment">
-              <span className="text-red-text hover:underline cursor-pointer">
-                Apply for recruitment →
+              <span className="text-signal-text hover:underline cursor-pointer">
+                Apply for recruitment
               </span>
             </Link>
           </p>
@@ -255,6 +255,4 @@ const Signup = () => {
       </div>
     </main>
   );
-};
-
-export default Signup;
+}

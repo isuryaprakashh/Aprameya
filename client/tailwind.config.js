@@ -5,55 +5,88 @@ export default {
     theme: {
         extend: {
             colors: {
-                bg: "var(--bg)",
-                surface: "var(--surface)",
-                "surface-2": "var(--surface-2)",
-                text: "var(--text)",
-                "text-2": "var(--text-2)",
-                "text-3": "var(--text-3)",
-                border: "var(--border)",
-                "border-strong": "var(--border-strong)",
-                red: {
-                    DEFAULT: "var(--red)",
-                    hover: "var(--red-hover)",
-                    text: "var(--red-text)",
-                    soft: "var(--red-soft)",
-                    line: "var(--red-line)",
+                // DESIGN.md v3 Tokens
+                ink: "var(--ink)",
+                paper: "var(--paper)",
+                surface: {
+                    DEFAULT: "var(--surface-1)",
+                    1: "var(--surface-1)",
+                    2: "var(--surface-2)",
+                    3: "var(--surface-3)",
                 },
-                success: {
-                    DEFAULT: "var(--success)",
-                    soft: "var(--success-soft)",
+                text: {
+                    DEFAULT: "var(--paper)",
+                    2: "var(--text-2)",
+                    mute: "var(--mute)",
+                    disabled: "var(--text-disabled)",
                 },
-                warning: {
-                    DEFAULT: "var(--warning)",
-                    soft: "var(--warning-soft)",
+                hairline: {
+                    DEFAULT: "var(--hairline)",
+                    2: "var(--hairline-2)",
+                    3: "var(--hairline-3)",
                 },
-                info: {
-                    DEFAULT: "var(--info)",
-                    soft: "var(--info-soft)",
+                signal: {
+                    DEFAULT: "var(--signal)",
+                    hover: "var(--signal-hover)",
+                    press: "var(--signal-press)",
+                    text: "var(--signal-text)",
+                    soft: "var(--signal-soft)",
+                    line: "var(--signal-line)",
                 },
                 invert: {
                     bg: "var(--invert-bg)",
                     text: "var(--invert-text)",
                 },
-                // Shadcn / generic mappings
-                background: "var(--bg)",
-                foreground: "var(--text)",
+                ok: {
+                    DEFAULT: "var(--ok)",
+                    soft: "var(--ok-soft)",
+                },
+                warn: {
+                    DEFAULT: "var(--warn)",
+                    soft: "var(--warn-soft)",
+                },
+                info: {
+                    DEFAULT: "var(--info)",
+                    soft: "var(--info-soft)",
+                },
+
+                // Backward-compatibility aliases
+                bg: "var(--ink)",
+                "text-3": "var(--mute)",
+                border: "var(--hairline)",
+                "border-strong": "var(--hairline-2)",
+                red: {
+                    DEFAULT: "var(--signal)",
+                    hover: "var(--signal-hover)",
+                    text: "var(--signal-text)",
+                    soft: "var(--signal-soft)",
+                    line: "var(--signal-line)",
+                },
+                success: {
+                    DEFAULT: "var(--ok)",
+                    soft: "var(--ok-soft)",
+                },
+                warning: {
+                    DEFAULT: "var(--warn)",
+                    soft: "var(--warn-soft)",
+                },
+                background: "var(--ink)",
+                foreground: "var(--paper)",
                 card: {
-                    DEFAULT: "var(--surface)",
-                    foreground: "var(--text)",
+                    DEFAULT: "var(--surface-1)",
+                    foreground: "var(--paper)",
                 },
                 popover: {
                     DEFAULT: "var(--surface-2)",
-                    foreground: "var(--text)",
+                    foreground: "var(--paper)",
                 },
                 primary: {
-                    DEFAULT: "var(--red)",
-                    foreground: "var(--on-red)",
+                    DEFAULT: "var(--signal)",
+                    foreground: "var(--on-signal)",
                 },
                 secondary: {
                     DEFAULT: "var(--surface-2)",
-                    foreground: "var(--text)",
+                    foreground: "var(--paper)",
                 },
                 muted: {
                     DEFAULT: "var(--surface-2)",
@@ -61,34 +94,66 @@ export default {
                 },
                 accent: {
                     DEFAULT: "var(--surface-2)",
-                    foreground: "var(--text)",
+                    foreground: "var(--paper)",
                 },
                 destructive: {
-                    DEFAULT: "var(--red)",
-                    foreground: "var(--on-red)",
+                    DEFAULT: "var(--signal)",
+                    foreground: "var(--on-signal)",
                 },
-                ring: "var(--focus-ring)",
-                input: "var(--border-strong)",
+                ring: "var(--focus)",
+                input: "var(--hairline-2)",
             },
             borderRadius: {
-                sm: "6px",
-                md: "10px",
-                lg: "14px",
+                1: "var(--r-1)",
+                2: "var(--r-2)",
+                3: "var(--r-3)",
+                4: "var(--r-4)",
+                5: "var(--r-5)",
+                sm: "var(--r-1)",
+                md: "var(--r-2)",
+                lg: "var(--r-3)",
                 full: "999px",
             },
             fontFamily: {
-                sans: ["'Inter'", "system-ui", "sans-serif"],
-                display: ["'Space Grotesk'", "system-ui", "sans-serif"],
-                body: ["'Inter'", "system-ui", "sans-serif"],
+                sans: ["'Bricolage Grotesque'", "'Hanken Grotesk'", "system-ui", "sans-serif"],
+                display: ["'Bricolage Grotesque'", "'Hanken Grotesk'", "system-ui", "sans-serif"],
+                body: ["'Bricolage Grotesque'", "'Hanken Grotesk'", "system-ui", "sans-serif"],
                 mono: ["'JetBrains Mono'", "ui-monospace", "monospace"],
             },
+            fontSize: {
+                display: "var(--fs-display)",
+                h1: "var(--fs-h1)",
+                h2: "var(--fs-h2)",
+                h3: "var(--fs-h3)",
+                lead: "var(--fs-lead)",
+                data: "var(--fs-data)",
+                "data-lg": "var(--fs-data-lg)",
+            },
             transitionTimingFunction: {
-                DEFAULT: "cubic-bezier(0.2, 0, 0, 1)",
+                out: "var(--ease-out)",
+                in: "var(--ease-in)",
+                inout: "var(--ease-inout)",
+                snap: "var(--ease-snap)",
+                DEFAULT: "var(--ease-out)",
             },
             transitionDuration: {
-                fast: "120ms",
-                base: "200ms",
-                slow: "400ms",
+                instant: "80ms",
+                fast: "140ms",
+                base: "220ms",
+                slow: "360ms",
+            },
+            zIndex: {
+                sticky: "50",
+                dock: "60",
+                dropdown: "70",
+                sheet: "80",
+                dialog: "90",
+                toast: "100",
+                palette: "110",
+            },
+            maxWidth: {
+                container: "1200px",
+                prose: "66ch",
             },
             keyframes: {
                 "accordion-down": {
@@ -105,8 +170,8 @@ export default {
                 },
             },
             animation: {
-                "accordion-down": "accordion-down 0.2s cubic-bezier(0.2, 0, 0, 1)",
-                "accordion-up": "accordion-up 0.2s cubic-bezier(0.2, 0, 0, 1)",
+                "accordion-down": "accordion-down 0.22s var(--ease-inout)",
+                "accordion-up": "accordion-up 0.22s var(--ease-inout)",
                 "live-pulse": "live-pulse 1.6s ease-in-out infinite",
             },
         },

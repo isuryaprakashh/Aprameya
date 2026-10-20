@@ -44,7 +44,9 @@ import { TeamMember } from '@/lib/types';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { apiRequest } from '@/lib/queryClient';
 import { useToast } from '@/hooks/use-toast';
-import WanderingEyesLoader from '@/components/WanderingEyesLoader';
+import { Ring } from '@/components/ui/ring';
+import { FormActions } from '@/components/ui/FormActions';
+import { compressImage } from '@/lib/imageUtils';
 
 const CATEGORIES = ['All', 'Club Leads', 'Mentors', 'Advisors'];
 const FORM_CATEGORIES = ['Club Leads', 'Mentors', 'Advisors'];
@@ -269,51 +271,22 @@ export default function TeamsView() {
     setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
-  // Image upload handler
-  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+  // Image upload handler using shared compression utility
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
-    if (!file.type.startsWith('image/')) {
-      toast({ title: 'Invalid File', description: 'Please choose an image file (PNG, JPG, WEBP).', variant: 'destructive' });
-      return;
+    try {
+      const compressedUrl = await compressImage(file, 800, 0.85);
+      handleInputChange('image', compressedUrl);
+      toast({ title: 'Image Uploaded', description: 'Photo loaded and ready to save.' });
+    } catch (err: any) {
+      toast({
+        title: 'Upload Error',
+        description: err.message || 'Please choose an image file (PNG, JPG, WEBP).',
+        variant: 'destructive',
+      });
     }
-
-    const reader = new FileReader();
-    reader.onload = (event) => {
-      const dataUrl = event.target?.result as string;
-      if (dataUrl) {
-        // Optional client-side image compression for large photos
-        const img = new Image();
-        img.src = dataUrl;
-        img.onload = () => {
-          const canvas = document.createElement('canvas');
-          const maxDim = 800;
-          let width = img.width;
-          let height = img.height;
-
-          if (width > maxDim || height > maxDim) {
-            if (width > height) {
-              height = Math.round((height * maxDim) / width);
-              width = maxDim;
-            } else {
-              width = Math.round((width * maxDim) / height);
-              height = maxDim;
-            }
-          }
-
-          canvas.width = width;
-          canvas.height = height;
-          const ctx = canvas.getContext('2d');
-          ctx?.drawImage(img, 0, 0, width, height);
-
-          const compressedUrl = canvas.toDataURL('image/jpeg', 0.85);
-          handleInputChange('image', compressedUrl);
-          toast({ title: 'Image Uploaded', description: 'Photo loaded and ready to save.' });
-        };
-      }
-    };
-    reader.readAsDataURL(file);
   };
 
   const handleSave = () => {
@@ -490,24 +463,6 @@ export default function TeamsView() {
             <p className="text-xs text-[var(--text-secondary)] mt-1 font-mono">
               Update personal identity, laboratory role, and profile photograph
             </p>
-          </div>
-
-          <div className="flex items-center gap-3">
-            <Button
-              variant="outline"
-              onClick={() => setViewMode('list')}
-              disabled={isSaving}
-              className="border-[var(--border-color)] text-xs h-9 px-4 rounded-xl"
-            >
-              Cancel
-            </Button>
-            <Button
-              onClick={handleSave}
-              disabled={isSaving}
-              className="bg-[hsl(var(--accent))] text-[var(--bg-body)] hover:bg-[hsl(var(--accent))]/90 font-semibold text-xs h-9 px-5 rounded-xl"
-            >
-              <FaSave className="mr-1.5 h-3.5 w-3.5" /> {isSaving ? 'Saving...' : 'Save Changes'}
-            </Button>
           </div>
         </div>
 
@@ -803,23 +758,13 @@ export default function TeamsView() {
             </div>
 
             {/* Bottom Actions */}
-            <div className="flex items-center justify-end gap-3 pt-4">
-              <Button
-                variant="ghost"
-                onClick={() => setViewMode('list')}
-                disabled={isSaving}
-                className="text-xs rounded-xl"
-              >
-                Cancel
-              </Button>
-              <Button
-                onClick={handleSave}
-                disabled={isSaving}
-                className="bg-[hsl(var(--accent))] text-[var(--bg-body)] hover:bg-[hsl(var(--accent))]/90 font-semibold text-xs h-10 px-6 rounded-xl"
-              >
-                <FaSave className="mr-2 h-3.5 w-3.5" /> {isSaving ? 'Saving...' : 'Save Team Member'}
-              </Button>
-            </div>
+            <FormActions
+              onCancel={() => setViewMode('list')}
+              onSave={handleSave}
+              isSaving={isSaving}
+              saveLabel="Save Changes"
+              cancelLabel="Cancel"
+            />
           </div>
         </div>
       </div>
@@ -843,9 +788,9 @@ export default function TeamsView() {
         </div>
         <Button
           onClick={startCreate}
-          className="bg-[hsl(var(--accent))] text-[var(--bg-body)] hover:bg-[hsl(var(--accent))]/90 font-medium px-4 py-2 rounded-xl transition-all self-start sm:self-auto"
+          className="bg-[var(--red)] hover:bg-[var(--red-hover)] text-white font-medium text-xs h-9 px-4 rounded-[var(--r-md)] transition-all self-start sm:self-auto gap-1.5 shadow-sm"
         >
-          <FaPlus className="mr-2 h-3.5 w-3.5" /> Add Team Member
+          <FaPlus className="mr-1.5 h-3.5 w-3.5" /> Add Team Member
         </Button>
       </div>
 
@@ -881,11 +826,10 @@ export default function TeamsView() {
 
       {/* Content Area */}
       {isLoading && teamMembers.length === 0 ? (
-        <WanderingEyesLoader
-          size="md"
-          text="LOADING TEAM ROSTER"
-          subtext="SYNCHRONIZING OPERATIVES & MENTORS"
-        />
+        <div className="py-16 flex flex-col items-center justify-center gap-2">
+          <Ring size={20} />
+          <span className="text-xs text-mute font-sans">Loading team roster...</span>
+        </div>
       ) : filteredMembers.length === 0 ? (
         <div className="p-12 text-center rounded-[var(--r-lg)] border border-[var(--border)] bg-[var(--surface)]">
           <p className="font-mono text-xs text-[var(--text-3)] mb-2">STATUS: 204 NO_CONTENT</p>

@@ -64,12 +64,12 @@ const SidebarContent = ({
           { id: 'blogs', label: 'Blogs', icon: BookOpen },
           { id: 'recruitment', label: 'Applications', icon: UserPlus },
           { id: 'scan', label: 'Scan QR', icon: QrCode },
-          { id: 'settings', label: 'Settings', icon: SettingsIcon },
+          { id: 'settings', label: 'Profile & Settings', icon: User },
         ]
       : [
           { id: 'overview', label: 'Overview', icon: LayoutDashboard },
           { id: 'my-tickets', label: 'Event Passes', icon: QrCode, href: '/my-tickets' },
-          { id: 'settings', label: 'Settings', icon: SettingsIcon },
+          { id: 'settings', label: 'Profile & Settings', icon: User },
         ];
 
   const uniqueItems = Array.from(new Map(menuItems.map((item) => [item.id, item])).values());
@@ -77,8 +77,15 @@ const SidebarContent = ({
   const handleNavigation = (item: MenuItem) => {
     if (item.href) {
       navigate(item.href);
+    } else if (item.id === 'settings') {
+      setActiveView('settings');
+      navigate('/profile');
+    } else if (item.id === 'overview') {
+      setActiveView('overview');
+      navigate('/dashboard');
     } else {
       setActiveView(item.id);
+      navigate('/dashboard');
     }
     if (isMobile && closeMobile) {
       closeMobile();
@@ -90,7 +97,7 @@ const SidebarContent = ({
       {/* Brand header */}
       <div className="h-16 px-5 border-b border-border flex items-center justify-between">
         <Link href="/" className="flex items-center gap-2.5">
-          <Logo size="sm" color="light" showText={false} />
+          <Logo size="sm" showText={false} />
           <span className="font-display font-medium text-base text-text tracking-tight">
             Aprameya
           </span>

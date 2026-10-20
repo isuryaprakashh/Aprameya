@@ -408,6 +408,19 @@ const AdminScanQR = ({ isEmbedded = false }: { isEmbedded?: boolean }) => {
                                 <div className="space-y-4">
                                     <div className="relative rounded-xl overflow-hidden bg-black/5 aspect-square max-w-[350px] mx-auto w-full [&_video]:!object-cover [&_video]:!w-full [&_video]:!h-full">
                                         <div id="qr-reader" className="w-full h-full" />
+                                        {isScanning && (
+                                            <div className="absolute inset-0 pointer-events-none flex items-center justify-center z-10">
+                                                <div className="relative w-[220px] h-[220px] border border-signal-line">
+                                                    <span className="absolute -top-[1px] -left-[1px] w-3 h-3 border-t-2 border-l-2 border-signal" />
+                                                    <span className="absolute -top-[1px] -right-[1px] w-3 h-3 border-t-2 border-r-2 border-signal" />
+                                                    <span className="absolute -bottom-[1px] -left-[1px] w-3 h-3 border-b-2 border-l-2 border-signal" />
+                                                    <span className="absolute -bottom-[1px] -right-[1px] w-3 h-3 border-b-2 border-r-2 border-signal" />
+                                                    <span className="absolute -top-3 left-3 bg-signal text-on-signal font-mono text-[10px] px-1.5 py-0.5 tracking-wider">
+                                                        scanning...
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        )}
                                         {isProcessing && (
                                             <div className="absolute inset-0 z-20 flex flex-col items-center justify-center bg-black/40 backdrop-blur-[2px]">
                                                 <Loader2 className="w-10 h-10 text-white animate-spin mb-2" />

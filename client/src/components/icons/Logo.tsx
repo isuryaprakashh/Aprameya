@@ -1,4 +1,5 @@
 import { motion } from "framer-motion";
+import { useTheme } from "@/components/theme-provider";
 
 interface LogoProps {
   size?: "sm" | "md" | "lg" | "xl";
@@ -6,28 +7,31 @@ interface LogoProps {
   showText?: boolean;
 }
 
-const Logo = ({ size = "xl", color = "dark", showText = true }: LogoProps) => {
+const Logo = ({ size = "md", color, showText = true }: LogoProps) => {
+  const { theme } = useTheme();
+
   const sizeClasses = {
-    sm: "h-12",
-    md: "h-16",
-    lg: "h-20",
-    xl: "h-24",
+    sm: "h-10",
+    md: "h-12",
+    lg: "h-16",
+    xl: "h-20",
   };
 
-  // Logo source based on color mode
+  const effectiveColor = color || (theme === "light" ? "dark" : "light");
+
   const logoSrc =
-    color === "light"
-      ? "/logo-white.png" // Use white logo in dark backgrounds
-      : color === "tech"
-        ? "/logo-tech.png" // Use tech logo for tech-themed sections
-        : "/logo-black.png"; // Use black logo by default
+    effectiveColor === "light"
+      ? "/logo-white.png"
+      : effectiveColor === "tech"
+        ? "/logo-tech.png"
+        : "/logo-black.png";
 
   return (
     <motion.div
-      className="flex items-center gap-3"
-      initial={{ opacity: 0.9 }}
+      className="flex items-center gap-2.5"
+      initial={{ opacity: 0.95 }}
       animate={{ opacity: 1 }}
-      whileHover={{ scale: 1.03 }}
+      whileHover={{ scale: 1.02 }}
     >
       <div className="relative">
         <img
@@ -38,15 +42,9 @@ const Logo = ({ size = "xl", color = "dark", showText = true }: LogoProps) => {
         />
       </div>
       {showText && (
-        <div className="flex flex-col ml-1">
-          <span className={`text-lg leading-tight tracking-tight font-bold ${color === "light" ? "text-white" : "text-[var(--text-primary)]"
-            }`}>
-            APRAMEYA
-          </span>
-          {/* <span className="text-xs font-medium text-gray-600 leading-tight">
-            AI & Autonomous Club
-          </span> */}
-        </div>
+        <span className="text-base tracking-[-0.02em] font-medium text-paper">
+          APRAMEYA
+        </span>
       )}
     </motion.div>
   );

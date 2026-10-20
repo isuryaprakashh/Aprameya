@@ -18,7 +18,24 @@ export const useUserProfileData = () => {
     const { user: currentUser } = useAuth();
 
     // -- STATE --
-    const [activeView, setActiveView] = useState('overview');
+    const getInitialView = () => {
+        if (typeof window !== 'undefined') {
+            const path = window.location.pathname;
+            if (path === '/profile' || path.startsWith('/profile/')) return 'settings';
+            if (path.startsWith('/dashboard/users')) return 'users';
+            if (path.startsWith('/dashboard/projects')) return 'projects';
+            if (path.startsWith('/dashboard/events')) return 'events';
+            if (path.startsWith('/dashboard/teams')) return 'teams';
+            if (path.startsWith('/dashboard/blogs')) return 'blogs';
+            if (path.startsWith('/dashboard/recruitment')) return 'recruitment';
+            if (path.startsWith('/dashboard/scan')) return 'scan';
+            if (path.startsWith('/dashboard/settings')) return 'settings';
+            if (path.startsWith('/dashboard')) return 'overview';
+        }
+        return 'overview';
+    };
+
+    const [activeView, setActiveView] = useState(getInitialView);
     const [isMobileOpen, setIsMobileOpen] = useState(false);
     const [selectedItem, setSelectedItem] = useState<any | null>(null);
     const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -330,15 +347,40 @@ export const useUserProfileData = () => {
         else if (type === 'team') deleteTeamMember.mutate(id);
     };
 
-    // -- COMPUTED --
     const userGrowthData = useMemo(() => {
-        const monthCounts: Record<string, number> = {};
+        const monthlyMap = new Map<string, { name: string; count: number; sortKey: number }>();
+
         users.forEach(user => {
             const date = new Date(user.created_at || new Date());
-            const key = date.toLocaleString('default', { month: 'short', year: '2-digit' });
-            monthCounts[key] = (monthCounts[key] || 0) + 1;
+            const year = isNaN(date.getFullYear()) ? 2026 : date.getFullYear();
+            const month = isNaN(date.getMonth()) ? 0 : date.getMonth();
+            const sortKey = year * 100 + month;
+            const name = date.toLocaleString('default', { month: 'short' }) + " '" + String(year).slice(-2);
+
+            const existing = monthlyMap.get(name);
+            if (existing) {
+                existing.count += 1;
+            } else {
+                monthlyMap.set(name, { name, count: 1, sortKey });
+            }
         });
-        return Object.entries(monthCounts).map(([name, count]) => ({ name, count })).sort((a, b) => new Date(Date.parse(a.name)).getTime() - new Date(Date.parse(b.name)).getTime());
+
+        const sorted = Array.from(monthlyMap.values()).sort((a, b) => a.sortKey - b.sortKey);
+
+        if (sorted.length === 0) {
+            const now = new Date();
+            const fallback = [];
+            for (let i = 5; i >= 0; i--) {
+                const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
+                fallback.push({
+                    name: d.toLocaleString('default', { month: 'short' }) + " '" + String(d.getFullYear()).slice(-2),
+                    count: 0
+                });
+            }
+            return fallback;
+        }
+
+        return sorted.map(({ name, count }) => ({ name, count }));
     }, [users]);
 
     const contentDistributionData = useMemo(() => [

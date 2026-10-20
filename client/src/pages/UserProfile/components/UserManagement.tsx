@@ -32,7 +32,6 @@ import {
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
 import { Button } from '@/components/ui/button';
-import ChamferedButton from '@/components/ui/ChamferedButton';
 import RoleBadge from '@/components/ui/RoleBadge';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
@@ -274,25 +273,25 @@ export const UserManagement = ({
                     {/* Actions: Details, Edit, Delete */}
                     <TableCell className="text-right">
                       <div className="flex items-center justify-end gap-1.5">
-                        <ChamferedButton
+                        <Button
                           variant="ghost"
                           size="sm"
                           onClick={() => setSelectedUserForDetails(user)}
                           className="h-7 text-xs px-2"
                         >
                           Details
-                        </ChamferedButton>
+                        </Button>
 
-                        <ChamferedButton
+                        <Button
                           variant="secondary"
                           size="sm"
                           onClick={() => openEditModal(user)}
-                          className="h-7 text-xs px-2"
+                          className="h-7 text-xs px-2 gap-1"
                           title="Edit User Details & Photo"
-                          leftIcon={<FaEdit className="h-3 w-3" />}
                         >
-                          Edit
-                        </ChamferedButton>
+                          <FaEdit className="size-3" />
+                          <span>Edit</span>
+                        </Button>
 
                         <button
                           className="h-7 px-2 text-[var(--text-3)] hover:text-[var(--red)] transition-colors rounded-lg"
@@ -395,7 +394,7 @@ export const UserManagement = ({
                 </div>
 
                 <div className="flex justify-end gap-2 pt-2">
-                  <ChamferedButton
+                  <Button
                     size="sm"
                     variant="primary"
                     onClick={() => {
@@ -403,10 +402,11 @@ export const UserManagement = ({
                       setSelectedUserForDetails(null);
                       openEditModal(u);
                     }}
-                    leftIcon={<FaEdit className="h-3 w-3" />}
+                    className="gap-1.5"
                   >
-                    Edit This User
-                  </ChamferedButton>
+                    <FaEdit className="size-3" />
+                    <span>Edit This User</span>
+                  </Button>
                 </div>
               </div>
             </DialogContent>
@@ -449,25 +449,26 @@ export const UserManagement = ({
                         className="hidden"
                       />
                       <div className="flex gap-2">
-                        <ChamferedButton
+                        <Button
                           type="button"
                           size="sm"
                           variant="secondary"
                           onClick={() => fileInputRef.current?.click()}
-                          leftIcon={<FaUpload className="h-3 w-3" />}
+                          className="gap-1.5"
                         >
-                          Upload Photo
-                        </ChamferedButton>
+                          <FaUpload className="size-3" />
+                          <span>Upload Photo</span>
+                        </Button>
                         {editForm.profile_image && (
-                          <ChamferedButton
+                          <Button
                             type="button"
                             size="sm"
                             variant="ghost"
                             onClick={() => setEditForm((p) => ({ ...p, profile_image: '' }))}
-                            className="text-[var(--red)]"
+                            className="text-signal-text"
                           >
                             Remove
-                          </ChamferedButton>
+                          </Button>
                         )}
                       </div>
                       <Input
@@ -568,22 +569,23 @@ export const UserManagement = ({
 
               {/* Modal Footer */}
               <div className="flex items-center justify-end gap-3 pt-3 border-t border-[var(--border)]">
-                <ChamferedButton
+                <Button
                   variant="secondary"
                   size="sm"
                   onClick={() => setEditingUser(null)}
                 >
                   Cancel
-                </ChamferedButton>
-                <ChamferedButton
+                </Button>
+                <Button
                   variant="primary"
                   size="sm"
                   onClick={handleSaveUser}
-                  isLoading={updateUser?.isPending}
-                  leftIcon={<FaSave className="mr-1 h-3 w-3" />}
+                  loading={updateUser?.isPending}
+                  className="gap-1.5"
                 >
-                  {updateUser?.isPending ? 'Saving...' : 'Save User Changes'}
-                </ChamferedButton>
+                  <FaSave className="size-3" />
+                  <span>{updateUser?.isPending ? 'Saving...' : 'Save User Changes'}</span>
+                </Button>
               </div>
             </DialogContent>
           )}

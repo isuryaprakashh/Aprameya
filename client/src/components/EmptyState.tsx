@@ -1,4 +1,6 @@
+import React from 'react';
 import { LucideIcon } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 
 interface EmptyStateProps {
   icon: LucideIcon;
@@ -10,25 +12,27 @@ interface EmptyStateProps {
   };
 }
 
-export const EmptyState = ({ icon: Icon, title, description, action }: EmptyStateProps) => {
+export const EmptyState: React.FC<EmptyStateProps> = ({
+  icon: Icon,
+  title,
+  description,
+  action,
+}) => {
   return (
-    <div className="flex flex-col items-center justify-center py-16 px-6 text-center border border-border rounded-lg bg-surface/50 max-w-md mx-auto my-8">
-      <div className="w-10 h-10 rounded-full bg-surface-2 flex items-center justify-center mb-4 text-text-3">
-        <Icon className="w-5 h-5" />
+    <div className="flex flex-col items-center justify-center py-16 px-6 text-center border border-hairline rounded-[var(--r-3)] bg-transparent max-w-md mx-auto my-8">
+      <div className="w-12 h-12 rounded-full bg-surface-2 flex items-center justify-center mb-4 text-mute">
+        <Icon className="w-6 h-6 stroke-[1.5]" />
       </div>
-      <h4 className="font-body font-semibold text-base text-text mb-1">
+      <h4 className="font-sans font-semibold text-[17px] text-paper mb-1">
         {title}
       </h4>
-      <p className="text-sm text-text-2 mb-6 max-w-xs leading-relaxed">
+      <p className="text-[14px] text-text-2 mb-6 max-w-xs leading-relaxed">
         {description}
       </p>
       {action && (
-        <button
-          onClick={action.onClick}
-          className="h-9 px-4 rounded-md border border-border-strong text-text hover:bg-surface-2 transition-colors duration-fast text-xs font-body font-medium cursor-pointer"
-        >
+        <Button variant="secondary" size="sm" onClick={action.onClick}>
           {action.label}
-        </button>
+        </Button>
       )}
     </div>
   );

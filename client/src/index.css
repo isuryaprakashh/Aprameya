@@ -5,149 +5,242 @@
 @layer base {
   :root,
   [data-theme="dark"] {
-    /* surfaces */
-    --bg:            #0A0A0A;   /* page background */
-    --surface:       #0F0F10;   /* cards, panels (barely lifted) */
-    --surface-2:     #151516;   /* hover, inputs, menus */
+    color-scheme: dark;
+
+    /* page and surfaces */
+    --ink:           #000000;                 /* page background */
+    --surface-1:     #0A0A0A;                 /* cards that need separation, inputs */
+    --surface-2:     #141414;                 /* hover fills, menus, code blocks */
+    --surface-3:     #1E1E1E;                 /* pressed states, skeleton base */
 
     /* text */
-    --text:          #FAFAFA;   /* headings, key text */
-    --text-2:        #A1A1AA;   /* body text */
-    --text-3:        #71717A;   /* captions, placeholders, meta (non-essential only) */
+    --paper:         #FFFFFF;                 /* headings, primary text */
+    --text-2:        #B3B3B3;                 /* body paragraphs */
+    --mute:          #8A8A8A;                 /* metadata, placeholders, captions */
+    --text-disabled: #5C5C5C;
 
-    /* borders */
-    --border:        rgba(255,255,255,0.08);   /* default 1px line */
-    --border-strong: rgba(255,255,255,0.16);   /* hover, inputs, focus-adjacent */
+    /* lines */
+    --hairline:      rgba(255,255,255,0.10);
+    --hairline-2:    rgba(255,255,255,0.18);  /* hover, inputs */
+    --hairline-3:    rgba(255,255,255,0.30);  /* focus-adjacent, active tab divider */
 
-    /* brand */
-    --red:           #DC2626;   /* primary buttons, active indicators */
-    --red-hover:     #EF4444;
-    --red-text:      #F87171;   /* red used as TEXT or icon on dark (passes contrast) */
-    --red-soft:      rgba(220,38,38,0.10);     /* tinted background for badges/alerts */
-    --red-line:      rgba(220,38,38,0.40);     /* only for active/selected border */
+    /* signal (red) */
+    --signal:        #E8261E;                 /* fills, detection frame, active bar */
+    --signal-hover:  #FF3B32;
+    --signal-press:  #C41F18;
+    --signal-text:   #FF5C54;                 /* red used as text or icon */
+    --signal-soft:   rgba(232,38,30,0.12);    /* badge tint, selected row */
+    --signal-line:   rgba(232,38,30,0.55);    /* selected border only */
+    --on-signal:     #FFFFFF;
 
-    --on-red:        #FFFFFF;
-
-    /* inverse (white button on dark) */
-    --invert-bg:     #FAFAFA;
-    --invert-text:   #0A0A0A;
+    /* inverse (white button on black) */
+    --invert-bg:     #FFFFFF;
+    --invert-text:   #000000;
 
     /* status */
-    --success:       #4ADE80;   --success-soft: rgba(74,222,128,0.10);
-    --warning:       #FBBF24;   --warning-soft: rgba(251,191,36,0.10);
-    --info:          #A1A1AA;   --info-soft:    rgba(255,255,255,0.06);
+    --ok:            #3DDC84;  --ok-soft:      rgba(61,220,132,0.12);
+    --warn:          #FFB224;  --warn-soft:    rgba(255,178,36,0.12);
+    --info:          #B3B3B3;  --info-soft:    rgba(255,255,255,0.06);
+    --error:         var(--signal-text); --error-soft: var(--signal-soft);
 
-    --focus-ring:    #F87171;
+    /* focus */
+    --focus:         #FF5C54;
+
+    /* overlays */
+    --scrim:         rgba(0,0,0,0.70);
+    --image-scrim:   linear-gradient(to top, rgba(0,0,0,0.85), rgba(0,0,0,0) 60%);
+    --float-shadow:  0 12px 40px rgba(0,0,0,0.55);     /* floating layers only */
 
     /* fonts */
-    --font-display: "Space Grotesk", system-ui, sans-serif;
-    --font-body:    "Inter", system-ui, sans-serif;
-    --font-mono:    "JetBrains Mono", ui-monospace, monospace;
+    --font-sans:     "Bricolage Grotesque", "Hanken Grotesk", system-ui, -apple-system, "Segoe UI", sans-serif;
+    --font-mono:     "JetBrains Mono", ui-monospace, "SF Mono", Menlo, monospace;
+    --font-display:  var(--font-sans);
+    --font-body:     var(--font-sans);
+
+    /* fluid sizes: clamp(min, preferred, max) */
+    --fs-display:    clamp(44px, 7.2vw, 96px);
+    --fs-h1:         clamp(34px, 4.8vw, 60px);
+    --fs-h2:         clamp(26px, 3.2vw, 40px);
+    --fs-h3:         clamp(20px, 1.6vw, 24px);
+    --fs-h4:         17px;
+    --fs-lead:       clamp(17px, 1.4vw, 20px);
+    --fs-body:       16px;
+    --fs-small:      14px;
+    --fs-micro:      12px;
+    --fs-data:       13px;       /* mono */
+    --fs-data-lg:    clamp(28px, 4vw, 56px); /* mono stat numbers */
 
     /* spacing */
-    --s-1: 4px;   --s-2: 8px;   --s-3: 12px;  --s-4: 16px;
-    --s-5: 24px;  --s-6: 32px;  --s-7: 48px;  --s-8: 64px;
-    --s-9: 96px;  --s-10: 128px;
+    --s-1: 4px;  --s-2: 8px;  --s-3: 12px; --s-4: 16px; --s-5: 20px;
+    --s-6: 24px; --s-7: 32px; --s-8: 40px; --s-9: 48px; --s-10: 64px;
+    --s-11: 96px; --s-12: 128px;
 
     /* radius */
-    --r-sm:   6px;      /* tags, small buttons, inputs */
-    --r-md:   10px;     /* buttons, cards */
-    --r-lg:   14px;     /* large cards, modals, image frames */
-    --r-full: 999px;    /* pills, avatars, role badges */
+    --r-1: 4px;    /* checkbox, kbd, code inline, detection label */
+    --r-2: 8px;    /* buttons, inputs, tags, small images */
+    --r-3: 12px;   /* cards, dropdowns, code blocks */
+    --r-4: 16px;   /* dialogs, sheets, image frames, hero visual */
+    --r-5: 24px;   /* bottom sheet top corners, mobile dock */
+    --r-full: 999px;
 
     /* motion */
-    --ease: cubic-bezier(0.2, 0, 0, 1);
-    --t-fast: 120ms;
-    --t-base: 200ms;
-    --t-slow: 400ms;
+    --ease-out:   cubic-bezier(0.22, 1, 0.36, 1);      /* default: enter, hover */
+    --ease-in:    cubic-bezier(0.55, 0, 1, 0.45);      /* exits only */
+    --ease-inout: cubic-bezier(0.65, 0, 0.35, 1);      /* position changes, theme wipe */
+    --ease-snap:  cubic-bezier(0.2, 0.9, 0.2, 1.1);    /* detection lock-on, toggles */
 
-    /* compatibility aliases */
-    --bg-body: var(--bg);
-    --card-bg: var(--surface);
-    --card-hover: var(--surface-2);
-    --border-color: var(--border);
-    --border-hover: var(--border-strong);
-    --text-primary: var(--text);
-    --text-secondary: var(--text-2);
-    --text-muted: var(--text-3);
+    --d-instant: 80ms;
+    --d-fast:    140ms;
+    --d-base:    220ms;
+    --d-slow:    360ms;
+    --d-hero:    900ms;
 
-    --background: var(--bg);
-    --foreground: var(--text);
-    --card: var(--surface);
-    --card-foreground: var(--text);
-    --popover: var(--surface-2);
-    --popover-foreground: var(--text);
-    --primary: var(--red);
-    --primary-foreground: var(--on-red);
-    --secondary: var(--surface-2);
-    --secondary-foreground: var(--text);
-    --muted: var(--surface-2);
+    /* z-index scale */
+    --z-base: 1; --z-sticky: 50; --z-dock: 60; --z-dropdown: 70;
+    --z-sheet: 80; --z-dialog: 90; --z-toast: 100; --z-palette: 110;
+
+    /* v2 backward-compatibility aliases */
+    --bg:            var(--ink);
+    --surface:       var(--surface-1);
+    --text:          var(--paper);
+    --text-3:        var(--mute);
+    --border:        var(--hairline);
+    --border-strong: var(--hairline-2);
+    --red:           var(--signal);
+    --red-hover:     var(--signal-hover);
+    --red-text:      var(--signal-text);
+    --red-soft:      var(--signal-soft);
+    --red-line:      var(--signal-line);
+    --on-red:        var(--on-signal);
+    --success:       var(--ok);
+    --success-soft:  var(--ok-soft);
+    --warning:       var(--warn);
+    --warning-soft:  var(--warn-soft);
+    --focus-ring:    var(--focus);
+    --r-sm:          var(--r-1);
+    --r-md:          var(--r-2);
+    --r-lg:          var(--r-3);
+    --ease:          var(--ease-out);
+    --t-fast:        var(--d-fast);
+    --t-base:        var(--d-base);
+    --t-slow:        var(--d-slow);
+
+    --bg-body:       var(--ink);
+    --card-bg:       var(--surface-1);
+    --card-hover:    var(--surface-2);
+    --border-color:  var(--hairline);
+    --border-hover:  var(--hairline-2);
+    --text-primary:  var(--paper);
+    --text-secondary:var(--text-2);
+    --text-muted:    var(--mute);
+
+    --background:    var(--ink);
+    --foreground:    var(--paper);
+    --card:          var(--surface-1);
+    --card-foreground: var(--paper);
+    --popover:       var(--surface-2);
+    --popover-foreground: var(--paper);
+    --primary:       var(--signal);
+    --primary-foreground: var(--on-signal);
+    --secondary:     var(--surface-2);
+    --secondary-foreground: var(--paper);
+    --muted:         var(--surface-2);
     --muted-foreground: var(--text-2);
-    --accent: var(--surface-2);
-    --accent-foreground: var(--text);
-    --destructive: var(--red);
-    --destructive-foreground: var(--on-red);
-    --input: var(--border-strong);
-    --ring: var(--focus-ring);
-    --radius: 10px;
+    --accent:        var(--surface-2);
+    --accent-foreground: var(--paper);
+    --destructive:   var(--signal);
+    --destructive-foreground: var(--on-signal);
+    --input:         var(--hairline-2);
+    --ring:          var(--focus);
+    --radius:        var(--r-2);
   }
 
   [data-theme="light"] {
-    --bg:            #FFFFFF;
-    --surface:       #FAFAFA;
-    --surface-2:     #F4F4F5;
+    color-scheme: light;
 
-    --text:          #0A0A0A;
-    --text-2:        #52525B;
-    --text-3:        #8A8A93;
+    --ink:           #FFFFFF;
+    --surface-1:     #F7F7F7;
+    --surface-2:     #EFEFEF;
+    --surface-3:     #E4E4E4;
 
-    --border:        rgba(0,0,0,0.08);
-    --border-strong: rgba(0,0,0,0.16);
+    --paper:         #000000;
+    --text-2:        #3D3D3D;
+    --mute:          #6B6B6B;
+    --text-disabled: #A3A3A3;
 
-    --red:           #DC2626;
-    --red-hover:     #B91C1C;
-    --red-text:      #DC2626;
-    --red-soft:      rgba(220,38,38,0.07);
-    --red-line:      rgba(220,38,38,0.35);
-    --on-red:        #FFFFFF;
+    --hairline:      rgba(0,0,0,0.10);
+    --hairline-2:    rgba(0,0,0,0.18);
+    --hairline-3:    rgba(0,0,0,0.30);
 
-    --invert-bg:     #0A0A0A;
-    --invert-text:   #FAFAFA;
+    --signal:        #D41E17;
+    --signal-hover:  #B8160F;
+    --signal-press:  #9E120C;
+    --signal-text:   #C8180F;
+    --signal-soft:   rgba(212,30,23,0.08);
+    --signal-line:   rgba(212,30,23,0.45);
+    --on-signal:     #FFFFFF;
 
-    --success:       #16A34A;   --success-soft: rgba(22,163,74,0.08);
-    --warning:       #B45309;   --warning-soft: rgba(180,83,9,0.08);
-    --info:          #52525B;   --info-soft:    rgba(0,0,0,0.05);
+    --invert-bg:     #000000;
+    --invert-text:   #FFFFFF;
 
-    --focus-ring:    #DC2626;
+    --ok:            #138A4A;  --ok-soft:   rgba(19,138,74,0.10);
+    --warn:          #9A5B00;  --warn-soft: rgba(154,91,0,0.10);
+    --info:          #3D3D3D;  --info-soft: rgba(0,0,0,0.05);
+    --error:         var(--signal-text); --error-soft: var(--signal-soft);
 
-    /* compatibility aliases */
-    --bg-body: var(--bg);
-    --card-bg: var(--surface);
-    --card-hover: var(--surface-2);
-    --border-color: var(--border);
-    --border-hover: var(--border-strong);
-    --text-primary: var(--text);
-    --text-secondary: var(--text-2);
-    --text-muted: var(--text-3);
+    --focus:         #D41E17;
 
-    --background: var(--bg);
-    --foreground: var(--text);
-    --card: var(--surface);
-    --card-foreground: var(--text);
-    --popover: var(--surface-2);
-    --popover-foreground: var(--text);
-    --primary: var(--red);
-    --primary-foreground: var(--on-red);
-    --secondary: var(--surface-2);
-    --secondary-foreground: var(--text);
-    --muted: var(--surface-2);
+    --scrim:         rgba(0,0,0,0.50);
+    --image-scrim:   linear-gradient(to top, rgba(0,0,0,0.80), rgba(0,0,0,0) 60%);
+    --float-shadow:  0 12px 40px rgba(0,0,0,0.12);
+
+    /* v2 compatibility aliases for light theme */
+    --bg:            var(--ink);
+    --surface:       var(--surface-1);
+    --text:          var(--paper);
+    --text-3:        var(--mute);
+    --border:        var(--hairline);
+    --border-strong: var(--hairline-2);
+    --red:           var(--signal);
+    --red-hover:     var(--signal-hover);
+    --red-text:      var(--signal-text);
+    --red-soft:      var(--signal-soft);
+    --red-line:      var(--signal-line);
+    --on-red:        var(--on-signal);
+    --success:       var(--ok);
+    --success-soft:  var(--ok-soft);
+    --warning:       var(--warn);
+    --warning-soft:  var(--warn-soft);
+    --focus-ring:    var(--focus);
+
+    --bg-body:       var(--ink);
+    --card-bg:       var(--surface-1);
+    --card-hover:    var(--surface-2);
+    --border-color:  var(--hairline);
+    --border-hover:  var(--hairline-2);
+    --text-primary:  var(--paper);
+    --text-secondary:var(--text-2);
+    --text-muted:    var(--mute);
+
+    --background:    var(--ink);
+    --foreground:    var(--paper);
+    --card:          var(--surface-1);
+    --card-foreground: var(--paper);
+    --popover:       var(--surface-2);
+    --popover-foreground: var(--paper);
+    --primary:       var(--signal);
+    --primary-foreground: var(--on-signal);
+    --secondary:     var(--surface-2);
+    --secondary-foreground: var(--paper);
+    --muted:         var(--surface-2);
     --muted-foreground: var(--text-2);
-    --accent: var(--surface-2);
-    --accent-foreground: var(--text);
-    --destructive: var(--red);
-    --destructive-foreground: var(--on-red);
-    --input: var(--border-strong);
-    --ring: var(--focus-ring);
+    --accent:        var(--surface-2);
+    --accent-foreground: var(--paper);
+    --destructive:   var(--signal);
+    --destructive-foreground: var(--on-signal);
+    --input:         var(--hairline-2);
+    --ring:          var(--focus);
+    --radius:        var(--r-2);
   }
 
   * {
@@ -399,6 +492,26 @@
   font-size: 11px;
   display: inline-flex;
   align-items: center;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.skeleton-shimmer {
+  background: linear-gradient(
+    90deg,
+    var(--surface-2) 0%,
+    var(--surface-3) 50%,
+    var(--surface-2) 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.4s linear infinite;
 }
 
 /* ─── REDUCED MOTION ─── */

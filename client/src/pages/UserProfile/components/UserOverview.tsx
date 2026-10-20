@@ -25,9 +25,9 @@ export const UserOverview = ({
       {/* User Identity Card (Section 4.4 & 5.9) */}
       <div className="rounded-lg border border-border bg-surface p-6">
         <div className="flex flex-col sm:flex-row gap-6 items-start sm:items-center">
-          <Avatar className="w-20 h-20 rounded-full border border-border shrink-0">
+          <Avatar className="w-20 h-20 rounded-[16px] border border-border shrink-0 overflow-hidden">
             <AvatarImage src={currentUser.profile_image || ''} alt={displayName} className="object-cover" />
-            <AvatarFallback className="bg-surface-2 text-text font-mono text-xl font-medium">
+            <AvatarFallback className="rounded-[16px] bg-surface-2 text-text font-mono text-xl font-medium">
               {getInitials(displayName)}
             </AvatarFallback>
           </Avatar>
@@ -92,8 +92,8 @@ export const UserOverview = ({
           </div>
         </Link>
 
-        <button
-          onClick={() => setActiveView?.('settings')}
+        <Link
+          href="/profile"
           className="flex items-center gap-3.5 p-4 rounded-lg border border-border bg-surface hover:border-border-strong hover:bg-surface-2 transition-colors group text-left cursor-pointer"
         >
           <div className="w-9 h-9 rounded-md border border-border bg-surface-2 flex items-center justify-center text-text-2 group-hover:text-text shrink-0">
@@ -103,7 +103,7 @@ export const UserOverview = ({
             <div className="text-sm font-medium text-text">Account Settings</div>
             <div className="text-xs font-mono text-text-3">Profile & password</div>
           </div>
-        </button>
+        </Link>
       </div>
 
       {/* Summary Metrics */}

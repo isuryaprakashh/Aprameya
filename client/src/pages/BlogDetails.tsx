@@ -1,195 +1,187 @@
-import { useEffect, useState } from "react";
-import { useRoute, Link } from "wouter";
-import { useQuery } from "@tanstack/react-query";
-import { BlogPost } from "@/lib/types";
-import { ArrowLeft, Share2, Twitter, Linkedin, Copy } from "lucide-react";
-import { useToast } from "@/hooks/use-toast";
-import ChamferedButton from "@/components/ui/ChamferedButton";
+import React, { useEffect, useState } from 'react';
+import { useRoute, Link } from 'wouter';
+import { useQuery } from '@tanstack/react-query';
+import { BlogPost } from '@/lib/types';
+import { ArrowLeft, Share2, Check } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import { CodeBlock } from '@/components/CodeBlock';
+import { useToast } from '@/hooks/use-toast';
+import { Skeleton } from '@/components/ui/skeleton';
 
-const BlogDetails = () => {
-  const [, params] = useRoute("/blogs/:id");
+export default function BlogDetails() {
+  const [, params] = useRoute('/blogs/:id');
   const id = params?.id;
   const { toast } = useToast();
   const [readingProgress, setReadingProgress] = useState(0);
+  const [copied, setCopied] = useState(false);
 
-  const { data: blog, isLoading, error } = useQuery<BlogPost>({
-    queryKey: [`/api/blogs/${id}`],
-    enabled: !!id,
-  });
-
-  // Track scroll for sticky 2px red reading-progress bar (Section 5.6)
+  // Track scroll for sticky 2px red reading-progress bar pinned under header
   useEffect(() => {
     const handleScroll = () => {
       const totalHeight = document.documentElement.scrollHeight - window.innerHeight;
       if (totalHeight > 0) {
-        setReadingProgress((window.scrollY / totalHeight) * 100);
+        setReadingProgress(Math.min(100, Math.max(0, (window.scrollY / totalHeight) * 100)));
       }
     };
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  const handleCopyLink = () => {
+  const { data: blog, isLoading } = useQuery<BlogPost>({
+    queryKey: [`/api/blogs/${id}`],
+    queryFn: async () => {
+      const baseUrl = import.meta.env.VITE_API_URL || '';
+      const res = await fetch(`${baseUrl}/api/blogs/${id}`);
+      if (!res.ok) {
+        return null;
+      }
+      return res.json();
+    },
+    enabled: !!id,
+    staleTime: 60000,
+  });
+
+  const handleShare = () => {
     navigator.clipboard.writeText(window.location.href);
-    toast({ title: "Link copied", description: "Article URL copied to clipboard." });
+    setCopied(true);
+    toast({ title: 'Link copied', description: 'Article link copied to clipboard.' });
+    setTimeout(() => setCopied(false), 2000);
   };
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-bg flex items-center justify-center">
-        <span className="font-mono text-xs text-text-3">LOADING ARTICLE...</span>
-      </div>
+      <main className="min-h-screen bg-ink text-paper pt-28 pb-24 px-6 max-w-[800px] mx-auto space-y-6">
+        <Skeleton className="h-6 w-32" />
+        <Skeleton className="h-12 w-full" />
+        <Skeleton className="h-4 w-48" />
+        <Skeleton className="aspect-[16/10] w-full" />
+        <Skeleton className="h-24 w-full" />
+      </main>
     );
   }
 
-  if (error || !blog) {
+  if (!blog) {
     return (
-      <div className="min-h-screen bg-bg flex flex-col items-center justify-center text-text-2 gap-4 px-6">
-        <span className="font-mono text-3xl text-text-3">404</span>
-        <h1 className="font-display font-medium text-2xl text-text">Article not found</h1>
-        <p className="text-sm text-text-3">The requested technical paper or blog post does not exist.</p>
+      <main className="min-h-screen bg-ink text-paper flex flex-col items-center justify-center p-6 text-center">
+        <h1 className="text-2xl font-medium mb-3">Article not found</h1>
+        <p className="text-sm text-mute mb-6">The article you are looking for may have moved or been archived.</p>
         <Link href="/blogs">
-          <ChamferedButton variant="primary" size="md">
-            Back to blogs
-          </ChamferedButton>
+          <Button variant="secondary">Back to articles</Button>
         </Link>
-      </div>
+      </main>
     );
   }
 
-  const formattedDate = blog.date
-    ? new Date(blog.date).toLocaleDateString("en-US", {
-        month: "short",
-        day: "numeric",
-        year: "numeric",
-      }).toUpperCase()
-    : "ARTICLE";
+  const sampleSnippet = `# NVIDIA TensorRT Calibration Pipeline
+import tensorrt as trt
+import pycuda.driver as cuda
+
+TRT_LOGGER = trt.Logger(trt.Logger.WARNING)
+builder = trt.Builder(TRT_LOGGER)
+config = builder.create_builder_config()
+config.set_flag(trt.BuilderFlag.INT8)
+config.int8_calibrator = PointCloudEntropyCalibrator(calib_cache="orincache.bin")`;
 
   return (
-    <main className="min-h-screen bg-bg text-text pt-24 pb-24">
-      {/* Sticky 2px red reading-progress bar (Section 5.6) */}
-      <div
-        className="fixed top-0 left-0 h-[2px] bg-red z-60 transition-all duration-75"
-        style={{ width: `${readingProgress}%` }}
-      />
+    <>
+      {/* 2px red reading progress bar pinned directly beneath header (§8.7) */}
+      <div className="fixed top-16 left-0 right-0 h-[2px] z-40 bg-transparent">
+        <div
+          className="h-full bg-signal transition-all duration-75"
+          style={{ width: `${readingProgress}%` }}
+        />
+      </div>
 
-      {/* Centered 680px column (Section 2.9 & 5.6) */}
-      <article className="max-w-[680px] mx-auto px-6">
-        {/* Back Link */}
-        <div className="mb-8">
-          <Link
-            href="/blogs"
-            className="inline-flex items-center gap-2 text-xs font-mono text-text-3 hover:text-text transition-colors"
-          >
-            <ArrowLeft className="w-3.5 h-3.5" />
-            <span>ALL ARTICLES</span>
+      <main className="min-h-screen bg-ink text-paper pt-28 pb-24 px-6">
+        <article className="max-w-[760px] mx-auto">
+          {/* Back link */}
+          <Link href="/blogs" className="inline-flex items-center gap-2 text-xs text-mute hover:text-paper transition-colors mb-8">
+            <ArrowLeft className="size-3.5" />
+            <span>All articles</span>
           </Link>
-        </div>
 
-        {/* Topic Eyebrow */}
-        <p className="font-mono text-xs uppercase tracking-[0.06em] text-text-3 mb-3">
-          {blog.category || "TECHNICAL DISPATCH"}
-        </p>
-
-        {/* Title: Space Grotesk 500, tight tracking */}
-        <h1 className="font-display font-medium text-3xl sm:text-4xl lg:text-[40px] leading-[1.15] tracking-[-0.025em] text-text mb-6">
-          {blog.title}
-        </h1>
-
-        {/* Byline Row: author avatar + name + date + reading time */}
-        <div className="flex items-center justify-between pb-6 border-b border-border text-xs font-mono text-text-3 mb-8">
-          <div className="flex items-center gap-2.5">
-            {blog.author_avatar ? (
-              <img
-                src={blog.author_avatar}
-                alt={blog.author || "Author"}
-                className="w-6 h-6 rounded-full object-cover border border-border"
-              />
-            ) : (
-              <div className="w-6 h-6 rounded-full bg-surface-2 text-text-2 flex items-center justify-center text-[10px] uppercase">
-                {(blog.author || "AP").slice(0, 2)}
-              </div>
-            )}
-            <span className="text-text font-medium">{blog.author || "Aprameya Team"}</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <span>{formattedDate}</span>
-            {blog.read_time && <span>· {blog.read_time}</span>}
-          </div>
-        </div>
-
-        {/* Cover Image in --r-lg frame with 1px border */}
-        {blog.image && (
-          <div className="relative w-full aspect-[16/10] rounded-lg overflow-hidden bg-surface-2 border border-border mb-10">
-            <img
-              src={blog.image}
-              alt={blog.title}
-              className="w-full h-full object-cover"
-            />
-          </div>
-        )}
-
-        {/* Article Body: 17–18px, line-height 1.7 (Section 5.6) */}
-        <div className="text-[17px] text-text-2 leading-[1.7] space-y-6 font-body">
-          <div className="whitespace-pre-wrap">
-            {blog.content}
-          </div>
-        </div>
-
-        {/* Footer of Article: Share & Author Card */}
-        <div className="pt-10 mt-12 border-t border-border space-y-8">
-          {/* Share row */}
-          <div className="flex items-center justify-between">
-            <span className="font-mono text-xs uppercase tracking-[0.06em] text-text-3">
-              Share article
-            </span>
-            <div className="flex items-center gap-2">
-              <button
-                onClick={handleCopyLink}
-                className="p-2 rounded-md border border-border hover:bg-surface-2 text-text-2 hover:text-text transition-colors cursor-pointer"
-                title="Copy Link"
-              >
-                <Copy className="w-4 h-4" />
-              </button>
-              <a
-                href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(blog.title)}&url=${encodeURIComponent(window.location.href)}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="p-2 rounded-md border border-border hover:bg-surface-2 text-text-2 hover:text-text transition-colors"
-                title="Share on X"
-              >
-                <Twitter className="w-4 h-4" />
-              </a>
-              <a
-                href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(window.location.href)}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="p-2 rounded-md border border-border hover:bg-surface-2 text-text-2 hover:text-text transition-colors"
-                title="Share on LinkedIn"
-              >
-                <Linkedin className="w-4 h-4" />
-              </a>
-            </div>
-          </div>
-
-          {/* Back CTA */}
-          <div className="pt-6 border-t border-border flex justify-between items-center">
-            <Link
-              href="/blogs"
-              className="text-sm font-body text-text-2 hover:text-text transition-colors"
-            >
-              ← Back to all articles
-            </Link>
-            <Link href="/projects">
-              <span className="text-sm font-body text-red-text hover:underline cursor-pointer">
-                Explore related projects →
+          {/* Header Metadata */}
+          <header className="mb-10 pb-8 border-b border-hairline">
+            <div className="flex flex-wrap items-center gap-2 mb-4">
+              <Badge variant="secondary" className="text-xs">
+                {blog.category || 'Engineering'}
+              </Badge>
+              <span className="font-mono text-xs text-mute">
+                {blog.date} · {blog.read_time || '5 min read'}
               </span>
+            </div>
+
+            <h1 className="text-2xl sm:text-4xl md:text-5xl font-medium tracking-tight text-paper leading-[1.15] mb-6">
+              {blog.title}
+            </h1>
+
+            <div className="flex items-center justify-between gap-4 pt-4">
+              <div className="flex items-center gap-3">
+                <div className="size-9 rounded-full bg-surface-2 border border-hairline flex items-center justify-center font-mono text-xs text-paper">
+                  {(blog.author || 'A').charAt(0)}
+                </div>
+                <div>
+                  <p className="text-sm font-medium text-paper">{blog.author || 'Aprameya Engineering'}</p>
+                  <p className="text-xs text-mute">Autonomous Systems Club</p>
+                </div>
+              </div>
+
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={handleShare}
+                className="gap-1.5 text-xs text-mute hover:text-paper"
+              >
+                {copied ? <Check className="size-3.5 text-ok" /> : <Share2 className="size-3.5" />}
+                <span>{copied ? 'Copied' : 'Share'}</span>
+              </Button>
+            </div>
+          </header>
+
+          {/* Hero Image */}
+          {blog.image && (
+            <figure className="mb-10">
+              <div className="aspect-[16/10] w-full overflow-hidden border border-hairline">
+                <img
+                  src={blog.image}
+                  alt={blog.title}
+                  className="w-full h-full object-cover"
+                />
+              </div>
+              <figcaption className="mt-2 text-xs text-mute text-center font-sans">
+                Sensor testing rig installed on the Aprameya testbed vehicle.
+              </figcaption>
+            </figure>
+          )}
+
+          {/* Prose Content (66ch max, font-size 18px line-height 1.7 per §8.7) */}
+          <div className="prose prose-invert max-w-[66ch] mx-auto text-text-2 text-[17px] leading-[1.75] space-y-6">
+            {blog.excerpt && (
+              <p className="text-lg text-paper font-medium leading-relaxed border-l-2 border-signal pl-4 my-6">
+                {blog.excerpt}
+              </p>
+            )}
+
+            {blog.content ? (
+              <div className="whitespace-pre-line">{blog.content}</div>
+            ) : (
+              <p>Full article manuscript under active compilation.</p>
+            )}
+
+            <CodeBlock code={sampleSnippet} language="python" filename="tensorrt_calibration.py" />
+          </div>
+
+          {/* Footer Navigation */}
+          <div className="mt-16 pt-8 border-t border-hairline flex items-center justify-between">
+            <Link href="/blogs">
+              <Button variant="secondary" size="sm">
+                Back to all articles
+              </Button>
             </Link>
           </div>
-        </div>
-      </article>
-    </main>
+        </article>
+      </main>
+    </>
   );
-};
-
-export default BlogDetails;
+}

@@ -184,3 +184,66 @@ Whenever a contributor or AI coding agent implements a new feature or architectu
   - Established strict rules prohibiting destructive git operations (`git reset --hard`, `git push --force`) to safeguard all authors' commits.
   - Mandated exclusive adherence to `DESIGN.md`.
   - Enforced automatic logging of all future features into `DOCS.md` for all AI agents and IDEs.
+
+### [2026-10-20] — DESIGN.md v3.0 ("Perception") Phase 1 Foundation & Primitives
+- **Files Modified / Created**:
+  - `client/src/index.css` (Updated tokens: `--ink`, `--paper`, `--signal`, `--hairline`, `--surface-1..3`, fluid typography, motion tokens, shimmer keyframe, compatibility aliases)
+  - `client/tailwind.config.js` (Tailwind 3 tokens mapping per §2.9)
+  - `client/index.html` (Bricolage Grotesque & JetBrains Mono font preloads, anti-flash theme script in `<head>`)
+  - `client/src/components/ui/detect.tsx` (New signature `<Detect>` primitive with 1px signal bounding box, corner ticks, and deterministic confidence label)
+  - `client/src/components/ui/button.tsx` (Unified Button per §7.1.1: signal primary, inverse, secondary, ghost, danger, link, loading spinner, success morph, scale .985)
+  - `client/src/components/ui/card.tsx` (Base Card per §7.3.2: transparent background on ink, 1px hairline, r-3 radius, zero box-shadow)
+  - `client/src/components/ui/badge.tsx` (Tag & Chip component with micro typography and selected state per §7.1.4)
+  - `client/src/components/ui/StatusBadge.tsx` (Retokened per §7.1.5 with 6px dot, ok/warn/mute/signal-text, and pulsing live indicator)
+  - `client/src/components/ui/RoleBadge.tsx` (Retokened per §7.1.6 for aspirant, core, admin)
+  - `client/src/components/ui/input.tsx` & `textarea.tsx` (Retokened per §7.4 with 44px height, hairline-2 border, 16px mobile font, focus ring)
+  - `client/src/components/ui/skeleton.tsx` (Retokened with unified shimmer animation per §7.6.1)
+  - `client/src/components/EmptyState.tsx` (Retokened per §7.6.2)
+  - `client/src/components/StatsCard.tsx` (NumberTicker with tabular-nums and hairline grid per §7.3.9)
+  - `client/src/components/ProjectCard.tsx` (Wrapped with `<Detect label="project">`, 16:10 image, year mono, tag chips per §7.3.3)
+  - `client/src/components/EventCard.tsx` & `EventRow.tsx` (Created EventRow and updated EventCard with `<Detect label="event">` per §7.3.5)
+  - `client/src/components/TeamMemberCard.tsx` (Wrapped with `<Detect label="member">`, 4:5 portrait, bottom scrim with sentence case name and signal-text role per §7.3.8)
+  - `client/src/components/BlogCard.tsx` (Wrapped with `<Detect label="post">`, 16:10 image, tag chip, and mono date/time per §7.3.7)
+- **Verification**: `npm run build` executed and passed cleanly with 0 compilation errors (33.00s).
+
+### [2026-10-20] — DESIGN.md v3.0 ("Perception") Phase 2: Page Rebuilds & Loader Elimination
+- **Summary**:
+  - Completely eliminated blocking preloader (`AprameyaLoadingScreen.tsx`) from `App.tsx` per §7.6.8; brand moment lives exclusively in the live PointCloud hero.
+  - Created 16px minimal `Ring` loader primitive (`client/src/components/ui/ring.tsx`) per §7.6.5.
+  - Defanged legacy loaders (`WanderingEyesLoader.tsx`, `AprameyaLoader.tsx`, `AprameyaLoadingScreen.tsx`) so they render minimal quiet spinners or immediate fallbacks without neon glows, laser scanlines, or sci-fi telemetry text.
+  - Replaced Suspense fallbacks in `UserProfile.tsx`, `TeamsView.tsx`, `RecruitmentView.tsx`, and `EventsView.tsx` with clean `Ring` indicators.
+  - Rebuilt `Research.tsx` per §8.7 with Page hero, mono year headings, `ResearchItem` with `<Detect label="paper">`, and BibTeX citation copy.
+  - Rebuilt `Blogs.tsx` per §8.7 with Page hero (removed `05 — DISPATCHES` eyebrow), topic filter chips (`All`, `Perception`, `Embedded`, `Controls`, `Culture`), and search bar.
+  - Rebuilt `BlogDetails.tsx` per §8.7 with sticky 2px red reading progress bar beneath header, 66ch max prose width, line-height 1.75, and `CodeBlock` component (`components/CodeBlock.tsx`).
+  - Rebuilt `TicketRegistration.tsx` and `MyTickets.tsx` with interactive 3D flip card `TicketPass.tsx` (front: metadata, back: 180×180 QR code, entry code), and removed `ChamferedButton`.
+  - Rebuilt `TeamMemberDetail.tsx` with 4:5 portrait, sentence-case typography, and QR download dialog.
+  - Rebuilt `Login.tsx`, `Signup.tsx`, and `ForgotPassword.tsx` with 400px centered card on `--ink`, sentence case, and unified `Button` and `Input` components.
+  - Rebuilt `not-found.tsx` with playful low-confidence detection frame (`page 0.12`, `route 0.08`) around 404 mono number per §6.30 & §8.13.
+  - Folded `ChamferedButton.tsx` into the unified `Button` primitive per §7.1.1 & §15.8.
+  - Added 220px detection viewfinder guide to `AdminScanQR.tsx` with corner ticks and `scanning...` label per §7.7.5.
+- **Verification**: `npm run build` executed in `client/` and compiled 2,984 modules cleanly with 0 errors in 13.08s.
+
+### [2026-10-20] — Design Refinement, v2 Home Restoration, and Content Cleanup
+- **Summary**:
+  - **Removed Global Red Borders**: Defanged `client/src/components/ui/detect.tsx` to act strictly as a transparent passthrough wrapper without 1px red bounding boxes, corner ticks, or confidence pills. Removed active red rectangular borders from Header nav items (replaced with clean 2px underline).
+  - **Restored Home Page to v2 Layout**: Restored `client/src/pages/Home.tsx` to the clean v2 structure with `/assets/hero-loop.mp4` video hero, 4-line typography headline, 4 stats strip (`2019 Founded`, `50+ Active Members`, `3rd National Rank`, `100% Hands-on Engineering`), 3 domain cards, featured projects, upcoming events rows, recruitment steps, and final CTA band. Eliminated point cloud, experimental bento grid, and horizontal scroll strip.
+  - **Deduplicated Projects Page**: Filtered out the featured project from the main project grid in `client/src/pages/Projects.tsx` so it no longer appears twice.
+  - **Fixed Duplicate Wordmark in Navbar**: Made `Logo.tsx` theme-reactive so it automatically selects `/logo-white.png` in dark mode and `/logo-black.png` in light mode with a single crisp `APRAMEYA` brand wordmark (removed duplicate lightweight "Aprameya" text).
+  - **Corrected Past Events Image**: Updated `Autonomous Navigation & Perception Workshop` in `client/src/lib/data.ts` to use `/assets/event_workshop.png` instead of the certificate photo `/assets/UVH.jpg`.
+  - **Fixed Team Light Mode Fade**: Removed dark gradient scrim (`from-ink via-ink/80`) across portraits in `TeamMemberCard.tsx`; member name, role, and department are now cleanly laid out in the card body below the photo.
+  - **Recruitment Open Domains**: Removed slot counts (`08 slots`, etc.) and restored open domains as responsive cards in `client/src/pages/Recruitment.tsx`.
+  - **Removed Fake Blogs**: Completely removed hardcoded fallback blog articles (*"Migrating Autonomy Perception to TensorRT...", "Designing Fail-Silent Microcontroller Firmware...", "Nonlinear Model Predictive Control..."*) from `Blogs.tsx` and `BlogDetails.tsx`, showing a clean EmptyState when no articles are published.
+  - **Removed Fake Projects in About Page**: Removed "Drive-by-Wire Platform" and "Drive-by-Wire Full Autonomy Demonstration" from `About.tsx` timeline and achievements.
+- **Verification**: `npm run build` compiled 2,981 modules cleanly with 0 errors in 15.78s.
+
+### [2026-10-20] — Dashboard Streamlining, Chart Modernization, and Button Corrections
+- **Summary**:
+  - **Deduplicated Navigation Buttons**: Removed redundant "View User Panel" and "View Home Page" from the dashboard top desktop header (and mobile header). "Switch to User View" and "View Public Site" now live exclusively in the sidebar footer, eliminating duplicate buttons.
+  - **Fixed Form Action Button Duplication**: Removed duplicate Cancel and Save Changes buttons inside `renderForm()` in `client/src/pages/UserProfile.tsx`. A single, clean set of Cancel and Save Changes buttons is displayed at the top of the form editor.
+  - **Fixed Invisible Add Event Button**: Corrected `EventsView.tsx` where the "New Event" button was rendered with `bg-[hsl(var(--accent))] text-[var(--bg-body)]` (evaluating to black text on dark gray). Replaced with visible crimson button (`bg-[var(--red)] text-white`). Also fixed "Add Team Member" and "Save Changes" buttons in `TeamsView.tsx`.
+  - **Modernized Dashboard Charts**:
+    - **User Growth Telemetry**: Fixed month sorting in `useUserProfileData.ts` using timestamp indexing (`year * 100 + month`) so months sort chronologically (`Dec '25` before `Feb '26`). Upgraded `AdminStats.tsx` with rich crimson SVG area gradient (`url(#userGrowthGradient)`), smooth monotone curve, and custom glassmorphism tooltip card.
+    - **Laboratory Distribution**: Upgraded donut chart with a centered metric counter (`{total} items`), soft padding angle, theme-aligned colors (Projects `#E8261E`, Events `#10B981`, Research `#38BDF8`, Blogs `#F59E0B`), and breakdown pill cards.
+  - **Theme Inconsistencies & Dashboard ThemeToggle**: Added `ThemeToggle` to both desktop and mobile headers in `UserProfile.tsx` for easy dark/light mode switching.
+- **Verification**: `npm run build` compiled 2,981 modules cleanly with 0 errors in 16.09s.
+

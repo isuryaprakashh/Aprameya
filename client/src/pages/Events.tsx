@@ -1,24 +1,30 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { useLocation } from 'wouter';
 import { Event, EventRegistration } from '../lib/types';
 import { events as fallbackEvents } from '../lib/data';
 import { useQuery } from '@tanstack/react-query';
 import {
-  Calendar,
+  Calendar as CalendarIcon,
   Clock,
   MapPin,
   Search,
-  ArrowRight,
   Ticket,
+  Download,
 } from 'lucide-react';
 import StatusBadge from '@/components/ui/StatusBadge';
-import ChamferedButton from '@/components/ui/ChamferedButton';
-import EmptyState from '../components/EmptyState';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import EventRow from '@/components/EventRow';
+import EventCard from '@/components/EventCard';
+import EmptyState from '@/components/EmptyState';
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from '@/context/AuthContext';
 
-const Events = () => {
+export const Events: React.FC = () => {
   const { toast } = useToast();
+  const [, setLocation] = useLocation();
+  const { user } = useAuth();
+
   const { data: events = [], isLoading } = useQuery<Event[]>({
     queryKey: ['/api/events'],
     queryFn: async () => {
@@ -40,13 +46,11 @@ const Events = () => {
     staleTime: 60000,
   });
 
-  const { user } = useAuth();
   const { data: userRegistrations = [] } = useQuery<EventRegistration[]>({
     queryKey: ['/api/event-registrations/my'],
     enabled: !!user,
   });
   const registeredEventIds = new Set(userRegistrations.map((r) => r.event_id));
-  const [, setLocation] = useLocation();
 
   const [activeTab, setActiveTab] = useState<'upcoming' | 'past'>('upcoming');
   const [searchTerm, setSearchTerm] = useState('');
@@ -70,11 +74,38 @@ const Events = () => {
 
   const nextSpotlight = upcomingList.length > 0 ? upcomingList[0] : null;
 
+  const downloadICS = (event: Event) => {
+    const title = event.title || 'Aprameya Event';
+    const description = event.description || '';
+    const location = event.location || 'KL University';
+    const icsContent = [
+      'BEGIN:VCALENDAR',
+      'VERSION:2.0',
+      'PRODID:-//Aprameya Autonomous Systems Club//Events//EN',
+      'BEGIN:VEVENT',
+      `SUMMARY:${title}`,
+      `DESCRIPTION:${description}`,
+      `LOCATION:${location}`,
+      `DTSTART:${new Date(event.date || Date.now()).toISOString().replace(/-|:|\.\d\d\d/g, '')}`,
+      'END:VEVENT',
+      'END:VCALENDAR'
+    ].join('\r\n');
+
+    const blob = new Blob([icsContent], { type: 'text/calendar;charset=utf-8' });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `${title.toLowerCase().replace(/\s+/g, '-')}.ics`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+  };
+
   const handleQuickRegister = async (event: Event) => {
     if (!user) {
       toast({
-        title: "Authentication Required",
-        description: "Please login to register for events",
+        title: "Authentication required",
+        description: "Please sign in with your college account to register.",
         variant: "destructive",
       });
       setLocation("/login");
@@ -93,75 +124,74 @@ const Events = () => {
       const result = await response.json();
       if (response.ok) {
         toast({
-          title: "Successfully Registered",
-          description: `Registered for "${event.title}".`,
+          title: "Registered",
+          description: `You are registered for "${event.title}".`,
         });
-        setTimeout(() => window.location.reload(), 800);
+        setTimeout(() => window.location.reload(), 600);
       } else {
         toast({
-          title: "Registration Failed",
+          title: "Registration failed",
           description: result.error || "Unable to complete registration.",
           variant: "destructive",
         });
       }
     } catch {
       toast({
-        title: "Network Error",
-        description: "Please try again later.",
+        title: "Network error",
+        description: "Could not reach the server. Please try again.",
         variant: "destructive",
       });
     }
   };
 
   return (
-    <main className="w-full bg-bg min-h-screen text-text">
-      {/* ─── PAGE HEADER (Section 5.3 & 5) ─── */}
-      <section className="pt-24 pb-8 px-6 md:px-8 max-w-[1200px] mx-auto">
-        <p className="font-mono text-xs uppercase tracking-[0.06em] text-text-3 mb-2">
-          02 — CALENDAR
-        </p>
-        <h1 className="font-display font-medium text-3xl sm:text-4xl md:text-5xl tracking-tight text-text mb-3">
-          Workshops & events.
+    <div className="w-full bg-ink text-paper min-h-screen">
+      {/* ─── PAGE HERO (§7.8.2) ─── */}
+      <section className="pt-12 sm:pt-16 pb-8 px-5 sm:px-8 lg:px-12 max-w-container mx-auto text-left">
+        <h1 className="font-sans font-medium text-[clamp(34px,4.8vw,60px)] tracking-[-0.03em] leading-tight text-paper mb-3">
+          Events
         </h1>
-        <p className="text-base text-text-2 max-w-xl leading-relaxed mb-10">
-          Hands-on robotics bootcamps, perception symposiums, and engineering workshops hosted by Aprameya.
+        <p className="font-sans text-[clamp(17px,1.4vw,20px)] text-text-2 max-w-2xl leading-relaxed mb-10">
+          Workshops, autonomy symposiums, and engineering sprint hackathons hosted by the Aprameya laboratory.
         </p>
 
-        {/* ─── NEXT EVENT SPOTLIGHT (Only on Upcoming) ─── */}
+        {/* ─── EVENT SPOTLIGHT (§7.3.6) ─── */}
         {activeTab === 'upcoming' && nextSpotlight && (
-          <div className="rounded-lg border border-border p-6 bg-surface mb-10">
-            <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
+          <div className="w-full rounded-[var(--r-4)] border border-hairline bg-surface-1 p-6 sm:p-8 mb-12">
+            <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6 sm:gap-8">
               <div className="flex items-start gap-6">
-                {/* Large mono day + month block */}
-                <div className="w-16 h-16 rounded-md border border-border bg-surface-2 flex flex-col items-center justify-center shrink-0 font-mono">
-                  <span className="text-[11px] text-text-3 uppercase tracking-wider font-semibold">
-                    {nextSpotlight.month || 'UPCOMING'}
-                  </span>
-                  <span className="font-display font-medium text-2xl text-text leading-none mt-1">
+                {/* Date block: data-lg 56px */}
+                <div className="w-20 sm:w-24 text-left shrink-0">
+                  <div className="font-sans text-[12px] uppercase text-mute font-medium">
+                    {nextSpotlight.month || 'Upcoming'}
+                  </div>
+                  <div className="font-mono text-[clamp(36px,5vw,56px)] font-light text-paper leading-none tabular-nums mt-1">
                     {nextSpotlight.day || '—'}
-                  </span>
+                  </div>
                 </div>
 
-                <div>
+                <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2 mb-2">
-                    <StatusBadge status="Upcoming" isLive={true} />
-                    <span className="font-mono text-xs text-text-3 uppercase tracking-[0.06em]">
-                      Spotlight
+                    <StatusBadge status="Live" isLive={true} />
+                    <span className="font-mono text-[12px] text-mute">
+                      Next in queue
                     </span>
                   </div>
-                  <h2 className="font-display font-medium text-xl sm:text-2xl text-text tracking-tight mb-2">
+
+                  <h2 className="font-sans font-medium text-[24px] sm:text-[28px] text-paper tracking-[-0.02em] leading-snug mb-3">
                     {nextSpotlight.title}
                   </h2>
-                  <div className="flex flex-wrap items-center gap-4 text-xs font-mono text-text-2">
+
+                  <div className="flex flex-wrap items-center gap-4 sm:gap-6 text-[13px] font-mono text-mute">
                     {nextSpotlight.time && (
                       <span className="flex items-center gap-1.5">
-                        <Clock className="w-3.5 h-3.5 text-text-3" />
+                        <Clock className="w-3.5 h-3.5" />
                         {nextSpotlight.time}
                       </span>
                     )}
                     {nextSpotlight.location && (
                       <span className="flex items-center gap-1.5">
-                        <MapPin className="w-3.5 h-3.5 text-text-3" />
+                        <MapPin className="w-3.5 h-3.5" />
                         {nextSpotlight.location}
                       </span>
                     )}
@@ -170,166 +200,129 @@ const Events = () => {
               </div>
 
               {/* Action buttons */}
-              <div className="flex items-center gap-3 shrink-0">
+              <div className="flex flex-wrap items-center gap-3 shrink-0">
+                <Button
+                  variant="secondary"
+                  size="lg"
+                  onClick={() => downloadICS(nextSpotlight)}
+                >
+                  <Download className="w-4 h-4 mr-2" />
+                  Add to calendar
+                </Button>
+
                 {user && registeredEventIds.has(nextSpotlight.id) ? (
-                  <span className="h-10 px-4 rounded-md border border-border text-xs font-mono text-text-3 flex items-center">
+                  <Button variant="secondary" size="lg" success successText="Registered" disabled>
                     Registered
-                  </span>
+                  </Button>
                 ) : nextSpotlight.ticketEnabled ? (
-                  <ChamferedButton
+                  <Button
                     variant="primary"
-                    size="md"
+                    size="lg"
                     onClick={() => setLocation(`/events/${nextSpotlight.id}/register`)}
-                    rightIcon={<Ticket className="w-4 h-4" />}
                   >
+                    <Ticket className="w-4 h-4 mr-2" />
                     Register
-                  </ChamferedButton>
+                  </Button>
                 ) : (
-                  <ChamferedButton
+                  <Button
                     variant="primary"
-                    size="md"
+                    size="lg"
                     onClick={() => handleQuickRegister(nextSpotlight)}
                   >
                     Register
-                  </ChamferedButton>
+                  </Button>
                 )}
               </div>
             </div>
           </div>
         )}
 
-        {/* ─── TABS & SEARCH BAR (Section 4.7 & 5.3) ─── */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-border pb-4">
+        {/* ─── TABS & SEARCH BAR (§6.9 & §7.2.6) ─── */}
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-hairline pb-4 mb-8">
           <div className="flex items-center gap-8">
             <button
+              type="button"
               onClick={() => setActiveTab('upcoming')}
-              className={`relative pb-4 font-body text-sm font-medium transition-colors cursor-pointer ${
-                activeTab === 'upcoming' ? 'text-text' : 'text-text-2 hover:text-text'
+              className={`relative pb-3 text-[14px] font-sans font-medium transition-colors cursor-pointer select-none ${
+                activeTab === 'upcoming' ? 'text-paper' : 'text-text-2 hover:text-paper'
               }`}
             >
               Upcoming ({upcomingList.length})
               {activeTab === 'upcoming' && (
-                <span className="absolute bottom-[-1px] left-0 right-0 h-[2px] bg-red" />
+                <span className="absolute bottom-0 left-0 right-0 h-[2px] bg-signal" />
               )}
             </button>
             <button
+              type="button"
               onClick={() => setActiveTab('past')}
-              className={`relative pb-4 font-body text-sm font-medium transition-colors cursor-pointer ${
-                activeTab === 'past' ? 'text-text' : 'text-text-2 hover:text-text'
+              className={`relative pb-3 text-[14px] font-sans font-medium transition-colors cursor-pointer select-none ${
+                activeTab === 'past' ? 'text-paper' : 'text-text-2 hover:text-paper'
               }`}
             >
               Past ({pastList.length})
               {activeTab === 'past' && (
-                <span className="absolute bottom-[-1px] left-0 right-0 h-[2px] bg-red" />
+                <span className="absolute bottom-0 left-0 right-0 h-[2px] bg-signal" />
               )}
             </button>
           </div>
 
-          <div className="relative w-full sm:w-60">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-text-3" />
-            <input
+          <div className="relative w-full sm:w-64">
+            <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-mute pointer-events-none" />
+            <Input
               type="text"
-              placeholder="Search schedule..."
+              placeholder="Filter events..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full h-9 pl-9 pr-3 rounded-md border border-border-strong bg-transparent text-xs text-text placeholder:text-text-3 focus:outline-none focus:border-focus-ring"
+              className="pl-9 h-10 text-[13px]"
             />
           </div>
         </div>
       </section>
 
-      {/* ─── EVENT LIST ROWS (Section 5.3) ─── */}
-      <section className="pb-24 px-6 md:px-8 max-w-[1200px] mx-auto">
+      {/* ─── EVENT LISTINGS ─── */}
+      <section className="pb-24 px-5 sm:px-8 lg:px-12 max-w-container mx-auto text-left">
         {filteredEvents.length > 0 ? (
-          <div className="divide-y divide-border border-b border-border">
-            {filteredEvents.map((event) => {
-              const isRegistered = user && registeredEventIds.has(event.id);
-              return (
-                <div
-                  key={event.id}
-                  className="py-6 flex flex-col md:flex-row md:items-center justify-between gap-6 hover:bg-surface/40 px-4 -mx-4 rounded-md transition-colors duration-fast"
-                >
-                  {/* Left: Date block + Title + Details */}
-                  <div className="flex items-start gap-5 min-w-0">
-                    <div className="w-14 h-14 rounded-md border border-border bg-surface-2 flex flex-col items-center justify-center shrink-0 font-mono">
-                      <span className="text-[10px] text-text-3 uppercase tracking-wider font-semibold">
-                        {event.month || 'DATE'}
-                      </span>
-                      <span className="font-display font-medium text-lg text-text leading-none mt-0.5">
-                        {event.day || '—'}
-                      </span>
-                    </div>
-
-                    <div className="min-w-0">
-                      <div className="flex items-center gap-2 mb-1">
-                        <StatusBadge status={event.status || (activeTab === 'upcoming' ? 'Open' : 'Past')} />
-                        <span className="font-mono text-xs uppercase tracking-[0.06em] text-text-3">
-                          {event.type}
-                        </span>
-                      </div>
-                      <h3 className="font-display font-medium text-base sm:text-lg text-text tracking-tight mb-1 truncate">
-                        {event.title}
-                      </h3>
-                      <p className="text-xs text-text-2 line-clamp-1 max-w-xl mb-2">
-                        {event.description}
-                      </p>
-                      <div className="flex items-center gap-4 text-xs font-mono text-text-3">
-                        {event.time && <span>{event.time}</span>}
-                        {event.location && (
-                          <span className="flex items-center gap-1">
-                            <MapPin className="w-3 h-3" />
-                            {event.location}
-                          </span>
-                        )}
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Right: Action */}
-                  <div className="shrink-0 flex items-center gap-3 md:self-center">
-                    {activeTab === 'past' ? (
-                      <span className="font-mono text-xs text-text-3">Completed</span>
-                    ) : isRegistered ? (
-                      <span className="h-9 px-3 rounded-md border border-border text-xs font-mono text-text-3 flex items-center">
-                        Registered
-                      </span>
-                    ) : event.ticketEnabled ? (
-                      <ChamferedButton
-                        variant="secondary"
-                        size="sm"
-                        onClick={() => setLocation(`/events/${event.id}/register`)}
-                        rightIcon={<ArrowRight className="w-3.5 h-3.5" />}
-                      >
-                        Register
-                      </ChamferedButton>
-                    ) : (
-                      <ChamferedButton
-                        variant="secondary"
-                        size="sm"
-                        onClick={() => handleQuickRegister(event)}
-                        rightIcon={<ArrowRight className="w-3.5 h-3.5" />}
-                      >
-                        Register
-                      </ChamferedButton>
-                    )}
-                  </div>
-                </div>
-              );
-            })}
-          </div>
+          activeTab === 'upcoming' ? (
+            <div className="flex flex-col divide-y divide-hairline">
+              {filteredEvents.map((event) => (
+                <EventRow
+                  key={event.id || event._id || event.title}
+                  event={event}
+                  isRegistered={Boolean(user && registeredEventIds.has(event.id))}
+                  onRegister={() => {
+                    if (event.ticketEnabled) {
+                      setLocation(`/events/${event.id}/register`);
+                    } else {
+                      handleQuickRegister(event);
+                    }
+                  }}
+                />
+              ))}
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {filteredEvents.map((event) => (
+                <EventCard
+                  key={event.id || event._id || event.title}
+                  event={event}
+                  isRegistered={Boolean(user && registeredEventIds.has(event.id))}
+                />
+              ))}
+            </div>
+          )
         ) : (
           <EmptyState
-            icon={Calendar}
+            icon={CalendarIcon}
             title={activeTab === 'upcoming' ? 'No upcoming events' : 'No past events found'}
             description={
               activeTab === 'upcoming'
                 ? 'Check back soon for new bootcamps and workshops.'
-                : 'No archived events match your search keywords.'
+                : 'No archived events match your search query.'
             }
           />
         )}
       </section>
-    </main>
+    </div>
   );
 };
 

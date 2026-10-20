@@ -1,59 +1,104 @@
-import { ResearchItem } from '../lib/types';
-import { CleanCard } from './ui/v6-card';
+import React, { useState } from 'react';
+import { ResearchItem as ResearchItemType } from '@/lib/types';
+import { Detect } from '@/components/ui/detect';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import { FileText, Copy, Check } from 'lucide-react';
 
 interface ResearchItemProps {
-  research: ResearchItem;
+  item: ResearchItemType;
+  onReadMore?: () => void;
 }
 
-const ResearchItemComponent = ({ research }: ResearchItemProps) => {
+export const ResearchItem: React.FC<ResearchItemProps> = ({ item, onReadMore }) => {
+  const [copied, setCopied] = useState(false);
+
+  const handleCopyCite = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    const bibtex = `@article{aprameya_${item._id || item.id || 'pub'},
+  title = {${item.title}},
+  author = {${item.authors || 'Aprameya ASC'}},
+  journal = {${item.venue || item.category || 'Aprameya Research'}},
+  year = {${item.year || item.date || '2025'}}
+}`;
+    navigator.clipboard.writeText(bibtex);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
+
+  const yearMatch = item.date?.match(/\d{4}/);
+  const displayYear = item.year || (yearMatch ? yearMatch[0] : '2025');
+
   return (
-    <CleanCard className="p-6 mb-10 group">
-      <div className="shimmer pointer-events-none"></div>
-      <div className="flex flex-col md:flex-row gap-6 relative z-10">
-        <div className="md:w-2/3">
-          <h2 className="font-mono font-bold text-2xl mb-3 text-[var(--text-primary)]">{research.title}</h2>
-          <div className="flex items-center mb-4">
-            <span className="text-[var(--text-secondary)] text-sm mr-4 font-mono">Published: {research.date}</span>
-            <span className="text-[10px] font-bold px-3 py-1 rounded-full bg-[hsl(var(--accent))]/10 text-[hsl(var(--accent))] border border-[hsl(var(--accent))]/20 uppercase tracking-wider">
-              {research.category}
+    <Detect label="paper" className="w-full">
+      <div className="w-full bg-ink border border-hairline p-5 md:p-6 transition-colors flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div className="flex-1 min-w-0">
+          <div className="flex flex-wrap items-center gap-2 mb-2">
+            <Badge variant="secondary" className="text-[11px]">
+              {item.category || 'Autonomous Systems'}
+            </Badge>
+            <span className="font-mono text-xs text-mute">
+              {item.venue ? `${item.venue} · ` : ''}{displayYear}
             </span>
           </div>
-          <p className="text-[var(--text-secondary)] mb-4 leading-relaxed">
-            {research.description}
+
+          <h3 className="text-base md:text-lg font-medium text-paper leading-snug">
+            {item.title}
+          </h3>
+
+          <p className="text-[13px] text-mute mt-1.5 line-clamp-1">
+            {item.authors || 'Aprameya Research Division, Autonomous Systems Club'}
           </p>
-          <div className="flex items-center text-sm text-[var(--text-secondary)] mb-6 font-mono">
-            <span className="mr-4">Authors: <span className="text-[var(--text-primary)]">{Array.isArray(research.authors) ? research.authors.join(', ') : research.authors}</span></span>
-          </div>
-          <div className="flex flex-wrap gap-3">
-            <a
-              href="#"
-              className="btn-primary px-6 py-2 text-sm flex items-center"
-            >
-              <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
-              </svg>
-              Download PDF
-            </a>
-            <button className="btn-secondary px-6 py-2 text-sm flex items-center">
-              <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
-              </svg>
-              View Details
-            </button>
-          </div>
+
+          {item.description && (
+            <p className="text-[13px] text-text-2 mt-2 line-clamp-2 leading-relaxed">
+              {item.description}
+            </p>
+          )}
         </div>
-        <div className="md:w-1/3 flex justify-center items-center">
-          <div className="rounded-lg overflow-hidden border border-[var(--border-color)] w-full max-h-48">
-            <img
-              src={research.image}
-              alt={research.title}
-              className="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity duration-500"
-            />
-          </div>
+
+        <div className="flex items-center gap-2 pt-2 md:pt-0 shrink-0">
+          {item.pdfUrl ? (
+            <a href={item.pdfUrl} target="_blank" rel="noopener noreferrer">
+              <Button variant="secondary" size="sm" className="gap-1.5 text-xs">
+                <FileText className="size-3.5" />
+                <span>PDF</span>
+              </Button>
+            </a>
+          ) : (
+            <Button
+              variant="secondary"
+              size="sm"
+              onClick={onReadMore}
+              className="gap-1.5 text-xs"
+            >
+              <FileText className="size-3.5" />
+              <span>Abstract</span>
+            </Button>
+          )}
+
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={handleCopyCite}
+            className="gap-1.5 text-xs text-mute hover:text-paper"
+          >
+            {copied ? (
+              <>
+                <Check className="size-3.5 text-ok" />
+                <span className="text-ok">Copied</span>
+              </>
+            ) : (
+              <>
+                <Copy className="size-3.5" />
+                <span>Cite</span>
+              </>
+            )}
+          </Button>
         </div>
       </div>
-    </CleanCard>
+    </Detect>
   );
 };
 
-export default ResearchItemComponent;
+export default ResearchItem;

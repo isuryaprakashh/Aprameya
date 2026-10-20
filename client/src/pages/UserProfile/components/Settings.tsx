@@ -4,6 +4,8 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { useToast } from '@/hooks/use-toast';
+import { FormActions } from '@/components/ui/FormActions';
+import { compressImage } from '@/lib/imageUtils';
 import {
   FaUser,
   FaSave,
@@ -44,53 +46,36 @@ export const Settings = ({
     return name.substring(0, 2).toUpperCase();
   };
 
-  const handleImageFile = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleImageFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
-    if (!file.type.startsWith('image/')) {
+    try {
+      const compressed = await compressImage(file, 800, 0.85);
+      handleInputChange('profile_image', compressed);
       toast({
-        title: 'Invalid File',
-        description: 'Please select an image file (PNG, JPG, WEBP).',
+        title: 'Photo Uploaded',
+        description: 'Profile photo updated. Remember to save changes.',
+      });
+    } catch (err: any) {
+      toast({
+        title: 'Upload Error',
+        description: err.message || 'Please select an image file (PNG, JPG, WEBP).',
         variant: 'destructive',
       });
-      return;
     }
+  };
 
-    const reader = new FileReader();
-    reader.onload = (ev) => {
-      const raw = ev.target?.result as string;
-      if (!raw) return;
-
-      const img = new Image();
-      img.src = raw;
-      img.onload = () => {
-        const canvas = document.createElement('canvas');
-        const maxDim = 800;
-        let w = img.width;
-        let h = img.height;
-        if (w > maxDim || h > maxDim) {
-          if (w > h) {
-            h = Math.round((h * maxDim) / w);
-            w = maxDim;
-          } else {
-            w = Math.round((w * maxDim) / h);
-            h = maxDim;
-          }
-        }
-        canvas.width = w;
-        canvas.height = h;
-        const ctx = canvas.getContext('2d');
-        ctx?.drawImage(img, 0, 0, w, h);
-        const compressed = canvas.toDataURL('image/jpeg', 0.85);
-        handleInputChange('profile_image', compressed);
-        toast({
-          title: 'Photo Uploaded',
-          description: 'Profile photo updated. Remember to save changes.',
-        });
-      };
-    };
-    reader.readAsDataURL(file);
+  const handleReset = () => {
+    handleInputChange('display_name', currentUser?.display_name || '');
+    handleInputChange('username', currentUser?.username || '');
+    handleInputChange('profile_image', currentUser?.profile_image || '');
+    handleInputChange('bio', currentUser?.bio || '');
+    handleInputChange('department', currentUser?.department || '');
+    handleInputChange('year', currentUser?.year || '');
+    handleInputChange('newPassword', '');
+    handleInputChange('confirmPassword', '');
+    toast({ title: 'Changes Discarded', description: 'Reset profile form to current saved values.' });
   };
 
   return (
@@ -116,9 +101,9 @@ export const Settings = ({
           </label>
           <div className="flex flex-col sm:flex-row items-center sm:items-start gap-6">
             <div className="relative group shrink-0">
-              <Avatar className="w-24 h-24 sm:w-28 sm:h-28 border border-[var(--border)]">
+              <Avatar className="w-24 h-24 sm:w-28 sm:h-28 rounded-[20px] border border-[var(--border)] overflow-hidden">
                 <AvatarImage src={currentImage} alt={displayNameValue || usernameValue} className="object-cover" />
-                <AvatarFallback className="bg-[var(--surface)] text-[var(--text)] text-2xl font-display font-medium">
+                <AvatarFallback className="rounded-[20px] bg-[var(--surface)] text-[var(--text)] text-2xl font-display font-medium">
                   {getInitials(displayNameValue || usernameValue)}
                 </AvatarFallback>
               </Avatar>
@@ -312,15 +297,13 @@ export const Settings = ({
           </div>
         </div>
 
-        {/* Save Changes Button */}
-        <div className="pt-4 flex items-center justify-end border-t border-[var(--border)]">
-          <Button
-            onClick={handleUpdateProfile}
-            className="bg-[var(--red)] text-white hover:bg-[var(--red-hover)] rounded-[var(--r-md)] px-6 h-10 font-medium text-xs"
-          >
-            <FaSave className="mr-2" /> Save Profile Changes
-          </Button>
-        </div>
+        {/* Bottom Actions: Cancel & Save Changes */}
+        <FormActions
+          onCancel={handleReset}
+          onSave={handleUpdateProfile}
+          saveLabel="Save Changes"
+          cancelLabel="Cancel"
+        />
       </div>
     </div>
   );

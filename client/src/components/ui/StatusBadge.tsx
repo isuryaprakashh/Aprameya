@@ -5,14 +5,21 @@ export type StatusVariant =
   | 'open'
   | 'live'
   | 'accepted'
+  | 'registered'
+  | 'active'
+  | 'published'
   | 'upcoming'
   | 'pending'
   | 'in review'
+  | 'waitlist'
   | 'closed'
   | 'past'
   | 'draft'
+  | 'cancelled'
+  | 'archived'
   | 'rejected'
   | 'error'
+  | 'expired'
   | string;
 
 interface StatusBadgeProps extends React.HTMLAttributes<HTMLSpanElement> {
@@ -28,25 +35,25 @@ export const StatusBadge: React.FC<StatusBadgeProps> = ({
   className,
   ...props
 }) => {
-  const norm = status?.toLowerCase() || '';
+  const norm = (status || '').toLowerCase().trim();
 
-  let containerClass = 'bg-info-soft text-text-3';
-  let dotClass = 'bg-text-3';
+  let containerClass = 'bg-info-soft text-mute border border-hairline';
+  let dotClass = 'bg-mute';
   let displayLabel = label || status;
 
-  if (['open', 'live', 'accepted', 'active', 'published'].some((k) => norm.includes(k))) {
-    containerClass = 'bg-success-soft text-success';
-    dotClass = 'bg-success';
-  } else if (['upcoming', 'pending', 'in review', 'reviewing', 'shortlisted'].some((k) => norm.includes(k))) {
-    containerClass = 'bg-warning-soft text-warning';
-    dotClass = 'bg-warning';
-  } else if (['rejected', 'error', 'declined', 'failed'].some((k) => norm.includes(k))) {
-    containerClass = 'bg-red-soft text-red-text';
-    dotClass = 'bg-red-text';
+  if (['open', 'live', 'accepted', 'registered', 'active', 'published'].some((k) => norm.includes(k))) {
+    containerClass = 'bg-ok-soft text-ok border border-ok/20';
+    dotClass = 'bg-ok';
+  } else if (['upcoming', 'pending', 'in review', 'reviewing', 'shortlisted', 'waitlist'].some((k) => norm.includes(k))) {
+    containerClass = 'bg-warn-soft text-warn border border-warn/20';
+    dotClass = 'bg-warn';
+  } else if (['rejected', 'error', 'declined', 'failed', 'expired'].some((k) => norm.includes(k))) {
+    containerClass = 'bg-signal-soft text-signal-text border border-signal-line';
+    dotClass = 'bg-signal-text';
   } else {
-    // closed, past, draft, archived
-    containerClass = 'bg-info-soft text-text-3';
-    dotClass = 'bg-text-3';
+    // closed, past, draft, cancelled, archived
+    containerClass = 'bg-info-soft text-mute border border-hairline';
+    dotClass = 'bg-mute';
   }
 
   const shouldPulse = isLive || norm === 'live';
@@ -54,7 +61,7 @@ export const StatusBadge: React.FC<StatusBadgeProps> = ({
   return (
     <span
       className={cn(
-        'inline-flex items-center gap-1.5 h-[22px] px-2 rounded-sm font-mono text-[11px] font-medium uppercase tracking-[0.06em]',
+        'inline-flex items-center gap-1.5 h-[24px] px-2 rounded-[var(--r-1)] font-sans text-[12px] font-medium leading-none select-none',
         containerClass,
         className
       )}
@@ -64,10 +71,12 @@ export const StatusBadge: React.FC<StatusBadgeProps> = ({
         className={cn(
           'w-1.5 h-1.5 rounded-full shrink-0',
           dotClass,
-          shouldPulse && 'animate-live-pulse'
+          shouldPulse && 'animate-[live-pulse_1.6s_ease-in-out_infinite]'
         )}
+        aria-hidden="true"
       />
       <span>{displayLabel}</span>
+      {shouldPulse && <span className="sr-only"> (Live now)</span>}
     </span>
   );
 };

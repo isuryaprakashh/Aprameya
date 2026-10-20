@@ -1,11 +1,12 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { useLocation } from 'wouter';
 import { useQuery } from '@tanstack/react-query';
 import { TeamMember } from '@/lib/types';
 import { teamMembers as fallbackTeamMembers } from '@/lib/data';
 import { getMemberSlug } from '@/lib/slugs';
-import { Search, User } from 'lucide-react';
+import { Search, Users } from 'lucide-react';
 import EmptyState from '@/components/EmptyState';
+import { Input } from '@/components/ui/input';
 import TeamMemberCard, {
   isMentorMember,
   isAdvisorMember,
@@ -14,7 +15,7 @@ import TeamMemberCard, {
 
 const FILTER_ROLES = ['All', 'Mentors', 'Club Leads', 'Advisors'];
 
-export default function Teams() {
+export const Teams: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedRole, setSelectedRole] = useState('All');
   const [, setLocation] = useLocation();
@@ -24,7 +25,7 @@ export default function Teams() {
     queryFn: async () => {
       const baseUrl = import.meta.env.VITE_API_URL || '';
       const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 15000);
+      const timeoutId = setTimeout(() => controller.abort(), 12000);
       try {
         const res = await fetch(`${baseUrl}/api/teams`, {
           credentials: 'include',
@@ -48,7 +49,6 @@ export default function Teams() {
     .slice()
     .sort((a, b) => (a.order ?? 999) - (b.order ?? 999));
 
-  // Global search filtering
   const filteredMembers = members.filter((member) => {
     const term = searchTerm.toLowerCase().trim();
     if (!term) return true;
@@ -62,7 +62,6 @@ export default function Teams() {
     );
   });
 
-  // Group members into the 3 canonical sections requested
   const mentors = filteredMembers.filter(isMentorMember);
   const clubLeads = filteredMembers.filter(isClubLeadMember);
   const advisors = filteredMembers.filter(isAdvisorMember);
@@ -82,95 +81,70 @@ export default function Teams() {
   };
 
   return (
-    <main className="w-full bg-bg min-h-screen text-text">
-      {/* ─── PAGE HEADER (DESIGN.md Section 5.4) ─── */}
-      <section className="pt-24 pb-8 px-6 md:px-8 max-w-[1140px] mx-auto">
-        <p className="font-mono text-xs uppercase tracking-[0.06em] text-text-3 mb-2">
-          03 — PERSONNEL ROSTER
-        </p>
-        <h1 className="font-display font-medium text-3xl sm:text-4xl md:text-5xl tracking-tight text-text mb-3">
-          Team & leadership.
+    <div className="w-full bg-ink text-paper min-h-screen">
+      {/* ─── PAGE HERO (§7.8.2) ─── */}
+      <section className="pt-12 sm:pt-16 pb-8 px-5 sm:px-8 lg:px-12 max-w-container mx-auto text-left">
+        <h1 className="font-sans font-medium text-[clamp(34px,4.8vw,60px)] tracking-[-0.03em] leading-tight text-paper mb-3">
+          Team
         </h1>
-        <p className="text-base text-text-2 max-w-2xl leading-relaxed mb-8">
-          Faculty mentors, technical leads, and research advisors engineering autonomous systems, robotics, and intelligent algorithms at Aprameya Lab.
+        <p className="font-sans text-[clamp(17px,1.4vw,20px)] text-text-2 max-w-2xl leading-relaxed mb-10">
+          Faculty mentors, student leads, and research contributors engineering autonomous testbeds and vision pipelines.
         </p>
 
-        {/* ─── FILTER & SEARCH BAR (DESIGN.md Section 4.7) ─── */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-border pb-4">
-          <div className="flex items-center gap-2 overflow-x-auto pb-2 sm:pb-0 scrollbar-none">
+        {/* ─── FILTER BAR ─── */}
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-hairline pb-4 mb-8">
+          <div className="flex items-center gap-2 overflow-x-auto no-scrollbar py-1">
             {FILTER_ROLES.map((role) => {
-              const active = selectedRole === role;
-              let count = members.length;
-              if (role === 'Mentors') count = members.filter(isMentorMember).length;
-              else if (role === 'Club Leads') count = members.filter(isClubLeadMember).length;
-              else if (role === 'Advisors') count = members.filter(isAdvisorMember).length;
-
+              const isSelected = selectedRole === role;
               return (
                 <button
                   key={role}
+                  type="button"
                   onClick={() => setSelectedRole(role)}
-                  className={`h-7 px-3.5 rounded-full text-xs font-mono uppercase tracking-[0.06em] whitespace-nowrap transition-colors duration-fast cursor-pointer flex items-center gap-2 ${
-                    active
-                      ? 'border border-red-line text-red-text bg-red-soft font-medium'
-                      : 'border border-border text-text-2 hover:border-border-strong hover:text-text'
+                  className={`h-7 px-3 rounded-[var(--r-full)] text-[12px] font-sans font-medium transition-colors cursor-pointer select-none border ${
+                    isSelected
+                      ? 'border-signal-line bg-signal-soft text-signal-text'
+                      : 'border-hairline bg-transparent text-text-2 hover:border-hairline-2 hover:text-paper'
                   }`}
                 >
-                  <span>{role}</span>
-                  <span
-                    className={`text-[10px] ${
-                      active ? 'text-red-text/80' : 'text-text-3'
-                    }`}
-                  >
-                    ({count})
-                  </span>
+                  {role}
                 </button>
               );
             })}
           </div>
 
-          <div className="relative w-full sm:w-64 shrink-0">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-text-3" />
-            <input
+          <div className="relative w-full sm:w-64">
+            <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-mute pointer-events-none" />
+            <Input
               type="text"
-              placeholder="Search member, role, dept..."
+              placeholder="Search team members..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full h-9 pl-9 pr-3 rounded-md border border-border bg-surface text-xs text-text placeholder:text-text-3 focus:outline-none focus:border-border-strong transition-colors"
+              className="pl-9 h-10 text-[13px]"
             />
           </div>
         </div>
       </section>
 
-      {/* ─── PERSONNEL SECTIONS (MENTORS, CLUB LEADS, ADVISORS) ─── */}
-      <section className="pb-28 px-6 md:px-8 max-w-[1140px] mx-auto space-y-16">
+      {/* ─── ROSTER SECTIONS (§8.6) ─── */}
+      <section className="pb-24 px-5 sm:px-8 lg:px-12 max-w-container mx-auto text-left space-y-16">
         {totalVisibleCount > 0 ? (
           <>
-            {/* 1. MENTORS SECTION */}
+            {/* 1. Mentors */}
             {showMentors && (
-              <div id="mentors-section" className="space-y-6">
-                <div className="flex flex-col sm:flex-row sm:items-end justify-between border-b border-border pb-4 gap-2">
-                  <div>
-                    <p className="font-mono text-xs uppercase tracking-[0.06em] text-red-text mb-1">
-                      01 — FACULTY GUIDANCE
-                    </p>
-                    <div className="flex items-center gap-3">
-                      <h2 className="font-display font-medium text-2xl sm:text-3xl tracking-tight text-text">
-                        MENTORS
-                      </h2>
-                      <span className="font-mono text-xs px-2 py-0.5 rounded border border-border text-text-3 bg-surface-2/40">
-                        {mentors.length} {mentors.length === 1 ? 'PERSON' : 'PEOPLE'}
-                      </span>
-                    </div>
-                  </div>
-                  <p className="text-xs sm:text-sm text-text-3 font-mono">
-                    Academic supervision & research governance
-                  </p>
+              <div>
+                <div className="flex items-baseline justify-between border-b border-hairline pb-3 mb-6">
+                  <h2 className="font-sans font-medium text-[22px] sm:text-[24px] tracking-[-0.01em] text-paper">
+                    Faculty mentors
+                  </h2>
+                  <span className="font-mono text-[13px] text-mute">
+                    {mentors.length} {mentors.length === 1 ? 'member' : 'members'}
+                  </span>
                 </div>
-
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                   {mentors.map((member, idx) => (
                     <TeamMemberCard
-                      key={member.id || member._id || `mentor-${idx}`}
+                      key={member.id || member._id || idx}
                       member={member}
                       index={idx}
                       onClick={() => handleCardClick(member, idx)}
@@ -180,32 +154,21 @@ export default function Teams() {
               </div>
             )}
 
-            {/* 2. CLUB LEADS SECTION */}
+            {/* 2. Club Leads */}
             {showClubLeads && (
-              <div id="club-leads-section" className="space-y-6">
-                <div className="flex flex-col sm:flex-row sm:items-end justify-between border-b border-border pb-4 gap-2">
-                  <div>
-                    <p className="font-mono text-xs uppercase tracking-[0.06em] text-red-text mb-1">
-                      02 — EXECUTIVE & TECHNICAL LEADERSHIP
-                    </p>
-                    <div className="flex items-center gap-3">
-                      <h2 className="font-display font-medium text-2xl sm:text-3xl tracking-tight text-text">
-                        CLUB LEADS
-                      </h2>
-                      <span className="font-mono text-xs px-2 py-0.5 rounded border border-border text-text-3 bg-surface-2/40">
-                        {clubLeads.length} {clubLeads.length === 1 ? 'PERSON' : 'PEOPLE'}
-                      </span>
-                    </div>
-                  </div>
-                  <p className="text-xs sm:text-sm text-text-3 font-mono">
-                    Autonomy leads, domain heads & technical coordinators
-                  </p>
+              <div>
+                <div className="flex items-baseline justify-between border-b border-hairline pb-3 mb-6">
+                  <h2 className="font-sans font-medium text-[22px] sm:text-[24px] tracking-[-0.01em] text-paper">
+                    Club leads
+                  </h2>
+                  <span className="font-mono text-[13px] text-mute">
+                    {clubLeads.length} {clubLeads.length === 1 ? 'member' : 'members'}
+                  </span>
                 </div>
-
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                   {clubLeads.map((member, idx) => (
                     <TeamMemberCard
-                      key={member.id || member._id || `lead-${idx}`}
+                      key={member.id || member._id || idx}
                       member={member}
                       index={idx}
                       onClick={() => handleCardClick(member, idx)}
@@ -215,32 +178,21 @@ export default function Teams() {
               </div>
             )}
 
-            {/* 3. ADVISORS SECTION */}
+            {/* 3. Advisors */}
             {showAdvisors && (
-              <div id="advisors-section" className="space-y-6">
-                <div className="flex flex-col sm:flex-row sm:items-end justify-between border-b border-border pb-4 gap-2">
-                  <div>
-                    <p className="font-mono text-xs uppercase tracking-[0.06em] text-red-text mb-1">
-                      03 — STRATEGY & STEERING
-                    </p>
-                    <div className="flex items-center gap-3">
-                      <h2 className="font-display font-medium text-2xl sm:text-3xl tracking-tight text-text">
-                        ADVISORS
-                      </h2>
-                      <span className="font-mono text-xs px-2 py-0.5 rounded border border-border text-text-3 bg-surface-2/40">
-                        {advisors.length} {advisors.length === 1 ? 'PERSON' : 'PEOPLE'}
-                      </span>
-                    </div>
-                  </div>
-                  <p className="text-xs sm:text-sm text-text-3 font-mono">
-                    Senior advisors & alumni strategic steering
-                  </p>
+              <div>
+                <div className="flex items-baseline justify-between border-b border-hairline pb-3 mb-6">
+                  <h2 className="font-sans font-medium text-[22px] sm:text-[24px] tracking-[-0.01em] text-paper">
+                    Advisors
+                  </h2>
+                  <span className="font-mono text-[13px] text-mute">
+                    {advisors.length} {advisors.length === 1 ? 'member' : 'members'}
+                  </span>
                 </div>
-
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                   {advisors.map((member, idx) => (
                     <TeamMemberCard
-                      key={member.id || member._id || `advisor-${idx}`}
+                      key={member.id || member._id || idx}
                       member={member}
                       index={idx}
                       onClick={() => handleCardClick(member, idx)}
@@ -252,23 +204,14 @@ export default function Teams() {
           </>
         ) : (
           <EmptyState
-            icon={User}
-            title="No personnel found"
-            description={
-              searchTerm
-                ? `No laboratory members matched "${searchTerm}". Try searching by another keyword or reset filters.`
-                : 'No members found in this category.'
-            }
-            action={{
-              label: 'Reset Filters & Search',
-              onClick: () => {
-                setSearchTerm('');
-                setSelectedRole('All');
-              },
-            }}
+            icon={Users}
+            title="No team members found"
+            description="Try modifying your keyword search or filter by a different category."
           />
         )}
       </section>
-    </main>
+    </div>
   );
-}
+};
+
+export default Teams;

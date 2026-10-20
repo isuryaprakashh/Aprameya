@@ -7,7 +7,7 @@ import { TECH_WINGS, NON_TECH_WINGS, RecruitmentSettings } from '@/lib/types';
 import { useAuth } from '@/context/AuthContext';
 import { useToast } from '@/hooks/use-toast';
 import { apiRequest } from '@/lib/queryClient';
-import ChamferedButton from '@/components/ui/ChamferedButton';
+import { Button } from '@/components/ui/button';
 
 const YEARS = ['1st', '2nd', '3rd', '4th'] as const;
 
@@ -127,9 +127,9 @@ export default function RecruitmentApply() {
             The application window is currently closed. Stay tuned for future drives.
           </p>
           <Link href="/recruitment">
-            <ChamferedButton variant="secondary" size="md" className="w-full">
+            <Button variant="secondary" size="md" className="w-full">
               Back to overview
-            </ChamferedButton>
+            </Button>
           </Link>
         </div>
       </div>
@@ -328,14 +328,15 @@ export default function RecruitmentApply() {
                 </div>
 
                 <div className="pt-6 border-t border-border flex justify-end">
-                  <ChamferedButton
+                  <Button
                     variant="primary"
                     size="md"
                     onClick={handleNext}
-                    rightIcon={<ArrowRight className="w-4 h-4" />}
+                    className="gap-2"
                   >
-                    Continue to tracks
-                  </ChamferedButton>
+                    <span>Continue to tracks</span>
+                    <ArrowRight className="size-4" />
+                  </Button>
                 </div>
               </motion.div>
             )}
@@ -414,22 +415,24 @@ export default function RecruitmentApply() {
                 </div>
 
                 <div className="pt-6 border-t border-border flex items-center justify-between">
-                  <ChamferedButton
+                  <Button
                     variant="secondary"
-                    size="md"
+                    size="sm"
                     onClick={() => setStep(1)}
-                    leftIcon={<ArrowLeft className="w-4 h-4" />}
+                    className="gap-2"
                   >
-                    Back
-                  </ChamferedButton>
-                  <ChamferedButton
+                    <ArrowLeft className="size-4" />
+                    <span>Back</span>
+                  </Button>
+                  <Button
                     variant="primary"
                     size="md"
                     onClick={handleNext}
-                    rightIcon={<ArrowRight className="w-4 h-4" />}
+                    className="gap-2"
                   >
-                    Continue to statement
-                  </ChamferedButton>
+                    <span>Continue to statement</span>
+                    <ArrowRight className="size-4" />
+                  </Button>
                 </div>
               </motion.div>
             )}
@@ -482,22 +485,23 @@ export default function RecruitmentApply() {
                 </div>
 
                 <div className="pt-6 border-t border-border flex items-center justify-between">
-                  <ChamferedButton
+                  <Button
                     variant="secondary"
-                    size="md"
+                    size="sm"
                     onClick={() => setStep(2)}
-                    leftIcon={<ArrowLeft className="w-4 h-4" />}
+                    className="gap-2"
                   >
-                    Back
-                  </ChamferedButton>
-                  <ChamferedButton
+                    <ArrowLeft className="size-4" />
+                    <span>Back</span>
+                  </Button>
+                  <Button
                     variant="primary"
                     size="lg"
-                    isLoading={submitMutation.isPending}
+                    loading={submitMutation.isPending}
                     onClick={handleSubmit}
                   >
                     Submit application
-                  </ChamferedButton>
+                  </Button>
                 </div>
               </motion.div>
             )}

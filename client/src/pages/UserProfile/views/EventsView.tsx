@@ -8,7 +8,7 @@ import { useToast } from '@/hooks/use-toast';
 import { Event, EventRegistration } from '@/lib/types';
 import { events as fallbackEvents } from '@/lib/data';
 import { useAuth } from '@/context/AuthContext';
-import WanderingEyesLoader from '@/components/WanderingEyesLoader';
+import { Ring } from '@/components/ui/ring';
 
 interface EventsViewProps {
     handleEdit?: (item: Event, type: string) => void;
@@ -85,32 +85,31 @@ export default function EventsView({ handleEdit, handleCreate, handleDelete }: E
             <div className="glass-panel p-6 rounded-xl border border-[var(--border-color)]">
                 <div className="flex flex-col md:flex-row items-center justify-between gap-4 mb-6">
                     <div className="flex items-center gap-3">
-                        <div className="p-3 rounded-lg bg-[hsl(var(--accent))]/10 border border-[hsl(var(--accent))]/20">
-                            <FaCalendarAlt className="text-2xl text-[hsl(var(--accent))]" />
+                        <div className="p-3 rounded-xl bg-signal-soft border border-signal-line">
+                            <FaCalendarAlt className="text-xl text-signal-text" />
                         </div>
                         <div>
-                            <h2 className="text-2xl font-bold text-[var(--text-primary)]">Upcoming Events</h2>
-                            <p className="text-[var(--text-secondary)] text-sm">Discover and register for upcoming workshops and seminars</p>
+                            <h2 className="text-2xl font-display font-medium text-paper tracking-tight">Upcoming Events</h2>
+                            <p className="text-text-2 text-xs font-mono">Discover and register for upcoming workshops and seminars</p>
                         </div>
                     </div>
                     {currentUser?.role === 'ADMIN' && (
                         <Button
                             onClick={() => handleCreate && handleCreate('event')}
-                            className="bg-[hsl(var(--accent))] hover:bg-[hsl(var(--accent))]/90 text-[var(--bg-body)] w-full md:w-auto"
+                            className="bg-[var(--red)] hover:bg-[var(--red-hover)] text-white text-xs h-9 px-4 rounded-[var(--r-md)] font-medium gap-1.5 w-full md:w-auto shrink-0 shadow-sm"
                         >
-                            <FaPlus className="mr-2" /> New Event
+                            <FaPlus className="w-3 h-3 mr-1" /> New Event
                         </Button>
                     )}
                 </div>
 
                 {isLoading && events.length === 0 ? (
-                    <WanderingEyesLoader
-                        size="md"
-                        text="FETCHING EVENT ROSTER"
-                        subtext="SYNCHRONIZING UPCOMING SESSIONS & WORKSHOPS"
-                    />
+                    <div className="py-16 flex flex-col items-center justify-center gap-2">
+                        <Ring size={20} />
+                        <span className="text-xs text-mute font-sans">Loading events...</span>
+                    </div>
                 ) : events.length === 0 ? (
-                    <div className="p-12 text-center text-[var(--text-secondary)] font-mono text-sm">
+                    <div className="p-12 text-center text-text-2 font-mono text-sm">
                         NO EVENTS SCHEDULED AT THIS TIME
                     </div>
                 ) : (
@@ -125,31 +124,30 @@ export default function EventsView({ handleEdit, handleCreate, handleDelete }: E
                                 initial={{ opacity: 0, scale: 0.95 }}
                                 animate={{ opacity: 1, scale: 1 }}
                                 transition={{ delay: index * 0.05 }}
-                                className="clean-card group h-full flex flex-col"
+                                className="rounded-xl border border-hairline bg-surface-1 overflow-hidden group h-full flex flex-col hover:border-hairline-2 transition-all"
                             >
                                 {event.image && (
-                                    <div className="h-48 overflow-hidden relative">
-                                        <div className="absolute inset-0 bg-gradient-to-t from-[var(--bg-body)]/80 to-transparent z-10" />
-                                        <img src={event.image} alt={event.title} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 filter brightness-75 group-hover:brightness-100" />
-                                        <div className="absolute top-4 right-4 z-20">
-                                            <span className="px-3 py-1 rounded-full bg-[var(--bg-body)]/70 backdrop-blur-md text-xs font-mono text-[hsl(var(--accent))] border border-[hsl(var(--accent))]/30">
+                                    <div className="h-48 overflow-hidden relative bg-surface-2 border-b border-hairline">
+                                        <img src={event.image} alt={event.title} className="w-full h-full object-cover transition-transform duration-slow group-hover:scale-[1.03]" />
+                                        <div className="absolute top-3 right-3 z-20">
+                                            <span className="px-2.5 py-1 rounded-full bg-surface-1/90 backdrop-blur-md text-[11px] font-mono text-paper border border-hairline">
                                                 {event.type}
                                             </span>
                                         </div>
                                     </div>
                                 )}
-                                <CardHeader className="relative z-10">
+                                <CardHeader className="relative z-10 p-5 pb-2">
                                     <div className="flex justify-between items-start">
-                                        <CardTitle className="text-xl font-bold text-[var(--text-primary)] group-hover:text-[hsl(var(--accent))] transition-colors">{event.title}</CardTitle>
+                                        <CardTitle className="text-lg font-display font-medium text-paper group-hover:text-signal-text transition-colors line-clamp-1">{event.title}</CardTitle>
                                     </div>
-                                    <CardDescription className="text-[hsl(var(--accent))] font-mono text-xs mt-1 flex items-center">
-                                        <FaClock className="mr-1" /> {event.date} • {event.time}
+                                    <CardDescription className="text-mute font-mono text-xs mt-1 flex items-center">
+                                        <FaClock className="mr-1.5 w-3 h-3 text-signal" /> {event.date} • {event.time}
                                     </CardDescription>
                                 </CardHeader>
-                                <CardContent className="flex-grow relative z-10">
-                                    <p className="text-[var(--text-secondary)] line-clamp-3 text-sm leading-relaxed mb-3">{event.description}</p>
-                                    <div className="flex items-center text-[var(--text-secondary)] text-xs">
-                                        <FaMapMarkerAlt className="mr-1 text-[hsl(var(--accent))]" /> {event.location}
+                                <CardContent className="flex-grow relative z-10 p-5 pt-2">
+                                    <p className="text-text-2 line-clamp-3 text-xs leading-relaxed mb-3">{event.description}</p>
+                                    <div className="flex items-center text-mute font-mono text-xs">
+                                        <FaMapMarkerAlt className="mr-1.5 w-3 h-3 text-signal" /> {event.location}
                                     </div>
                                 </CardContent>
                                 <CardFooter className="border-t border-[var(--border)] bg-[var(--surface-2)]/30 p-3 flex justify-end relative z-10">

@@ -1,7 +1,8 @@
+import React from 'react';
 import { Github, Twitter, Linkedin, Mail, MapPin, Instagram as InstagramIcon, Youtube } from 'lucide-react';
 import { Link } from "wouter";
 
-export default function Footer() {
+export const Footer: React.FC = () => {
   const exploreLinks = [
     { href: "/", label: "Home" },
     { href: "/projects", label: "Projects" },
@@ -28,30 +29,29 @@ export default function Footer() {
   ];
 
   return (
-    <footer className="w-full bg-bg border-t border-border pt-16 pb-8 font-body">
-      <div className="max-w-[1200px] mx-auto px-6 md:px-8">
-        {/* 4 columns desktop */}
+    <footer className="w-full bg-ink border-t border-hairline pt-16 pb-28 md:pb-12 text-left selection:bg-signal-soft">
+      <div className="max-w-container mx-auto px-5 sm:px-8 lg:px-12">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-10 lg:gap-8 mb-16">
-          {/* Col 1: Brand + one-line mission + social icon buttons */}
+          {/* Brand & mission */}
           <div className="lg:col-span-5 flex flex-col items-start">
             <div className="flex items-center gap-2 mb-3">
-              <span className="font-display font-medium text-lg tracking-tight text-text">
+              <span className="font-sans font-medium text-[20px] tracking-tight text-paper">
                 Aprameya
               </span>
             </div>
-            <p className="text-sm text-text-2 leading-relaxed max-w-sm mb-6">
-              Autonomous Systems & Robotics Club of KL University. Engineering physical self-driving platforms and intelligent systems.
+            <p className="text-[14px] text-text-2 leading-relaxed max-w-sm mb-6 font-sans">
+              Autonomous Systems & Robotics Club at KL University. Building perception platforms, aerial telemetry, and physical testbeds.
             </p>
 
-            {/* Social ghost icon buttons (36px) */}
-            <div className="flex items-center gap-2">
+            {/* Social buttons */}
+            <div className="flex flex-wrap items-center gap-2">
               {socialLinks.map((item, idx) => (
                 <a
                   key={idx}
                   href={item.href}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="w-9 h-9 rounded-md border border-border flex items-center justify-center text-text-2 hover:text-text hover:bg-surface-2 hover:border-border-strong transition-colors duration-fast"
+                  className="w-9 h-9 rounded-[var(--r-2)] border border-hairline flex items-center justify-center text-mute hover:text-paper hover:bg-surface-2 transition-colors duration-fast"
                   aria-label={item.label}
                 >
                   {item.icon}
@@ -60,9 +60,9 @@ export default function Footer() {
             </div>
           </div>
 
-          {/* Col 2: Explore (the 7 pages) */}
+          {/* Explore */}
           <div className="lg:col-span-3">
-            <h4 className="font-mono text-xs uppercase tracking-[0.06em] text-text-3 font-medium mb-4">
+            <h4 className="font-sans text-[13px] text-mute font-medium mb-4">
               Explore
             </h4>
             <ul className="space-y-2">
@@ -70,7 +70,7 @@ export default function Footer() {
                 <li key={link.href}>
                   <Link
                     href={link.href}
-                    className="text-sm text-text-2 hover:text-text transition-colors duration-fast"
+                    className="text-[14px] text-text-2 hover:text-paper transition-colors duration-fast font-sans"
                   >
                     {link.label}
                   </Link>
@@ -79,9 +79,9 @@ export default function Footer() {
             </ul>
           </div>
 
-          {/* Col 3: Join */}
+          {/* Join */}
           <div className="lg:col-span-2">
-            <h4 className="font-mono text-xs uppercase tracking-[0.06em] text-text-3 font-medium mb-4">
+            <h4 className="font-sans text-[13px] text-mute font-medium mb-4">
               Join
             </h4>
             <ul className="space-y-2">
@@ -89,7 +89,7 @@ export default function Footer() {
                 <li key={link.href}>
                   <Link
                     href={link.href}
-                    className="text-sm text-text-2 hover:text-text transition-colors duration-fast"
+                    className="text-[14px] text-text-2 hover:text-paper transition-colors duration-fast font-sans"
                   >
                     {link.label}
                   </Link>
@@ -98,36 +98,35 @@ export default function Footer() {
             </ul>
           </div>
 
-          {/* Col 4: Contact */}
+          {/* Contact */}
           <div className="lg:col-span-2">
-            <h4 className="font-mono text-xs uppercase tracking-[0.06em] text-text-3 font-medium mb-4">
+            <h4 className="font-sans text-[13px] text-mute font-medium mb-4">
               Contact
             </h4>
-            <div className="space-y-2 text-sm text-text-2">
+            <div className="space-y-2 text-[14px] text-text-2 font-sans">
+              <p className="text-paper">R609e Laboratory</p>
+              <p className="flex items-center gap-1.5 text-mute text-[13px]">
+                <MapPin className="w-3.5 h-3.5 shrink-0" />
+                <span>KL University, Vaddeswaram</span>
+              </p>
               <a
                 href="mailto:aprameya.techclub@kluniversity.in"
-                className="hover:text-text transition-colors break-words block"
+                className="text-mute hover:text-paper text-[13px] block truncate transition-colors"
               >
                 aprameya.techclub@kluniversity.in
               </a>
-              <p className="flex items-start gap-1.5 pt-2 text-xs text-text-3 font-mono">
-                <MapPin className="w-3.5 h-3.5 text-text-3 shrink-0 mt-0.5" />
-                <span>KL University, Vijayawada, AP</span>
-              </p>
             </div>
           </div>
         </div>
 
-        {/* Bottom row: copyright left, Built by Aprameya right in label token */}
-        <div className="pt-6 border-t border-border flex flex-col sm:flex-row justify-between items-center gap-3">
-          <p className="font-mono text-xs text-text-3">
-            © {new Date().getFullYear()} Aprameya. All rights reserved.
-          </p>
-          <p className="font-mono text-xs text-text-3 uppercase tracking-[0.06em]">
-            Built by Aprameya
-          </p>
+        {/* Bottom row */}
+        <div className="pt-8 border-t border-hairline flex flex-col sm:flex-row items-center justify-between gap-4 text-[13px] text-mute font-sans">
+          <p>© 2026 Aprameya Autonomous Systems Club</p>
+          <p>Built by the Aprameya web engineering team</p>
         </div>
       </div>
     </footer>
   );
-}
+};
+
+export default Footer;

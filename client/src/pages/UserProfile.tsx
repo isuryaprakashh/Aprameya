@@ -15,6 +15,9 @@ import { AdminStats } from './UserProfile/components/AdminStats';
 import { UserManagement } from './UserProfile/components/UserManagement';
 import { Settings } from './UserProfile/components/Settings';
 import { FormField } from '@/components/ui/FormField';
+import { FormActions } from '@/components/ui/FormActions';
+import { ImageUploadField } from '@/components/ui/ImageUploadField';
+import { ThemeToggle } from '@/components/theme-toggle';
 
 // Extracted Hook
 import { useUserProfileData } from './UserProfile/hooks/useUserProfileData';
@@ -26,7 +29,7 @@ const BlogsView = lazy(() => import('./UserProfile/views/BlogsView'));
 const RecruitmentView = lazy(() => import('./UserProfile/views/RecruitmentView'));
 const TeamsView = lazy(() => import('./UserProfile/views/TeamsView'));
 import AdminScanQR from './AdminScanQR';
-import WanderingEyesLoader from '@/components/WanderingEyesLoader';
+import { Ring } from '@/components/ui/ring';
 
 const UserProfile = () => {
   const { toast } = useToast();
@@ -47,6 +50,21 @@ const UserProfile = () => {
     updateProfile,
     handleSave, handleDelete
   } = useUserProfileData();
+
+  const [location, navigate] = useLocation();
+
+  // Synchronize route with active view
+  useEffect(() => {
+    if (location.startsWith('/profile')) {
+      if (activeView !== 'settings') {
+        setActiveView('settings');
+      }
+    } else if (location === '/dashboard' || location === '/dashboard/') {
+      if (activeView !== 'overview') {
+        setActiveView('overview');
+      }
+    }
+  }, [location, activeView, setActiveView]);
 
   const [panelMode, setPanelMode] = useState<'admin' | 'user'>('admin');
   const mainScrollRef = useRef<HTMLElement>(null);
@@ -148,91 +166,6 @@ const UserProfile = () => {
     setIsDialogOpen(true);
   };
 
-  const ImageUploadField = ({ label, id, value, onChange }: { label: string; id: string; value: string; onChange: (url: string) => void }) => {
-    const fileRef = useRef<HTMLInputElement>(null);
-
-    const handleFile = (e: React.ChangeEvent<HTMLInputElement>) => {
-      const file = e.target.files?.[0];
-      if (!file) return;
-      if (!file.type.startsWith('image/')) {
-        toast({ title: 'Invalid File', description: 'Please choose an image file (PNG, JPG, WEBP).', variant: 'destructive' });
-        return;
-      }
-      const reader = new FileReader();
-      reader.onload = (ev) => {
-        const raw = ev.target?.result as string;
-        if (!raw) return;
-        const img = new Image();
-        img.src = raw;
-        img.onload = () => {
-          const canvas = document.createElement('canvas');
-          const maxDim = 1200;
-          let w = img.width;
-          let h = img.height;
-          if (w > maxDim || h > maxDim) {
-            if (w > h) {
-              h = Math.round((h * maxDim) / w);
-              w = maxDim;
-            } else {
-              w = Math.round((w * maxDim) / h);
-              h = maxDim;
-            }
-          }
-          canvas.width = w;
-          canvas.height = h;
-          const ctx = canvas.getContext('2d');
-          ctx?.drawImage(img, 0, 0, w, h);
-          const compressed = canvas.toDataURL('image/jpeg', 0.85);
-          onChange(compressed);
-          toast({ title: 'Image Uploaded', description: 'Photo loaded and ready to save.' });
-        };
-      };
-      reader.readAsDataURL(file);
-    };
-
-    return (
-      <div className="space-y-1.5">
-        <Label className="text-xs font-mono text-[var(--text-secondary)]">{label}</Label>
-        <div className="flex flex-col sm:flex-row gap-3 items-start">
-          {value ? (
-            <div className="relative w-24 h-20 rounded-xl overflow-hidden border border-[var(--border-color)] bg-black/40 shrink-0 group">
-              <img src={value} alt="Preview" className="w-full h-full object-cover" />
-              <button
-                type="button"
-                onClick={() => onChange('')}
-                className="absolute inset-0 bg-black/70 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-red-400 text-xs font-semibold"
-              >
-                Remove
-              </button>
-            </div>
-          ) : (
-            <div className="w-24 h-20 rounded-xl border border-dashed border-[var(--border-color)] flex items-center justify-center text-[10px] font-mono text-[var(--text-secondary)]/50 shrink-0 text-center px-1">
-              No Image
-            </div>
-          )}
-          <div className="flex-1 space-y-2 w-full">
-            <input type="file" ref={fileRef} onChange={handleFile} accept="image/*" className="hidden" />
-            <Button
-              type="button"
-              variant="outline"
-              size="sm"
-              onClick={() => fileRef.current?.click()}
-              className="text-xs h-8 border-[var(--border-color)] hover:border-[hsl(var(--accent))] hover:text-[hsl(var(--accent))]"
-            >
-              <FaUpload className="mr-1.5 h-3 w-3" /> Upload from Computer
-            </Button>
-            <Input
-              id={id}
-              placeholder="Or paste image URL (https://...)"
-              value={value || ''}
-              onChange={(e) => onChange(e.target.value)}
-              className="bg-[var(--bg-body)] border-[var(--border-color)] text-xs rounded-xl"
-            />
-          </div>
-        </div>
-      </div>
-    );
-  };
 
   const renderForm = () => {
     if (!selectedItem) return null;
@@ -307,12 +240,6 @@ const UserProfile = () => {
             <FormField label="GitHub URL" id="github" value={selectedItem.github || ''} onChange={(e: any) => inputChange('github', e.target.value)} />
           </div>
         </>}
-        <div className="flex justify-end gap-3 mt-6 pt-4 border-t border-[var(--border-color)]">
-          <Button variant="ghost" onClick={() => setIsDialogOpen(false)} disabled={isSaving}>Cancel</Button>
-          <Button onClick={handleSave} disabled={isSaving} className="bg-[hsl(var(--accent))] text-[var(--bg-body)] hover:bg-[hsl(var(--accent))]/90 disabled:opacity-50">
-            <FaSave className="mr-2" /> {isSaving ? 'Saving...' : 'Save Changes'}
-          </Button>
-        </div>
       </div>
     );
   };
@@ -360,17 +287,17 @@ const UserProfile = () => {
         />;
 
       case 'events':
-        return <Suspense fallback={<WanderingEyesLoader size="md" text="LOADING EVENTS MODULE" subtext="INITIALIZING CALENDAR ENGINE" />}>
+        return <Suspense fallback={<div className="py-20 flex flex-col items-center justify-center gap-2"><Ring size={20} /><span className="text-xs text-mute font-sans">Loading events...</span></div>}>
           <EventsView handleEdit={handleEdit} handleCreate={handleCreate} handleDelete={handleDelete} />
         </Suspense>;
 
       case 'projects':
-        return <Suspense fallback={<WanderingEyesLoader size="md" text="LOADING PROJECTS MODULE" subtext="FETCHING RESEARCH REPOSITORIES" />}>
+        return <Suspense fallback={<div className="py-20 flex flex-col items-center justify-center gap-2"><Ring size={20} /><span className="text-xs text-mute font-sans">Loading projects...</span></div>}>
           <ProjectsView handleEdit={handleEdit} handleCreate={handleCreate} handleDelete={handleDelete} />
         </Suspense>;
 
       case 'blogs':
-        return <Suspense fallback={<WanderingEyesLoader size="md" text="LOADING ARTICLES MODULE" subtext="PARSING RESEARCH MANUSCRIPTS" />}>
+        return <Suspense fallback={<div className="py-20 flex flex-col items-center justify-center gap-2"><Ring size={20} /><span className="text-xs text-mute font-sans">Loading articles...</span></div>}>
           <BlogsView handleEdit={handleEdit} handleCreate={handleCreate} handleDelete={handleDelete} />
         </Suspense>;
 
@@ -378,12 +305,12 @@ const UserProfile = () => {
         return <AdminScanQR isEmbedded={true} />;
 
       case 'recruitment':
-        return <Suspense fallback={<WanderingEyesLoader size="md" text="LOADING RECRUITMENT PIPELINE" subtext="FETCHING CANDIDATE QUEUE" />}>
+        return <Suspense fallback={<div className="py-20 flex flex-col items-center justify-center gap-2"><Ring size={20} /><span className="text-xs text-mute font-sans">Loading recruitment...</span></div>}>
           <RecruitmentView />
         </Suspense>;
 
       case 'teams':
-        return <Suspense fallback={<WanderingEyesLoader size="md" text="LOADING TEAM ROSTER MODULE" subtext="ACCESSING OPERATIVE DIRECTORY" />}>
+        return <Suspense fallback={<div className="py-20 flex flex-col items-center justify-center gap-2"><Ring size={20} /><span className="text-xs text-mute font-sans">Loading team roster...</span></div>}>
           <TeamsView />
         </Suspense>;
 
@@ -410,8 +337,6 @@ const UserProfile = () => {
     );
   }
 
-  const [, navigate] = useLocation();
-
   return (
     <div
       className="flex h-screen bg-[var(--bg-body)] text-[var(--text-primary)] font-sans selection:bg-[hsl(var(--accent))]/30 overflow-hidden"
@@ -431,44 +356,19 @@ const UserProfile = () => {
         <header className="hidden md:flex items-center justify-between px-8 py-3.5 border-b border-[var(--border)] bg-[var(--surface)]/80 backdrop-blur-md">
           <div className="flex items-center gap-3">
             <span className="text-xs font-mono px-2.5 py-1 rounded-[var(--r-sm)] bg-[var(--red-soft)] border border-[var(--red-line)] text-[var(--red-text)] font-medium uppercase tracking-wider">
-              {currentUser.role === 'ADMIN' ? (panelMode === 'user' ? 'USER PANEL (STUDENT VIEW)' : 'ADMIN PANEL') : 'USER DASHBOARD'}
+              {activeView === 'settings'
+                ? 'PROFILE & SETTINGS'
+                : currentUser.role === 'ADMIN'
+                ? (panelMode === 'user' ? 'USER PANEL (STUDENT VIEW)' : 'ADMIN PANEL')
+                : 'USER DASHBOARD'}
             </span>
             <span className="text-xs text-[var(--text-3)] font-mono">
               Signed in as <strong className="text-[var(--text)] font-semibold">{currentUser.username}</strong>
             </span>
           </div>
 
-          <div className="flex items-center gap-2.5">
-            {currentUser.role === 'ADMIN' && (
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => {
-                  setPanelMode(panelMode === 'user' ? 'admin' : 'user');
-                  setActiveView('overview');
-                }}
-                className="h-8 text-xs rounded-[var(--r-sm)] border-[var(--border)] bg-[var(--surface-2)] text-[var(--text)] hover:text-[var(--red-text)] font-medium gap-1.5"
-              >
-                {panelMode === 'user' ? (
-                  <>
-                    <FaShieldAlt className="w-3 h-3 text-[var(--red)]" /> Back to Admin Panel
-                  </>
-                ) : (
-                  <>
-                    <FaUser className="w-3 h-3 text-[var(--red)]" /> View User Panel
-                  </>
-                )}
-              </Button>
-            )}
-
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => navigate('/')}
-              className="h-8 text-xs rounded-[var(--r-sm)] border-[var(--border)] hover:border-[var(--border-strong)] text-[var(--text-2)] hover:text-[var(--text)] gap-1.5"
-            >
-              <FaHome className="w-3.5 h-3.5 text-[var(--red)]" /> View Home Page
-            </Button>
+          <div className="flex items-center gap-3">
+            <ThemeToggle />
           </div>
         </header>
 
@@ -478,22 +378,14 @@ const UserProfile = () => {
             <FaHome className="w-3.5 h-3.5 text-[var(--red)]" /> Home
           </Button>
           <span className="font-mono text-xs uppercase tracking-wider text-[var(--text)] truncate">
-            {currentUser.role === 'ADMIN' ? (panelMode === 'user' ? 'User View' : 'Admin') : 'Dashboard'}
+            {activeView === 'settings'
+              ? 'Profile'
+              : currentUser.role === 'ADMIN'
+              ? (panelMode === 'user' ? 'User View' : 'Admin')
+              : 'Dashboard'}
           </span>
-          <div className="flex items-center gap-1">
-            {currentUser.role === 'ADMIN' && (
-              <Button
-                variant="ghost"
-                size="sm"
-                className="h-8 px-2 text-[11px] text-[var(--red)]"
-                onClick={() => {
-                  setPanelMode(panelMode === 'user' ? 'admin' : 'user');
-                  setActiveView('overview');
-                }}
-              >
-                {panelMode === 'user' ? 'Admin' : 'User Panel'}
-              </Button>
-            )}
+          <div className="flex items-center gap-1.5">
+            <ThemeToggle />
             <Button variant="ghost" size="icon" className="h-8 w-8 shrink-0 text-[var(--text-2)]" onClick={() => setIsMobileOpen(true)}>
               <FaBars className="w-4 h-4" />
             </Button>
@@ -520,26 +412,16 @@ const UserProfile = () => {
                     Configure details and parameters below
                   </p>
                 </div>
-                <div className="flex items-center gap-2">
-                  <Button
-                    variant="outline"
-                    onClick={() => { setIsDialogOpen(false); setSelectedItem(null); }}
-                    disabled={isSaving}
-                    className="text-xs h-9 rounded-[var(--r-md)] border-[var(--border)]"
-                  >
-                    Cancel
-                  </Button>
-                  <Button
-                    onClick={handleSave}
-                    disabled={isSaving}
-                    className="bg-[var(--red)] text-white hover:bg-[var(--red-hover)] text-xs h-9 px-4 rounded-[var(--r-md)] font-medium"
-                  >
-                    <FaSave className="mr-1.5 h-3 w-3" /> {isSaving ? 'Saving...' : 'Save Changes'}
-                  </Button>
-                </div>
               </div>
               <div className="rounded-[var(--r-lg)] border border-[var(--border)] bg-[var(--surface)] p-6">
                 {renderForm()}
+                <FormActions
+                  onCancel={() => { setIsDialogOpen(false); setSelectedItem(null); }}
+                  onSave={handleSave}
+                  isSaving={isSaving}
+                  saveLabel="Save Changes"
+                  cancelLabel="Cancel"
+                />
               </div>
             </div>
           ) : (

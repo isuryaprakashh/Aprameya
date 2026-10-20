@@ -39,7 +39,7 @@ export const events: Event[] = [
     time: "10:00 AM - 4:00 PM",
     location: "R609e, R&D Block, KL University",
     description: "Hands-on session covering ROS 2 nodes, LiDAR point-cloud processing, and camera-sensor calibration for autonomous mobility platforms.",
-    image: "/assets/UVH.jpg",
+    image: "/assets/event_workshop.png",
     capacity: 60,
     registrationOpen: true,
     ticketEnabled: true

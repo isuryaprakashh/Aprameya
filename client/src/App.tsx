@@ -1,13 +1,13 @@
-import { useState } from "react";
+import React from "react";
 import { Route, Switch, Redirect, useLocation } from "wouter";
 import { Toaster } from "@/components/ui/toaster";
 
 import { ThemeProvider } from "@/components/theme-provider";
 import { AuthProvider, useAuth } from "@/context/AuthContext";
-import Navbar from "./components/Navbar";
+import Header from "./components/Header";
+import Dock from "./components/Dock";
 import Footer from "./components/Footer";
 import ScrollToTop from "./components/ScrollToTop";
-import AprameyaLoadingScreen from "./components/AprameyaLoadingScreen";
 
 import DashboardRouter from "./components/DashboardRouter";
 import Home from "./pages/Home";
@@ -46,8 +46,8 @@ const ProtectedRoute = ({ component: Component, roles, ...rest }: ProtectedRoute
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-black flex items-center justify-center">
-        <div className="w-8 h-8 rounded-full border-2 border-red-500 border-t-transparent animate-spin" />
+      <div className="min-h-screen bg-ink flex items-center justify-center">
+        <div className="w-6 h-6 rounded-full border-2 border-signal border-t-transparent animate-spin" />
       </div>
     );
   }
@@ -68,29 +68,8 @@ function AppContent() {
   const isStandalone = STANDALONE_ROUTES.includes(location);
   const isDashboard = location.startsWith('/dashboard') || location.startsWith('/profile');
 
-  // Landing intro screen is strictly reserved for the home page ('/') and only once per session
-  const [isHomeIntroVisible, setIsHomeIntroVisible] = useState(() => {
-    if (typeof window !== 'undefined') {
-      return window.location.pathname === '/' && !sessionStorage.getItem('aprameya_home_intro_seen');
-    }
-    return false;
-  });
-
-  const handleHomeIntroComplete = () => {
-    setIsHomeIntroVisible(false);
-    if (typeof window !== 'undefined') {
-      sessionStorage.setItem('aprameya_home_intro_seen', 'true');
-    }
-  };
-
   return (
     <>
-      {location === '/' && isHomeIntroVisible && (
-        <AprameyaLoadingScreen
-          minDuration={1200}
-          onComplete={handleHomeIntroComplete}
-        />
-      )}
       <ScrollToTop />
 
       {/* Standalone routes (no header/footer) */}
@@ -104,10 +83,10 @@ function AppContent() {
 
       {/* Standard layout with header/footer */}
       {!isStandalone && (
-        <>
+        <div className="min-h-[100dvh] flex flex-col bg-ink text-paper selection:bg-signal-soft selection:text-paper">
+          {!isDashboard && <Header />}
 
-          {!isDashboard && <Navbar />}
-          <main className="flex-grow">
+          <main className="flex-grow min-h-[100dvh] flex flex-col">
             <Switch>
               <Route path="/" component={Home} />
               <Route path="/projects" component={Projects} />
@@ -149,8 +128,10 @@ function AppContent() {
               <Route component={NotFound} />
             </Switch>
           </main>
+
           {!isDashboard && <Footer />}
-        </>
+          {!isDashboard && <Dock />}
+        </div>
       )}
 
       <Toaster />
@@ -160,7 +141,7 @@ function AppContent() {
 
 function App() {
   return (
-    <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
+    <ThemeProvider defaultTheme="dark" storageKey="aprameya-theme">
       <AuthProvider>
         <AppContent />
       </AuthProvider>

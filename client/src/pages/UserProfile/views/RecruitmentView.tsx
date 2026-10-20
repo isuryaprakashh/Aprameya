@@ -9,7 +9,7 @@ import { RecruitmentApplication, RecruitmentSettings, CLUB_DOMAINS } from '@/lib
 import { apiRequest } from '@/lib/queryClient';
 import { useToast } from '@/hooks/use-toast';
 import ChamferedButton from '@/components/ui/ChamferedButton';
-import WanderingEyesLoader from '@/components/WanderingEyesLoader';
+import { Ring } from '@/components/ui/ring';
 
 const STATUS_COLORS: Record<string, string> = {
   pending_review: 'text-amber-400 border-amber-400/30 bg-amber-400/10',
@@ -381,11 +381,10 @@ export default function RecruitmentView() {
       {/* Applicants Queue Table */}
       <div className="rounded-[var(--r-lg)] border border-[var(--border)] bg-[var(--surface)] overflow-hidden">
         {isLoading ? (
-          <WanderingEyesLoader
-            size="md"
-            text="LOADING CANDIDATE QUEUE"
-            subtext="SEARCHING RECRUITMENT APPLICATIONS"
-          />
+          <div className="py-16 flex flex-col items-center justify-center gap-2">
+            <Ring size={20} />
+            <span className="text-xs text-mute font-sans">Loading candidates...</span>
+          </div>
         ) : filtered.length === 0 ? (
           <div className="p-12 text-center text-xs font-mono text-[var(--text-3)]">
             NO CANDIDATES MATCH CURRENT FILTERS
