@@ -7,7 +7,7 @@ import { ThemeToggle } from './theme-toggle';
 import RoleBadge from './ui/RoleBadge';
 import { Button } from './ui/button';
 import Detect from './ui/detect';
-import { LayoutDashboard, LogOut, Ticket, User, Shield, ChevronDown, QrCode, Mail } from 'lucide-react';
+import { LayoutDashboard, LogOut, Ticket, ChevronDown, QrCode, Mail } from 'lucide-react';
 
 export const Header: React.FC = () => {
   const [location] = useLocation();
@@ -120,7 +120,7 @@ export const Header: React.FC = () => {
               <button
                 type="button"
                 onClick={() => setUserDropdownOpen(!userDropdownOpen)}
-                className="flex items-center gap-2 sm:gap-2.5 px-2 sm:px-2.5 py-1.5 rounded-[10px] border border-hairline bg-surface-2/60 hover:bg-surface-2 hover:border-hairline-2 transition-all duration-fast cursor-pointer select-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-signal"
+                className="flex items-center gap-2 sm:gap-2.5 px-2 sm:px-2.5 py-1.5 rounded-[10px] border border-hairline bg-surface-2 hover:bg-surface-3 hover:border-hairline-2 transition-all duration-fast cursor-pointer select-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-signal"
                 aria-label="User menu"
                 aria-expanded={userDropdownOpen}
               >
@@ -164,10 +164,10 @@ export const Header: React.FC = () => {
                     animate={{ opacity: 1, y: 0, scale: 1 }}
                     exit={{ opacity: 0, y: 4, scale: 0.98 }}
                     transition={{ duration: 0.15, ease: 'easeOut' }}
-                    className="absolute right-0 mt-2 w-72 sm:w-80 rounded-[14px] border border-hairline-2 bg-surface-1/95 backdrop-blur-xl p-2.5 shadow-float z-dropdown"
+                    className="absolute right-0 mt-2 w-72 sm:w-80 rounded-[14px] border border-hairline-2 bg-white dark:bg-[#0B0B0B] p-2.5 shadow-2xl z-dropdown opacity-100"
                   >
                     {/* User Identity Header Card */}
-                    <div className="p-3 rounded-[10px] bg-surface-2/70 border border-hairline mb-2">
+                    <div className="p-3 rounded-[10px] bg-[#F5F5F5] dark:bg-[#141414] border border-hairline mb-2">
                       <div className="flex items-start gap-3">
                         <div className="w-11 h-11 rounded-[10px] overflow-hidden bg-surface-3 border border-hairline-2 flex items-center justify-center shrink-0 shadow-sm">
                           {user.profile_image ? (
@@ -204,24 +204,6 @@ export const Header: React.FC = () => {
 
                     {/* Navigation Options with Rich UX */}
                     <div className="space-y-1">
-                      <Link
-                        href="/profile"
-                        onClick={() => setUserDropdownOpen(false)}
-                        className="flex items-center gap-3 px-3 py-2.5 rounded-[9px] hover:bg-surface-3 transition-colors group cursor-pointer"
-                      >
-                        <div className="w-8 h-8 rounded-[8px] bg-surface-3 group-hover:bg-surface-2 border border-hairline flex items-center justify-center text-text-2 group-hover:text-paper shrink-0 transition-colors">
-                          <User className="w-4 h-4" />
-                        </div>
-                        <div className="flex-1 min-w-0">
-                          <div className="text-[13px] font-medium text-paper group-hover:text-paper leading-tight">
-                            Profile & Settings
-                          </div>
-                          <div className="text-[11px] font-sans text-mute truncate">
-                            Personal details, photo & security
-                          </div>
-                        </div>
-                      </Link>
-
                       <Link
                         href="/dashboard"
                         onClick={() => setUserDropdownOpen(false)}
