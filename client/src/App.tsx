@@ -32,7 +32,7 @@ import RecruitmentApply from "./pages/RecruitmentApply";
 import RecruitmentStatus from "./pages/RecruitmentStatus";
 
 // Routes that render as standalone pages (no header/footer)
-const STANDALONE_ROUTES = ['/dashboard/scan'];
+const STANDALONE_ROUTES = ['/scan'];
 
 // Protected route component
 interface ProtectedRouteProps {
@@ -75,7 +75,7 @@ function AppContent() {
       {/* Standalone routes (no header/footer) */}
       {isStandalone && (
         <Switch>
-          <Route path="/dashboard/scan">
+          <Route path="/scan">
             <ProtectedRoute component={AdminScanQR} roles={['ADMIN', 'CORE']} />
           </Route>
         </Switch>

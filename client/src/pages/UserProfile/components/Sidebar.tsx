@@ -77,15 +77,15 @@ const SidebarContent = ({
   const handleNavigation = (item: MenuItem) => {
     if (item.href) {
       navigate(item.href);
-    } else if (item.id === 'settings') {
-      setActiveView('settings');
-      navigate('/profile');
     } else if (item.id === 'overview') {
       setActiveView('overview');
       navigate('/dashboard');
+    } else if (item.id === 'settings') {
+      setActiveView('settings');
+      navigate('/dashboard/settings');
     } else {
       setActiveView(item.id);
-      navigate('/dashboard');
+      navigate(`/dashboard/${item.id}`);
     }
     if (isMobile && closeMobile) {
       closeMobile();
@@ -188,7 +188,7 @@ export const Sidebar = ({
   return (
     <>
       {/* Desktop Sidebar 240px (Section 5.10) */}
-      <aside className="hidden lg:block w-60 shrink-0 h-screen sticky top-0">
+      <aside className="hidden md:block w-60 shrink-0 h-screen sticky top-0">
         <SidebarContent
           activeView={activeView}
           setActiveView={setActiveView}

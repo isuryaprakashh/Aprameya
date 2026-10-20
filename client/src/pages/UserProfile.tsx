@@ -53,18 +53,34 @@ const UserProfile = () => {
 
   const [location, navigate] = useLocation();
 
-  // Synchronize route with active view
+  // Synchronize route with active view based on location
   useEffect(() => {
-    if (location.startsWith('/profile')) {
-      if (activeView !== 'settings') {
-        setActiveView('settings');
-      }
+    if (location.startsWith('/profile') || location.startsWith('/dashboard/settings')) {
+      setActiveView('settings');
+    } else if (location.startsWith('/dashboard/users')) {
+      setActiveView('users');
+    } else if (location.startsWith('/dashboard/projects')) {
+      setActiveView('projects');
+    } else if (location.startsWith('/dashboard/events')) {
+      setActiveView('events');
+    } else if (location.startsWith('/dashboard/teams')) {
+      setActiveView('teams');
+    } else if (location.startsWith('/dashboard/blogs')) {
+      setActiveView('blogs');
+    } else if (location.startsWith('/dashboard/recruitment')) {
+      setActiveView('recruitment');
+    } else if (location.startsWith('/dashboard/scan')) {
+      setActiveView('scan');
     } else if (location === '/dashboard' || location === '/dashboard/') {
-      if (activeView !== 'overview') {
-        setActiveView('overview');
-      }
+      setActiveView('overview');
     }
-  }, [location, activeView, setActiveView]);
+  }, [location, setActiveView]);
+
+  // Reset any open dialog or selected item when view switches
+  useEffect(() => {
+    setIsDialogOpen(false);
+    setSelectedItem(null);
+  }, [activeView]);
 
   const [panelMode, setPanelMode] = useState<'admin' | 'user'>('admin');
   const mainScrollRef = useRef<HTMLElement>(null);
