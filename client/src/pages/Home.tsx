@@ -46,18 +46,18 @@ export default function Home() {
   return (
     <main className="w-full bg-ink min-h-screen text-paper">
       {/* ─── 1. HERO SECTION ─── */}
-      <section className="relative min-h-[calc(100vh-64px)] flex flex-col justify-center px-6 md:px-8 py-16 lg:py-20 max-w-[1240px] mx-auto w-full">
-        <div className="w-full grid lg:grid-cols-12 gap-12 lg:gap-14 items-center">
+      <section className="relative min-h-[calc(100vh-64px)] flex flex-col justify-center px-5 sm:px-6 md:px-8 pt-4 pb-16 sm:py-16 lg:py-20 max-w-[1240px] mx-auto w-full">
+        <div className="w-full grid lg:grid-cols-12 gap-5 sm:gap-8 lg:gap-14 items-center">
           {/* Left: Text Stack */}
           <div className="lg:col-span-7 flex flex-col items-start">
             {/* Pill Eyebrow with Red Dot */}
-            <div className="inline-flex items-center gap-2.5 px-3.5 py-1.5 rounded-full border border-hairline bg-surface-1 text-xs font-mono text-text-2 mb-8">
+            <div className="inline-flex items-center gap-2.5 px-3.5 py-1.5 rounded-full border border-hairline bg-surface-1 text-xs font-mono text-text-2 mb-4 sm:mb-6 lg:mb-8">
               <span className="w-2 h-2 rounded-full bg-signal shrink-0" />
               <span>KL University • Autonomous Systems & Robotics Club</span>
             </div>
 
             {/* Display Headline: 4-line impactful typography */}
-            <h1 className="font-display font-medium text-4xl sm:text-5xl lg:text-[62px] xl:text-[68px] leading-[1.08] tracking-[-0.03em] mb-6">
+            <h1 className="font-display font-medium text-[32px] sm:text-5xl lg:text-[62px] xl:text-[68px] leading-[1.1] sm:leading-[1.08] tracking-[-0.03em] mb-4 sm:mb-6">
               <span className="text-mute font-normal">We are </span>
               <span className="text-paper font-bold">APRAMEYA</span>
               <br />
@@ -68,7 +68,7 @@ export default function Home() {
             </h1>
 
             {/* Subtext */}
-            <p className="text-base sm:text-lg text-text-2 font-body max-w-xl leading-relaxed mb-8">
+            <p className="text-sm sm:text-base lg:text-lg text-text-2 font-body max-w-xl leading-relaxed mb-5 sm:mb-8">
               We develop physical self-driving platforms, publish peer-reviewed papers in academic journals, compete in national autonomy hackathons, and train undergraduate engineers.
             </p>
 
@@ -94,8 +94,8 @@ export default function Home() {
 
           {/* Right: Visual Card with Autonomous Vehicle Video */}
           <div className="lg:col-span-5 w-full">
-            <div className="rounded-2xl border border-hairline bg-surface-1 p-2 sm:p-2.5">
-              <div className="relative aspect-[4/3] lg:aspect-[1.22/1] rounded-xl overflow-hidden bg-ink border border-hairline group">
+            <div className="rounded-2xl border border-hairline bg-surface-1 p-2 sm:p-2.5 shadow-sm">
+              <div className="relative aspect-[16/10] sm:aspect-[4/3] lg:aspect-[1.22/1] rounded-xl overflow-hidden bg-black border border-hairline group">
                 <video
                   autoPlay
                   loop
@@ -105,7 +105,7 @@ export default function Home() {
                   src="/assets/hero-loop.mp4"
                 />
                 {/* Clean video scrim caption */}
-                <div className="absolute bottom-0 inset-x-0 p-3.5 bg-gradient-to-t from-ink/95 via-ink/60 to-transparent flex items-center justify-between text-xs font-mono text-text-2 z-10">
+                <div className="absolute bottom-0 inset-x-0 p-3 sm:p-3.5 bg-gradient-to-t from-black/85 via-black/40 to-transparent flex items-center justify-between text-[11px] sm:text-xs font-mono text-white/90 z-10">
                   <span>Physical Autonomous Vehicle</span>
                   <span className="text-signal font-medium">KL-AV-01</span>
                 </div>
@@ -115,7 +115,7 @@ export default function Home() {
         </div>
 
         {/* 4 Stats Strip at Bottom of Hero */}
-        <div className="w-full border-t border-hairline pt-12 mt-16 grid grid-cols-2 md:grid-cols-4 gap-8">
+        <div className="w-full border-t border-hairline pt-8 mt-10 sm:pt-12 sm:mt-16 grid grid-cols-2 md:grid-cols-4 gap-8">
           {stats.map((stat, i) => (
             <div key={i} className="flex flex-col">
               <span className="font-display font-medium text-3xl sm:text-4xl lg:text-5xl text-paper tracking-tight mb-1">
