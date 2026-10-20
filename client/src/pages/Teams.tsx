@@ -1,37 +1,34 @@
 import { useState } from 'react';
 import { useLocation } from 'wouter';
 import { useQuery } from '@tanstack/react-query';
-import { motion } from 'framer-motion';
 import { TeamMember } from '@/lib/types';
 import { teamMembers as fallbackTeamMembers } from '@/lib/data';
 import { getMemberSlug } from '@/lib/slugs';
-import {
-  FaLinkedin,
-  FaGithub,
-  FaEnvelope,
-  FaSearch,
-  FaUsers,
-  FaGraduationCap,
-  FaMicrochip,
-  FaAward
-} from 'react-icons/fa';
-import UnderConstruction from '@/components/UnderConstruction';
-import WanderingEyesLoader from '@/components/WanderingEyesLoader';
+import { Search, User } from 'lucide-react';
+import EmptyState from '@/components/EmptyState';
+import TeamMemberCard, {
+  isMentorMember,
+  isAdvisorMember,
+  isClubLeadMember,
+} from '@/components/TeamMemberCard';
+
+const FILTER_ROLES = ['All', 'Mentors', 'Club Leads', 'Advisors'];
 
 export default function Teams() {
   const [searchTerm, setSearchTerm] = useState('');
+  const [selectedRole, setSelectedRole] = useState('All');
   const [, setLocation] = useLocation();
 
-  const { data: dbMembers, isLoading } = useQuery<TeamMember[]>({
+  const { data: dbMembers } = useQuery<TeamMember[]>({
     queryKey: ['/api/teams'],
     queryFn: async () => {
       const baseUrl = import.meta.env.VITE_API_URL || '';
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), 15000);
       try {
-        const res = await fetch(`${baseUrl}/api/teams`, { 
+        const res = await fetch(`${baseUrl}/api/teams`, {
           credentials: 'include',
-          signal: controller.signal 
+          signal: controller.signal,
         });
         clearTimeout(timeoutId);
         if (!res.ok) throw new Error('Failed to fetch teams');
@@ -45,371 +42,233 @@ export default function Teams() {
     staleTime: 30000,
   });
 
-  // Use DB members if loaded and non-empty, otherwise use verified fallback data from data.ts
-  const members: TeamMember[] = ((dbMembers && dbMembers.length > 0) ? dbMembers : (fallbackTeamMembers as any[]))
+  const members: TeamMember[] = (
+    dbMembers && dbMembers.length > 0 ? dbMembers : (fallbackTeamMembers as any[])
+  )
     .slice()
     .sort((a, b) => (a.order ?? 999) - (b.order ?? 999));
 
-  const isMentor = (m: TeamMember) => {
-    const c = (m.category || '').toLowerCase();
-    const r = (m.role || '').toLowerCase();
-    const y = (m.year || '').toLowerCase();
-    return (
-      c.includes('mentor') ||
-      c.includes('faculty') ||
-      r.includes('mentor') ||
-      r.includes('faculty') ||
-      y.includes('faculty')
-    );
-  };
-
-  const isAdvisor = (m: TeamMember) => {
-    const c = (m.category || '').toLowerCase();
-    const r = (m.role || '').toLowerCase();
-    return !isMentor(m) && (c.includes('advisor') || r.includes('advisor'));
-  };
-
-  const isClubLead = (m: TeamMember) => {
-    return !isMentor(m) && !isAdvisor(m);
-  };
-
+  // Global search filtering
   const filteredMembers = members.filter((member) => {
-    if (!searchTerm) return true;
-    const term = searchTerm.toLowerCase();
+    const term = searchTerm.toLowerCase().trim();
+    if (!term) return true;
     return (
       member.name.toLowerCase().includes(term) ||
       member.role.toLowerCase().includes(term) ||
       (member.department && member.department.toLowerCase().includes(term)) ||
-      (member.bio && member.bio.toLowerCase().includes(term))
+      (member.bio && member.bio.toLowerCase().includes(term)) ||
+      (member.category && member.category.toLowerCase().includes(term)) ||
+      (member.year && member.year.toLowerCase().includes(term))
     );
   });
 
-  const mentorsList = filteredMembers.filter(isMentor);
-  const clubLeadsList = filteredMembers.filter(isClubLead);
-  const advisorsList = filteredMembers.filter(isAdvisor);
+  // Group members into the 3 canonical sections requested
+  const mentors = filteredMembers.filter(isMentorMember);
+  const clubLeads = filteredMembers.filter(isClubLeadMember);
+  const advisors = filteredMembers.filter(isAdvisorMember);
 
-  const facultyCount = members.filter(isMentor).length;
-  const coreCount = members.filter(isClubLead).length;
+  const showMentors = (selectedRole === 'All' || selectedRole === 'Mentors') && mentors.length > 0;
+  const showClubLeads = (selectedRole === 'All' || selectedRole === 'Club Leads') && clubLeads.length > 0;
+  const showAdvisors = (selectedRole === 'All' || selectedRole === 'Advisors') && advisors.length > 0;
+
+  const totalVisibleCount =
+    (showMentors ? mentors.length : 0) +
+    (showClubLeads ? clubLeads.length : 0) +
+    (showAdvisors ? advisors.length : 0);
+
+  const handleCardClick = (member: TeamMember, index: number) => {
+    const memberId = member.id || member._id || String(member.order || index + 1);
+    setLocation(`/team/${getMemberSlug(member.name, memberId)}`);
+  };
 
   return (
-    <div className="min-h-screen bg-[var(--bg-body)] text-[var(--text-primary)] font-sans selection:bg-[hsl(var(--accent))]/30 pb-24">
-      {/* Telemetry Header */}
-      <section className="relative pt-32 pb-16 px-6 md:px-12 border-b border-white/[0.04] overflow-hidden">
-        {/* Ambient background glow */}
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-7xl h-96 bg-[hsl(var(--accent))]/5 blur-[120px] pointer-events-none rounded-full" />
+    <main className="w-full bg-bg min-h-screen text-text">
+      {/* ─── PAGE HEADER (DESIGN.md Section 5.4) ─── */}
+      <section className="pt-24 pb-8 px-6 md:px-8 max-w-[1140px] mx-auto">
+        <p className="font-mono text-xs uppercase tracking-[0.06em] text-text-3 mb-2">
+          03 — PERSONNEL ROSTER
+        </p>
+        <h1 className="font-display font-medium text-3xl sm:text-4xl md:text-5xl tracking-tight text-text mb-3">
+          Team & leadership.
+        </h1>
+        <p className="text-base text-text-2 max-w-2xl leading-relaxed mb-8">
+          Faculty mentors, technical leads, and research advisors engineering autonomous systems, robotics, and intelligent algorithms at Aprameya Lab.
+        </p>
 
-        <div className="max-w-7xl mx-auto relative z-10">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-          >
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[hsl(var(--accent))]/10 border border-[hsl(var(--accent))]/20 mb-4">
-              <span className="w-1.5 h-1.5 rounded-full bg-[hsl(var(--accent))] animate-pulse" />
-              <p className="text-[11px] font-mono uppercase tracking-[0.15em] text-[hsl(var(--accent))]">
-                ORGANIZATION & LABORATORY ROSTER
-              </p>
-            </div>
+        {/* ─── FILTER & SEARCH BAR (DESIGN.md Section 4.7) ─── */}
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-border pb-4">
+          <div className="flex items-center gap-2 overflow-x-auto pb-2 sm:pb-0 scrollbar-none">
+            {FILTER_ROLES.map((role) => {
+              const active = selectedRole === role;
+              let count = members.length;
+              if (role === 'Mentors') count = members.filter(isMentorMember).length;
+              else if (role === 'Club Leads') count = members.filter(isClubLeadMember).length;
+              else if (role === 'Advisors') count = members.filter(isAdvisorMember).length;
 
-            <h1 className="text-4xl sm:text-5xl md:text-6xl mb-4 tracking-tight text-[var(--text-primary)] font-display font-bold">
-              <span className="text-[var(--text-secondary)] font-normal">Team &</span>{" "}
-              <span>Leadership</span>
-            </h1>
-
-            <p className="text-base text-[var(--text-secondary)] max-w-2xl leading-relaxed mb-10">
-              Meet the faculty mentors, technical architects, and student researchers driving applied autonomous robotics, computer vision, and ROS 2 perception systems at Aprameya Lab.
-            </p>
-
-            {/* Telemetry Statistics Grid */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-4xl">
-              <div className="border border-white/[0.06] bg-[var(--card-bg)] p-5 rounded-xl hover:border-[hsl(var(--accent))]/30 transition-colors">
-                <div className="flex items-center justify-between mb-2">
-                  <span className="text-[11px] text-[var(--text-muted)] font-medium uppercase tracking-wider font-mono">
-                    Total Personnel
+              return (
+                <button
+                  key={role}
+                  onClick={() => setSelectedRole(role)}
+                  className={`h-7 px-3.5 rounded-full text-xs font-mono uppercase tracking-[0.06em] whitespace-nowrap transition-colors duration-fast cursor-pointer flex items-center gap-2 ${
+                    active
+                      ? 'border border-red-line text-red-text bg-red-soft font-medium'
+                      : 'border border-border text-text-2 hover:border-border-strong hover:text-text'
+                  }`}
+                >
+                  <span>{role}</span>
+                  <span
+                    className={`text-[10px] ${
+                      active ? 'text-red-text/80' : 'text-text-3'
+                    }`}
+                  >
+                    ({count})
                   </span>
-                  <FaUsers className="text-[hsl(var(--accent))] w-4 h-4 opacity-75" />
-                </div>
-                <div className="font-display text-2xl sm:text-3xl font-bold text-[var(--text-primary)]">
-                  {members.length}
-                </div>
-              </div>
+                </button>
+              );
+            })}
+          </div>
 
-              <div className="border border-white/[0.06] bg-[var(--card-bg)] p-5 rounded-xl hover:border-[hsl(var(--accent))]/30 transition-colors">
-                <div className="flex items-center justify-between mb-2">
-                  <span className="text-[11px] text-[var(--text-muted)] font-medium uppercase tracking-wider font-mono">
-                    Faculty Mentors
-                  </span>
-                  <FaGraduationCap className="text-red-400 w-4 h-4 opacity-75" />
-                </div>
-                <div className="font-display text-2xl sm:text-3xl font-bold text-[var(--text-primary)]">
-                  {facultyCount || 2}
-                </div>
-              </div>
-
-              <div className="border border-white/[0.06] bg-[var(--card-bg)] p-5 rounded-xl hover:border-[hsl(var(--accent))]/30 transition-colors">
-                <div className="flex items-center justify-between mb-2">
-                  <span className="text-[11px] text-[var(--text-muted)] font-medium uppercase tracking-wider font-mono">
-                    Core Technical Leads
-                  </span>
-                  <FaMicrochip className="text-blue-400 w-4 h-4 opacity-75" />
-                </div>
-                <div className="font-display text-2xl sm:text-3xl font-bold text-[var(--text-primary)]">
-                  {coreCount || 4}
-                </div>
-              </div>
-
-              <div className="border border-white/[0.06] bg-[var(--card-bg)] p-5 rounded-xl hover:border-[hsl(var(--accent))]/30 transition-colors">
-                <div className="flex items-center justify-between mb-2">
-                  <span className="text-[11px] text-[var(--text-muted)] font-medium uppercase tracking-wider font-mono">
-                    National Ranking
-                  </span>
-                  <FaAward className="text-amber-400 w-4 h-4 opacity-75" />
-                </div>
-                <div className="font-display text-2xl sm:text-3xl font-bold text-[var(--text-primary)]">
-                  3rd (IISc)
-                </div>
-              </div>
-            </div>
-          </motion.div>
-        </div>
-      </section>
-
-      {/* Roster Controls & Member Grid */}
-      <section className="py-12 px-6 md:px-12 max-w-7xl mx-auto">
-        {/* Search Bar (No category filter buttons) */}
-        <div className="mb-10 max-w-md">
-          <div className="relative">
-            <FaSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-[var(--text-muted)] w-4 h-4" />
+          <div className="relative w-full sm:w-64 shrink-0">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-text-3" />
             <input
               type="text"
-              placeholder="Search by name, role, division, or skills..."
+              placeholder="Search member, role, dept..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-11 pr-4 py-3 bg-[var(--card-bg)] border border-[var(--border-color)] rounded-xl text-sm text-[var(--text-primary)] placeholder-[var(--text-muted)] focus:outline-none focus:border-[hsl(var(--accent))]/60 transition-colors shadow-sm"
+              className="w-full h-9 pl-9 pr-3 rounded-md border border-border bg-surface text-xs text-text placeholder:text-text-3 focus:outline-none focus:border-border-strong transition-colors"
             />
           </div>
         </div>
+      </section>
 
-        {/* Member Grid Loading & Empty States */}
-        {isLoading && members.length === 0 ? (
-          <WanderingEyesLoader
-            size="md"
-            text="SYNCING LABORATORY ROSTER"
-            subtext="SCANNING FACULTY MENTORS & DIVISION LEADS"
-          />
-        ) : members.length === 0 ? (
-          <UnderConstruction
-            title="NO PERSONNEL LISTED"
-            description="The laboratory roster is currently being updated. Please check back shortly."
-          />
-        ) : filteredMembers.length === 0 ? (
-          <UnderConstruction
-            title="NO MATCHING PERSONNEL FOUND"
-            description="No team members match your current query. Adjust search keywords to inspect other laboratory divisions."
-          />
-        ) : (
-          <div className="space-y-16">
+      {/* ─── PERSONNEL SECTIONS (MENTORS, CLUB LEADS, ADVISORS) ─── */}
+      <section className="pb-28 px-6 md:px-8 max-w-[1140px] mx-auto space-y-16">
+        {totalVisibleCount > 0 ? (
+          <>
             {/* 1. MENTORS SECTION */}
-            {mentorsList.length > 0 && (
-              <div>
-                <div className="flex items-center gap-3 mb-8">
-                  <div className="w-1.5 h-7 sm:h-8 bg-red-500 rounded-full shrink-0 shadow-[0_0_12px_rgba(239,68,68,0.7)]" />
-                  <h2 className="text-xl sm:text-2xl md:text-3xl font-display font-bold tracking-wider text-white uppercase flex items-center gap-3">
-                    <span>MENTORS</span>
-                    <span className="text-[11px] font-mono font-medium px-2.5 py-0.5 rounded-full bg-white/10 text-zinc-300 border border-white/10">
-                      {mentorsList.length}
-                    </span>
-                  </h2>
-                  <div className="flex-1 h-[1px] bg-white/10 ml-3" />
+            {showMentors && (
+              <div id="mentors-section" className="space-y-6">
+                <div className="flex flex-col sm:flex-row sm:items-end justify-between border-b border-border pb-4 gap-2">
+                  <div>
+                    <p className="font-mono text-xs uppercase tracking-[0.06em] text-red-text mb-1">
+                      01 — FACULTY GUIDANCE
+                    </p>
+                    <div className="flex items-center gap-3">
+                      <h2 className="font-display font-medium text-2xl sm:text-3xl tracking-tight text-text">
+                        MENTORS
+                      </h2>
+                      <span className="font-mono text-xs px-2 py-0.5 rounded border border-border text-text-3 bg-surface-2/40">
+                        {mentors.length} {mentors.length === 1 ? 'PERSON' : 'PEOPLE'}
+                      </span>
+                    </div>
+                  </div>
+                  <p className="text-xs sm:text-sm text-text-3 font-mono">
+                    Academic supervision & research governance
+                  </p>
                 </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-6">
-                  {mentorsList.map((member, index) => renderMemberCard(member, index))}
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {mentors.map((member, idx) => (
+                    <TeamMemberCard
+                      key={member.id || member._id || `mentor-${idx}`}
+                      member={member}
+                      index={idx}
+                      onClick={() => handleCardClick(member, idx)}
+                    />
+                  ))}
                 </div>
               </div>
             )}
 
-            {/* 2. CLUB LEADS SECTION (Exact cyan bar style as requested) */}
-            {clubLeadsList.length > 0 && (
-              <div>
-                <div className="flex items-center gap-3 mb-8">
-                  <div className="w-1.5 h-7 sm:h-8 bg-[#00D8F6] rounded-full shrink-0 shadow-[0_0_12px_rgba(0,216,246,0.7)]" />
-                  <h2 className="text-xl sm:text-2xl md:text-3xl font-display font-bold tracking-wider text-white uppercase flex items-center gap-3">
-                    <span>CLUB LEADS</span>
-                    <span className="text-[11px] font-mono font-medium px-2.5 py-0.5 rounded-full bg-white/10 text-zinc-300 border border-white/10">
-                      {clubLeadsList.length}
-                    </span>
-                  </h2>
-                  <div className="flex-1 h-[1px] bg-white/10 ml-3" />
+            {/* 2. CLUB LEADS SECTION */}
+            {showClubLeads && (
+              <div id="club-leads-section" className="space-y-6">
+                <div className="flex flex-col sm:flex-row sm:items-end justify-between border-b border-border pb-4 gap-2">
+                  <div>
+                    <p className="font-mono text-xs uppercase tracking-[0.06em] text-red-text mb-1">
+                      02 — EXECUTIVE & TECHNICAL LEADERSHIP
+                    </p>
+                    <div className="flex items-center gap-3">
+                      <h2 className="font-display font-medium text-2xl sm:text-3xl tracking-tight text-text">
+                        CLUB LEADS
+                      </h2>
+                      <span className="font-mono text-xs px-2 py-0.5 rounded border border-border text-text-3 bg-surface-2/40">
+                        {clubLeads.length} {clubLeads.length === 1 ? 'PERSON' : 'PEOPLE'}
+                      </span>
+                    </div>
+                  </div>
+                  <p className="text-xs sm:text-sm text-text-3 font-mono">
+                    Autonomy leads, domain heads & technical coordinators
+                  </p>
                 </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-6">
-                  {clubLeadsList.map((member, index) => renderMemberCard(member, index))}
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {clubLeads.map((member, idx) => (
+                    <TeamMemberCard
+                      key={member.id || member._id || `lead-${idx}`}
+                      member={member}
+                      index={idx}
+                      onClick={() => handleCardClick(member, idx)}
+                    />
+                  ))}
                 </div>
               </div>
             )}
 
-            {/* 3. ADVISORS SECTION (If any exist) */}
-            {advisorsList.length > 0 && (
-              <div>
-                <div className="flex items-center gap-3 mb-8">
-                  <div className="w-1.5 h-7 sm:h-8 bg-amber-400 rounded-full shrink-0 shadow-[0_0_12px_rgba(245,158,11,0.7)]" />
-                  <h2 className="text-xl sm:text-2xl md:text-3xl font-display font-bold tracking-wider text-white uppercase flex items-center gap-3">
-                    <span>ADVISORS</span>
-                    <span className="text-[11px] font-mono font-medium px-2.5 py-0.5 rounded-full bg-white/10 text-zinc-300 border border-white/10">
-                      {advisorsList.length}
-                    </span>
-                  </h2>
-                  <div className="flex-1 h-[1px] bg-white/10 ml-3" />
+            {/* 3. ADVISORS SECTION */}
+            {showAdvisors && (
+              <div id="advisors-section" className="space-y-6">
+                <div className="flex flex-col sm:flex-row sm:items-end justify-between border-b border-border pb-4 gap-2">
+                  <div>
+                    <p className="font-mono text-xs uppercase tracking-[0.06em] text-red-text mb-1">
+                      03 — STRATEGY & STEERING
+                    </p>
+                    <div className="flex items-center gap-3">
+                      <h2 className="font-display font-medium text-2xl sm:text-3xl tracking-tight text-text">
+                        ADVISORS
+                      </h2>
+                      <span className="font-mono text-xs px-2 py-0.5 rounded border border-border text-text-3 bg-surface-2/40">
+                        {advisors.length} {advisors.length === 1 ? 'PERSON' : 'PEOPLE'}
+                      </span>
+                    </div>
+                  </div>
+                  <p className="text-xs sm:text-sm text-text-3 font-mono">
+                    Senior advisors & alumni strategic steering
+                  </p>
                 </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-6">
-                  {advisorsList.map((member, index) => renderMemberCard(member, index))}
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {advisors.map((member, idx) => (
+                    <TeamMemberCard
+                      key={member.id || member._id || `advisor-${idx}`}
+                      member={member}
+                      index={idx}
+                      onClick={() => handleCardClick(member, idx)}
+                    />
+                  ))}
                 </div>
               </div>
             )}
-          </div>
+          </>
+        ) : (
+          <EmptyState
+            icon={User}
+            title="No personnel found"
+            description={
+              searchTerm
+                ? `No laboratory members matched "${searchTerm}". Try searching by another keyword or reset filters.`
+                : 'No members found in this category.'
+            }
+            action={{
+              label: 'Reset Filters & Search',
+              onClick: () => {
+                setSearchTerm('');
+                setSelectedRole('All');
+              },
+            }}
+          />
         )}
       </section>
-    </div>
+    </main>
   );
-
-  function renderMemberCard(member: TeamMember, index: number) {
-    const memberId = member.id || member._id || String(member.order || index + 1);
-    const socialLinks = member.socialLinks || {};
-    const email = member.email || socialLinks.email;
-    const linkedin = member.linkedin || socialLinks.linkedin;
-    const github = member.github || socialLinks.github;
-
-    return (
-      <motion.div
-        key={member.id || member._id || index}
-        initial={{ opacity: 0, y: 15 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.35, delay: index * 0.04 }}
-        onClick={() => setLocation(`/team/${getMemberSlug(member.name, memberId)}`)}
-        className="rounded-xl border border-[var(--border-color)] bg-[var(--card-bg)] overflow-hidden transition-all duration-300 hover:border-[hsl(var(--accent))]/50 hover:shadow-[0_12px_36px_rgb(0,0,0,0.25)] group flex flex-col justify-between cursor-pointer"
-      >
-        <div>
-          {/* Portrait Photo Container - VIVID, NATURAL, NO GRAYSCALE */}
-          <div className="relative h-72 sm:h-80 overflow-hidden bg-zinc-950 flex items-center justify-center">
-            {member.image ? (
-              <img
-                src={member.image}
-                alt={member.name}
-                className="w-full h-full object-cover object-top transition-transform duration-500 group-hover:scale-105"
-                onError={(e) => {
-                  (e.currentTarget as HTMLImageElement).style.display = 'none';
-                  const fb = e.currentTarget.parentElement?.querySelector('.member-fallback-initials') as HTMLElement;
-                  if (fb) fb.style.display = 'flex';
-                }}
-              />
-            ) : null}
-            <div className={`w-full h-full items-center justify-center bg-zinc-950 font-display text-4xl font-bold text-zinc-600 member-fallback-initials ${member.image ? 'hidden' : 'flex'}`}>
-              {member.name.substring(0, 2).toUpperCase()}
-            </div>
-
-            {/* Top Badges */}
-            <div className="absolute top-3 left-3 right-3 flex items-center justify-between pointer-events-none z-10">
-              {member.year && (
-                <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-red-300 bg-black/85 backdrop-blur-md border border-red-500/25 px-2.5 py-0.5 rounded shadow">
-                  {member.year}
-                </span>
-              )}
-              {member.category && (
-                <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-[hsl(var(--accent))] bg-black/85 backdrop-blur-md border border-[hsl(var(--accent))]/30 px-2.5 py-0.5 rounded ml-auto shadow">
-                  {member.category}
-                </span>
-              )}
-            </div>
-
-            {/* Subtle Bottom Gradient Fade for seamless contrast */}
-            <div className="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-[var(--card-bg)] to-transparent pointer-events-none" />
-          </div>
-
-          {/* Member Details */}
-          <div className="p-6">
-            <div className="flex items-start justify-between gap-2 mb-1">
-              <h3 className="font-display font-bold text-lg text-[var(--text-primary)] group-hover:text-[hsl(var(--accent))] transition-colors">
-                {member.name}
-              </h3>
-              {member.order !== undefined && member.order > 0 && (
-                <span className="text-[10px] font-mono px-1.5 py-0.5 rounded border border-[var(--border-color)] text-[var(--text-muted)] shrink-0">
-                  #{member.order}
-                </span>
-              )}
-            </div>
-
-            <p className="text-xs font-mono text-[hsl(var(--accent))] mb-3 font-semibold">
-              {member.role}
-            </p>
-
-            {member.department && (
-              <p className="text-xs text-[var(--text-secondary)] mb-2.5 leading-relaxed">
-                <span className="text-[var(--text-muted)] font-mono text-[11px]">Dept:</span>{' '}
-                {member.department}
-              </p>
-            )}
-
-            {member.bio && (
-              <p className="text-xs text-[var(--text-secondary)] line-clamp-3 leading-relaxed mb-3">
-                {member.bio}
-              </p>
-            )}
-
-            <div className="pt-1 flex items-center text-[11px] font-mono text-[hsl(var(--accent))] opacity-80 group-hover:opacity-100 group-hover:translate-x-1 transition-all">
-              <span>View Profile & Credentials →</span>
-            </div>
-          </div>
-        </div>
-
-        {/* Social and Department Footer */}
-        <div className="px-6 py-4 border-t border-[var(--border-color)]/70 flex items-center justify-between bg-black/10">
-          <span className="text-[11px] font-mono text-[var(--text-muted)]">
-            APRAMEYA LAB
-          </span>
-
-          <div className="flex items-center gap-3">
-            {email && (
-              <a
-                href={`mailto:${email}`}
-                onClick={(e) => e.stopPropagation()}
-                className="text-[var(--text-muted)] hover:text-[var(--text-primary)] transition-colors p-1"
-                title={email}
-                aria-label="Email"
-              >
-                <FaEnvelope className="w-3.5 h-3.5" />
-              </a>
-            )}
-            {linkedin && (
-              <a
-                href={linkedin}
-                target="_blank"
-                rel="noopener noreferrer"
-                onClick={(e) => e.stopPropagation()}
-                className="text-[var(--text-muted)] hover:text-[#0A66C2] transition-colors p-1"
-                title="LinkedIn"
-                aria-label="LinkedIn"
-              >
-                <FaLinkedin className="w-3.5 h-3.5" />
-              </a>
-            )}
-            {github && (
-              <a
-                href={github}
-                target="_blank"
-                rel="noopener noreferrer"
-                onClick={(e) => e.stopPropagation()}
-                className="text-[var(--text-muted)] hover:text-[var(--text-primary)] transition-colors p-1"
-                title="GitHub"
-                aria-label="GitHub"
-              >
-                <FaGithub className="w-3.5 h-3.5" />
-              </a>
-            )}
-          </div>
-        </div>
-      </motion.div>
-    );
-  }
 }

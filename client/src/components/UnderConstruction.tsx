@@ -19,33 +19,33 @@ export const UnderConstruction = ({
   return (
     <div className="w-full py-16 px-4 flex flex-col items-center justify-center text-center">
       <motion.div
-        initial={{ opacity: 0, y: 16 }}
+        initial={{ opacity: 0, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.4 }}
-        className="max-w-xl w-full border border-white/[0.06] bg-[var(--card-bg)] p-8 md:p-10 rounded-xl text-center"
+        transition={{ duration: 0.3 }}
+        className="max-w-xl w-full border border-border bg-surface/50 p-8 md:p-10 rounded-lg text-center"
       >
-        <div className="w-12 h-12 rounded-xl bg-white/[0.03] border border-white/[0.06] flex items-center justify-center mx-auto mb-6 text-[var(--text-secondary)]">
+        <div className="w-10 h-10 rounded-full bg-surface-2 border border-border flex items-center justify-center mx-auto mb-5 text-text-3">
           <FolderGit2 className="w-5 h-5" />
         </div>
 
-        <p className="text-[11px] font-sans font-medium text-[var(--text-muted)] uppercase tracking-[0.15em] mb-2">
+        <p className="font-mono text-xs uppercase tracking-[0.06em] text-text-3 mb-2">
           {category}
         </p>
 
-        <h2 className="text-2xl sm:text-3xl tracking-tight text-[var(--text-primary)] mb-2 font-display font-bold">
+        <h2 className="text-2xl sm:text-3xl tracking-tight text-text mb-2 font-display font-medium">
           {title}
         </h2>
         
-        <p className="text-xs text-[var(--text-muted)] mb-4">
+        <p className="text-xs font-mono text-text-3 mb-4">
           {subtitle}
         </p>
 
-        <p className="text-sm text-[var(--text-secondary)] leading-relaxed mb-8 max-w-md mx-auto">
+        <p className="text-sm text-text-2 leading-relaxed mb-8 max-w-md mx-auto">
           {description}
         </p>
 
         {/* Action Buttons */}
-        <div className="flex flex-wrap items-center justify-center gap-3 pt-4 border-t border-white/[0.04]">
+        <div className="flex flex-wrap items-center justify-center gap-3 pt-4 border-t border-border">
           <Link href="/">
             <ChamferedButton variant="secondary" size="sm" leftIcon={<ArrowLeft className="w-3.5 h-3.5" />}>
               Return Home

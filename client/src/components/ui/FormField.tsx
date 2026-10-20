@@ -25,7 +25,7 @@ export const FormField: React.FC<FormFieldProps> = ({
     className
 }) => (
     <div className={`mb-4 ${className || ''}`}>
-        <label htmlFor={id} className="text-xs font-mono text-[var(--text-secondary)] mb-2 block uppercase">
+        <label htmlFor={id} className="text-xs font-mono text-[var(--text-3)] mb-2 block uppercase tracking-wider">
             {label}
         </label>
         {isTextArea ? (
@@ -34,7 +34,7 @@ export const FormField: React.FC<FormFieldProps> = ({
                 value={value}
                 rows={rows}
                 onChange={onChange}
-                className="bg-[var(--card-bg)] border-[var(--border-color)] text-[var(--text-primary)] focus:border-[hsl(var(--accent))]/50"
+                className="bg-[var(--surface)] border-[var(--border)] text-[var(--text)]"
             />
         ) : (
             <Input
@@ -42,7 +42,7 @@ export const FormField: React.FC<FormFieldProps> = ({
                 type={type}
                 value={value}
                 onChange={onChange}
-                className="bg-[var(--card-bg)] border-[var(--border-color)] text-[var(--text-primary)] focus:border-[hsl(var(--accent))]/50"
+                className="bg-[var(--surface)] border-[var(--border)] text-[var(--text)]"
             />
         )}
     </div>

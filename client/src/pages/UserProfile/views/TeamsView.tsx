@@ -504,7 +504,7 @@ export default function TeamsView() {
             <Button
               onClick={handleSave}
               disabled={isSaving}
-              className="bg-[hsl(var(--accent))] text-[var(--bg-body)] hover:bg-[hsl(var(--accent))]/90 font-semibold text-xs h-9 px-5 rounded-xl shadow-[0_0_20px_-5px_hsl(var(--accent)/0.4)]"
+              className="bg-[hsl(var(--accent))] text-[var(--bg-body)] hover:bg-[hsl(var(--accent))]/90 font-semibold text-xs h-9 px-5 rounded-xl"
             >
               <FaSave className="mr-1.5 h-3.5 w-3.5" /> {isSaving ? 'Saving...' : 'Save Changes'}
             </Button>
@@ -515,18 +515,18 @@ export default function TeamsView() {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
           {/* Left Column: Team Image Editor */}
           <div className="lg:col-span-5 space-y-5">
-            <div className="rounded-2xl border border-[var(--border-color)] bg-[var(--card-bg)] p-6 space-y-5">
+            <div className="rounded-[var(--r-lg)] border border-[var(--border)] bg-[var(--surface)] p-6 space-y-5">
               <div>
-                <h3 className="text-sm font-semibold text-[var(--text-primary)] flex items-center gap-2">
-                  <FaImage className="text-[hsl(var(--accent))]" /> Member Photograph
+                <h3 className="text-sm font-display font-medium text-[var(--text)] flex items-center gap-2">
+                  <FaImage className="text-[var(--red)]" /> Member Photograph
                 </h3>
-                <p className="text-xs text-[var(--text-secondary)] mt-0.5">
+                <p className="text-xs text-[var(--text-2)] mt-0.5">
                   Upload an image from your computer, provide a URL, or pick a preset avatar.
                 </p>
               </div>
 
               {/* Photo Preview Card */}
-              <div className="relative aspect-[4/5] rounded-xl overflow-hidden bg-black/60 border border-[var(--border-color)] group flex items-center justify-center">
+              <div className="relative aspect-[4/5] rounded-[var(--r-md)] overflow-hidden bg-black/60 border border-[var(--border)] group flex items-center justify-center">
                 {formData.image ? (
                   <img
                     src={formData.image}
@@ -537,7 +537,7 @@ export default function TeamsView() {
                     }}
                   />
                 ) : (
-                  <div className="text-center p-6 text-[var(--text-muted)]">
+                  <div className="text-center p-6 text-[var(--text-3)]">
                     <FaUserTie className="w-16 h-16 mx-auto mb-2 opacity-50" />
                     <p className="text-xs font-mono">NO IMAGE ASSIGNED</p>
                   </div>
@@ -546,18 +546,18 @@ export default function TeamsView() {
                 {/* Live Badge Overlays */}
                 <div className="absolute top-3 left-3 right-3 flex items-center justify-between pointer-events-none">
                   {formData.year && (
-                    <span className="text-[10px] font-mono font-semibold uppercase tracking-wider text-red-300 bg-black/80 backdrop-blur-md border border-red-500/30 px-2 py-0.5 rounded">
+                    <span className="text-[10px] font-mono font-medium uppercase tracking-wider text-[var(--red-text)] bg-black/80 backdrop-blur-md border border-[var(--red-line)] px-2 py-0.5 rounded-[var(--r-sm)]">
                       {formData.year}
                     </span>
                   )}
                   {formData.category && (
-                    <span className="text-[10px] font-mono font-semibold uppercase tracking-wider text-[hsl(var(--accent))] bg-black/80 backdrop-blur-md border border-[hsl(var(--accent))]/30 px-2 py-0.5 rounded ml-auto">
+                    <span className="text-[10px] font-mono font-medium uppercase tracking-wider text-[var(--text)] bg-black/80 backdrop-blur-md border border-[var(--border)] px-2 py-0.5 rounded-[var(--r-sm)] ml-auto">
                       {formData.category}
                     </span>
                   )}
                 </div>
 
-                <div className="absolute inset-0 bg-gradient-to-t from-[var(--card-bg)] via-transparent to-transparent pointer-events-none" />
+                <div className="absolute inset-0 bg-gradient-to-t from-[var(--surface)] via-transparent to-transparent pointer-events-none" />
               </div>
 
               {/* Upload Controls */}
@@ -639,23 +639,23 @@ export default function TeamsView() {
 
           {/* Right Column: Member Details Form */}
           <div className="lg:col-span-7 space-y-6">
-            <div className="rounded-2xl border border-[var(--border-color)] bg-[var(--card-bg)] p-6 space-y-5">
-              <h3 className="text-sm font-semibold text-[var(--text-primary)] border-b border-[var(--border-color)] pb-3">
+            <div className="rounded-[var(--r-lg)] border border-[var(--border)] bg-[var(--surface)] p-6 space-y-5">
+              <h3 className="text-sm font-display font-medium text-[var(--text)] border-b border-[var(--border)] pb-3">
                 Laboratory Personnel Identity
               </h3>
 
               <div className="space-y-4">
                 {/* Name */}
                 <div>
-                  <Label htmlFor="memberName" className="text-xs font-mono text-[var(--text-secondary)]">
-                    Full Name <span className="text-red-400">*</span>
+                  <Label htmlFor="memberName" className="text-xs font-mono text-[var(--text-3)]">
+                    Full Name <span className="text-[var(--red)]">*</span>
                   </Label>
                   <Input
                     id="memberName"
                     placeholder="e.g. Singavarapu Sai Revanth"
                     value={formData.name || ''}
                     onChange={(e) => handleInputChange('name', e.target.value)}
-                    className="mt-1 bg-[var(--bg-body)] border-[var(--border-color)] text-sm rounded-xl"
+                    className="mt-1 bg-[var(--surface-2)] border-[var(--border)] text-sm rounded-[var(--r-md)]"
                   />
                 </div>
 
@@ -748,15 +748,15 @@ export default function TeamsView() {
                     placeholder="Brief description of specialized autonomy research, sensor fusion work, or lab leadership..."
                     value={formData.bio || ''}
                     onChange={(e) => handleInputChange('bio', e.target.value)}
-                    className="mt-1 bg-[var(--bg-body)] border-[var(--border-color)] text-sm rounded-xl"
+                    className="mt-1 bg-[var(--surface-2)] border-[var(--border)] text-sm rounded-[var(--r-md)]"
                   />
                 </div>
               </div>
             </div>
 
             {/* Social & Contact Card */}
-            <div className="rounded-2xl border border-[var(--border-color)] bg-[var(--card-bg)] p-6 space-y-4">
-              <h3 className="text-sm font-semibold text-[var(--text-primary)] border-b border-[var(--border-color)] pb-3">
+            <div className="rounded-[var(--r-lg)] border border-[var(--border)] bg-[var(--surface)] p-6 space-y-4">
+              <h3 className="text-sm font-display font-medium text-[var(--text)] border-b border-[var(--border)] pb-3">
                 Contact & Public Channels
               </h3>
 
@@ -815,7 +815,7 @@ export default function TeamsView() {
               <Button
                 onClick={handleSave}
                 disabled={isSaving}
-                className="bg-[hsl(var(--accent))] text-[var(--bg-body)] hover:bg-[hsl(var(--accent))]/90 font-semibold text-xs h-10 px-6 rounded-xl shadow-[0_0_20px_-5px_hsl(var(--accent)/0.4)]"
+                className="bg-[hsl(var(--accent))] text-[var(--bg-body)] hover:bg-[hsl(var(--accent))]/90 font-semibold text-xs h-10 px-6 rounded-xl"
               >
                 <FaSave className="mr-2 h-3.5 w-3.5" /> {isSaving ? 'Saving...' : 'Save Team Member'}
               </Button>
@@ -843,7 +843,7 @@ export default function TeamsView() {
         </div>
         <Button
           onClick={startCreate}
-          className="bg-[hsl(var(--accent))] text-[var(--bg-body)] hover:bg-[hsl(var(--accent))]/90 font-medium px-4 py-2 rounded-xl transition-all shadow-[0_0_20px_-5px_hsl(var(--accent)/0.4)] self-start sm:self-auto"
+          className="bg-[hsl(var(--accent))] text-[var(--bg-body)] hover:bg-[hsl(var(--accent))]/90 font-medium px-4 py-2 rounded-xl transition-all self-start sm:self-auto"
         >
           <FaPlus className="mr-2 h-3.5 w-3.5" /> Add Team Member
         </Button>
@@ -852,12 +852,12 @@ export default function TeamsView() {
       {/* Filter and Search Bar */}
       <div className="flex flex-col md:flex-row gap-3 items-stretch md:items-center justify-between">
         <div className="relative flex-1 max-w-md">
-          <FaSearch className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[var(--text-muted)] w-3.5 h-3.5" />
+          <FaSearch className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[var(--text-3)] w-3.5 h-3.5" />
           <Input
             placeholder="Search team member by name, role, department..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="pl-10 bg-[var(--card-bg)] border-[var(--border-color)] text-sm rounded-xl"
+            className="pl-10 bg-[var(--surface)] border-[var(--border)] text-sm rounded-[var(--r-md)]"
           />
         </div>
 
@@ -867,10 +867,10 @@ export default function TeamsView() {
             <button
               key={cat}
               onClick={() => setSelectedCategory(cat)}
-              className={`px-3 py-1.5 rounded-lg text-xs font-mono transition-all whitespace-nowrap ${
+              className={`px-3 py-1.5 rounded-[var(--r-sm)] text-xs font-mono transition-all whitespace-nowrap ${
                 selectedCategory === cat
-                  ? 'bg-[hsl(var(--accent))] text-[var(--bg-body)] font-semibold shadow-sm'
-                  : 'bg-[var(--card-bg)] border border-[var(--border-color)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:border-[hsl(var(--accent))]/30'
+                  ? 'bg-[var(--text)] text-[var(--bg)] font-medium'
+                  : 'bg-[var(--surface)] border border-[var(--border)] text-[var(--text-2)] hover:text-[var(--text)]'
               }`}
             >
               {cat}
@@ -887,17 +887,17 @@ export default function TeamsView() {
           subtext="SYNCHRONIZING OPERATIVES & MENTORS"
         />
       ) : filteredMembers.length === 0 ? (
-        <div className="p-12 text-center rounded-xl border border-[var(--border-color)] bg-[var(--card-bg)]">
-          <p className="font-mono text-xs text-[var(--text-muted)] mb-2">STATUS: 204 NO_CONTENT</p>
-          <h3 className="text-base font-semibold text-[var(--text-primary)] mb-1">No Team Members Found</h3>
-          <p className="text-xs text-[var(--text-secondary)] max-w-sm mx-auto mb-4">
+        <div className="p-12 text-center rounded-[var(--r-lg)] border border-[var(--border)] bg-[var(--surface)]">
+          <p className="font-mono text-xs text-[var(--text-3)] mb-2">STATUS: 204 NO_CONTENT</p>
+          <h3 className="text-base font-display font-medium text-[var(--text)] mb-1">No Team Members Found</h3>
+          <p className="text-xs text-[var(--text-2)] max-w-sm mx-auto mb-4">
             {searchTerm || selectedCategory !== 'All'
               ? 'No team members match your current filters. Try resetting search.'
               : 'Add your first faculty mentor or core lead to display on the public Teams page.'}
           </p>
           <Button
             onClick={startCreate}
-            className="bg-[hsl(var(--accent))] text-[var(--bg-body)] hover:bg-[hsl(var(--accent))]/90 text-xs px-3.5 py-2 rounded-lg"
+            className="bg-[var(--red)] text-white hover:bg-[var(--red-hover)] text-xs px-3.5 py-2 rounded-[var(--r-md)]"
           >
             <FaPlus className="mr-1.5 h-3 w-3" /> Add Member
           </Button>
@@ -907,12 +907,12 @@ export default function TeamsView() {
           {filteredMembers.map((member, index) => (
             <div
               key={member.id || member._id}
-              className="rounded-xl border border-[var(--border-color)] bg-[var(--card-bg)] p-5 flex flex-col justify-between hover:border-[hsl(var(--accent))]/30 transition-all duration-300 group relative overflow-hidden"
+              className="rounded-[var(--r-lg)] border border-[var(--border)] bg-[var(--surface)] p-5 flex flex-col justify-between hover:border-[var(--border-strong)] transition-all duration-300 group relative overflow-hidden"
             >
               <div>
                 <div className="flex items-start gap-4 mb-3">
                   {/* Avatar */}
-                  <div className="w-16 h-16 rounded-xl overflow-hidden bg-black/40 border border-[var(--border-color)] shrink-0 flex items-center justify-center relative group-hover:border-[hsl(var(--accent))]/50 transition-colors">
+                  <div className="w-16 h-16 rounded-[var(--r-md)] overflow-hidden bg-black/40 border border-[var(--border)] shrink-0 flex items-center justify-center relative group-hover:border-[var(--border-strong)] transition-colors">
                     {member.image ? (
                       <img
                         src={member.image}
@@ -1077,18 +1077,18 @@ export default function TeamsView() {
                       <FaQrcode className="h-3 w-3 text-[hsl(var(--accent))]" /> QR Code
                     </Button>
                   </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end" className="bg-[var(--card-bg)] border-[var(--border-color)] text-[var(--text-primary)] min-w-[170px] p-1.5 rounded-xl shadow-2xl">
+                  <DropdownMenuContent align="end" className="bg-[var(--surface)] border border-[var(--border)] text-[var(--text)] min-w-[170px] p-1.5 rounded-[var(--r-md)] shadow-none">
                     <DropdownMenuItem
                       onClick={() => handleViewQr(member)}
-                      className="cursor-pointer text-xs flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-[hsl(var(--accent))]/15 hover:text-[hsl(var(--accent))] focus:bg-[hsl(var(--accent))]/15 focus:text-[hsl(var(--accent))]"
+                      className="cursor-pointer text-xs flex items-center gap-2 px-3 py-2 rounded-[var(--r-sm)] hover:bg-[var(--surface-2)] hover:text-[var(--text)] focus:bg-[var(--surface-2)] focus:text-[var(--text)]"
                     >
-                      <FaEye className="w-3.5 h-3.5 text-[hsl(var(--accent))]" /> View QR Code
+                      <FaEye className="w-3.5 h-3.5 text-[var(--red)]" /> View QR Code
                     </DropdownMenuItem>
                     <DropdownMenuItem
                       onClick={() => handleDownloadQr(member)}
-                      className="cursor-pointer text-xs flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-[hsl(var(--accent))]/15 hover:text-[hsl(var(--accent))] focus:bg-[hsl(var(--accent))]/15 focus:text-[hsl(var(--accent))]"
+                      className="cursor-pointer text-xs flex items-center gap-2 px-3 py-2 rounded-[var(--r-sm)] hover:bg-[var(--surface-2)] hover:text-[var(--text)] focus:bg-[var(--surface-2)] focus:text-[var(--text)]"
                     >
-                      <FaDownload className="w-3.5 h-3.5 text-[hsl(var(--accent))]" /> Download QR Code
+                      <FaDownload className="w-3.5 h-3.5 text-[var(--red)]" /> Download QR Code
                     </DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>
@@ -1097,7 +1097,7 @@ export default function TeamsView() {
                   size="sm"
                   variant="outline"
                   onClick={() => startEdit(member)}
-                  className="h-8 text-xs px-2.5 sm:px-3 border-[var(--border-color)] hover:border-[hsl(var(--accent))]/40 hover:text-[hsl(var(--accent))] rounded-lg gap-1.5"
+                  className="h-8 text-xs px-2.5 sm:px-3 border-[var(--border)] hover:border-[var(--border-strong)] hover:text-[var(--text)] rounded-[var(--r-sm)] gap-1.5"
                 >
                   <FaEdit className="h-3 w-3" /> Edit Profile & Photo
                 </Button>
@@ -1105,7 +1105,7 @@ export default function TeamsView() {
                   size="sm"
                   variant="ghost"
                   onClick={() => handleDelete(member.id || member._id!)}
-                  className="h-8 text-xs px-2 text-red-400 hover:text-red-300 hover:bg-red-500/10 rounded-lg"
+                  className="h-8 text-xs px-2 text-[var(--red-text)] hover:bg-[var(--red-soft)] rounded-[var(--r-sm)]"
                   title="Delete Member"
                 >
                   <FaTrash className="h-3 w-3" />
@@ -1120,15 +1120,15 @@ export default function TeamsView() {
       {/* Super Admin QR Code Viewer Dialog */}
       <Dialog open={!!qrModalMember} onOpenChange={(open) => !open && setQrModalMember(null)}>
         {qrModalMember && (
-          <DialogContent className="sm:max-w-md bg-[var(--card-bg)] border-[var(--border-color)] text-[var(--text-primary)] rounded-2xl p-6">
+          <DialogContent className="sm:max-w-md bg-[var(--surface)] border border-[var(--border)] text-[var(--text)] rounded-[var(--r-lg)] p-6 shadow-none">
             <DialogHeader className="text-center space-y-2">
-              <div className="w-12 h-12 rounded-xl bg-[hsl(var(--accent))]/10 border border-[hsl(var(--accent))]/30 text-[hsl(var(--accent))] flex items-center justify-center mx-auto">
-                <FaQrcode className="w-6 h-6" />
+              <div className="w-12 h-12 rounded-[var(--r-md)] bg-[var(--red-soft)] border border-[var(--red-line)] text-[var(--red-text)] flex items-center justify-center mx-auto">
+                <FaQrcode className="w-6 h-6 text-[var(--red)]" />
               </div>
-              <DialogTitle className="text-xl font-bold font-display text-[var(--text-primary)]">
+              <DialogTitle className="text-xl font-display font-medium text-[var(--text)] tracking-tight">
                 {qrModalMember.name}
               </DialogTitle>
-              <DialogDescription className="text-xs text-[var(--text-secondary)] font-mono">
+              <DialogDescription className="text-xs text-[var(--text-3)] font-mono">
                 {qrModalMember.role} — Profile QR Code
               </DialogDescription>
             </DialogHeader>
@@ -1175,7 +1175,7 @@ export default function TeamsView() {
               </Button>
               <Button
                 onClick={() => handleDownloadQr(qrModalMember)}
-                className="flex-1 bg-[hsl(var(--accent))] text-[var(--bg-body)] hover:bg-[hsl(var(--accent))]/90 text-xs h-10 rounded-xl font-semibold gap-1.5 shadow-[0_0_20px_-5px_hsl(var(--accent)/0.4)]"
+                className="flex-1 bg-[hsl(var(--accent))] text-[var(--bg-body)] hover:bg-[hsl(var(--accent))]/90 text-xs h-10 rounded-xl font-semibold gap-1.5"
               >
                 <FaDownload className="w-3.5 h-3.5" /> Download QR
               </Button>

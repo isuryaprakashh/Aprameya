@@ -1,11 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'wouter';
 import Logo from '../components/icons/Logo';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Alert, AlertDescription } from '@/components/ui/alert';
-import { Eye, EyeOff, Lock, User, Shield, CheckCircle2 } from 'lucide-react';
-import { motion } from 'framer-motion';
+import { Eye, EyeOff } from 'lucide-react';
 import ChamferedButton from '@/components/ui/ChamferedButton';
 import { queryClient } from '@/lib/queryClient';
 
@@ -71,8 +67,7 @@ const Login = () => {
       } else {
         window.location.href = '/';
       }
-    } catch (error) {
-      console.error('Error:', error);
+    } catch {
       setError('Network error. Please check server connection.');
     } finally {
       setIsLoading(false);
@@ -80,151 +75,117 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center px-6 py-24 bg-[var(--bg-body)] text-[var(--text-primary)] relative overflow-hidden font-sans">
-      <div className="w-full max-w-4xl grid lg:grid-cols-2 gap-12 items-center relative z-10">
-        
-        {/* Left Side - Branding */}
-        <motion.div
-          className="hidden lg:block"
-          initial={{ opacity: 0, x: -20 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.5 }}
-        >
-          <div className="text-left">
-            <Link href="/" className="inline-flex items-center gap-2.5 mb-8">
-              <Logo size="md" color="light" showText={false} />
-              <span className="font-display font-bold text-lg text-[var(--text-primary)]">APRAMEYA</span>
+    <main className="min-h-screen flex items-center justify-center px-6 py-24 bg-bg text-text">
+      {/* Centered 400px card (Section 5.8) */}
+      <div className="w-full max-w-[420px] rounded-lg border border-border p-8 bg-surface">
+        {/* Logo on top */}
+        <div className="flex flex-col items-center text-center mb-6">
+          <Link href="/" className="mb-4 inline-block">
+            <Logo size="md" color="light" showText={false} />
+          </Link>
+          <h2 className="font-display font-medium text-2xl tracking-tight text-text mb-1">
+            Welcome back
+          </h2>
+          <p className="text-xs text-text-3 font-mono">
+            SIGN IN TO ACCESS LABORATORY REPOSITORIES
+          </p>
+        </div>
+
+        {/* Alerts */}
+        {error && (
+          <div className="mb-5 p-3 rounded-md border border-red-line bg-red-soft text-xs text-red-text font-body">
+            {error}
+          </div>
+        )}
+        {successMessage && (
+          <div className="mb-5 p-3 rounded-md border border-border bg-surface-2 text-xs text-text-2 font-body">
+            {successMessage}
+          </div>
+        )}
+
+        {/* Form */}
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div>
+            <label className="block text-xs font-body font-medium text-text mb-1.5" htmlFor="username">
+              College ID Number (Roll No)
+            </label>
+            <input
+              id="username"
+              type="text"
+              required
+              value={formData.username}
+              onChange={handleInputChange}
+              placeholder="e.g. 2300049169"
+              className="w-full h-[44px] px-3.5 rounded-md border border-border-strong bg-transparent text-sm text-text placeholder:text-text-3 focus:outline-none focus:border-focus-ring font-mono"
+            />
+          </div>
+
+          <div>
+            <div className="flex justify-between items-center mb-1.5">
+              <label className="text-xs font-body font-medium text-text" htmlFor="password">
+                Password
+              </label>
+              <Link href="/forgot-password">
+                <span className="text-[11px] font-mono text-text-3 hover:text-text transition-colors cursor-pointer">
+                  Forgot?
+                </span>
+              </Link>
+            </div>
+            <div className="relative">
+              <input
+                id="password"
+                type={showPassword ? 'text' : 'password'}
+                required
+                value={formData.password}
+                onChange={handleInputChange}
+                placeholder="••••••••"
+                className="w-full h-[44px] pl-3.5 pr-10 rounded-md border border-border-strong bg-transparent text-sm text-text placeholder:text-text-3 focus:outline-none focus:border-focus-ring"
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-text-3 hover:text-text cursor-pointer"
+                aria-label="Toggle password visibility"
+              >
+                {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+              </button>
+            </div>
+          </div>
+
+          <div className="pt-2">
+            <ChamferedButton
+              type="submit"
+              variant="primary"
+              size="lg"
+              className="w-full"
+              isLoading={isLoading}
+            >
+              Sign in
+            </ChamferedButton>
+          </div>
+        </form>
+
+        {/* Links */}
+        <div className="mt-6 pt-6 border-t border-border text-center space-y-2">
+          <p className="text-xs text-text-2">
+            Don't have an account?{' '}
+            <Link href="/signup">
+              <span className="text-text font-medium hover:underline cursor-pointer">
+                Create one
+              </span>
             </Link>
-            <div className="mb-4">
-              <p className="text-[11px] font-sans font-medium text-[var(--text-muted)] mb-2 uppercase tracking-[0.15em]">Student Portal</p>
-              <h1 className="text-4xl sm:text-5xl tracking-tight text-[var(--text-primary)] leading-tight font-display font-bold">
-                <span className="text-[var(--text-secondary)] font-normal">Welcome</span>{" "}
-                <span>Back</span>
-              </h1>
-            </div>
-            <p className="text-sm text-[var(--text-secondary)] mb-8 max-w-sm leading-relaxed">
-              Sign in with your College ID Number (Roll No) to access laboratory repositories, track applications, and manage workshop passes.
-            </p>
-
-            <div className="space-y-3 border-l border-white/[0.06] pl-5 text-xs text-[var(--text-secondary)]">
-              <div className="flex items-center gap-2.5">
-                <Shield className="w-3.5 h-3.5 text-[var(--text-muted)]" />
-                <span>Single Sign-On with College ID Number</span>
-              </div>
-              <div className="flex items-center gap-2.5">
-                <User className="w-3.5 h-3.5 text-[var(--text-muted)]" />
-                <span>Member Portal & Application Status</span>
-              </div>
-            </div>
-          </div>
-        </motion.div>
-
-        {/* Right Side - Login Form */}
-        <motion.div
-          initial={{ opacity: 0, y: 16 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.1 }}
-        >
-          <div className="rounded-xl border border-emerald-500/15 bg-[#0B130E] p-8 sm:p-9 shadow-xl shadow-black/30">
-            <div className="text-left pb-5 border-b border-emerald-500/10 mb-6">
-              <div className="lg:hidden mb-4">
-                <Link href="/" className="inline-flex items-center gap-2">
-                  <Logo size="sm" color="light" showText={false} />
-                  <span className="font-display font-bold text-base text-white">APRAMEYA</span>
-                </Link>
-              </div>
-              <h2 className="text-xl font-bold text-white font-display">Sign In</h2>
-              <p className="text-xs text-[#94A3B8] mt-1">Enter your College ID Number and password</p>
-            </div>
-
-            <div className="space-y-4">
-              {successMessage && (
-                <div className="p-3 rounded-lg bg-emerald-950/40 border border-emerald-800/40 text-emerald-300 text-xs flex items-center gap-2">
-                  <CheckCircle2 size={14} />
-                  <span>{successMessage}</span>
-                </div>
-              )}
-
-              {error && (
-                <Alert variant="destructive" className="bg-red-950/40 border-red-800/50 text-red-300 text-xs">
-                  <AlertDescription>{error}</AlertDescription>
-                </Alert>
-              )}
-
-              <form onSubmit={handleSubmit} className="space-y-4">
-                <div className="space-y-1.5">
-                  <Label htmlFor="username" className="text-xs text-[var(--text-secondary)] font-medium">
-                    College ID Number / Email
-                  </Label>
-                  <div className="relative">
-                    <User className="absolute left-3.5 top-1/2 transform -translate-y-1/2 text-[var(--text-muted)] w-4 h-4" />
-                    <Input
-                      type="text"
-                      id="username"
-                      placeholder="e.g. 2200030000"
-                      value={formData.username}
-                      onChange={handleInputChange}
-                      className="pl-10 h-10 bg-white/[0.02] border-white/[0.06] text-[var(--text-primary)] text-sm focus:border-white/[0.2]"
-                      required
-                    />
-                  </div>
-                </div>
-
-                <div className="space-y-1.5">
-                  <div className="flex items-center justify-between">
-                    <Label htmlFor="password" className="text-xs text-[var(--text-secondary)] font-medium">
-                      Password
-                    </Label>
-                    <Link href="/forgot-password" className="text-xs text-[var(--text-muted)] hover:text-[var(--text-primary)] transition-colors">
-                      Forgot password?
-                    </Link>
-                  </div>
-                  <div className="relative">
-                    <Lock className="absolute left-3.5 top-1/2 transform -translate-y-1/2 text-[var(--text-muted)] w-4 h-4" />
-                    <Input
-                      type={showPassword ? "text" : "password"}
-                      id="password"
-                      placeholder="Enter your password"
-                      value={formData.password}
-                      onChange={handleInputChange}
-                      className="pl-10 pr-10 h-10 bg-white/[0.02] border-white/[0.06] text-[var(--text-primary)] text-sm focus:border-white/[0.2]"
-                      required
-                    />
-                    <button
-                      type="button"
-                      onClick={() => setShowPassword(!showPassword)}
-                      className="absolute right-3.5 top-1/2 transform -translate-y-1/2 text-[var(--text-muted)] hover:text-[var(--text-primary)] cursor-pointer"
-                    >
-                      {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                    </button>
-                  </div>
-                </div>
-
-                <div className="pt-2">
-                  <ChamferedButton
-                    variant="primary"
-                    size="md"
-                    isLoading={isLoading}
-                    className="w-full"
-                  >
-                    Sign In
-                  </ChamferedButton>
-                </div>
-              </form>
-
-              <div className="text-center pt-4 border-t border-white/[0.04]">
-                <p className="text-xs text-[var(--text-secondary)]">
-                  New student?{' '}
-                  <Link href="/signup" className="text-[var(--text-primary)] hover:underline font-semibold">
-                    Create Account
-                  </Link>
-                </p>
-              </div>
-            </div>
-          </div>
-        </motion.div>
+          </p>
+          <p className="text-[11px] font-mono text-text-3">
+            Interested in joining the club?{' '}
+            <Link href="/recruitment">
+              <span className="text-red-text hover:underline cursor-pointer">
+                Apply for recruitment →
+              </span>
+            </Link>
+          </p>
+        </div>
       </div>
-    </div>
+    </main>
   );
 };
 

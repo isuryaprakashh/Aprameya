@@ -3,103 +3,413 @@
 @tailwind utilities;
 
 @layer base {
-  :root {
-    --radius: 0.5rem;
-    --font-sans: 'Geist', 'Satoshi', 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
-    --font-mono: 'Geist Mono', 'JetBrains Mono', monospace;
-    --font-display: 'Geist', 'Space Grotesk', 'Satoshi', sans-serif;
+  :root,
+  [data-theme="dark"] {
+    /* surfaces */
+    --bg:            #0A0A0A;   /* page background */
+    --surface:       #0F0F10;   /* cards, panels (barely lifted) */
+    --surface-2:     #151516;   /* hover, inputs, menus */
 
-    --bg-body: #000000;
-    --card-bg: #0A0A0A;
-    --card-hover: #121212;
-    --border-color: rgba(255, 255, 255, 0.08);
-    --border-hover: rgba(255, 255, 255, 0.2);
-    --text-primary: #F8FAFC;
-    --text-secondary: #94A3B8;
-    --text-muted: #64748B;
-    --accent: 0 72% 51%;
-    --accent-foreground: 0 0% 100%;
+    /* text */
+    --text:          #FAFAFA;   /* headings, key text */
+    --text-2:        #A1A1AA;   /* body text */
+    --text-3:        #71717A;   /* captions, placeholders, meta (non-essential only) */
 
-    --background: 0 0% 0%;
-    --foreground: 210 40% 98%;
-    --card: 0 0% 4%;
-    --card-foreground: 210 40% 98%;
-    --popover: 0 0% 4%;
-    --popover-foreground: 210 40% 98%;
-    --primary: 0 72% 51%;
-    --primary-foreground: 0 0% 100%;
-    --secondary: 0 0% 8%;
-    --secondary-foreground: 210 40% 98%;
-    --muted: 0 0% 8%;
-    --muted-foreground: 215 16% 55%;
-    --destructive: 0 72% 51%;
-    --destructive-foreground: 0 0% 98%;
-    --border: 0 0% 12%;
-    --input: 0 0% 12%;
-    --ring: 0 72% 51%;
+    /* borders */
+    --border:        rgba(255,255,255,0.08);   /* default 1px line */
+    --border-strong: rgba(255,255,255,0.16);   /* hover, inputs, focus-adjacent */
+
+    /* brand */
+    --red:           #DC2626;   /* primary buttons, active indicators */
+    --red-hover:     #EF4444;
+    --red-text:      #F87171;   /* red used as TEXT or icon on dark (passes contrast) */
+    --red-soft:      rgba(220,38,38,0.10);     /* tinted background for badges/alerts */
+    --red-line:      rgba(220,38,38,0.40);     /* only for active/selected border */
+
+    --on-red:        #FFFFFF;
+
+    /* inverse (white button on dark) */
+    --invert-bg:     #FAFAFA;
+    --invert-text:   #0A0A0A;
+
+    /* status */
+    --success:       #4ADE80;   --success-soft: rgba(74,222,128,0.10);
+    --warning:       #FBBF24;   --warning-soft: rgba(251,191,36,0.10);
+    --info:          #A1A1AA;   --info-soft:    rgba(255,255,255,0.06);
+
+    --focus-ring:    #F87171;
+
+    /* fonts */
+    --font-display: "Space Grotesk", system-ui, sans-serif;
+    --font-body:    "Inter", system-ui, sans-serif;
+    --font-mono:    "JetBrains Mono", ui-monospace, monospace;
+
+    /* spacing */
+    --s-1: 4px;   --s-2: 8px;   --s-3: 12px;  --s-4: 16px;
+    --s-5: 24px;  --s-6: 32px;  --s-7: 48px;  --s-8: 64px;
+    --s-9: 96px;  --s-10: 128px;
+
+    /* radius */
+    --r-sm:   6px;      /* tags, small buttons, inputs */
+    --r-md:   10px;     /* buttons, cards */
+    --r-lg:   14px;     /* large cards, modals, image frames */
+    --r-full: 999px;    /* pills, avatars, role badges */
+
+    /* motion */
+    --ease: cubic-bezier(0.2, 0, 0, 1);
+    --t-fast: 120ms;
+    --t-base: 200ms;
+    --t-slow: 400ms;
+
+    /* compatibility aliases */
+    --bg-body: var(--bg);
+    --card-bg: var(--surface);
+    --card-hover: var(--surface-2);
+    --border-color: var(--border);
+    --border-hover: var(--border-strong);
+    --text-primary: var(--text);
+    --text-secondary: var(--text-2);
+    --text-muted: var(--text-3);
+
+    --background: var(--bg);
+    --foreground: var(--text);
+    --card: var(--surface);
+    --card-foreground: var(--text);
+    --popover: var(--surface-2);
+    --popover-foreground: var(--text);
+    --primary: var(--red);
+    --primary-foreground: var(--on-red);
+    --secondary: var(--surface-2);
+    --secondary-foreground: var(--text);
+    --muted: var(--surface-2);
+    --muted-foreground: var(--text-2);
+    --accent: var(--surface-2);
+    --accent-foreground: var(--text);
+    --destructive: var(--red);
+    --destructive-foreground: var(--on-red);
+    --input: var(--border-strong);
+    --ring: var(--focus-ring);
+    --radius: 10px;
+  }
+
+  [data-theme="light"] {
+    --bg:            #FFFFFF;
+    --surface:       #FAFAFA;
+    --surface-2:     #F4F4F5;
+
+    --text:          #0A0A0A;
+    --text-2:        #52525B;
+    --text-3:        #8A8A93;
+
+    --border:        rgba(0,0,0,0.08);
+    --border-strong: rgba(0,0,0,0.16);
+
+    --red:           #DC2626;
+    --red-hover:     #B91C1C;
+    --red-text:      #DC2626;
+    --red-soft:      rgba(220,38,38,0.07);
+    --red-line:      rgba(220,38,38,0.35);
+    --on-red:        #FFFFFF;
+
+    --invert-bg:     #0A0A0A;
+    --invert-text:   #FAFAFA;
+
+    --success:       #16A34A;   --success-soft: rgba(22,163,74,0.08);
+    --warning:       #B45309;   --warning-soft: rgba(180,83,9,0.08);
+    --info:          #52525B;   --info-soft:    rgba(0,0,0,0.05);
+
+    --focus-ring:    #DC2626;
+
+    /* compatibility aliases */
+    --bg-body: var(--bg);
+    --card-bg: var(--surface);
+    --card-hover: var(--surface-2);
+    --border-color: var(--border);
+    --border-hover: var(--border-strong);
+    --text-primary: var(--text);
+    --text-secondary: var(--text-2);
+    --text-muted: var(--text-3);
+
+    --background: var(--bg);
+    --foreground: var(--text);
+    --card: var(--surface);
+    --card-foreground: var(--text);
+    --popover: var(--surface-2);
+    --popover-foreground: var(--text);
+    --primary: var(--red);
+    --primary-foreground: var(--on-red);
+    --secondary: var(--surface-2);
+    --secondary-foreground: var(--text);
+    --muted: var(--surface-2);
+    --muted-foreground: var(--text-2);
+    --accent: var(--surface-2);
+    --accent-foreground: var(--text);
+    --destructive: var(--red);
+    --destructive-foreground: var(--on-red);
+    --input: var(--border-strong);
+    --ring: var(--focus-ring);
+  }
+
+  * {
+    border-color: var(--border);
   }
 
   body {
-    background-color: #000000;
-    color: var(--text-primary);
-    font-family: var(--font-sans);
+    background-color: var(--bg);
+    color: var(--text);
+    font-family: var(--font-body);
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     overflow-x: hidden;
   }
+
+  /* Headings: weight 500, tight tracking, sentence case */
+  h1 {
+    font-family: var(--font-display);
+    font-weight: 500;
+    line-height: 1.1;
+    letter-spacing: -0.025em;
+    color: var(--text);
+  }
+
+  h2 {
+    font-family: var(--font-display);
+    font-weight: 500;
+    line-height: 1.2;
+    letter-spacing: -0.02em;
+    color: var(--text);
+  }
+
+  h3 {
+    font-family: var(--font-display);
+    font-weight: 500;
+    line-height: 1.3;
+    letter-spacing: -0.01em;
+    color: var(--text);
+  }
+
+  h4 {
+    font-family: var(--font-body);
+    font-weight: 600;
+    line-height: 1.4;
+    letter-spacing: 0;
+    color: var(--text);
+  }
+
+  p {
+    color: var(--text-2);
+    line-height: 1.6;
+    max-width: 65ch;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--focus-ring);
+    outline-offset: 2px;
+  }
 }
 
-/* ─── CLEAN SOLID RED UTILITIES ─── */
+/* ─── TYPOGRAPHY TOKENS ─── */
+.font-display-token {
+  font-family: var(--font-display);
+  font-weight: 500;
+  letter-spacing: -0.03em;
+  line-height: 1.05;
+}
+
+.eyebrow-label,
+.label-token {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.4;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-3);
+}
+
+/* ─── DESIGN SYSTEM CARDS & PANELS (SECTION 4.4) ─── */
+.clean-card,
+.card-base,
+.morphic-metallic-card,
+.metallic-red-card {
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  padding: 24px;
+  transition: border-color var(--t-fast) var(--ease), background var(--t-fast) var(--ease);
+  box-shadow: none !important;
+}
+
+.clean-card:hover,
+.card-base:hover,
+.morphic-metallic-card:hover,
+.metallic-red-card:hover {
+  border-color: var(--border-strong);
+  background: var(--surface);
+}
+
+/* ─── DESIGN SYSTEM BUTTONS (SECTION 4.1) ─── */
+.btn-primary,
+.btn-metallic-red,
+.btn-metallic-green {
+  background-color: var(--red);
+  color: var(--on-red);
+  border: 1px solid transparent;
+  border-radius: var(--r-md);
+  font-family: var(--font-body);
+  font-size: 14px;
+  font-weight: 500;
+  transition: background-color var(--t-fast) var(--ease), opacity var(--t-fast) var(--ease);
+  box-shadow: none !important;
+}
+
+.btn-primary:hover,
+.btn-metallic-red:hover,
+.btn-metallic-green:hover {
+  background-color: var(--red-hover);
+}
+
+.btn-secondary,
+.btn-metallic-ghost {
+  background-color: transparent;
+  color: var(--text);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--r-md);
+  font-family: var(--font-body);
+  font-size: 14px;
+  font-weight: 500;
+  transition: background-color var(--t-fast) var(--ease), border-color var(--t-fast) var(--ease);
+  box-shadow: none !important;
+}
+
+.btn-secondary:hover,
+.btn-metallic-ghost:hover {
+  background-color: var(--surface-2);
+}
+
+.btn-ghost {
+  background-color: transparent;
+  color: var(--text-2);
+  border: 1px solid transparent;
+  border-radius: var(--r-md);
+  font-family: var(--font-body);
+  font-size: 14px;
+  font-weight: 500;
+  transition: color var(--t-fast) var(--ease), background-color var(--t-fast) var(--ease);
+}
+
+.btn-ghost:hover {
+  color: var(--text);
+  background-color: var(--surface-2);
+}
+
+.btn-inverse {
+  background-color: var(--invert-bg);
+  color: var(--invert-text);
+  border: 1px solid transparent;
+  border-radius: var(--r-md);
+  font-family: var(--font-body);
+  font-size: 14px;
+  font-weight: 500;
+  transition: opacity var(--t-fast) var(--ease);
+}
+
+.btn-inverse:hover {
+  opacity: 0.9;
+}
+
+.btn-danger {
+  background-color: transparent;
+  color: var(--red-text);
+  border: 1px solid var(--red-line);
+  border-radius: var(--r-md);
+  font-family: var(--font-body);
+  font-size: 14px;
+  font-weight: 500;
+  transition: background-color var(--t-fast) var(--ease);
+}
+
+.btn-danger:hover {
+  background-color: var(--red-soft);
+}
+
+/* ─── ROLE BADGES (SECTION 3) ─── */
+.badge-role-aspirant {
+  height: 22px;
+  padding: 0 10px;
+  border-radius: var(--r-full);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 500;
+  text-transform: uppercase;
+  color: var(--text-2);
+  background: transparent;
+  border: 1px solid var(--border);
+  display: inline-flex;
+  align-items: center;
+}
+
+.badge-role-core {
+  height: 22px;
+  padding: 0 10px;
+  border-radius: var(--r-full);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 500;
+  text-transform: uppercase;
+  color: var(--red-text);
+  background: var(--red-soft);
+  border: 1px solid var(--red-line);
+  display: inline-flex;
+  align-items: center;
+}
+
+.badge-role-admin {
+  height: 22px;
+  padding: 0 10px;
+  border-radius: var(--r-full);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 500;
+  text-transform: uppercase;
+  color: var(--invert-text);
+  background: var(--invert-bg);
+  border: none;
+  display: inline-flex;
+  align-items: center;
+}
+
+/* Legacy utility support mapped to clean tokens */
 .text-metallic-red {
-  color: #EF4444;
+  color: var(--red-text);
 }
 
 .text-metallic-silver {
-  color: #E2E8F0;
-}
-
-.morphic-metallic-card,
-.metallic-red-card {
-  background-color: #0A0A0A;
-  border: 1px solid rgba(255, 255, 255, 0.08);
-}
-
-.morphic-metallic-card:hover,
-.metallic-red-card:hover {
-  border-color: rgba(239, 68, 68, 0.35);
-  background-color: #0F0F0F;
-}
-
-.btn-metallic-red,
-.btn-metallic-green {
-  background-color: #DC2626;
-  border: 1px solid #EF4444;
-  color: #FFFFFF;
-  font-weight: 600;
-  transition: all 0.15s ease;
-}
-
-.btn-metallic-red:hover,
-.btn-metallic-green:hover {
-  background-color: #EF4444;
-  border-color: #F87171;
-}
-
-.btn-metallic-ghost {
-  background-color: #111111;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  color: #F8FAFC;
-  transition: all 0.15s ease;
-}
-
-.btn-metallic-ghost:hover {
-  background-color: #1A1A1A;
-  border-color: rgba(255, 255, 255, 0.2);
-  color: #FFFFFF;
+  color: var(--text-2);
 }
 
 .badge-metallic-red {
-  background-color: #18080A;
-  border: 1px solid rgba(239, 68, 68, 0.3);
-  color: #FCA5A5;
+  height: 22px;
+  padding: 0 8px;
+  border-radius: var(--r-sm);
+  background: var(--red-soft);
+  border: 1px solid var(--red-line);
+  color: var(--red-text);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  display: inline-flex;
+  align-items: center;
+}
+
+/* ─── REDUCED MOTION ─── */
+@media (prefers-reduced-motion: reduce) {
+  *, ::before, ::after {
+    animation-delay: -1ms !important;
+    animation-duration: 1ms !important;
+    animation-iteration-count: 1 !important;
+    background-attachment: initial !important;
+    scroll-behavior: auto !important;
+    transition-delay: 0s !important;
+    transition-duration: 0s !important;
+  }
 }

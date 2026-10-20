@@ -1,4 +1,5 @@
 import { Project } from '@/lib/types';
+import StatusBadge from './ui/StatusBadge';
 
 interface ProjectCardProps {
   project: Project;
@@ -8,48 +9,84 @@ interface ProjectCardProps {
 }
 
 const ProjectCard = ({ project, onViewDetails, isAdmin, onEdit }: ProjectCardProps) => {
+  const techs = (
+    Array.isArray(project.technologies)
+      ? project.technologies
+      : typeof project.technologies === 'string'
+      ? (project.technologies as string).split(',')
+      : []
+  ).map((t) => t.trim());
+
   return (
     <div
-      className="w-full group rounded-xl morphic-metallic-card p-2 transition-all duration-300 cursor-pointer"
       onClick={() => onViewDetails(project)}
+      className="group flex flex-col justify-between w-full rounded-lg border border-border p-6 transition-colors duration-fast hover:border-border-strong hover:bg-surface cursor-pointer text-left bg-transparent"
     >
-      <div className="relative h-[200px] rounded-lg overflow-hidden bg-black">
-        <img
-          src={project.image}
-          className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-          alt={project.title}
-        />
-        <div className="absolute top-2.5 left-2.5 px-2.5 py-0.5 bg-black/80 backdrop-blur-md rounded border border-red-400/30 text-red-300 text-[10px] font-sans font-bold uppercase tracking-wider shadow">
-          {project.category}
-        </div>
-      </div>
+      <div>
+        {/* 16:10 Image container */}
+        <div className="relative w-full aspect-[16/10] rounded-md overflow-hidden bg-surface-2 border border-border mb-5">
+          {project.image ? (
+            <img
+              src={project.image}
+              alt={project.title}
+              className="w-full h-full object-cover transition-opacity duration-fast"
+            />
+          ) : (
+            <div className="w-full h-full flex items-center justify-center text-text-3 font-mono text-xs">
+              NO PREVIEW
+            </div>
+          )}
 
-      <div className="p-5">
-        <h3 className="font-display font-bold text-lg text-white mb-1 group-hover:text-metallic-red transition-all">
+          {/* Status or Category badge top-left */}
+          <div className="absolute top-3 left-3">
+            <StatusBadge status={project.status || project.category || 'Active'} />
+          </div>
+        </div>
+
+        {/* Title: Space Grotesk 500 20px */}
+        <h3 className="font-display font-medium text-lg text-text tracking-tight mb-2 group-hover:text-text transition-colors">
           {project.title}
         </h3>
-        <p className="mt-2 text-xs text-[#94A3B8] line-clamp-3 leading-relaxed">
+
+        {/* 2-line summary */}
+        <p className="text-sm text-text-2 line-clamp-2 leading-relaxed mb-4">
           {project.description}
         </p>
-        <p className="mt-3 text-[11px] text-red-400 font-mono">
-          {(Array.isArray(project.technologies) ? project.technologies : (typeof project.technologies === 'string' ? (project.technologies as string).split(',') : []))
-            .slice(0, 3)
-            .map(t => t.trim())
-            .join(' · ')}
-        </p>
+      </div>
 
-        <div className="mt-5 flex gap-2">
-          <button className="w-full py-2.5 rounded-lg text-xs btn-metallic-red cursor-pointer">
-            View Project
-          </button>
+      {/* Footer row: tags left, year / action right */}
+      <div className="pt-4 border-t border-border flex items-center justify-between gap-2 mt-auto">
+        <div className="flex flex-wrap items-center gap-1.5 overflow-hidden">
+          {techs.slice(0, 2).map((tech, idx) => (
+            <span
+              key={idx}
+              className="h-6 px-2.5 rounded-full border border-border font-mono text-[11px] text-text-2 flex items-center"
+            >
+              {tech}
+            </span>
+          ))}
+          {techs.length > 2 && (
+            <span className="text-[11px] font-mono text-text-3">
+              +{techs.length - 2}
+            </span>
+          )}
+        </div>
+
+        <div className="flex items-center gap-2">
           {isAdmin && onEdit && (
             <button
-              onClick={(e) => { e.stopPropagation(); onEdit(project); }}
-              className="px-4 py-2.5 rounded-lg text-xs btn-metallic-ghost cursor-pointer"
+              onClick={(e) => {
+                e.stopPropagation();
+                onEdit(project);
+              }}
+              className="text-xs font-mono text-text-3 hover:text-text px-2 py-1 rounded hover:bg-surface-2 transition-colors cursor-pointer"
             >
               Edit
             </button>
           )}
+          <span className="font-mono text-xs text-text-3">
+            {project.year || new Date().getFullYear()}
+          </span>
         </div>
       </div>
     </div>

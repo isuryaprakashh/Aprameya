@@ -25,15 +25,15 @@ export const Slider = () => {
                     ))}
                 </div>
                 <div className="absolute bottom-6 right-6 flex gap-2 z-20">
-                    <button onClick={() => moveSlide(-1)} className="w-10 h-10 flex items-center justify-center rounded-full bg-[var(--card-bg)]/20 backdrop-blur-md border border-[var(--border-color)] hover:bg-[var(--card-bg)]/40 text-[var(--text-primary)] transition-all">
+                    <button onClick={() => moveSlide(-1)} className="w-10 h-10 flex items-center justify-center rounded-full bg-[var(--surface-2)] backdrop-blur-md border border-[var(--border)] hover:bg-[var(--surface)] text-[var(--text)] transition-all">
                         <ArrowLeft className="w-4 h-4" />
                     </button>
-                    <button onClick={() => moveSlide(1)} className="w-10 h-10 flex items-center justify-center rounded-full bg-[var(--card-bg)]/20 backdrop-blur-md border border-[var(--border-color)] hover:bg-[var(--card-bg)]/40 text-[var(--text-primary)] transition-all">
+                    <button onClick={() => moveSlide(1)} className="w-10 h-10 flex items-center justify-center rounded-full bg-[var(--surface-2)] backdrop-blur-md border border-[var(--border)] hover:bg-[var(--surface)] text-[var(--text)] transition-all">
                         <ArrowRight className="w-4 h-4" />
                     </button>
                 </div>
                 <div className="absolute top-6 left-6 z-20">
-                    <span className="px-3 py-1 rounded-full bg-[var(--bg-body)]/50 backdrop-blur-md border border-[var(--border-color)] text-[10px] font-medium uppercase tracking-wider text-[var(--text-primary)]">Sanctuary</span>
+                    <span className="px-3 py-1 rounded-full bg-[var(--surface)]/80 backdrop-blur-md border border-[var(--border)] text-[10px] font-mono uppercase tracking-wider text-[var(--text-2)]">Sanctuary</span>
                 </div>
             </div>
             <div className="p-8">
@@ -172,8 +172,8 @@ export const IDCard = () => {
     return (
         <div className="clean-card relative h-[380px] flex flex-col">
             <div className="shimmer pointer-events-none"></div>
-            <div className="h-32 w-full bg-gradient-to-b from-[var(--text-primary)]/5 to-transparent relative border-b border-[var(--border-color)]">
-                <div className="absolute -bottom-8 left-8 w-16 h-16 rounded-xl overflow-hidden border-4 border-[var(--card-bg)]">
+            <div className="h-32 w-full bg-gradient-to-b from-[var(--text)]/5 to-transparent relative border-b border-[var(--border)]">
+                <div className="absolute -bottom-8 left-8 w-16 h-16 rounded-[var(--r-md)] overflow-hidden border-4 border-[var(--surface)]">
                     <img src="https://images.unsplash.com/photo-1535295972055-1c762f4483e5?q=80&w=800&auto=format&fit=crop" className="w-full h-full object-cover" alt="Profile" />
                 </div>
                 <div className="absolute top-6 right-6 text-[var(--text-secondary)]">

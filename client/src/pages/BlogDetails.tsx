@@ -1,113 +1,195 @@
-import { useRoute } from "wouter";
+import { useEffect, useState } from "react";
+import { useRoute, Link } from "wouter";
 import { useQuery } from "@tanstack/react-query";
 import { BlogPost } from "@/lib/types";
-import { Calendar, User, ArrowLeft, Share2 } from "lucide-react";
-import WanderingEyesLoader from "@/components/WanderingEyesLoader";
-import { Button } from "@/components/ui/button";
-import { Link } from "wouter";
-import { motion } from "framer-motion";
-import { Badge } from "@/components/ui/badge";
+import { ArrowLeft, Share2, Twitter, Linkedin, Copy } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
+import ChamferedButton from "@/components/ui/ChamferedButton";
 
 const BlogDetails = () => {
-    const [, params] = useRoute("/blogs/:id");
-    const id = params?.id;
+  const [, params] = useRoute("/blogs/:id");
+  const id = params?.id;
+  const { toast } = useToast();
+  const [readingProgress, setReadingProgress] = useState(0);
 
-    const { data: blog, isLoading, error } = useQuery<BlogPost>({
-        queryKey: [`/api/blogs/${id}`],
-        enabled: !!id,
-    });
+  const { data: blog, isLoading, error } = useQuery<BlogPost>({
+    queryKey: [`/api/blogs/${id}`],
+    enabled: !!id,
+  });
 
-    if (isLoading) {
-        return (
-            <WanderingEyesLoader
-                fullPage
-                size="md"
-                text="PARSING RESEARCH ARTICLE"
-                subtext="LOADING EDITORIAL TELEMETRY"
-            />
-        );
-    }
+  // Track scroll for sticky 2px red reading-progress bar (Section 5.6)
+  useEffect(() => {
+    const handleScroll = () => {
+      const totalHeight = document.documentElement.scrollHeight - window.innerHeight;
+      if (totalHeight > 0) {
+        setReadingProgress((window.scrollY / totalHeight) * 100);
+      }
+    };
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
-    if (error || !blog) {
-        return (
-            <div className="min-h-screen bg-[var(--bg-body)] flex flex-col items-center justify-center text-[var(--text-secondary)] gap-4">
-                <p>Blog post not found.</p>
-                <Button asChild variant="outline">
-                    <Link href="/blogs">Back to Blogs</Link>
-                </Button>
-            </div>
-        );
-    }
+  const handleCopyLink = () => {
+    navigator.clipboard.writeText(window.location.href);
+    toast({ title: "Link copied", description: "Article URL copied to clipboard." });
+  };
 
+  if (isLoading) {
     return (
-        <div className="min-h-screen bg-[var(--bg-body)] pb-20 pt-24">
-            {/* Hero Header */}
-            <div className="relative h-[400px] w-full overflow-hidden">
-                <div className="absolute inset-0 bg-gradient-to-b from-transparent to-[var(--bg-body)] z-10"></div>
-                <img
-                    src={blog.image}
-                    alt={blog.title}
-                    className="w-full h-full object-cover"
-                />
-                <div className="absolute bottom-0 left-0 w-full z-20 p-8">
-                    <div className="container mx-auto">
-                        <Button asChild size="sm" variant="secondary" className="mb-6 backdrop-blur-md bg-[var(--bg-body)]/50 border-[var(--border-color)]">
-                            <Link href="/blogs">
-                                <ArrowLeft className="mr-2 h-4 w-4" /> Back to Blogs
-                            </Link>
-                        </Button>
-                        <motion.div
-                            initial={{ opacity: 0, y: 20 }}
-                            animate={{ opacity: 1, y: 0 }}
-                        >
-                            <div className="flex items-center gap-3 mb-4">
-                                <Badge className="bg-[hsl(var(--accent))] text-[var(--bg-body)] hover:bg-[hsl(var(--accent))]/90">
-                                    {blog.category}
-                                </Badge>
-                                <div className="flex items-center text-sm text-[var(--text-primary)] font-mono bg-[var(--bg-body)]/50 backdrop-blur px-2 py-1 rounded">
-                                    <Calendar className="w-4 h-4 mr-2 text-[hsl(var(--accent))]" />
-                                    {new Date(blog.date).toLocaleDateString()}
-                                </div>
-                            </div>
-                            <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight text-[var(--text-primary)] mb-4 leading-tight max-w-4xl font-display">
-                                {blog.title}
-                            </h1>
-                            <div className="flex items-center gap-2 text-[var(--text-secondary)]">
-                                <User className="w-4 h-4" />
-                                <span>{blog.author || "Aprameya Team"}</span>
-                            </div>
-                        </motion.div>
-                    </div>
-                </div>
-            </div>
-
-            {/* Content */}
-            <div className="container mx-auto px-4 mt-8 flex flex-col lg:flex-row gap-12">
-                <div className="lg:w-2/3">
-                    <article className="prose prose-invert prose-lg max-w-none">
-                        {/* Using simple whitespace-pre-wrap for now to preserve formatting if it's plain text, 
-                 or assuming it needs a markdown renderer. I'll stick to a safe container. */}
-                        <div className="font-sans text-[var(--text-secondary)] leading-relaxed whitespace-pre-wrap">
-                            {blog.content}
-                        </div>
-                    </article>
-                </div>
-
-                {/* Sidebar */}
-                <div className="lg:w-1/3 space-y-8">
-                    <div className="p-6 rounded-2xl bg-[var(--card-bg)] border border-[var(--border-color)] sticky top-24">
-                        <h3 className="text-lg font-bold text-[var(--text-primary)] mb-4 flex items-center">
-                            <Share2 className="w-4 h-4 mr-2" /> Share this post
-                        </h3>
-                        <div className="flex gap-2">
-                            <Button variant="outline" size="sm" className="flex-1">Twitter</Button>
-                            <Button variant="outline" size="sm" className="flex-1">LinkedIn</Button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+      <div className="min-h-screen bg-bg flex items-center justify-center">
+        <span className="font-mono text-xs text-text-3">LOADING ARTICLE...</span>
+      </div>
     );
+  }
+
+  if (error || !blog) {
+    return (
+      <div className="min-h-screen bg-bg flex flex-col items-center justify-center text-text-2 gap-4 px-6">
+        <span className="font-mono text-3xl text-text-3">404</span>
+        <h1 className="font-display font-medium text-2xl text-text">Article not found</h1>
+        <p className="text-sm text-text-3">The requested technical paper or blog post does not exist.</p>
+        <Link href="/blogs">
+          <ChamferedButton variant="primary" size="md">
+            Back to blogs
+          </ChamferedButton>
+        </Link>
+      </div>
+    );
+  }
+
+  const formattedDate = blog.date
+    ? new Date(blog.date).toLocaleDateString("en-US", {
+        month: "short",
+        day: "numeric",
+        year: "numeric",
+      }).toUpperCase()
+    : "ARTICLE";
+
+  return (
+    <main className="min-h-screen bg-bg text-text pt-24 pb-24">
+      {/* Sticky 2px red reading-progress bar (Section 5.6) */}
+      <div
+        className="fixed top-0 left-0 h-[2px] bg-red z-60 transition-all duration-75"
+        style={{ width: `${readingProgress}%` }}
+      />
+
+      {/* Centered 680px column (Section 2.9 & 5.6) */}
+      <article className="max-w-[680px] mx-auto px-6">
+        {/* Back Link */}
+        <div className="mb-8">
+          <Link
+            href="/blogs"
+            className="inline-flex items-center gap-2 text-xs font-mono text-text-3 hover:text-text transition-colors"
+          >
+            <ArrowLeft className="w-3.5 h-3.5" />
+            <span>ALL ARTICLES</span>
+          </Link>
+        </div>
+
+        {/* Topic Eyebrow */}
+        <p className="font-mono text-xs uppercase tracking-[0.06em] text-text-3 mb-3">
+          {blog.category || "TECHNICAL DISPATCH"}
+        </p>
+
+        {/* Title: Space Grotesk 500, tight tracking */}
+        <h1 className="font-display font-medium text-3xl sm:text-4xl lg:text-[40px] leading-[1.15] tracking-[-0.025em] text-text mb-6">
+          {blog.title}
+        </h1>
+
+        {/* Byline Row: author avatar + name + date + reading time */}
+        <div className="flex items-center justify-between pb-6 border-b border-border text-xs font-mono text-text-3 mb-8">
+          <div className="flex items-center gap-2.5">
+            {blog.author_avatar ? (
+              <img
+                src={blog.author_avatar}
+                alt={blog.author || "Author"}
+                className="w-6 h-6 rounded-full object-cover border border-border"
+              />
+            ) : (
+              <div className="w-6 h-6 rounded-full bg-surface-2 text-text-2 flex items-center justify-center text-[10px] uppercase">
+                {(blog.author || "AP").slice(0, 2)}
+              </div>
+            )}
+            <span className="text-text font-medium">{blog.author || "Aprameya Team"}</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <span>{formattedDate}</span>
+            {blog.read_time && <span>· {blog.read_time}</span>}
+          </div>
+        </div>
+
+        {/* Cover Image in --r-lg frame with 1px border */}
+        {blog.image && (
+          <div className="relative w-full aspect-[16/10] rounded-lg overflow-hidden bg-surface-2 border border-border mb-10">
+            <img
+              src={blog.image}
+              alt={blog.title}
+              className="w-full h-full object-cover"
+            />
+          </div>
+        )}
+
+        {/* Article Body: 17–18px, line-height 1.7 (Section 5.6) */}
+        <div className="text-[17px] text-text-2 leading-[1.7] space-y-6 font-body">
+          <div className="whitespace-pre-wrap">
+            {blog.content}
+          </div>
+        </div>
+
+        {/* Footer of Article: Share & Author Card */}
+        <div className="pt-10 mt-12 border-t border-border space-y-8">
+          {/* Share row */}
+          <div className="flex items-center justify-between">
+            <span className="font-mono text-xs uppercase tracking-[0.06em] text-text-3">
+              Share article
+            </span>
+            <div className="flex items-center gap-2">
+              <button
+                onClick={handleCopyLink}
+                className="p-2 rounded-md border border-border hover:bg-surface-2 text-text-2 hover:text-text transition-colors cursor-pointer"
+                title="Copy Link"
+              >
+                <Copy className="w-4 h-4" />
+              </button>
+              <a
+                href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(blog.title)}&url=${encodeURIComponent(window.location.href)}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="p-2 rounded-md border border-border hover:bg-surface-2 text-text-2 hover:text-text transition-colors"
+                title="Share on X"
+              >
+                <Twitter className="w-4 h-4" />
+              </a>
+              <a
+                href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(window.location.href)}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="p-2 rounded-md border border-border hover:bg-surface-2 text-text-2 hover:text-text transition-colors"
+                title="Share on LinkedIn"
+              >
+                <Linkedin className="w-4 h-4" />
+              </a>
+            </div>
+          </div>
+
+          {/* Back CTA */}
+          <div className="pt-6 border-t border-border flex justify-between items-center">
+            <Link
+              href="/blogs"
+              className="text-sm font-body text-text-2 hover:text-text transition-colors"
+            >
+              ← Back to all articles
+            </Link>
+            <Link href="/projects">
+              <span className="text-sm font-body text-red-text hover:underline cursor-pointer">
+                Explore related projects →
+              </span>
+            </Link>
+          </div>
+        </div>
+      </article>
+    </main>
+  );
 };
 
 export default BlogDetails;

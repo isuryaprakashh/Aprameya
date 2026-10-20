@@ -152,24 +152,24 @@ export default function EventsView({ handleEdit, handleCreate, handleDelete }: E
                                         <FaMapMarkerAlt className="mr-1 text-[hsl(var(--accent))]" /> {event.location}
                                     </div>
                                 </CardContent>
-                                <CardFooter className="border-t border-[var(--border-color)] bg-[var(--card-bg)]/20 p-4 flex justify-end relative z-10">
+                                <CardFooter className="border-t border-[var(--border)] bg-[var(--surface-2)]/30 p-3 flex justify-end relative z-10">
                                     {currentUser?.role === 'ADMIN' ? (
                                         <div className="flex gap-2 w-full justify-end">
                                             <Button
                                                 onClick={() => handleEdit && handleEdit(event, 'event')}
                                                 variant="outline"
                                                 size="sm"
-                                                className="border-[var(--border-color)] hover:border-[hsl(var(--accent))] hover:text-[hsl(var(--accent))]"
+                                                className="border-[var(--border)] text-[var(--text-2)] hover:text-[var(--text)] rounded-[var(--r-sm)] h-8 text-xs"
                                             >
-                                                <FaEdit className="mr-2" /> Edit
+                                                <FaEdit className="mr-1.5" /> Edit
                                             </Button>
                                             <Button
                                                 onClick={() => handleDelete && handleDelete(event.id || (event as any)._id, 'event')}
                                                 variant="destructive"
                                                 size="sm"
-                                                className="bg-red-500/10 text-red-500 border border-red-500/20 hover:bg-red-500/20"
+                                                className="bg-[var(--red-soft)] text-[var(--red-text)] border border-[var(--red-line)] hover:bg-[var(--red)] hover:text-white rounded-[var(--r-sm)] h-8 text-xs"
                                             >
-                                                <FaTrash className="mr-2" /> Delete
+                                                <FaTrash className="mr-1.5" /> Delete
                                             </Button>
                                         </div>
                                     ) : (
@@ -184,7 +184,7 @@ export default function EventsView({ handleEdit, handleCreate, handleDelete }: E
                                         ) : (
                                             <Button
                                                 onClick={() => handleRegisterForEvent(event.id)}
-                                                className="bg-[hsl(var(--accent))] hover:bg-[hsl(var(--accent))]/90 text-[var(--bg-body)] border-0 shadow-lg shadow-[hsl(var(--accent))]/20"
+                                                className="bg-[var(--red)] hover:bg-[var(--red-hover)] text-white border-0"
                                             >
                                                 Register Now
                                             </Button>

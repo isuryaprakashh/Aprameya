@@ -73,21 +73,21 @@ function Drawer({ app, onClose }: { app: RecruitmentApplication; onClose: () => 
         animate={{ x: 0 }}
         exit={{ x: '100%' }}
         transition={{ type: 'spring', damping: 28, stiffness: 220 }}
-        className="fixed top-0 right-0 z-50 h-full w-full max-w-xl bg-[var(--card-bg)] border-l border-[var(--border-color)] overflow-y-auto font-sans"
+        className="fixed top-0 right-0 z-50 h-full w-full max-w-xl bg-[var(--surface)] border-l border-[var(--border)] overflow-y-auto font-sans"
       >
-        <div className="p-6 border-b border-[var(--border-color)] flex items-start justify-between">
+        <div className="p-6 border-b border-[var(--border)] flex items-start justify-between">
           <div>
             <div className="flex items-center gap-2">
-              <span className={`px-2 py-0.5 rounded text-[10px] font-mono font-bold ${app.track === 'TECH' ? 'bg-[hsl(var(--accent))]/10 text-[hsl(var(--accent))] border border-[hsl(var(--accent))]/30' : 'bg-cyan-500/10 text-cyan-400 border border-cyan-500/30'}`}>
+              <span className={`px-2 py-0.5 rounded-[var(--r-sm)] text-[10px] font-mono font-medium ${app.track === 'TECH' ? 'bg-[var(--red-soft)] text-[var(--red-text)] border border-[var(--red-line)]' : 'bg-cyan-500/10 text-cyan-400 border border-cyan-500/30'}`}>
                 {app.track} // {app.wing}
               </span>
             </div>
-            <h2 className="font-display font-bold text-xl text-[var(--text-primary)] mt-1">{app.fullName}</h2>
-            <p className="font-mono text-xs text-[var(--text-secondary)] mt-0.5">
+            <h2 className="font-display font-medium text-xl text-[var(--text)] mt-1">{app.fullName}</h2>
+            <p className="font-mono text-xs text-[var(--text-3)] mt-0.5">
               ID: {app.rollNumber} • {app.department || app.branch} ({app.year} yr)
             </p>
           </div>
-          <button onClick={onClose} className="p-2 rounded-lg hover:bg-[var(--border-color)] transition-colors">
+          <button onClick={onClose} className="p-2 rounded-[var(--r-sm)] hover:bg-[var(--surface-2)] text-[var(--text-2)] hover:text-[var(--text)] transition-colors">
             <X size={18} />
           </button>
         </div>
@@ -286,17 +286,17 @@ export default function RecruitmentView() {
   return (
     <div className="space-y-8 font-sans">
       {/* Top Header & Live Toggle */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-6 rounded-2xl bg-[var(--card-bg)] border border-[var(--border-color)]">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-6 rounded-[var(--r-lg)] bg-[var(--surface)] border border-[var(--border)]">
         <div>
           <div className="flex items-center gap-2">
-            <h1 className="font-display font-bold text-2xl text-[var(--text-primary)]">
+            <h1 className="font-display font-medium text-2xl text-[var(--text)] tracking-tight">
               Recruitment Console
             </h1>
-            <span className="text-xs font-mono text-[hsl(var(--accent))] px-2 py-0.5 rounded bg-[hsl(var(--accent))]/10 border border-[hsl(var(--accent))]/30">
+            <span className="text-xs font-mono text-[var(--red-text)] px-2 py-0.5 rounded-[var(--r-sm)] bg-[var(--red-soft)] border border-[var(--red-line)]">
               V2_PIPELINE
             </span>
           </div>
-          <p className="text-xs text-[var(--text-secondary)] font-mono mt-1">
+          <p className="text-xs text-[var(--text-3)] font-mono mt-1">
             Review candidate profiles, confirm squad inductions, and export student rosters.
           </p>
         </div>
@@ -306,7 +306,7 @@ export default function RecruitmentView() {
             variant="secondary"
             size="md"
             onClick={handleExportCsv}
-            leftIcon={<Download size={14} className="text-[hsl(var(--accent))]" />}
+            leftIcon={<Download size={14} className="text-[var(--red)]" />}
           >
             EXPORT EXCEL / CSV
           </ChamferedButton>
@@ -314,13 +314,13 @@ export default function RecruitmentView() {
           <button
             onClick={() => toggleMutation.mutate(!settings?.isOpen)}
             disabled={toggleMutation.isPending}
-            className={`flex items-center gap-2 px-4 py-2.5 rounded-xl border text-xs font-mono font-bold transition-all ${
+            className={`flex items-center gap-2 px-4 py-2 rounded-[var(--r-md)] border text-xs font-mono font-medium transition-all ${
               settings?.isOpen
                 ? 'border-emerald-500/40 bg-emerald-500/10 text-emerald-400'
-                : 'border-[var(--border-color)] bg-[var(--bg-body)] text-[var(--text-secondary)]'
+                : 'border-[var(--border)] bg-[var(--surface-2)] text-[var(--text-2)]'
             }`}
           >
-            {settings?.isOpen ? <ToggleRight size={20} className="text-emerald-400" /> : <ToggleLeft size={20} />}
+            {settings?.isOpen ? <ToggleRight size={18} className="text-emerald-400" /> : <ToggleLeft size={18} />}
             <span>{settings?.isOpen ? 'WINDOW OPEN' : 'WINDOW CLOSED'}</span>
           </button>
         </div>
@@ -329,32 +329,32 @@ export default function RecruitmentView() {
       {/* Metrics Strip */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
         {[
-          { label: 'TOTAL APPLICANTS', count: counts.total, color: 'text-[var(--text-primary)]' },
+          { label: 'TOTAL APPLICANTS', count: counts.total, color: 'text-[var(--text)]' },
           { label: 'PENDING REVIEW', count: counts.pending, color: 'text-amber-400' },
           { label: 'ACCEPTED', count: counts.accepted, color: 'text-emerald-400' },
           { label: 'REJECTED', count: counts.rejected, color: 'text-red-400' },
         ].map(s => (
-          <div key={s.label} className="p-4 rounded-xl bg-[var(--card-bg)] border border-[var(--border-color)]">
-            <div className={`font-display text-2xl font-bold ${s.color}`}>{s.count}</div>
-            <div className="text-[10px] font-mono text-[var(--text-secondary)] mt-1">{s.label}</div>
+          <div key={s.label} className="p-4 rounded-[var(--r-md)] bg-[var(--surface)] border border-[var(--border)]">
+            <div className={`font-mono text-2xl font-semibold ${s.color}`}>{s.count}</div>
+            <div className="text-[10px] font-mono text-[var(--text-3)] mt-1">{s.label}</div>
           </div>
         ))}
       </div>
 
       {/* Filters Strip */}
-      <div className="flex flex-wrap items-center justify-between gap-4 p-4 rounded-xl bg-[var(--card-bg)] border border-[var(--border-color)]">
+      <div className="flex flex-wrap items-center justify-between gap-4 p-4 rounded-[var(--r-md)] bg-[var(--surface)] border border-[var(--border)]">
         <div className="flex items-center gap-2">
-          <Filter size={14} className="text-[var(--text-secondary)]" />
-          <span className="text-xs font-mono text-[var(--text-secondary)] uppercase">TRACK:</span>
+          <Filter size={14} className="text-[var(--text-3)]" />
+          <span className="text-xs font-mono text-[var(--text-3)] uppercase">TRACK:</span>
           <div className="flex gap-1">
             {['all', 'TECH', 'NON_TECH'].map(t => (
               <button
                 key={t}
                 onClick={() => setTrackFilter(t)}
-                className={`px-3 py-1 rounded-lg text-xs font-mono transition-all ${
+                className={`px-3 py-1 rounded-[var(--r-sm)] text-xs font-mono transition-all ${
                   trackFilter === t
-                    ? 'bg-[hsl(var(--accent))] text-black font-bold'
-                    : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
+                    ? 'bg-[var(--text)] text-[var(--bg)] font-medium'
+                    : 'text-[var(--text-2)] hover:text-[var(--text)]'
                 }`}
               >
                 {t === 'all' ? 'ALL TRACKS' : t}
@@ -364,11 +364,11 @@ export default function RecruitmentView() {
         </div>
 
         <div className="flex items-center gap-2">
-          <span className="text-xs font-mono text-[var(--text-secondary)] uppercase">STATUS:</span>
+          <span className="text-xs font-mono text-[var(--text-3)] uppercase">STATUS:</span>
           <select
             value={statusFilter}
             onChange={e => setStatusFilter(e.target.value)}
-            className="h-8 px-3 rounded-lg bg-[var(--bg-body)] border border-[var(--border-color)] text-xs font-mono text-[var(--text-primary)]"
+            className="h-8 px-3 rounded-[var(--r-sm)] bg-[var(--surface-2)] border border-[var(--border)] text-xs font-mono text-[var(--text)]"
           >
             <option value="all">All Statuses</option>
             <option value="pending_review">Pending Review</option>
@@ -379,7 +379,7 @@ export default function RecruitmentView() {
       </div>
 
       {/* Applicants Queue Table */}
-      <div className="rounded-2xl border border-[var(--border-color)] bg-[var(--card-bg)] overflow-hidden">
+      <div className="rounded-[var(--r-lg)] border border-[var(--border)] bg-[var(--surface)] overflow-hidden">
         {isLoading ? (
           <WanderingEyesLoader
             size="md"
@@ -387,13 +387,13 @@ export default function RecruitmentView() {
             subtext="SEARCHING RECRUITMENT APPLICATIONS"
           />
         ) : filtered.length === 0 ? (
-          <div className="p-12 text-center text-xs font-mono text-[var(--text-secondary)]">
+          <div className="p-12 text-center text-xs font-mono text-[var(--text-3)]">
             NO CANDIDATES MATCH CURRENT FILTERS
           </div>
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-left text-xs font-mono">
-              <thead className="border-b border-[var(--border-color)] bg-[var(--bg-body)]/50 text-[var(--text-secondary)] uppercase text-[10px] tracking-wider">
+              <thead className="border-b border-[var(--border)] bg-[var(--surface-2)]/50 text-[var(--text-3)] uppercase text-[10px] tracking-wider">
                 <tr>
                   <th className="py-3.5 px-4">Candidate</th>
                   <th className="py-3.5 px-4">Contact</th>
@@ -404,39 +404,39 @@ export default function RecruitmentView() {
                   <th className="py-3.5 px-4 text-right">Action</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-[var(--border-color)]">
+              <tbody className="divide-y divide-[var(--border)]">
                 {filtered.map(app => (
                   <tr
                     key={app.id}
                     onClick={() => setSelectedApp(app)}
-                    className="hover:bg-[var(--bg-body)]/60 cursor-pointer transition-colors"
+                    className="hover:bg-[var(--surface-2)] cursor-pointer transition-colors"
                   >
                     <td className="py-4 px-4">
-                      <div className="font-bold font-sans text-sm text-[var(--text-primary)]">{app.fullName}</div>
-                      <div className="text-[11px] text-[var(--text-secondary)] font-mono">{app.rollNumber}</div>
+                      <div className="font-medium font-sans text-sm text-[var(--text)]">{app.fullName}</div>
+                      <div className="text-[11px] text-[var(--text-3)] font-mono">{app.rollNumber}</div>
                     </td>
-                    <td className="py-4 px-4 text-[var(--text-secondary)]">
+                    <td className="py-4 px-4 text-[var(--text-2)]">
                       <div>{app.mobileNumber || '—'}</div>
                     </td>
-                    <td className="py-4 px-4 text-[var(--text-secondary)]">
+                    <td className="py-4 px-4 text-[var(--text-2)]">
                       <div>{app.department || app.branch} • {app.year} yr</div>
-                      <div className="text-[10px] text-[hsl(var(--accent))]">{app.specialization || 'Core'}</div>
+                      <div className="text-[10px] text-[var(--red-text)]">{app.specialization || 'Core'}</div>
                     </td>
                     <td className="py-4 px-4">
-                      <span className={`px-2 py-0.5 rounded text-[10px] font-bold ${app.track === 'TECH' ? 'bg-[hsl(var(--accent))]/10 text-[hsl(var(--accent))]' : 'bg-cyan-500/10 text-cyan-400'}`}>
+                      <span className={`px-2 py-0.5 rounded-[var(--r-sm)] text-[10px] font-medium ${app.track === 'TECH' ? 'bg-[var(--red-soft)] text-[var(--red-text)]' : 'bg-cyan-500/10 text-cyan-400'}`}>
                         {app.track || 'TECH'} // {app.wing}
                       </span>
                     </td>
                     <td className="py-4 px-4">
-                      <span className={`inline-flex px-2.5 py-1 rounded-full text-[10px] font-bold border ${STATUS_COLORS[app.status] || STATUS_COLORS.pending_review}`}>
+                      <span className={`inline-flex px-2.5 py-0.5 rounded-full text-[10px] font-medium border ${STATUS_COLORS[app.status] || STATUS_COLORS.pending_review}`}>
                         {STATUS_LABELS[app.status] || '202 PENDING'}
                       </span>
                     </td>
-                    <td className="py-4 px-4 text-[var(--text-secondary)] text-[11px]">
+                    <td className="py-4 px-4 text-[var(--text-3)] text-[11px]">
                       {new Date(app.appliedAt).toLocaleDateString()}
                     </td>
                     <td className="py-4 px-4 text-right">
-                      <ChevronRight size={16} className="inline text-[var(--text-secondary)]" />
+                      <ChevronRight size={16} className="inline text-[var(--text-3)]" />
                     </td>
                   </tr>
                 ))}

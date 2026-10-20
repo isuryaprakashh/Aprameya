@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useLocation, Link } from 'wouter';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { motion, AnimatePresence } from 'framer-motion';
+import { AnimatePresence, motion } from 'framer-motion';
 import { ArrowRight, ArrowLeft, Check, Lock, Cpu, Sparkles } from 'lucide-react';
 import { TECH_WINGS, NON_TECH_WINGS, RecruitmentSettings } from '@/lib/types';
 import { useAuth } from '@/context/AuthContext';
@@ -67,11 +67,11 @@ export default function RecruitmentApply() {
 
   const submitMutation = useMutation({
     mutationFn: async (data: FormState) => {
-      // Clean portfolio URL so empty / whitespace string doesn't fail URL validation
       const cleanedUrl = data.portfolioUrl?.trim();
-      const finalUrl = (!cleanedUrl || cleanedUrl === 'https://' || cleanedUrl === 'http://')
-        ? undefined
-        : (cleanedUrl.startsWith('http://') || cleanedUrl.startsWith('https://'))
+      const finalUrl =
+        !cleanedUrl || cleanedUrl === 'https://' || cleanedUrl === 'http://'
+          ? undefined
+          : cleanedUrl.startsWith('http://') || cleanedUrl.startsWith('https://')
           ? cleanedUrl
           : `https://${cleanedUrl}`;
 
@@ -106,7 +106,7 @@ export default function RecruitmentApply() {
       qc.invalidateQueries({ queryKey: ['/api/recruitment/applications/mine'] });
       toast({
         title: "Application Submitted Successfully",
-        description: "Your candidate profile has been queued for evaluation. No account required!",
+        description: "Your candidate profile has been queued for evaluation.",
       });
       setLocation(`/recruitment/status?rollNumber=${encodeURIComponent(roll)}`);
     },
@@ -119,16 +119,16 @@ export default function RecruitmentApply() {
 
   if (!settings?.isOpen) {
     return (
-      <div className="min-h-screen bg-[var(--bg-body)] flex items-center justify-center px-6">
-        <div className="max-w-md w-full p-8 text-center border border-white/[0.06] bg-[var(--card-bg)] rounded-xl">
-          <Lock className="w-10 h-10 text-[var(--text-secondary)] mx-auto mb-4" />
-          <h1 className="font-display text-xl font-bold mb-2">Recruitment Closed</h1>
-          <p className="text-xs text-[var(--text-secondary)] mb-6">
-            The application window is currently closed. Keep an eye on our events and social channels for the next cycle.
+      <div className="min-h-screen bg-bg flex items-center justify-center px-6">
+        <div className="max-w-md w-full p-8 text-center border border-border bg-surface rounded-lg">
+          <Lock className="w-10 h-10 text-text-3 mx-auto mb-4" />
+          <h1 className="font-display text-xl font-medium mb-2">Recruitment closed</h1>
+          <p className="text-xs text-text-2 mb-6">
+            The application window is currently closed. Stay tuned for future drives.
           </p>
           <Link href="/recruitment">
             <ChamferedButton variant="secondary" size="md" className="w-full">
-              Back to Overview
+              Back to overview
             </ChamferedButton>
           </Link>
         </div>
@@ -138,24 +138,10 @@ export default function RecruitmentApply() {
 
   const validateStep1 = () => {
     if (!form.fullName.trim()) return 'Full name is required';
-    if (!form.rollNumber.trim()) return 'Student ID / Roll number is required';
-    if (!form.mobileNumber.trim() || form.mobileNumber.trim().length < 10) return 'Valid 10-digit mobile number is required';
-    if (!form.department.trim()) return 'Please select or enter your department';
-    if (!form.specialization.trim()) return 'Academic specialization is required (e.g. AI/DS, IoT, VLSI, Core)';
-    if (!form.year) return 'Please select your current year of study';
-    return null;
-  };
-
-  const validateStep2 = () => {
-    if (!form.track) return 'Please select a track (TECH or NON-TECH)';
-    if (!form.wing) return 'Please select your preferred wing';
-    return null;
-  };
-
-  const validateStep3 = () => {
-    if (!form.motivation.trim() || form.motivation.trim().length < 10) {
-      return 'Please write a brief statement on why you want to join (min 10 characters)';
-    }
+    if (!form.rollNumber.trim()) return 'Student ID (Roll Number) is required';
+    if (!form.mobileNumber.trim()) return 'Mobile number is required';
+    if (!form.department.trim()) return 'Branch selection is required';
+    if (!form.specialization.trim()) return 'Specialization track is required';
     return null;
   };
 
@@ -163,145 +149,146 @@ export default function RecruitmentApply() {
     if (step === 1) {
       const err = validateStep1();
       if (err) {
-        toast({ title: 'Incomplete Profile', description: err, variant: 'destructive' });
+        toast({ title: 'Missing required fields', description: err, variant: 'destructive' });
         return;
       }
       setStep(2);
     } else if (step === 2) {
-      const err = validateStep2();
-      if (err) {
-        toast({ title: 'Select Track & Wing', description: err, variant: 'destructive' });
-        return;
-      }
       setStep(3);
     }
   };
 
   const handleSubmit = () => {
-    const err = validateStep3();
-    if (err) {
-      toast({ title: 'Motivation Required', description: err, variant: 'destructive' });
+    if (!form.motivation.trim()) {
+      toast({
+        title: 'Statement required',
+        description: 'Please describe why you wish to join this wing.',
+        variant: 'destructive',
+      });
       return;
     }
     submitMutation.mutate(form);
   };
 
   return (
-    <div className="min-h-screen bg-[var(--bg-body)] text-[var(--text-primary)] font-sans">
-      <div className="relative z-10 max-w-3xl mx-auto px-6 pt-32 pb-24">
+    <main className="min-h-screen bg-bg text-text font-body pt-24 pb-24">
+      {/* Thin 2px progress bar at the top (Section 5.5) */}
+      <div className="fixed top-0 left-0 right-0 h-[2px] bg-border z-60">
+        <div
+          className="h-full bg-red transition-all duration-base"
+          style={{ width: `${(step / 3) * 100}%` }}
+        />
+      </div>
 
-        {/* Step Progression Header */}
-        <div className="mb-10 text-center">
-          <p className="text-[11px] font-sans font-medium text-[var(--text-muted)] uppercase tracking-[0.12em] mb-2">
-            Application Portal
-          </p>
-          <h1 className="font-display text-3xl md:text-4xl font-bold tracking-tight mb-6">
-            Apply for Aprameya
-          </h1>
+      <div className="max-w-2xl mx-auto px-6">
+        {/* Back Link */}
+        <Link
+          href="/recruitment"
+          className="inline-flex items-center gap-2 text-xs font-mono text-text-3 hover:text-text transition-colors mb-8"
+        >
+          <ArrowLeft className="w-3.5 h-3.5" />
+          <span>BACK TO RECRUITMENT</span>
+        </Link>
 
-          <div className="flex items-center justify-center gap-3 text-xs max-w-sm mx-auto">
-            <div className={`flex items-center gap-2 px-3 py-1.5 rounded-lg border ${step === 1 ? 'border-white/[0.2] bg-white/[0.05] text-[var(--text-primary)] font-semibold' : 'border-white/[0.06] text-[var(--text-muted)]'}`}>
-              <span>01</span>
-              <span>Profile</span>
-            </div>
-            <span className="text-white/[0.1]">•</span>
-            <div className={`flex items-center gap-2 px-3 py-1.5 rounded-lg border ${step === 2 ? 'border-white/[0.2] bg-white/[0.05] text-[var(--text-primary)] font-semibold' : 'border-white/[0.06] text-[var(--text-muted)]'}`}>
-              <span>02</span>
-              <span>Track & Wing</span>
-            </div>
-            <span className="text-white/[0.1]">•</span>
-            <div className={`flex items-center gap-2 px-3 py-1.5 rounded-lg border ${step === 3 ? 'border-white/[0.2] bg-white/[0.05] text-[var(--text-primary)] font-semibold' : 'border-white/[0.06] text-[var(--text-muted)]'}`}>
-              <span>03</span>
-              <span>Statement</span>
-            </div>
+        {/* Step Indicator */}
+        <div className="mb-8">
+          <div className="flex items-center justify-between mb-2">
+            <p className="font-mono text-xs uppercase tracking-[0.06em] text-text-3">
+              STEP {step} OF 3
+            </p>
+            <span className="font-mono text-xs text-text-3">AUTOSAVED</span>
           </div>
+          <h1 className="font-display font-medium text-2xl sm:text-3xl tracking-tight text-text">
+            {step === 1 && 'Personal & academic information'}
+            {step === 2 && 'Track & wing preference'}
+            {step === 3 && 'Statement & portfolio'}
+          </h1>
         </div>
 
-        <div className="p-6 md:p-8 border border-white/[0.06] bg-[var(--card-bg)] rounded-xl">
+        {/* Form Container */}
+        <div className="rounded-lg border border-border p-6 sm:p-8 bg-surface">
           <AnimatePresence mode="wait">
-            {/* STEP 1: Student Credentials */}
+            {/* STEP 1 */}
             {step === 1 && (
               <motion.div
                 key="step1"
-                initial={{ opacity: 0, x: -10 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: 10 }}
-                transition={{ duration: 0.2 }}
-                className="space-y-6"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                className="space-y-5"
               >
-                <div className="border-b border-[var(--border-color)] pb-4 mb-6">
-                  <h2 className="font-display text-lg font-bold text-[var(--text-primary)]">
-                    Student Information
-                  </h2>
-                  <p className="text-xs text-[var(--text-secondary)] font-mono mt-1">
-                    Provide your university identification and direct contact coordinates.
-                  </p>
+                <div>
+                  <label className="block text-xs font-body font-medium text-text mb-1.5">
+                    Full Name *
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    placeholder="e.g. Singavarapu Sai Revanth"
+                    value={form.fullName}
+                    onChange={(e) => setForm({ ...form, fullName: e.target.value })}
+                    className="w-full h-[44px] px-3.5 rounded-md border border-border-strong bg-transparent text-sm text-text placeholder:text-text-3 focus:outline-none focus:border-focus-ring"
+                  />
                 </div>
 
-                <div className="grid sm:grid-cols-2 gap-5">
+                <div className="grid sm:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-xs font-mono text-[var(--text-secondary)] mb-2 uppercase">
-                      Full Name *
-                    </label>
-                    <input
-                      type="text"
-                      placeholder="Singavarapu Sai Revanth"
-                      value={form.fullName}
-                      onChange={e => setForm({ ...form, fullName: e.target.value })}
-                      className="w-full h-11 px-4 rounded-xl bg-[var(--bg-body)] border border-[var(--border-color)] text-sm text-[var(--text-primary)] focus:outline-none focus:border-[hsl(var(--accent))]"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-xs font-mono text-[var(--text-secondary)] mb-2 uppercase">
+                    <label className="block text-xs font-body font-medium text-text mb-1.5">
                       Student ID (Roll Number) *
                     </label>
                     <input
                       type="text"
-                      placeholder="2300049169"
+                      required
+                      placeholder="e.g. 2300049169"
                       value={form.rollNumber}
-                      onChange={e => setForm({ ...form, rollNumber: e.target.value })}
-                      className="w-full h-11 px-4 rounded-xl bg-[var(--bg-body)] border border-[var(--border-color)] text-sm font-mono text-[var(--text-primary)] focus:outline-none focus:border-[hsl(var(--accent))]"
+                      onChange={(e) => setForm({ ...form, rollNumber: e.target.value })}
+                      className="w-full h-[44px] px-3.5 rounded-md border border-border-strong bg-transparent text-sm font-mono text-text placeholder:text-text-3 focus:outline-none focus:border-focus-ring"
                     />
                   </div>
-
                   <div>
-                    <label className="block text-xs font-mono text-[var(--text-secondary)] mb-2 uppercase">
-                      Official Email / Personal Email
-                    </label>
-                    <input
-                      type="email"
-                      placeholder="2300049169@kluniversity.in"
-                      value={form.email}
-                      onChange={e => setForm({ ...form, email: e.target.value })}
-                      className="w-full h-11 px-4 rounded-xl bg-[var(--bg-body)] border border-[var(--border-color)] text-sm text-[var(--text-primary)] focus:outline-none focus:border-[hsl(var(--accent))]"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-xs font-mono text-[var(--text-secondary)] mb-2 uppercase">
+                    <label className="block text-xs font-body font-medium text-text mb-1.5">
                       Mobile Number (WhatsApp) *
                     </label>
                     <input
                       type="tel"
-                      placeholder="9876543210"
+                      required
+                      placeholder="e.g. 9876543210"
                       value={form.mobileNumber}
-                      onChange={e => setForm({ ...form, mobileNumber: e.target.value })}
-                      className="w-full h-11 px-4 rounded-xl bg-[var(--bg-body)] border border-[var(--border-color)] text-sm font-mono text-[var(--text-primary)] focus:outline-none focus:border-[hsl(var(--accent))]"
+                      onChange={(e) => setForm({ ...form, mobileNumber: e.target.value })}
+                      className="w-full h-[44px] px-3.5 rounded-md border border-border-strong bg-transparent text-sm font-mono text-text placeholder:text-text-3 focus:outline-none focus:border-focus-ring"
                     />
                   </div>
+                </div>
 
+                <div>
+                  <label className="block text-xs font-body font-medium text-text mb-1.5">
+                    Official College Email Address
+                  </label>
+                  <input
+                    type="email"
+                    placeholder="2300049169@kluniversity.in"
+                    value={form.email}
+                    onChange={(e) => setForm({ ...form, email: e.target.value })}
+                    className="w-full h-[44px] px-3.5 rounded-md border border-border-strong bg-transparent text-sm text-text placeholder:text-text-3 focus:outline-none focus:border-focus-ring"
+                  />
+                </div>
+
+                <div className="grid sm:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-xs font-mono text-[var(--text-secondary)] mb-2 uppercase">
+                    <label className="block text-xs font-body font-medium text-text mb-1.5">
                       Year of Study *
                     </label>
                     <div className="grid grid-cols-4 gap-2">
-                      {YEARS.map(y => (
+                      {YEARS.map((y) => (
                         <button
                           key={y}
                           type="button"
                           onClick={() => setForm({ ...form, year: y })}
-                          className={`h-11 rounded-xl text-xs font-mono font-bold transition-all border ${form.year === y ? 'bg-[hsl(var(--accent))] text-black border-[hsl(var(--accent))]' : 'bg-[var(--bg-body)] border-[var(--border-color)] text-[var(--text-secondary)] hover:text-[var(--text-primary)]'}`}
+                          className={`h-[44px] rounded-md text-xs font-mono transition-colors cursor-pointer border ${
+                            form.year === y
+                              ? 'border-red-line text-red-text bg-red-soft font-medium'
+                              : 'border-border text-text-2 hover:border-border-strong'
+                          }`}
                         >
                           {y}
                         </button>
@@ -310,243 +297,206 @@ export default function RecruitmentApply() {
                   </div>
 
                   <div>
-                    <label className="block text-xs font-mono text-[var(--text-secondary)] mb-2 uppercase">
-                      Department / Branch *
+                    <label className="block text-xs font-body font-medium text-text mb-1.5">
+                      Branch / Department *
                     </label>
                     <select
                       value={form.department}
-                      onChange={e => setForm({ ...form, department: e.target.value })}
-                      className="w-full h-11 px-4 rounded-xl bg-[var(--bg-body)] border border-[var(--border-color)] text-sm text-[var(--text-primary)] focus:outline-none focus:border-[hsl(var(--accent))]"
+                      onChange={(e) => setForm({ ...form, department: e.target.value })}
+                      className="w-full h-[44px] px-3.5 rounded-md border border-border-strong bg-transparent text-xs text-text focus:outline-none focus:border-focus-ring"
                     >
-                      <option value="">Select Branch</option>
-                      {DEPARTMENTS.map(d => (
-                        <option key={d} value={d} className="bg-black text-white">{d}</option>
+                      <option value="" className="bg-surface text-text">Select Branch</option>
+                      {DEPARTMENTS.map((d) => (
+                        <option key={d} value={d} className="bg-surface text-text">{d}</option>
                       ))}
                     </select>
                   </div>
-
-                  <div>
-                    <label className="block text-xs font-mono text-[var(--text-secondary)] mb-2 uppercase">
-                      Specialization / Elective Track *
-                    </label>
-                    <input
-                      type="text"
-                      placeholder="e.g. AI & Data Science, IoT, VLSI, Robotics"
-                      value={form.specialization}
-                      onChange={e => setForm({ ...form, specialization: e.target.value })}
-                      className="w-full h-11 px-4 rounded-xl bg-[var(--bg-body)] border border-[var(--border-color)] text-sm text-[var(--text-primary)] focus:outline-none focus:border-[hsl(var(--accent))]"
-                    />
-                  </div>
                 </div>
 
-                <div className="pt-6 flex justify-end">
+                <div>
+                  <label className="block text-xs font-body font-medium text-text mb-1.5">
+                    Specialization or Elective Track *
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    placeholder="e.g. AI & Data Science, Embedded, Robotics, IoT"
+                    value={form.specialization}
+                    onChange={(e) => setForm({ ...form, specialization: e.target.value })}
+                    className="w-full h-[44px] px-3.5 rounded-md border border-border-strong bg-transparent text-sm text-text placeholder:text-text-3 focus:outline-none focus:border-focus-ring"
+                  />
+                </div>
+
+                <div className="pt-6 border-t border-border flex justify-end">
                   <ChamferedButton
                     variant="primary"
                     size="md"
                     onClick={handleNext}
-                    rightIcon={<ArrowRight size={16} />}
+                    rightIcon={<ArrowRight className="w-4 h-4" />}
                   >
-                    Continue to Track Selection
+                    Continue to tracks
                   </ChamferedButton>
                 </div>
               </motion.div>
             )}
 
-            {/* STEP 2: Track & Wing Selection */}
+            {/* STEP 2 */}
             {step === 2 && (
               <motion.div
                 key="step2"
-                initial={{ opacity: 0, x: -10 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: 10 }}
-                transition={{ duration: 0.2 }}
-                className="space-y-8"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                className="space-y-6"
               >
-                <div className="border-b border-[var(--border-color)] pb-4">
-                  <h2 className="font-display text-lg font-bold text-[var(--text-primary)]">
-                    Domain Track Selection
-                  </h2>
-                  <p className="text-xs text-[var(--text-secondary)] font-mono mt-1">
-                    Choose whether you are applying for an Engineering (TECH) or Operations (NON-TECH) role.
-                  </p>
-                </div>
-
-                {/* Track Selector Toggle */}
-                <div className="grid grid-cols-2 gap-4">
-                  <button
-                    type="button"
-                    onClick={() => setForm({ ...form, track: 'TECH', wing: TECH_WINGS[0] })}
-                    className={`p-5 rounded-xl border text-left transition-all ${form.track === 'TECH' ? 'border-[hsl(var(--accent))] bg-[hsl(var(--accent))]/10 shadow-[0_0_20px_rgba(var(--accent-rgb),0.2)]' : 'border-[var(--border-color)] bg-[var(--bg-body)] opacity-70 hover:opacity-100'}`}
-                  >
-                    <div className="flex items-center justify-between mb-2">
-                      <div className="flex items-center gap-2">
-                        <Cpu className={`w-5 h-5 ${form.track === 'TECH' ? 'text-[hsl(var(--accent))]' : 'text-[var(--text-secondary)]'}`} />
-                        <span className="font-display font-bold text-base">TECH TRACK</span>
-                      </div>
-                      {form.track === 'TECH' && <Check className="w-4 h-4 text-[hsl(var(--accent))]" />}
-                    </div>
-                    <p className="text-xs font-mono text-[var(--text-secondary)]">
-                      Autonomous software, embedded hardware, ROS 2 pipelines, web systems.
-                    </p>
-                  </button>
-
-                  <button
-                    type="button"
-                    onClick={() => setForm({ ...form, track: 'NON_TECH', wing: NON_TECH_WINGS[0] })}
-                    className={`p-5 rounded-xl border text-left transition-all ${form.track === 'NON_TECH' ? 'border-cyan-400 bg-cyan-400/10 shadow-[0_0_20px_rgba(6,182,212,0.2)]' : 'border-[var(--border-color)] bg-[var(--bg-body)] opacity-70 hover:opacity-100'}`}
-                  >
-                    <div className="flex items-center justify-between mb-2">
-                      <div className="flex items-center gap-2">
-                        <Sparkles className={`w-5 h-5 ${form.track === 'NON_TECH' ? 'text-cyan-400' : 'text-[var(--text-secondary)]'}`} />
-                        <span className="font-display font-bold text-base">NON-TECH TRACK</span>
-                      </div>
-                      {form.track === 'NON_TECH' && <Check className="w-4 h-4 text-cyan-400" />}
-                    </div>
-                    <p className="text-xs font-mono text-[var(--text-secondary)]">
-                      Event management, UI/UX designing, broadcasting, PR, media documentation.
-                    </p>
-                  </button>
-                </div>
-
-                {/* Sub-domain / Wing Choice */}
                 <div>
-                  <label className="block text-xs font-mono text-[var(--text-secondary)] mb-3 uppercase">
-                    Select Your Specific Wing *
+                  <label className="block text-xs font-body font-medium text-text mb-3">
+                    Choose Track *
                   </label>
-                  <div className="grid sm:grid-cols-3 gap-3">
-                    {(form.track === 'TECH' ? TECH_WINGS : NON_TECH_WINGS).map(w => {
+                  <div className="grid grid-cols-2 gap-4">
+                    <button
+                      type="button"
+                      onClick={() => setForm({ ...form, track: 'TECH', wing: TECH_WINGS[0] })}
+                      className={`p-4 rounded-md border text-left transition-colors cursor-pointer ${
+                        form.track === 'TECH'
+                          ? 'border-red-line bg-red-soft'
+                          : 'border-border hover:border-border-strong'
+                      }`}
+                    >
+                      <div className="flex items-center justify-between mb-1.5">
+                        <span className="font-display font-medium text-sm text-text">Technical</span>
+                        {form.track === 'TECH' && <Check className="w-4 h-4 text-red-text" />}
+                      </div>
+                      <p className="text-xs text-text-2">Software, hardware, ROS 2, and embedded engineering.</p>
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={() => setForm({ ...form, track: 'NON_TECH', wing: NON_TECH_WINGS[0] })}
+                      className={`p-4 rounded-md border text-left transition-colors cursor-pointer ${
+                        form.track === 'NON_TECH'
+                          ? 'border-red-line bg-red-soft'
+                          : 'border-border hover:border-border-strong'
+                      }`}
+                    >
+                      <div className="flex items-center justify-between mb-1.5">
+                        <span className="font-display font-medium text-sm text-text">Operations</span>
+                        {form.track === 'NON_TECH' && <Check className="w-4 h-4 text-red-text" />}
+                      </div>
+                      <p className="text-xs text-text-2">Events, visual design, logistics, and media.</p>
+                    </button>
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-xs font-body font-medium text-text mb-3">
+                    Choose Specific Squad / Wing *
+                  </label>
+                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                    {(form.track === 'TECH' ? TECH_WINGS : NON_TECH_WINGS).map((w) => {
                       const isSelected = form.wing === w;
                       return (
                         <button
                           key={w}
                           type="button"
                           onClick={() => setForm({ ...form, wing: w })}
-                          className={`p-4 rounded-xl border text-center transition-all ${isSelected ? 'border-[hsl(var(--accent))] bg-[hsl(var(--accent))]/15 text-[var(--text-primary)] font-bold shadow-[0_0_15px_rgba(var(--accent-rgb),0.25)]' : 'border-[var(--border-color)] bg-[var(--bg-body)] text-[var(--text-secondary)] hover:text-[var(--text-primary)]'}`}
+                          className={`p-3.5 rounded-md border text-left transition-colors cursor-pointer ${
+                            isSelected
+                              ? 'border-red-line bg-red-soft font-medium text-text'
+                              : 'border-border text-text-2 hover:border-border-strong hover:text-text'
+                          }`}
                         >
-                          <span className="font-display text-xs block mb-1">{w}</span>
-                          <span className="text-[10px] font-mono text-[hsl(var(--accent))]">
-                            {isSelected ? 'SELECTED WING' : 'CLICK TO SELECT'}
-                          </span>
+                          <span className="text-xs block truncate">{w}</span>
                         </button>
                       );
                     })}
                   </div>
                 </div>
 
-                <div className="pt-6 flex justify-between items-center border-t border-[var(--border-color)]">
+                <div className="pt-6 border-t border-border flex items-center justify-between">
                   <ChamferedButton
                     variant="secondary"
                     size="md"
                     onClick={() => setStep(1)}
-                    leftIcon={<ArrowLeft size={16} />}
+                    leftIcon={<ArrowLeft className="w-4 h-4" />}
                   >
                     Back
                   </ChamferedButton>
-
                   <ChamferedButton
                     variant="primary"
                     size="md"
                     onClick={handleNext}
-                    rightIcon={<ArrowRight size={16} />}
+                    rightIcon={<ArrowRight className="w-4 h-4" />}
                   >
-                    Continue to Statement
+                    Continue to statement
                   </ChamferedButton>
                 </div>
               </motion.div>
             )}
 
-            {/* STEP 3: Motivation & Submit */}
+            {/* STEP 3 */}
             {step === 3 && (
               <motion.div
                 key="step3"
-                initial={{ opacity: 0, x: -10 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: 10 }}
-                transition={{ duration: 0.2 }}
-                className="space-y-6"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                className="space-y-5"
               >
-                <div className="border-b border-[var(--border-color)] pb-4">
-                  <h2 className="font-display text-lg font-bold text-[var(--text-primary)]">
-                    Motivation & Links
-                  </h2>
-                  <p className="text-xs text-[var(--text-secondary)] font-mono mt-1">
-                    Explain why you want to join this wing and provide any relevant portfolio or project links.
-                  </p>
-                </div>
-
                 <div>
-                  <label className="block text-xs font-mono text-[var(--text-secondary)] mb-2 uppercase">
-                    Why do you want to join this wing? *
+                  <label className="block text-xs font-body font-medium text-text mb-1.5">
+                    Why do you wish to join this wing? *
                   </label>
                   <textarea
                     rows={4}
-                    placeholder="Tell us about your interests, past projects, hands-on experience, or what you hope to learn..."
+                    required
+                    placeholder="Tell us about your technical curiosity, projects, or what you hope to build..."
                     value={form.motivation}
-                    onChange={e => setForm({ ...form, motivation: e.target.value })}
-                    className="w-full p-4 rounded-xl bg-[var(--bg-body)] border border-[var(--border-color)] text-sm text-[var(--text-primary)] focus:outline-none focus:border-[hsl(var(--accent))] font-sans leading-relaxed"
+                    onChange={(e) => setForm({ ...form, motivation: e.target.value })}
+                    className="w-full min-h-[120px] p-3.5 rounded-md border border-border-strong bg-transparent text-sm text-text placeholder:text-text-3 focus:outline-none focus:border-focus-ring leading-relaxed"
                   />
-                  <div className="text-right text-[11px] font-mono text-[var(--text-secondary)] mt-1">
+                  <div className="text-right text-[11px] font-mono text-text-3 mt-1">
                     {form.motivation.length} / 1000 characters
                   </div>
                 </div>
 
                 <div>
-                  <label className="block text-xs font-mono text-[var(--text-secondary)] mb-2 uppercase">
+                  <label className="block text-xs font-body font-medium text-text mb-1.5">
                     Portfolio / GitHub / LinkedIn (Optional)
                   </label>
                   <input
                     type="text"
                     placeholder="e.g. github.com/username or linkedin.com/in/username"
                     value={form.portfolioUrl}
-                    onChange={e => setForm({ ...form, portfolioUrl: e.target.value })}
-                    className="w-full h-11 px-4 rounded-xl bg-[var(--bg-body)] border border-[var(--border-color)] text-sm font-mono text-[var(--text-primary)] focus:outline-none focus:border-[hsl(var(--accent))]"
+                    onChange={(e) => setForm({ ...form, portfolioUrl: e.target.value })}
+                    className="w-full h-[44px] px-3.5 rounded-md border border-border-strong bg-transparent text-sm font-mono text-text placeholder:text-text-3 focus:outline-none focus:border-focus-ring"
                   />
-                  <p className="text-[11px] font-mono text-[var(--text-muted)] mt-1">
-                    Leave blank if you do not have one yet.
-                  </p>
                 </div>
 
-                {/* Candidate Summary Card */}
-                <div className="p-5 rounded-xl bg-[var(--bg-body)] border border-[var(--border-color)] space-y-2 font-mono text-xs text-[var(--text-secondary)]">
-                  <div className="text-[10px] text-[hsl(var(--accent))] font-bold uppercase tracking-wider mb-2">
-                    Application Summary
-                  </div>
-                  <div className="flex justify-between">
-                    <span>CANDIDATE:</span>
-                    <span className="text-[var(--text-primary)] font-bold">{form.fullName} ({form.rollNumber})</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span>CONTACT:</span>
-                    <span className="text-[var(--text-primary)]">{form.mobileNumber}{form.email ? ` • ${form.email}` : ''}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span>ACADEMIC:</span>
-                    <span className="text-[var(--text-primary)]">{form.department} • {form.specialization} ({form.year} Year)</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span>SELECTED WING:</span>
-                    <span className="text-[hsl(var(--accent))] font-bold">{form.track} // {form.wing}</span>
-                  </div>
+                {/* Candidate Summary */}
+                <div className="p-4 rounded-md border border-border bg-surface-2 space-y-1.5 text-xs font-mono text-text-2">
+                  <span className="text-text-3 uppercase tracking-wider block mb-2">SUMMARY</span>
+                  <div>CANDIDATE: {form.fullName} ({form.rollNumber})</div>
+                  <div>TRACK: {form.track} · {form.wing}</div>
+                  <div>DEPARTMENT: {form.department} ({form.year} Year)</div>
                 </div>
 
-                <div className="pt-6 flex justify-between items-center border-t border-[var(--border-color)]">
+                <div className="pt-6 border-t border-border flex items-center justify-between">
                   <ChamferedButton
                     variant="secondary"
                     size="md"
                     onClick={() => setStep(2)}
-                    leftIcon={<ArrowLeft size={16} />}
+                    leftIcon={<ArrowLeft className="w-4 h-4" />}
                   >
                     Back
                   </ChamferedButton>
-
                   <ChamferedButton
                     variant="primary"
                     size="lg"
                     isLoading={submitMutation.isPending}
                     onClick={handleSubmit}
-                    rightIcon={<Check size={16} />}
                   >
-                    Submit Application
+                    Submit application
                   </ChamferedButton>
                 </div>
               </motion.div>
@@ -554,6 +504,6 @@ export default function RecruitmentApply() {
           </AnimatePresence>
         </div>
       </div>
-    </div>
+    </main>
   );
 }

@@ -1,34 +1,37 @@
-import { motion } from 'framer-motion';
 import { LucideIcon } from 'lucide-react';
-import { Button } from '@/components/ui/button';
 
 interface EmptyStateProps {
-    icon: LucideIcon;
-    title: string;
-    description: string;
-    action?: {
-        label: string;
-        onClick: () => void;
-    };
+  icon: LucideIcon;
+  title: string;
+  description: string;
+  action?: {
+    label: string;
+    onClick: () => void;
+  };
 }
 
 export const EmptyState = ({ icon: Icon, title, description, action }: EmptyStateProps) => {
-    return (
-        <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="flex flex-col items-center justify-center py-16 px-4 text-center border-2 border-dashed border-[var(--border-color)] rounded-xl bg-[var(--card-bg)]/20"
+  return (
+    <div className="flex flex-col items-center justify-center py-16 px-6 text-center border border-border rounded-lg bg-surface/50 max-w-md mx-auto my-8">
+      <div className="w-10 h-10 rounded-full bg-surface-2 flex items-center justify-center mb-4 text-text-3">
+        <Icon className="w-5 h-5" />
+      </div>
+      <h4 className="font-body font-semibold text-base text-text mb-1">
+        {title}
+      </h4>
+      <p className="text-sm text-text-2 mb-6 max-w-xs leading-relaxed">
+        {description}
+      </p>
+      {action && (
+        <button
+          onClick={action.onClick}
+          className="h-9 px-4 rounded-md border border-border-strong text-text hover:bg-surface-2 transition-colors duration-fast text-xs font-body font-medium cursor-pointer"
         >
-            <div className="w-16 h-16 bg-[hsl(var(--accent))]/10 rounded-full flex items-center justify-center mb-6">
-                <Icon className="w-8 h-8 text-[hsl(var(--accent))]" />
-            </div>
-            <h3 className="text-xl font-bold text-[var(--text-primary)] mb-2">{title}</h3>
-            <p className="text-[var(--text-secondary)] max-w-sm mb-6">{description}</p>
-            {action && (
-                <Button onClick={action.onClick} className="btn-primary">
-                    {action.label}
-                </Button>
-            )}
-        </motion.div>
-    );
+          {action.label}
+        </button>
+      )}
+    </div>
+  );
 };
+
+export default EmptyState;

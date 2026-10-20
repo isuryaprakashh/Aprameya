@@ -36,24 +36,24 @@ export class ErrorBoundary extends Component<Props, State> {
     public render() {
         if (this.state.hasError) {
             return (
-                <div className="min-h-screen w-full flex items-center justify-center bg-[var(--bg-body)] p-4">
-                    <Card className="max-w-md w-full border-red-500/20 bg-[var(--card-bg)] shadow-2xl">
+                <div className="min-h-screen w-full flex items-center justify-center bg-[var(--bg)] p-4">
+                    <Card className="max-w-md w-full border border-[var(--border)] bg-[var(--surface)] shadow-none rounded-[var(--r-lg)]">
                         <CardHeader className="text-center pb-2">
-                            <div className="mx-auto w-12 h-12 rounded-full bg-red-500/10 flex items-center justify-center mb-4">
-                                <AlertCircle className="w-6 h-6 text-red-500" />
+                            <div className="mx-auto w-12 h-12 rounded-full bg-[var(--red-soft)] border border-[var(--red-line)] flex items-center justify-center mb-4">
+                                <AlertCircle className="w-6 h-6 text-[var(--red)]" />
                             </div>
-                            <CardTitle className="text-xl font-bold text-[var(--text-primary)]">
+                            <CardTitle className="text-xl font-display font-medium text-[var(--text)] tracking-tight">
                                 Something went wrong
                             </CardTitle>
                         </CardHeader>
                         <CardContent className="space-y-4 text-center">
-                            <p className="text-[var(--text-secondary)] text-sm">
+                            <p className="text-[var(--text-2)] text-sm">
                                 An unexpected error occurred. Our team has been notified.
                             </p>
 
                             {import.meta.env.MODE === 'development' && this.state.error && (
-                                <div className="mt-4 p-3 bg-red-500/5 rounded-lg text-left overflow-auto max-h-40">
-                                    <p className="text-xs font-mono text-red-400 break-all">
+                                <div className="mt-4 p-3 bg-[var(--red-soft)] border border-[var(--red-line)] rounded-[var(--r-sm)] text-left overflow-auto max-h-40">
+                                    <p className="text-xs font-mono text-[var(--red-text)] break-all">
                                         {this.state.error.toString()}
                                     </p>
                                 </div>
@@ -62,13 +62,13 @@ export class ErrorBoundary extends Component<Props, State> {
                             <div className="pt-2">
                                 <Button
                                     onClick={this.handleReload}
-                                    className="w-full bg-[hsl(var(--accent))] hover:bg-[hsl(var(--accent))]/90"
+                                    className="w-full bg-[var(--red)] hover:bg-[var(--red-hover)] text-white rounded-[var(--r-md)] h-10 font-medium"
                                 >
                                     Reload Page
                                 </Button>
                                 <div className="mt-4">
-                                    <a href="/" className="text-xs text-[var(--text-secondary)] hover:text-[hsl(var(--accent))] underline">
-                                        Return to Home
+                                    <a href="/" className="text-xs text-[var(--text-3)] hover:text-[var(--text)] font-mono uppercase tracking-wider">
+                                        ← Return to Home
                                     </a>
                                 </div>
                             </div>

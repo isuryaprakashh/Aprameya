@@ -1,4 +1,5 @@
 import { ResearchItem } from '@/lib/types';
+import ChamferedButton from '@/components/ui/ChamferedButton';
 
 interface ResearchCardProps {
     item: ResearchItem;
@@ -7,34 +8,41 @@ interface ResearchCardProps {
 
 const ResearchCard = ({ item, onReadMore }: ResearchCardProps) => {
     return (
-        <div className="w-full rounded-xl morphic-metallic-card p-2 transition-all duration-300 group">
-            <div className="relative rounded-lg overflow-hidden h-[200px] bg-black">
-                <img
-                    src={item.image}
-                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-                    alt={item.title}
-                />
-                <span className="absolute top-2.5 left-2.5 text-[10px] font-sans font-bold uppercase tracking-wider text-red-300 bg-red-950/70 border border-red-400/30 px-2.5 py-0.5 rounded shadow-[inset_0_1px_1px_rgba(254,202,202,0.2)]">
-                    Publication
+        <div className="w-full bg-[var(--surface)] border border-[var(--border)] rounded-2xl overflow-hidden hover:border-[var(--border-strong)] transition-colors flex flex-col h-full group">
+            <div className="relative aspect-[16/10] overflow-hidden bg-[var(--surface-2)]">
+                {item.image ? (
+                    <img
+                        src={item.image}
+                        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                        alt={item.title}
+                    />
+                ) : (
+                    <div className="w-full h-full flex items-center justify-center font-mono text-xs text-[var(--text-3)]">
+                        PUBLICATION
+                    </div>
+                )}
+                <span className="absolute top-3 left-3 text-[11px] font-mono uppercase tracking-wider text-[var(--red)] bg-[var(--red-soft)] border border-[var(--red-line)] px-2.5 py-0.5 rounded-full">
+                    {item.category || 'Publication'}
                 </span>
             </div>
 
-            <div className="p-4">
-                <h3 className="text-base font-bold font-display text-white group-hover:text-metallic-red transition-colors">
+            <div className="p-5 flex flex-col flex-1">
+                <h3 className="text-base font-medium font-display text-[var(--text)] group-hover:text-[var(--red)] transition-colors">
                     {item.title}
                 </h3>
-                <p className="text-xs mt-1.5 text-[#94A3B8] line-clamp-2 leading-relaxed" title={item.description}>
+                <p className="text-xs mt-2 text-[var(--text-2)] line-clamp-2 leading-relaxed flex-1" title={item.description}>
                     {item.description}
                 </p>
 
-                <div className="mt-4 pt-3 border-t border-red-500/15 flex justify-between items-center">
-                    <span className="text-[11px] text-[#64748B] font-mono">{item.date || 'Peer Review'}</span>
-                    <button
-                        className="px-3.5 py-1.5 rounded-lg text-xs btn-metallic-red cursor-pointer"
+                <div className="mt-4 pt-3 border-t border-[var(--border)] flex justify-between items-center">
+                    <span className="text-[11px] text-[var(--text-3)] font-mono">{item.date || 'Peer Review'}</span>
+                    <ChamferedButton
+                        variant="secondary"
+                        size="sm"
                         onClick={onReadMore}
                     >
                         Read Abstract
-                    </button>
+                    </ChamferedButton>
                 </div>
             </div>
         </div>

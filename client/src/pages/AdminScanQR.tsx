@@ -293,20 +293,14 @@ const AdminScanQR = ({ isEmbedded = false }: { isEmbedded?: boolean }) => {
     const scannedPercent = eventData ? Math.round((eventData.scannedCount / Math.max(eventData.totalTickets, 1)) * 100) : 0;
 
     return (
-        <div className="min-h-screen bg-[var(--bg-body)] relative overflow-hidden">
-            {/* Subtle gradient overlay */}
-            <div className="fixed inset-0 pointer-events-none">
-                <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[600px] bg-[hsl(var(--accent))]/[0.03] rounded-full blur-[120px]" />
-                <div className="absolute bottom-0 right-0 w-[400px] h-[400px] bg-purple-500/[0.02] rounded-full blur-[100px]" />
-            </div>
-
+        <div className="min-h-screen bg-[var(--bg)] text-[var(--text)] relative overflow-hidden">
             {/* Top bar */}
-            <div className="sticky top-0 z-50 backdrop-blur-xl bg-[var(--bg-body)]/80 border-b border-[var(--border-color)]/50">
+            <div className="sticky top-0 z-50 backdrop-blur-xl bg-[var(--bg)]/80 border-b border-[var(--border)]">
                 <div className="flex items-center justify-between px-4 py-3 max-w-2xl mx-auto">
                     {!isEmbedded && (
                         <button
                             onClick={() => setLocation('/dashboard')}
-                            className="flex items-center gap-2 text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors -ml-1 py-1 px-2 rounded-lg hover:bg-[var(--card-bg)]"
+                            className="flex items-center gap-2 text-[var(--text-2)] hover:text-[var(--text)] transition-colors -ml-1 py-1 px-2 rounded-lg hover:bg-[var(--surface-2)]"
                         >
                             <ArrowLeft className="w-5 h-5" />
                             <span className="text-sm font-medium">Back</span>
@@ -314,10 +308,10 @@ const AdminScanQR = ({ isEmbedded = false }: { isEmbedded?: boolean }) => {
                     )}
 
                     <div className="flex items-center gap-2">
-                        <div className="w-8 h-8 rounded-lg bg-[hsl(var(--accent))]/10 flex items-center justify-center">
-                            <ScanLine className="w-4 h-4 text-[hsl(var(--accent))]" />
+                        <div className="w-8 h-8 rounded-lg bg-[var(--surface-2)] border border-[var(--border)] flex items-center justify-center">
+                            <ScanLine className="w-4 h-4 text-[var(--red)]" />
                         </div>
-                        <span className="text-sm font-semibold text-[var(--text-primary)]">Scan Tickets</span>
+                        <span className="text-sm font-medium text-[var(--text)]">Scan Tickets</span>
                     </div>
 
                     <div className="w-[68px]" /> {/* Spacer for centering */}
@@ -333,12 +327,12 @@ const AdminScanQR = ({ isEmbedded = false }: { isEmbedded?: boolean }) => {
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.05 }}
                 >
-                    <div className="rounded-2xl bg-[var(--card-bg)]/80 backdrop-blur-sm border border-[var(--border-color)]/60 p-4">
-                        <label className="text-xs font-medium text-[var(--text-secondary)] uppercase tracking-wider mb-2.5 block">
+                    <div className="rounded-2xl bg-[var(--surface)] border border-[var(--border)] p-4">
+                        <label className="text-xs font-mono text-[var(--text-3)] uppercase tracking-wider mb-2.5 block">
                             Select Event
                         </label>
                         <Select value={selectedEventId} onValueChange={setSelectedEventId}>
-                            <SelectTrigger className="bg-[var(--bg-body)]/60 border-[var(--border-color)]/60 text-[var(--text-primary)] h-11 rounded-xl">
+                            <SelectTrigger className="bg-[var(--surface-2)] border-[var(--border)] text-[var(--text)] h-11 rounded-xl">
                                 <SelectValue placeholder="Choose an event..." />
                             </SelectTrigger>
                             <SelectContent>
@@ -353,17 +347,17 @@ const AdminScanQR = ({ isEmbedded = false }: { isEmbedded?: boolean }) => {
                         {/* Stats */}
                         {eventData && (
                             <div className="mt-4 flex gap-3">
-                                <div className="flex-1 rounded-xl bg-[var(--bg-body)]/60 p-3 text-center">
-                                    <div className="text-2xl font-bold text-[var(--text-primary)]">{eventData.totalTickets}</div>
-                                    <div className="text-[10px] uppercase tracking-wider text-[var(--text-secondary)] mt-0.5">Registered</div>
+                                <div className="flex-1 rounded-xl bg-[var(--surface-2)] border border-[var(--border)] p-3 text-center">
+                                    <div className="text-2xl font-display font-medium text-[var(--text)]">{eventData.totalTickets}</div>
+                                    <div className="text-[10px] font-mono uppercase tracking-wider text-[var(--text-3)] mt-0.5">Registered</div>
                                 </div>
-                                <div className="flex-1 rounded-xl bg-green-500/5 border border-green-500/10 p-3 text-center">
-                                    <div className="text-2xl font-bold text-green-500">{eventData.scannedCount}</div>
-                                    <div className="text-[10px] uppercase tracking-wider text-green-500/70 mt-0.5">Scanned</div>
+                                <div className="flex-1 rounded-xl bg-emerald-500/5 border border-emerald-500/20 p-3 text-center">
+                                    <div className="text-2xl font-display font-medium text-emerald-400">{eventData.scannedCount}</div>
+                                    <div className="text-[10px] font-mono uppercase tracking-wider text-emerald-400/80 mt-0.5">Scanned</div>
                                 </div>
-                                <div className="flex-1 rounded-xl bg-[var(--bg-body)]/60 p-3 text-center">
-                                    <div className="text-2xl font-bold text-[hsl(var(--accent))]">{scannedPercent}%</div>
-                                    <div className="text-[10px] uppercase tracking-wider text-[var(--text-secondary)] mt-0.5">Progress</div>
+                                <div className="flex-1 rounded-xl bg-[var(--surface-2)] border border-[var(--border)] p-3 text-center">
+                                    <div className="text-2xl font-display font-medium text-[var(--red)]">{scannedPercent}%</div>
+                                    <div className="text-[10px] font-mono uppercase tracking-wider text-[var(--text-3)] mt-0.5">Progress</div>
                                 </div>
                             </div>
                         )}
@@ -376,17 +370,17 @@ const AdminScanQR = ({ isEmbedded = false }: { isEmbedded?: boolean }) => {
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.1 }}
                 >
-                    <div className="rounded-2xl bg-[var(--card-bg)]/80 backdrop-blur-sm border border-[var(--border-color)]/60 overflow-hidden">
+                    <div className="rounded-2xl bg-[var(--surface)] border border-[var(--border)] overflow-hidden">
                         {/* Mode toggle */}
-                        <div className="flex border-b border-[var(--border-color)]/40">
+                        <div className="flex border-b border-[var(--border)]">
                             <button
                                 onClick={async () => {
                                     if (scanMode === 'camera') return;
                                     setScanMode('camera');
                                 }}
                                 className={`flex-1 flex items-center justify-center gap-2 py-3.5 text-sm font-medium transition-all ${scanMode === 'camera'
-                                    ? 'text-[hsl(var(--accent))] bg-[hsl(var(--accent))]/5 border-b-2 border-[hsl(var(--accent))]'
-                                    : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
+                                    ? 'text-[var(--text)] bg-[var(--surface-2)] border-b-2 border-[var(--red)]'
+                                    : 'text-[var(--text-2)] hover:text-[var(--text)]'
                                     }`}
                             >
                                 <Camera className="w-4 h-4" />
@@ -399,8 +393,8 @@ const AdminScanQR = ({ isEmbedded = false }: { isEmbedded?: boolean }) => {
                                     setScanMode('manual');
                                 }}
                                 className={`flex-1 flex items-center justify-center gap-2 py-3.5 text-sm font-medium transition-all ${scanMode === 'manual'
-                                    ? 'text-[hsl(var(--accent))] bg-[hsl(var(--accent))]/5 border-b-2 border-[hsl(var(--accent))]'
-                                    : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
+                                    ? 'text-[var(--text)] bg-[var(--surface-2)] border-b-2 border-[var(--red)]'
+                                    : 'text-[var(--text-2)] hover:text-[var(--text)]'
                                     }`}
                             >
                                 <Search className="w-4 h-4" />
@@ -421,19 +415,19 @@ const AdminScanQR = ({ isEmbedded = false }: { isEmbedded?: boolean }) => {
                                             </div>
                                         )}
                                         {!isScanning && (
-                                            <div className="absolute inset-0 flex flex-col items-center justify-center bg-[var(--bg-body)]/50 backdrop-blur-sm z-10">
-                                                <div className="w-20 h-20 rounded-2xl bg-[var(--card-bg)] border border-[var(--border-color)]/60 flex items-center justify-center mb-4 shadow-lg">
-                                                    <CameraOff className="w-8 h-8 text-[var(--text-secondary)]/50" />
+                                            <div className="absolute inset-0 flex flex-col items-center justify-center bg-[var(--surface)]/90 backdrop-blur-sm z-10">
+                                                <div className="w-16 h-16 rounded-2xl bg-[var(--surface-2)] border border-[var(--border)] flex items-center justify-center mb-3">
+                                                    <CameraOff className="w-6 h-6 text-[var(--text-3)]" />
                                                 </div>
-                                                <p className="text-sm text-[var(--text-secondary)] mb-1">Camera is off</p>
-                                                <p className="text-xs text-[var(--text-secondary)]/60">Tap below to start scanning</p>
+                                                <p className="text-sm font-medium text-[var(--text)] mb-0.5">Camera is off</p>
+                                                <p className="text-xs text-[var(--text-3)] font-mono">Tap below to start scanning</p>
                                             </div>
                                         )}
                                     </div>
                                     {!isScanning ? (
                                         <Button
                                             onClick={startCameraScanner}
-                                            className="w-full h-12 rounded-xl bg-[hsl(var(--accent))] hover:bg-[hsl(var(--accent))]/90 text-white font-medium text-sm"
+                                            className="w-full h-11 rounded-xl bg-[var(--red)] hover:bg-[var(--red-hover)] text-white font-medium text-sm"
                                         >
                                             <Camera className="w-4 h-4 mr-2" />
                                             Start Camera
@@ -442,7 +436,7 @@ const AdminScanQR = ({ isEmbedded = false }: { isEmbedded?: boolean }) => {
                                         <Button
                                             onClick={stopCameraScanner}
                                             variant="outline"
-                                            className="w-full h-12 rounded-xl border-red-500/30 text-red-500 hover:bg-red-500/5 font-medium text-sm"
+                                            className="w-full h-11 rounded-xl border border-[var(--border)] text-[var(--text)] hover:bg-[var(--surface-2)] font-medium text-sm"
                                         >
                                             <CameraOff className="w-4 h-4 mr-2" />
                                             Stop Camera
@@ -453,21 +447,21 @@ const AdminScanQR = ({ isEmbedded = false }: { isEmbedded?: boolean }) => {
 
                             {/* Manual Mode */}
                             <div className={scanMode === 'manual' ? 'block' : 'hidden'}>
-                                <div className="text-center py-4 mb-4">
-                                    <div className="w-16 h-16 rounded-2xl bg-[hsl(var(--accent))]/5 border border-[hsl(var(--accent))]/10 flex items-center justify-center mx-auto mb-3">
-                                        <QrCode className="w-7 h-7 text-[hsl(var(--accent))]/70" />
+                                <div className="text-center py-4 mb-3">
+                                    <div className="w-12 h-12 rounded-xl bg-[var(--surface-2)] border border-[var(--border)] flex items-center justify-center mx-auto mb-2.5">
+                                        <QrCode className="w-6 h-6 text-[var(--red)]" />
                                     </div>
-                                    <p className="text-sm text-[var(--text-secondary)]">Enter the 3-character entry code shown on the ticket</p>
+                                    <p className="text-xs text-[var(--text-2)] font-mono">Enter the 3-character entry code shown on the ticket</p>
                                 </div>
                                 <form onSubmit={handleManualSubmit} className="space-y-3">
                                     {/* Entry Code Input */}
                                     <div>
-                                        <label className="text-[10px] uppercase tracking-wider text-[var(--text-secondary)] mb-1.5 block">Entry Code</label>
+                                        <label className="text-[10px] uppercase font-mono tracking-wider text-[var(--text-3)] mb-1.5 block">Entry Code</label>
                                         <Input
                                             value={manualInput}
                                             onChange={(e) => setManualInput(e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 3))}
                                             placeholder="e.g. A3X"
-                                            className="h-14 rounded-xl bg-black/50 border-[var(--border-color)]/60 text-white font-mono text-2xl text-center tracking-[0.3em] font-bold px-4 focus:bg-black/70 transition-colors"
+                                            className="h-14 rounded-xl bg-[var(--surface-2)] border-[var(--border)] text-[var(--text)] font-mono text-2xl text-center tracking-[0.3em] font-medium px-4 focus:bg-[var(--surface)] transition-colors"
                                             maxLength={3}
                                             autoComplete="off"
                                         />
@@ -475,9 +469,9 @@ const AdminScanQR = ({ isEmbedded = false }: { isEmbedded?: boolean }) => {
 
                                     {/* Divider */}
                                     <div className="flex items-center gap-3 py-1">
-                                        <div className="flex-1 h-px bg-[var(--border-color)]/40" />
-                                        <span className="text-[10px] text-[var(--text-secondary)]/60 uppercase">or paste full QR token</span>
-                                        <div className="flex-1 h-px bg-[var(--border-color)]/40" />
+                                        <div className="flex-1 h-px bg-[var(--border)]" />
+                                        <span className="text-[10px] text-[var(--text-3)] font-mono uppercase">or paste full QR token</span>
+                                        <div className="flex-1 h-px bg-[var(--border)]" />
                                     </div>
 
                                     {/* Full Token Input (fallback) */}
@@ -485,21 +479,21 @@ const AdminScanQR = ({ isEmbedded = false }: { isEmbedded?: boolean }) => {
                                         value={manualToken}
                                         onChange={(e) => setManualToken(e.target.value)}
                                         placeholder="Paste full QR token..."
-                                        className="h-10 rounded-xl bg-black/50 border-[var(--border-color)]/40 text-white font-mono text-[10px] px-4 opacity-60 focus:opacity-100 transition-all focus:bg-black/70"
+                                        className="h-10 rounded-xl bg-[var(--surface-2)] border-[var(--border)] text-[var(--text)] font-mono text-xs px-4"
                                         autoComplete="off"
                                     />
 
                                     <Button
                                         type="submit"
                                         disabled={(!manualInput.trim() && !manualToken.trim()) || isProcessing}
-                                        className="w-full h-12 rounded-xl bg-[hsl(var(--accent))] hover:bg-[hsl(var(--accent))]/90 text-white font-medium text-sm disabled:opacity-40"
+                                        className="w-full h-11 rounded-xl bg-[var(--red)] hover:bg-[var(--red-hover)] text-white font-medium text-sm disabled:opacity-40"
                                     >
                                         {isProcessing ? (
                                             <Loader2 className="w-4 h-4 mr-2 animate-spin" />
                                         ) : (
                                             <CheckCircle2 className="w-4 h-4 mr-2" />
                                         )}
-                                        Verify
+                                        Verify Pass
                                     </Button>
                                 </form>
                             </div>
@@ -535,21 +529,21 @@ const AdminScanQR = ({ isEmbedded = false }: { isEmbedded?: boolean }) => {
                                                 </div>
                                             )}
                                             <div className="min-w-0">
-                                                <h4 className="font-semibold text-[var(--text-primary)] text-base">{scanResult.title}</h4>
-                                                <p className="text-sm text-[var(--text-secondary)] truncate">{scanResult.message}</p>
+                                                <h4 className="font-semibold text-[var(--text)] text-base">{scanResult.title}</h4>
+                                                <p className="text-sm text-[var(--text-2)] truncate">{scanResult.message}</p>
                                             </div>
                                         </div>
                                         {scanResult.ticket && (
-                                            <div className="ml-[52px] flex gap-3 text-xs text-[var(--text-secondary)] mb-3">
-                                                <span className="px-2 py-1 rounded-md bg-[var(--bg-body)]/60">Year {scanResult.ticket.year}</span>
-                                                <span className="px-2 py-1 rounded-md bg-[var(--bg-body)]/60">{scanResult.ticket.eventTitle}</span>
+                                            <div className="ml-[52px] flex gap-3 text-xs text-[var(--text-2)] mb-3">
+                                                <span className="px-2 py-1 rounded-[var(--r-sm)] bg-[var(--surface-2)] font-mono">Year {scanResult.ticket.year}</span>
+                                                <span className="px-2 py-1 rounded-[var(--r-sm)] bg-[var(--surface-2)]">{scanResult.ticket.eventTitle}</span>
                                             </div>
                                         )}
                                         <Button
                                             size="sm"
                                             variant="outline"
                                             onClick={() => setScanResult(null)}
-                                            className="ml-[52px] text-xs rounded-lg h-8"
+                                            className="ml-[52px] text-xs rounded-[var(--r-sm)] h-8 border-[var(--border)]"
                                         >
                                             <RotateCcw className="w-3 h-3 mr-1.5" />
                                             Scan Next
@@ -568,19 +562,19 @@ const AdminScanQR = ({ isEmbedded = false }: { isEmbedded?: boolean }) => {
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: 0.15 }}
                     >
-                        <div className="rounded-2xl bg-[var(--card-bg)]/80 backdrop-blur-sm border border-[var(--border-color)]/60 overflow-hidden">
+                        <div className="rounded-[var(--r-lg)] bg-[var(--surface)] border border-[var(--border)] overflow-hidden">
                             {/* Collapsible header */}
                             <button
                                 onClick={() => setShowRegistrations(!showRegistrations)}
-                                className="w-full flex items-center justify-between p-4 hover:bg-[var(--bg-body)]/30 transition-colors"
+                                className="w-full flex items-center justify-between p-4 hover:bg-[var(--surface-2)] transition-colors"
                             >
                                 <div className="flex items-center gap-2.5">
-                                    <Users className="w-4 h-4 text-[hsl(var(--accent))]" />
-                                    <span className="font-semibold text-sm text-[var(--text-primary)]">
+                                    <Users className="w-4 h-4 text-[var(--red)]" />
+                                    <span className="font-medium text-sm text-[var(--text)]">
                                         Registrations
                                     </span>
                                     {eventData && (
-                                        <Badge variant="outline" className="text-[10px] bg-[var(--bg-body)]/60 border-[var(--border-color)]/40">
+                                        <Badge variant="outline" className="text-[10px] bg-[var(--surface-2)] border-[var(--border)] text-[var(--text-2)] font-mono">
                                             {eventData.totalTickets}
                                         </Badge>
                                     )}
@@ -591,13 +585,13 @@ const AdminScanQR = ({ isEmbedded = false }: { isEmbedded?: boolean }) => {
                                             size="sm"
                                             variant="ghost"
                                             onClick={(e) => { e.stopPropagation(); handleExportCSV(); }}
-                                            className="text-[10px] h-7 px-2 text-[var(--text-secondary)]"
+                                            className="text-[10px] h-7 px-2 text-[var(--text-2)]"
                                         >
                                             <Download className="w-3 h-3 mr-1" />
                                             CSV
                                         </Button>
                                     )}
-                                    <ChevronDown className={`w-4 h-4 text-[var(--text-secondary)] transition-transform ${showRegistrations ? 'rotate-180' : ''}`} />
+                                    <ChevronDown className={`w-4 h-4 text-[var(--text-3)] transition-transform ${showRegistrations ? 'rotate-180' : ''}`} />
                                 </div>
                             </button>
 
@@ -611,29 +605,28 @@ const AdminScanQR = ({ isEmbedded = false }: { isEmbedded?: boolean }) => {
                                         transition={{ duration: 0.2 }}
                                         className="overflow-hidden"
                                     >
-                                        <div className="border-t border-[var(--border-color)]/40">
+                                        <div className="border-t border-[var(--border)]">
                                             {loadingEventData ? (
                                                 <div className="flex justify-center py-10">
-                                                    <Loader2 className="w-5 h-5 animate-spin text-[hsl(var(--accent))]" />
+                                                    <Loader2 className="w-5 h-5 animate-spin text-[var(--red)]" />
                                                 </div>
                                             ) : eventData?.tickets.length === 0 ? (
-                                                <div className="text-center py-10 text-[var(--text-secondary)]">
-                                                    <Users className="w-8 h-8 mx-auto mb-2 opacity-20" />
+                                                <div className="text-center py-10 text-[var(--text-3)]">
+                                                    <Users className="w-8 h-8 mx-auto mb-2 opacity-30" />
                                                     <p className="text-xs">No registrations yet</p>
                                                 </div>
                                             ) : (
-                                                <div className="max-h-[400px] overflow-y-auto">
-                                                    {eventData?.tickets.map((ticket, idx) => (
+                                                <div className="max-h-[400px] overflow-y-auto divide-y divide-[var(--border)]">
+                                                    {eventData?.tickets.map((ticket) => (
                                                         <div
                                                             key={ticket.id}
-                                                            className={`flex items-center justify-between px-4 py-3 ${idx !== 0 ? 'border-t border-[var(--border-color)]/20' : ''
-                                                                } hover:bg-[var(--bg-body)]/30 transition-colors`}
+                                                            className="flex items-center justify-between px-4 py-3 hover:bg-[var(--surface-2)] transition-colors"
                                                         >
                                                             <div className="min-w-0 flex-1">
-                                                                <div className="text-sm font-medium text-[var(--text-primary)] truncate">
+                                                                <div className="text-sm font-medium text-[var(--text)] truncate">
                                                                     {ticket.fullName}
                                                                 </div>
-                                                                <div className="text-xs text-[var(--text-secondary)] mt-0.5">
+                                                                <div className="text-xs text-[var(--text-3)] font-mono mt-0.5">
                                                                     {ticket.rollNumber} · Year {ticket.year}
                                                                 </div>
                                                             </div>
@@ -641,7 +634,7 @@ const AdminScanQR = ({ isEmbedded = false }: { isEmbedded?: boolean }) => {
                                                                 variant="outline"
                                                                 className={`text-[10px] shrink-0 ml-3 ${ticket.scanned
                                                                     ? 'bg-green-500/10 text-green-500 border-green-500/20'
-                                                                    : 'bg-[var(--bg-body)]/60 text-[var(--text-secondary)] border-[var(--border-color)]/40'
+                                                                    : 'bg-[var(--surface-2)] text-[var(--text-3)] border-[var(--border)]'
                                                                     }`}
                                                             >
                                                                 {ticket.scanned ? '✓ Scanned' : 'Pending'}

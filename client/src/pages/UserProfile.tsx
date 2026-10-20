@@ -428,13 +428,13 @@ const UserProfile = () => {
 
       <div className="flex-1 flex flex-col overflow-hidden">
         {/* Desktop Header with View User Panel and View Home Page */}
-        <header className="hidden md:flex items-center justify-between px-8 py-3.5 border-b border-[var(--border-color)] bg-[var(--card-bg)]/60 backdrop-blur-md">
+        <header className="hidden md:flex items-center justify-between px-8 py-3.5 border-b border-[var(--border)] bg-[var(--surface)]/80 backdrop-blur-md">
           <div className="flex items-center gap-3">
-            <span className="text-xs font-mono px-2.5 py-1 rounded-lg bg-[hsl(var(--accent))]/10 border border-[hsl(var(--accent))]/30 text-[hsl(var(--accent))] font-bold uppercase tracking-wider">
+            <span className="text-xs font-mono px-2.5 py-1 rounded-[var(--r-sm)] bg-[var(--red-soft)] border border-[var(--red-line)] text-[var(--red-text)] font-medium uppercase tracking-wider">
               {currentUser.role === 'ADMIN' ? (panelMode === 'user' ? 'USER PANEL (STUDENT VIEW)' : 'ADMIN PANEL') : 'USER DASHBOARD'}
             </span>
-            <span className="text-xs text-[var(--text-muted)] font-mono">
-              Signed in as <strong className="text-[var(--text-primary)]">{currentUser.username}</strong>
+            <span className="text-xs text-[var(--text-3)] font-mono">
+              Signed in as <strong className="text-[var(--text)] font-semibold">{currentUser.username}</strong>
             </span>
           </div>
 
@@ -447,15 +447,15 @@ const UserProfile = () => {
                   setPanelMode(panelMode === 'user' ? 'admin' : 'user');
                   setActiveView('overview');
                 }}
-                className="h-8 text-xs rounded-xl border-[hsl(var(--accent))]/40 bg-[hsl(var(--accent))]/10 hover:bg-[hsl(var(--accent))]/20 text-[hsl(var(--accent))] font-medium gap-1.5"
+                className="h-8 text-xs rounded-[var(--r-sm)] border-[var(--border)] bg-[var(--surface-2)] text-[var(--text)] hover:text-[var(--red-text)] font-medium gap-1.5"
               >
                 {panelMode === 'user' ? (
                   <>
-                    <FaShieldAlt className="w-3 h-3" /> Back to Admin Panel
+                    <FaShieldAlt className="w-3 h-3 text-[var(--red)]" /> Back to Admin Panel
                   </>
                 ) : (
                   <>
-                    <FaUser className="w-3 h-3" /> View User Panel
+                    <FaUser className="w-3 h-3 text-[var(--red)]" /> View User Panel
                   </>
                 )}
               </Button>
@@ -465,19 +465,19 @@ const UserProfile = () => {
               variant="outline"
               size="sm"
               onClick={() => navigate('/')}
-              className="h-8 text-xs rounded-xl border-[var(--border-color)] hover:border-[hsl(var(--accent))]/50 hover:text-[hsl(var(--accent))] gap-1.5"
+              className="h-8 text-xs rounded-[var(--r-sm)] border-[var(--border)] hover:border-[var(--border-strong)] text-[var(--text-2)] hover:text-[var(--text)] gap-1.5"
             >
-              <FaHome className="w-3.5 h-3.5 text-[hsl(var(--accent))]" /> View Home Page
+              <FaHome className="w-3.5 h-3.5 text-[var(--red)]" /> View Home Page
             </Button>
           </div>
         </header>
 
         {/* Mobile Header */}
-        <header className="md:hidden flex items-center justify-between p-3 border-b border-[var(--border-color)] bg-[var(--card-bg)]/80 backdrop-blur-md gap-2">
-          <Button variant="ghost" size="sm" className="h-8 px-2 text-xs gap-1" onClick={() => navigate('/')}>
-            <FaHome className="w-3.5 h-3.5 text-[hsl(var(--accent))]" /> Home
+        <header className="md:hidden flex items-center justify-between p-3 border-b border-[var(--border)] bg-[var(--surface)]/80 backdrop-blur-md gap-2">
+          <Button variant="ghost" size="sm" className="h-8 px-2 text-xs gap-1 text-[var(--text-2)]" onClick={() => navigate('/')}>
+            <FaHome className="w-3.5 h-3.5 text-[var(--red)]" /> Home
           </Button>
-          <span className="font-bold text-xs font-mono uppercase tracking-wider text-[var(--text-primary)] truncate">
+          <span className="font-mono text-xs uppercase tracking-wider text-[var(--text)] truncate">
             {currentUser.role === 'ADMIN' ? (panelMode === 'user' ? 'User View' : 'Admin') : 'Dashboard'}
           </span>
           <div className="flex items-center gap-1">
@@ -485,7 +485,7 @@ const UserProfile = () => {
               <Button
                 variant="ghost"
                 size="sm"
-                className="h-8 px-2 text-[11px] text-[hsl(var(--accent))]"
+                className="h-8 px-2 text-[11px] text-[var(--red)]"
                 onClick={() => {
                   setPanelMode(panelMode === 'user' ? 'admin' : 'user');
                   setActiveView('overview');
@@ -494,7 +494,7 @@ const UserProfile = () => {
                 {panelMode === 'user' ? 'Admin' : 'User Panel'}
               </Button>
             )}
-            <Button variant="ghost" size="icon" className="h-8 w-8 shrink-0" onClick={() => setIsMobileOpen(true)}>
+            <Button variant="ghost" size="icon" className="h-8 w-8 shrink-0 text-[var(--text-2)]" onClick={() => setIsMobileOpen(true)}>
               <FaBars className="w-4 h-4" />
             </Button>
           </div>
@@ -503,20 +503,20 @@ const UserProfile = () => {
         <main ref={mainScrollRef} className="flex-1 overflow-y-auto p-4 md:p-8 custom-scrollbar">
           {selectedItem && isDialogOpen ? (
             <div className="space-y-6 max-w-4xl mx-auto pb-16 animate-fadeIn">
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-[var(--border-color)]">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-[var(--border)]">
                 <div>
                   <Button
                     variant="ghost"
                     size="sm"
                     onClick={() => { setIsDialogOpen(false); setSelectedItem(null); }}
-                    className="text-xs text-[var(--text-secondary)] hover:text-[hsl(var(--accent))] mb-1 -ml-2 gap-1.5"
+                    className="text-xs text-[var(--text-2)] hover:text-[var(--text)] mb-1 -ml-2 gap-1.5"
                   >
                     <FaArrowLeft className="w-3 h-3" /> Back to Dashboard
                   </Button>
-                  <h2 className="text-2xl font-bold tracking-tight text-[var(--text-primary)]">
+                  <h2 className="text-2xl font-display font-medium tracking-tight text-[var(--text)]">
                     {selectedItem?.id ? 'Edit' : 'Create'} {selectedItem?.contentType?.charAt(0).toUpperCase() + selectedItem?.contentType?.slice(1)}
                   </h2>
-                  <p className="text-xs text-[var(--text-secondary)] font-mono mt-0.5">
+                  <p className="text-xs text-[var(--text-3)] font-mono mt-0.5">
                     Configure details and parameters below
                   </p>
                 </div>
@@ -525,20 +525,20 @@ const UserProfile = () => {
                     variant="outline"
                     onClick={() => { setIsDialogOpen(false); setSelectedItem(null); }}
                     disabled={isSaving}
-                    className="text-xs h-9 rounded-xl border-[var(--border-color)]"
+                    className="text-xs h-9 rounded-[var(--r-md)] border-[var(--border)]"
                   >
                     Cancel
                   </Button>
                   <Button
                     onClick={handleSave}
                     disabled={isSaving}
-                    className="bg-[hsl(var(--accent))] text-[var(--bg-body)] hover:bg-[hsl(var(--accent))]/90 text-xs h-9 px-4 rounded-xl font-medium"
+                    className="bg-[var(--red)] text-white hover:bg-[var(--red-hover)] text-xs h-9 px-4 rounded-[var(--r-md)] font-medium"
                   >
                     <FaSave className="mr-1.5 h-3 w-3" /> {isSaving ? 'Saving...' : 'Save Changes'}
                   </Button>
                 </div>
               </div>
-              <div className="rounded-2xl border border-[var(--border-color)] bg-[var(--card-bg)] p-6">
+              <div className="rounded-[var(--r-lg)] border border-[var(--border)] bg-[var(--surface)] p-6">
                 {renderForm()}
               </div>
             </div>

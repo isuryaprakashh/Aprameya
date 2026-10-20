@@ -32,6 +32,8 @@ import {
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
 import { Button } from '@/components/ui/button';
+import ChamferedButton from '@/components/ui/ChamferedButton';
+import RoleBadge from '@/components/ui/RoleBadge';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -76,18 +78,6 @@ export const UserManagement = ({
     bio: '',
     profile_image: '',
   });
-
-  const getRoleBadgeColor = (role: string) => {
-    switch (role?.toUpperCase()) {
-      case 'ADMIN':
-        return 'bg-red-500/20 text-red-400 border-red-500/50';
-      case 'CORE':
-      case 'CORE_TEAM':
-        return 'bg-blue-500/20 text-blue-400 border-blue-500/50';
-      default:
-        return 'bg-[hsl(var(--accent))]/20 text-[hsl(var(--accent))] border-[hsl(var(--accent))]/50';
-    }
-  };
 
   const getInitials = (name?: string) => {
     if (!name) return 'U';
@@ -189,41 +179,41 @@ export const UserManagement = ({
   };
 
   return (
-    <Card className="bg-[var(--card-bg)] border-[var(--border-color)] animate-in fade-in">
-      <CardHeader className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+    <div className="bg-[var(--surface)] border border-[var(--border)] rounded-2xl animate-in fade-in p-6">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-[var(--border)]">
         <div>
-          <CardTitle className="text-xl font-bold font-display">User Management</CardTitle>
-          <CardDescription>
+          <h2 className="text-xl font-medium font-display text-[var(--text)]">User Management</h2>
+          <p className="text-xs text-[var(--text-2)] mt-1">
             View and edit user details, profile photos, usernames, roles, and about sections
-          </CardDescription>
+          </p>
         </div>
         <div className="flex items-center gap-3">
           <div className="relative">
-            <FaSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-xs text-[var(--text-secondary)]" />
+            <FaSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-xs text-[var(--text-3)]" />
             <Input
               placeholder="Search users..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-8 h-8 text-xs bg-[var(--bg-body)] border-[var(--border-color)] w-48 sm:w-64 rounded-lg"
+              className="pl-8 h-9 text-xs bg-[var(--surface-2)] border-[var(--border)] w-48 sm:w-64 rounded-xl"
             />
           </div>
-          <Badge variant="outline" className="border-[hsl(var(--accent))] text-[hsl(var(--accent))] shrink-0">
+          <span className="font-mono text-xs px-2.5 py-0.5 rounded-full border border-[var(--border)] text-[var(--text-2)] shrink-0">
             {users.length} Users
-          </Badge>
+          </span>
         </div>
-      </CardHeader>
+      </div>
 
-      <CardContent>
-        <div className="relative overflow-x-auto rounded-xl border border-[var(--border-color)]">
+      <div className="pt-6">
+        <div className="relative overflow-x-auto rounded-xl border border-[var(--border)]">
           <Table>
-            <TableHeader className="bg-[var(--bg-body)]">
-              <TableRow>
-                <TableHead>User / Profile</TableHead>
-                <TableHead>Roll No.</TableHead>
-                <TableHead>Email</TableHead>
-                <TableHead className="max-w-[200px]">About / Bio</TableHead>
-                <TableHead>Role</TableHead>
-                <TableHead className="text-right">Actions</TableHead>
+            <TableHeader className="bg-[var(--surface-2)]">
+              <TableRow className="border-b border-[var(--border)]">
+                <TableHead className="font-mono text-[10px] uppercase text-[var(--text-3)]">User / Profile</TableHead>
+                <TableHead className="font-mono text-[10px] uppercase text-[var(--text-3)]">Roll No.</TableHead>
+                <TableHead className="font-mono text-[10px] uppercase text-[var(--text-3)]">Email</TableHead>
+                <TableHead className="font-mono text-[10px] uppercase text-[var(--text-3)] max-w-[200px]">About / Bio</TableHead>
+                <TableHead className="font-mono text-[10px] uppercase text-[var(--text-3)]">Role</TableHead>
+                <TableHead className="font-mono text-[10px] uppercase text-[var(--text-3)] text-right">Actions</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -232,35 +222,35 @@ export const UserManagement = ({
                 return (
                   <TableRow
                     key={user.id}
-                    className="border-b border-[var(--border-color)] hover:bg-[var(--text-primary)]/5"
+                    className="border-b border-[var(--border)] hover:bg-[var(--surface-2)]/50 transition-colors"
                   >
                     {/* User Profile Avatar & Username */}
                     <TableCell>
                       <div className="flex items-center gap-3">
-                        <Avatar className="w-9 h-9 border border-[var(--border-color)] shrink-0">
+                        <Avatar className="w-8 h-8 border border-[var(--border)] shrink-0">
                           <AvatarImage src={user.profile_image || ''} alt={displayName} className="object-cover" />
-                          <AvatarFallback className="bg-[hsl(var(--accent))]/15 text-[hsl(var(--accent))] text-xs font-bold font-display">
+                          <AvatarFallback className="bg-[var(--surface-2)] text-[var(--text-2)] text-xs font-mono">
                             {getInitials(displayName)}
                           </AvatarFallback>
                         </Avatar>
                         <div className="leading-tight">
-                          <p className="font-semibold text-xs text-[var(--text-primary)]">{displayName}</p>
-                          <p className="text-[11px] font-mono text-[var(--text-secondary)]">@{user.username}</p>
+                          <p className="font-medium text-xs text-[var(--text)]">{displayName}</p>
+                          <p className="text-[11px] font-mono text-[var(--text-3)]">@{user.username}</p>
                         </div>
                       </div>
                     </TableCell>
 
-                    <TableCell className="font-mono text-xs">{user.rollNumber || 'N/A'}</TableCell>
-                    <TableCell className="text-xs text-[var(--text-secondary)]">{user.email}</TableCell>
+                    <TableCell className="font-mono text-xs text-[var(--text-2)]">{user.rollNumber || '—'}</TableCell>
+                    <TableCell className="text-xs text-[var(--text-2)] font-mono">{user.email}</TableCell>
 
                     {/* About Section Snippet */}
                     <TableCell className="max-w-[200px]">
                       {user.bio ? (
-                        <p className="text-xs text-[var(--text-secondary)] truncate" title={user.bio}>
+                        <p className="text-xs text-[var(--text-2)] truncate" title={user.bio}>
                           {user.bio}
                         </p>
                       ) : (
-                        <span className="text-[11px] text-[var(--text-muted)] italic">No about bio added</span>
+                        <span className="text-[11px] text-[var(--text-3)] italic">No bio added</span>
                       )}
                     </TableCell>
 
@@ -270,7 +260,7 @@ export const UserManagement = ({
                         defaultValue={user.role}
                         onValueChange={(r) => updateUserRole.mutate({ userId: user.id, role: r })}
                       >
-                        <SelectTrigger className="w-[110px] h-7 text-xs bg-[var(--bg-body)] border-[var(--border-color)]">
+                        <SelectTrigger className="w-[110px] h-7 text-xs bg-[var(--surface-2)] border-[var(--border)]">
                           <SelectValue />
                         </SelectTrigger>
                         <SelectContent>
@@ -284,34 +274,33 @@ export const UserManagement = ({
                     {/* Actions: Details, Edit, Delete */}
                     <TableCell className="text-right">
                       <div className="flex items-center justify-end gap-1.5">
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          onClick={() => setSelectedUserForDetails(user)}
-                          className="h-7 text-xs px-2 text-[var(--text-secondary)] hover:text-[hsl(var(--accent))] hover:border-[hsl(var(--accent))] rounded-lg"
-                        >
-                          Details
-                        </Button>
-
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          onClick={() => openEditModal(user)}
-                          className="h-7 text-xs px-2 border-[var(--border-color)] text-[hsl(var(--accent))] hover:bg-[hsl(var(--accent))]/10 rounded-lg gap-1"
-                          title="Edit User Details & Photo"
-                        >
-                          <FaEdit className="h-3 w-3" /> Edit
-                        </Button>
-
-                        <Button
+                        <ChamferedButton
                           variant="ghost"
                           size="sm"
-                          className="h-7 px-2 text-red-500 hover:text-red-400 hover:bg-red-500/10 rounded-lg"
+                          onClick={() => setSelectedUserForDetails(user)}
+                          className="h-7 text-xs px-2"
+                        >
+                          Details
+                        </ChamferedButton>
+
+                        <ChamferedButton
+                          variant="secondary"
+                          size="sm"
+                          onClick={() => openEditModal(user)}
+                          className="h-7 text-xs px-2"
+                          title="Edit User Details & Photo"
+                          leftIcon={<FaEdit className="h-3 w-3" />}
+                        >
+                          Edit
+                        </ChamferedButton>
+
+                        <button
+                          className="h-7 px-2 text-[var(--text-3)] hover:text-[var(--red)] transition-colors rounded-lg"
                           onClick={() => setUserToDelete(user)}
                           title="Delete User"
                         >
                           <FaTrash className="h-3 w-3" />
-                        </Button>
+                        </button>
                       </div>
                     </TableCell>
                   </TableRow>
@@ -324,24 +313,24 @@ export const UserManagement = ({
         {/* View Details Dialog */}
         <Dialog open={!!selectedUserForDetails} onOpenChange={(open) => !open && setSelectedUserForDetails(null)}>
           {selectedUserForDetails && (
-            <DialogContent className="sm:max-w-lg bg-[var(--card-bg)] border-[var(--border-color)] text-[var(--text-primary)] rounded-2xl p-6">
+            <DialogContent className="sm:max-w-lg bg-[var(--surface)] border border-[var(--border)] text-[var(--text)] rounded-2xl p-6">
               <DialogHeader>
                 <div className="flex items-center gap-4">
-                  <Avatar className="w-16 h-16 border-2 border-[hsl(var(--accent))]/40 shadow-lg">
+                  <Avatar className="w-14 h-14 border border-[var(--border)]">
                     <AvatarImage
                       src={selectedUserForDetails.profile_image || ''}
                       alt={selectedUserForDetails.display_name || selectedUserForDetails.username}
                       className="object-cover"
                     />
-                    <AvatarFallback className="bg-gradient-to-br from-red-950 to-black text-white text-xl font-bold font-display">
+                    <AvatarFallback className="bg-[var(--surface-2)] text-[var(--text)] text-lg font-mono">
                       {getInitials(selectedUserForDetails.display_name || selectedUserForDetails.username)}
                     </AvatarFallback>
                   </Avatar>
                   <div>
-                    <DialogTitle className="text-lg font-bold font-display">
+                    <DialogTitle className="text-lg font-medium font-display text-[var(--text)]">
                       {selectedUserForDetails.display_name || selectedUserForDetails.username}
                     </DialogTitle>
-                    <DialogDescription className="text-xs text-[var(--text-secondary)] font-mono">
+                    <DialogDescription className="text-xs text-[var(--text-2)] font-mono">
                       @{selectedUserForDetails.username} • {selectedUserForDetails.email}
                     </DialogDescription>
                   </div>
@@ -349,38 +338,36 @@ export const UserManagement = ({
               </DialogHeader>
 
               <div className="space-y-4 py-3">
-                <div className="grid grid-cols-2 gap-4 text-xs">
-                  <div className="p-3 bg-[var(--bg-body)] rounded-xl border border-[var(--border-color)]">
-                    <label className="text-[10px] font-mono text-[var(--text-secondary)] uppercase block mb-1">
+                <div className="grid grid-cols-2 gap-3 text-xs">
+                  <div className="p-3 bg-[var(--surface-2)] rounded-xl border border-[var(--border)]">
+                    <label className="text-[10px] font-mono text-[var(--text-3)] uppercase block mb-1">
                       Roll Number
                     </label>
-                    <p className="font-bold text-[var(--text-primary)]">
+                    <p className="font-mono font-medium text-[var(--text)]">
                       {selectedUserForDetails.rollNumber || 'N/A'}
                     </p>
                   </div>
-                  <div className="p-3 bg-[var(--bg-body)] rounded-xl border border-[var(--border-color)]">
-                    <label className="text-[10px] font-mono text-[var(--text-secondary)] uppercase block mb-1">
+                  <div className="p-3 bg-[var(--surface-2)] rounded-xl border border-[var(--border)]">
+                    <label className="text-[10px] font-mono text-[var(--text-3)] uppercase block mb-1">
                       Role Privilege
                     </label>
-                    <Badge variant="outline" className={getRoleBadgeColor(selectedUserForDetails.role)}>
-                      {selectedUserForDetails.role}
-                    </Badge>
+                    <RoleBadge role={selectedUserForDetails.role} />
                   </div>
-                  <div className="p-3 bg-[var(--bg-body)] rounded-xl border border-[var(--border-color)]">
-                    <label className="text-[10px] font-mono text-[var(--text-secondary)] uppercase block mb-1">
+                  <div className="p-3 bg-[var(--surface-2)] rounded-xl border border-[var(--border)]">
+                    <label className="text-[10px] font-mono text-[var(--text-3)] uppercase block mb-1">
                       Registration Date
                     </label>
-                    <p className="text-[var(--text-primary)]">
+                    <p className="text-[var(--text-2)] font-mono">
                       {selectedUserForDetails.created_at
                         ? new Date(selectedUserForDetails.created_at).toLocaleDateString()
                         : 'N/A'}
                     </p>
                   </div>
-                  <div className="p-3 bg-[var(--bg-body)] rounded-xl border border-[var(--border-color)]">
-                    <label className="text-[10px] font-mono text-[var(--text-secondary)] uppercase block mb-1">
+                  <div className="p-3 bg-[var(--surface-2)] rounded-xl border border-[var(--border)]">
+                    <label className="text-[10px] font-mono text-[var(--text-3)] uppercase block mb-1">
                       Account Tenure
                     </label>
-                    <p className="text-[var(--text-primary)]">
+                    <p className="text-[var(--text-2)] font-mono">
                       {selectedUserForDetails.created_at
                         ? `${Math.floor(
                             (new Date().getTime() - new Date(selectedUserForDetails.created_at).getTime()) /
@@ -392,34 +379,34 @@ export const UserManagement = ({
                 </div>
 
                 {/* About / Bio Section */}
-                <div className="p-4 bg-[var(--bg-body)] rounded-xl border border-[var(--border-color)]">
-                  <label className="text-[10px] font-mono text-[var(--text-secondary)] uppercase block mb-1.5">
+                <div className="p-4 bg-[var(--surface-2)] rounded-xl border border-[var(--border)]">
+                  <label className="text-[10px] font-mono text-[var(--text-3)] uppercase block mb-1.5">
                     About Section (Bio)
                   </label>
                   {selectedUserForDetails.bio ? (
-                    <p className="text-xs text-[var(--text-primary)] leading-relaxed whitespace-pre-wrap">
+                    <p className="text-xs text-[var(--text-2)] leading-relaxed whitespace-pre-wrap">
                       {selectedUserForDetails.bio}
                     </p>
                   ) : (
-                    <p className="text-xs text-[var(--text-muted)] italic">
+                    <p className="text-xs text-[var(--text-3)] italic">
                       No About section has been added yet.
                     </p>
                   )}
                 </div>
 
                 <div className="flex justify-end gap-2 pt-2">
-                  <Button
+                  <ChamferedButton
                     size="sm"
-                    variant="outline"
+                    variant="primary"
                     onClick={() => {
                       const u = selectedUserForDetails;
                       setSelectedUserForDetails(null);
                       openEditModal(u);
                     }}
-                    className="border-[hsl(var(--accent))] text-[hsl(var(--accent))] text-xs rounded-xl"
+                    leftIcon={<FaEdit className="h-3 w-3" />}
                   >
-                    <FaEdit className="mr-1.5 h-3 w-3" /> Edit This User
-                  </Button>
+                    Edit This User
+                  </ChamferedButton>
                 </div>
               </div>
             </DialogContent>
@@ -429,26 +416,26 @@ export const UserManagement = ({
         {/* Edit User Dialog (Admin Mode) */}
         <Dialog open={!!editingUser} onOpenChange={(open) => !open && setEditingUser(null)}>
           {editingUser && (
-            <DialogContent className="sm:max-w-xl bg-[var(--card-bg)] border-[var(--border-color)] text-[var(--text-primary)] rounded-2xl p-6 max-h-[90vh] overflow-y-auto">
+            <DialogContent className="sm:max-w-xl bg-[var(--surface)] border border-[var(--border)] text-[var(--text)] rounded-2xl p-6 max-h-[90vh] overflow-y-auto">
               <DialogHeader>
-                <DialogTitle className="text-xl font-bold font-display flex items-center gap-2">
-                  <FaEdit className="text-[hsl(var(--accent))]" /> Edit User Details
+                <DialogTitle className="text-lg font-medium font-display flex items-center gap-2">
+                  <FaEdit className="text-[var(--red)]" /> Edit User Details
                 </DialogTitle>
-                <DialogDescription className="text-xs text-[var(--text-secondary)]">
+                <DialogDescription className="text-xs text-[var(--text-2)]">
                   Modify user profile image, username, display name, email, roll number, role, and about section.
                 </DialogDescription>
               </DialogHeader>
 
               <div className="space-y-4 py-4">
                 {/* Profile Photo Editor */}
-                <div className="p-4 rounded-xl bg-[var(--bg-body)] border border-[var(--border-color)] space-y-3">
-                  <Label className="text-xs font-mono text-[var(--text-secondary)] uppercase block">
+                <div className="p-4 rounded-xl bg-[var(--surface-2)] border border-[var(--border)] space-y-3">
+                  <Label className="text-xs font-mono text-[var(--text-3)] uppercase block">
                     Profile Photo
                   </Label>
                   <div className="flex items-center gap-4">
-                    <Avatar className="w-16 h-16 border-2 border-[hsl(var(--accent))]/40 shadow-md shrink-0">
+                    <Avatar className="w-14 h-14 border border-[var(--border)] shrink-0">
                       <AvatarImage src={editForm.profile_image} className="object-cover" />
-                      <AvatarFallback className="bg-red-950 text-white font-bold font-display">
+                      <AvatarFallback className="bg-[var(--surface)] text-[var(--text)] font-mono font-medium">
                         {getInitials(editForm.display_name || editForm.username)}
                       </AvatarFallback>
                     </Avatar>
@@ -462,32 +449,32 @@ export const UserManagement = ({
                         className="hidden"
                       />
                       <div className="flex gap-2">
-                        <Button
+                        <ChamferedButton
                           type="button"
                           size="sm"
-                          variant="outline"
+                          variant="secondary"
                           onClick={() => fileInputRef.current?.click()}
-                          className="h-8 text-xs border-[var(--border-color)] hover:border-[hsl(var(--accent))] rounded-lg"
+                          leftIcon={<FaUpload className="h-3 w-3" />}
                         >
-                          <FaUpload className="mr-1.5 h-3 w-3" /> Upload Photo
-                        </Button>
+                          Upload Photo
+                        </ChamferedButton>
                         {editForm.profile_image && (
-                          <Button
+                          <ChamferedButton
                             type="button"
                             size="sm"
                             variant="ghost"
                             onClick={() => setEditForm((p) => ({ ...p, profile_image: '' }))}
-                            className="h-8 text-xs text-red-400 hover:text-red-300 rounded-lg"
+                            className="text-[var(--red)]"
                           >
                             Remove
-                          </Button>
+                          </ChamferedButton>
                         )}
                       </div>
                       <Input
                         placeholder="Or image URL (https://...)"
                         value={editForm.profile_image}
                         onChange={(e) => setEditForm((p) => ({ ...p, profile_image: e.target.value }))}
-                        className="text-xs h-8 bg-[var(--card-bg)] border-[var(--border-color)] rounded-lg"
+                        className="text-xs h-8 bg-[var(--surface)] border-[var(--border)] rounded-lg"
                       />
                     </div>
                   </div>
@@ -496,24 +483,24 @@ export const UserManagement = ({
                 {/* Username & Display Name */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
-                    <Label className="text-xs font-mono text-[var(--text-secondary)] uppercase mb-1.5 block">
-                      Username <span className="text-red-400">*</span>
+                    <Label className="text-xs font-mono text-[var(--text-3)] uppercase mb-1.5 block">
+                      Username <span className="text-[var(--red)]">*</span>
                     </Label>
                     <Input
                       value={editForm.username}
                       onChange={(e) => setEditForm((p) => ({ ...p, username: e.target.value }))}
-                      className="text-xs bg-[var(--bg-body)] border-[var(--border-color)] rounded-xl"
+                      className="text-xs bg-[var(--surface-2)] border-[var(--border)] rounded-xl"
                     />
                   </div>
                   <div>
-                    <Label className="text-xs font-mono text-[var(--text-secondary)] uppercase mb-1.5 block">
-                      Display Name (Full Name)
+                    <Label className="text-xs font-mono text-[var(--text-3)] uppercase mb-1.5 block">
+                      Display Name
                     </Label>
                     <Input
                       value={editForm.display_name}
                       onChange={(e) => setEditForm((p) => ({ ...p, display_name: e.target.value }))}
                       placeholder="e.g. John Doe"
-                      className="text-xs bg-[var(--bg-body)] border-[var(--border-color)] rounded-xl"
+                      className="text-xs bg-[var(--surface-2)] border-[var(--border)] rounded-xl"
                     />
                   </div>
                 </div>
@@ -521,39 +508,39 @@ export const UserManagement = ({
                 {/* Email & Roll Number */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
-                    <Label className="text-xs font-mono text-[var(--text-secondary)] uppercase mb-1.5 block">
-                      Email Address <span className="text-red-400">*</span>
+                    <Label className="text-xs font-mono text-[var(--text-3)] uppercase mb-1.5 block">
+                      Email Address <span className="text-[var(--red)]">*</span>
                     </Label>
                     <Input
                       type="email"
                       value={editForm.email}
                       onChange={(e) => setEditForm((p) => ({ ...p, email: e.target.value }))}
-                      className="text-xs bg-[var(--bg-body)] border-[var(--border-color)] rounded-xl"
+                      className="text-xs bg-[var(--surface-2)] border-[var(--border)] rounded-xl"
                     />
                   </div>
                   <div>
-                    <Label className="text-xs font-mono text-[var(--text-secondary)] uppercase mb-1.5 block">
+                    <Label className="text-xs font-mono text-[var(--text-3)] uppercase mb-1.5 block">
                       Roll Number
                     </Label>
                     <Input
                       value={editForm.rollNumber}
                       onChange={(e) => setEditForm((p) => ({ ...p, rollNumber: e.target.value }))}
                       placeholder="e.g. 2400030358"
-                      className="text-xs bg-[var(--bg-body)] border-[var(--border-color)] rounded-xl"
+                      className="text-xs bg-[var(--surface-2)] border-[var(--border)] rounded-xl font-mono"
                     />
                   </div>
                 </div>
 
                 {/* Role Privilege */}
                 <div>
-                  <Label className="text-xs font-mono text-[var(--text-secondary)] uppercase mb-1.5 block">
+                  <Label className="text-xs font-mono text-[var(--text-3)] uppercase mb-1.5 block">
                     User Role
                   </Label>
                   <Select
                     value={editForm.role}
                     onValueChange={(val) => setEditForm((p) => ({ ...p, role: val }))}
                   >
-                    <SelectTrigger className="text-xs bg-[var(--bg-body)] border-[var(--border-color)] rounded-xl">
+                    <SelectTrigger className="text-xs bg-[var(--surface-2)] border-[var(--border)] rounded-xl">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
@@ -566,7 +553,7 @@ export const UserManagement = ({
 
                 {/* About Section / Bio */}
                 <div>
-                  <Label className="text-xs font-mono text-[var(--text-secondary)] uppercase mb-1.5 block">
+                  <Label className="text-xs font-mono text-[var(--text-3)] uppercase mb-1.5 block">
                     About Section (Bio & Information)
                   </Label>
                   <Textarea
@@ -574,28 +561,29 @@ export const UserManagement = ({
                     value={editForm.bio}
                     onChange={(e) => setEditForm((p) => ({ ...p, bio: e.target.value }))}
                     placeholder="Enter user biography, skills, robotics domain, or achievements..."
-                    className="text-xs bg-[var(--bg-body)] border-[var(--border-color)] rounded-xl resize-y leading-relaxed"
+                    className="text-xs bg-[var(--surface-2)] border-[var(--border)] rounded-xl resize-y leading-relaxed"
                   />
                 </div>
               </div>
 
               {/* Modal Footer */}
-              <div className="flex items-center justify-end gap-3 pt-3 border-t border-[var(--border-color)]">
-                <Button
-                  variant="outline"
+              <div className="flex items-center justify-end gap-3 pt-3 border-t border-[var(--border)]">
+                <ChamferedButton
+                  variant="secondary"
+                  size="sm"
                   onClick={() => setEditingUser(null)}
-                  className="border-[var(--border-color)] text-xs rounded-xl"
                 >
                   Cancel
-                </Button>
-                <Button
+                </ChamferedButton>
+                <ChamferedButton
+                  variant="primary"
+                  size="sm"
                   onClick={handleSaveUser}
-                  disabled={updateUser?.isPending}
-                  className="bg-[hsl(var(--accent))] text-[var(--bg-body)] hover:bg-[hsl(var(--accent))]/90 text-xs rounded-xl font-semibold px-5"
+                  isLoading={updateUser?.isPending}
+                  leftIcon={<FaSave className="mr-1 h-3 w-3" />}
                 >
-                  <FaSave className="mr-2" />
                   {updateUser?.isPending ? 'Saving...' : 'Save User Changes'}
-                </Button>
+                </ChamferedButton>
               </div>
             </DialogContent>
           )}
@@ -603,20 +591,20 @@ export const UserManagement = ({
 
         {/* Delete Confirmation Alert Dialog */}
         <AlertDialog open={!!userToDelete} onOpenChange={(open) => !open && setUserToDelete(null)}>
-          <AlertDialogContent className="bg-[var(--card-bg)] border-[var(--border-color)]">
+          <AlertDialogContent className="bg-[var(--surface)] border border-[var(--border)] rounded-2xl">
             <AlertDialogHeader>
-              <AlertDialogTitle className="text-[var(--text-primary)]">Delete User?</AlertDialogTitle>
-              <AlertDialogDescription className="text-[var(--text-secondary)]">
+              <AlertDialogTitle className="text-[var(--text)] font-medium font-display">Delete User?</AlertDialogTitle>
+              <AlertDialogDescription className="text-[var(--text-2)] text-xs">
                 Are you sure you want to delete <strong>{userToDelete?.username}</strong>? This action cannot be
                 undone.
               </AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter>
-              <AlertDialogCancel className="bg-transparent text-[var(--text-secondary)] hover:bg-[var(--text-primary)]/10">
+              <AlertDialogCancel className="bg-transparent text-[var(--text-2)] hover:bg-[var(--surface-2)] border border-[var(--border)]">
                 Cancel
               </AlertDialogCancel>
               <AlertDialogAction
-                className="bg-red-500 hover:bg-red-600 text-white"
+                className="bg-[var(--red)] hover:bg-[var(--red-hover)] text-white"
                 onClick={() => userToDelete && deleteUser.mutate(userToDelete.id)}
               >
                 Delete User
@@ -624,7 +612,7 @@ export const UserManagement = ({
             </AlertDialogFooter>
           </AlertDialogContent>
         </AlertDialog>
-      </CardContent>
-    </Card>
+      </div>
+    </div>
   );
 };

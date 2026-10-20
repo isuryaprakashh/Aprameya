@@ -159,22 +159,21 @@ const ForgotPassword = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center px-6 py-24 bg-[var(--bg-body)] text-[var(--text-primary)] relative overflow-hidden font-sans">
-      <div className="w-full max-w-lg relative z-10">
-        
-        <div className="text-center mb-8">
-          <Link href="/" className="inline-flex items-center justify-center gap-2 mb-4">
+    <main className="min-h-screen flex items-center justify-center px-6 py-24 bg-bg text-text">
+      <div className="w-full max-w-[420px]">
+        <div className="text-center mb-6">
+          <Link href="/" className="inline-block mb-3">
             <Logo size="md" color="light" showText={false} />
-            <span className="font-display font-bold text-base text-[var(--text-primary)]">APRAMEYA</span>
           </Link>
-          <p className="text-[11px] font-sans font-medium text-[var(--text-muted)] mb-2 uppercase tracking-[0.15em]">Account Recovery</p>
-          <h1 className="text-3xl sm:text-4xl tracking-tight text-[var(--text-primary)] font-display font-bold">
-            <span className="text-[var(--text-secondary)] font-normal">Reset</span>{" "}
-            <span>Password</span>
+          <h1 className="font-display font-medium text-2xl tracking-tight text-text mb-1">
+            Reset password
           </h1>
+          <p className="font-mono text-xs text-text-3 uppercase tracking-[0.06em]">
+            ACCOUNT VERIFICATION & CREDENTIALS
+          </p>
         </div>
 
-        <div className="w-full max-w-md border border-emerald-500/15 bg-[#0B130E] p-8 sm:p-10 rounded-xl shadow-2xl shadow-black/30 relative z-10">
+        <div className="w-full rounded-lg border border-border bg-surface p-8">
           
           {error && (
             <Alert variant="destructive" className="bg-red-950/40 border-red-800/50 text-red-300 text-xs mb-5">
@@ -373,8 +372,8 @@ const ForgotPassword = () => {
 
           </AnimatePresence>
 
-          <div className="text-center pt-5 border-t border-white/[0.04] mt-5">
-            <Link href="/login" className="inline-flex items-center gap-1.5 text-xs text-[var(--text-muted)] hover:text-[var(--text-primary)] transition-colors">
+          <div className="text-center pt-5 border-t border-border mt-5">
+            <Link href="/login" className="inline-flex items-center gap-1.5 text-xs text-text-3 hover:text-text transition-colors">
               <ArrowLeft size={13} />
               <span>Back to Login</span>
             </Link>
@@ -382,7 +381,7 @@ const ForgotPassword = () => {
 
         </div>
       </div>
-    </div>
+    </main>
   );
 };
 

@@ -1,17 +1,15 @@
 import { useState } from 'react';
-import { Link } from 'wouter';
-import { blogCategories } from '../lib/data';
+import { Link, useLocation } from 'wouter';
 import { useQuery } from '@tanstack/react-query';
 import { BlogPost } from '@/lib/types';
-import { Search, Tag } from 'lucide-react';
-import { motion } from 'framer-motion';
-import { Input } from '@/components/ui/input';
-import UnderConstruction from '@/components/UnderConstruction';
+import { Search, BookOpen } from 'lucide-react';
 import BlogCard from '@/components/BlogCard';
-import WanderingEyesLoader from '@/components/WanderingEyesLoader';
+import EmptyState from '@/components/EmptyState';
+import { blogCategories } from '../lib/data';
 
-const Blogs = () => {
-  const { data: blogPosts = [], isLoading } = useQuery<BlogPost[]>({
+export default function Blogs() {
+  const [, setLocation] = useLocation();
+  const { data: blogPosts = [] } = useQuery<BlogPost[]>({
     queryKey: ['/api/blogs'],
     queryFn: async () => {
       const controller = new AbortController();
@@ -31,135 +29,96 @@ const Blogs = () => {
   });
 
   const [searchTerm, setSearchTerm] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState('all');
+  const [selectedCategory, setSelectedCategory] = useState('All');
 
-  // Filter blogs based on search and category
-  const filteredBlogs = blogPosts.filter(post => {
-    const matchesSearch = post.title?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+  const filteredBlogs = blogPosts.filter((post) => {
+    const matchesSearch =
+      post.title?.toLowerCase().includes(searchTerm.toLowerCase()) ||
       post.excerpt?.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesCategory = selectedCategory === 'all' || post.category === selectedCategory;
+    const matchesCategory =
+      selectedCategory === 'All' ||
+      post.category?.toLowerCase() === selectedCategory.toLowerCase();
     return matchesSearch && matchesCategory;
   });
 
-  if (isLoading) {
-    return (
-      <WanderingEyesLoader
-        fullPage
-        size="md"
-        text="LOADING TECHNICAL ARTICLES"
-        subtext="FETCHING RESEARCH INSIGHTS & POSTS"
-      />
-    );
-  }
+  const featuredPost =
+    blogPosts.find((p) => p.is_featured) || (blogPosts.length > 0 ? blogPosts[0] : null);
 
   return (
-    <div className="fadeIn min-h-screen bg-[var(--bg-body)]">
-      {/* Header Section */}
-      <section className="relative pt-32 pb-16 px-6 md:px-12 border-b border-red-500/15">
-        <div className="max-w-7xl mx-auto">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-          >
-            <p className="text-[11px] font-sans font-semibold uppercase tracking-[0.15em] text-red-400 mb-3">
-              Research & Notes
-            </p>
-            <h1 className="text-4xl sm:text-5xl md:text-6xl mb-4 tracking-tight text-white font-display font-bold">
-              <span className="text-[#94A3B8] font-normal">Technical</span>{" "}
-              <span>Blogs & Journals</span>
-            </h1>
-            <p className="text-base text-[#94A3B8] max-w-xl leading-relaxed">
-              Deep dives, hardware integration notes, and system architecture breakdowns from the Aprameya development team.
-            </p>
-          </motion.div>
+    <main className="w-full bg-bg min-h-screen text-text">
+      {/* ─── PAGE HEADER (Section 5.6 & 5) ─── */}
+      <section className="pt-24 pb-8 px-6 md:px-8 max-w-[1200px] mx-auto">
+        <p className="font-mono text-xs uppercase tracking-[0.06em] text-text-3 mb-2">
+          05 — DISPATCHES
+        </p>
+        <h1 className="font-display font-medium text-3xl sm:text-4xl md:text-5xl tracking-tight text-text mb-3">
+          Technical articles & research.
+        </h1>
+        <p className="text-base text-text-2 max-w-xl leading-relaxed mb-10">
+          Hardware integration field notes, perception architecture breakdowns, and research publications from Aprameya Lab.
+        </p>
+
+        {/* ─── TOPIC CHIPS & SEARCH (Section 4.7 & 5.6) ─── */}
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-border pb-4">
+          <div className="flex items-center gap-2 overflow-x-auto pb-2 sm:pb-0 scrollbar-none">
+            {blogCategories.map((cat) => {
+              const active = selectedCategory === cat;
+              return (
+                <button
+                  key={cat}
+                  onClick={() => setSelectedCategory(cat)}
+                  className={`h-6 px-3 rounded-full text-xs font-mono uppercase tracking-[0.06em] whitespace-nowrap transition-colors duration-fast cursor-pointer ${
+                    active
+                      ? 'border border-red-line text-red-text bg-red-soft font-medium'
+                      : 'border border-border text-text-2 hover:border-border-strong hover:text-text'
+                  }`}
+                >
+                  {cat}
+                </button>
+              );
+            })}
+          </div>
+
+          <div className="relative w-full sm:w-60 shrink-0">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-text-3" />
+            <input
+              type="text"
+              placeholder="Search articles..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="w-full h-9 pl-9 pr-3 rounded-md border border-border-strong bg-transparent text-xs text-text placeholder:text-text-3 focus:outline-none focus:border-focus-ring"
+            />
+          </div>
         </div>
       </section>
 
-      {/* Blog Content */}
-      <div className="py-12 px-6 md:px-12 bg-black">
-        <div className="max-w-7xl mx-auto">
-          {blogPosts.length > 0 ? (
-            <div className="grid lg:grid-cols-4 gap-8">
-              {/* Blog Posts Column */}
-              <div className="lg:col-span-3 grid md:grid-cols-2 gap-6">
-                {filteredBlogs.map((post, index) => (
-                  <motion.div
-                    key={post.id || (post as any)._id}
-                    initial={{ opacity: 0, y: 16 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    transition={{ delay: index * 0.08, duration: 0.4 }}
-                    viewport={{ once: true }}
-                  >
-                    <Link href={`/blogs/${post.id || (post as any)._id}`} className="block h-full">
-                      <BlogCard post={post} />
-                    </Link>
-                  </motion.div>
-                ))}
-
-                {filteredBlogs.length === 0 && (
-                  <div className="col-span-full">
-                    <p className="text-center text-sm text-[#94A3B8] py-12">
-                      No matching dispatches for "{searchTerm}"
-                    </p>
-                  </div>
-                )}
-              </div>
-
-              {/* Sidebar */}
-              <div className="lg:col-span-1">
-                <div className="sticky top-24 space-y-6">
-                  {/* Search */}
-                  <div className="p-5 rounded-xl morphic-metallic-card">
-                    <h3 className="font-sans font-semibold text-white mb-3 text-xs uppercase tracking-wider">Search</h3>
-                    <div className="relative">
-                      <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-red-400/60 w-3.5 h-3.5" />
-                      <Input
-                        placeholder="Search articles..."
-                        className="pl-9 bg-[#1A050A]/70 border-red-500/20 text-white focus:border-red-400/50 h-9 text-xs"
-                        value={searchTerm}
-                        onChange={(e) => setSearchTerm(e.target.value)}
-                      />
-                    </div>
-                  </div>
-
-                  {/* Categories */}
-                  <div className="p-5 rounded-xl morphic-metallic-card">
-                    <h3 className="font-sans font-semibold text-white mb-3 text-xs uppercase tracking-wider">Categories</h3>
-                    <ul className="space-y-1.5">
-                      {blogCategories.map((category, index) => (
-                        <li key={index}>
-                          <button
-                            onClick={() => setSelectedCategory(category)}
-                            className={`group flex items-center justify-between w-full text-xs py-1.5 px-2 rounded-lg transition-colors cursor-pointer ${selectedCategory === category ? 'bg-red-950/70 border border-red-400/30 text-white font-medium shadow-[inset_0_1px_1px_rgba(254,202,202,0.2)]' : 'text-[#94A3B8] hover:text-white'}`}
-                          >
-                            <span className="flex items-center">
-                              <Tag className="w-3 h-3 mr-2 text-red-400 opacity-70" />
-                              {category}
-                            </span>
-                            <span className="text-[10px] text-red-400/80 font-mono">
-                              {category === 'all' ? blogPosts.length : blogPosts.filter(p => p.category === category).length}
-                            </span>
-                          </button>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                </div>
-              </div>
-            </div>
-          ) : (
-            <UnderConstruction
-              category="TECHNICAL BLOGS"
-              title="Articles in Review"
-              subtitle="Peer Review & Documentation Cycle Active"
-              description="Engineering leads are drafting technical post-mortems, hardware schematics, and architecture breakdowns for our autonomous systems."
-            />
-          )}
-        </div>
-      </div>
-    </div>
+      {/* ─── 3-COLUMN POST GRID (Section 5.6) ─── */}
+      <section className="pb-24 px-6 md:px-8 max-w-[1200px] mx-auto">
+        {filteredBlogs.length > 0 ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {filteredBlogs.map((post) => (
+              <BlogCard
+                key={post.id || (post as any)._id}
+                post={post}
+                onRead={() => setLocation(`/blogs/${post.id || (post as any)._id}`)}
+              />
+            ))}
+          </div>
+        ) : (
+          <EmptyState
+            icon={BookOpen}
+            title="No dispatches found"
+            description="Our engineering team is actively documenting upcoming autonomous systems writeups. Check back shortly."
+            action={{
+              label: "Explore all topics",
+              onClick: () => {
+                setSearchTerm('');
+                setSelectedCategory('All');
+              },
+            }}
+          />
+        )}
+      </section>
+    </main>
   );
-};
-
-export default Blogs;
+}

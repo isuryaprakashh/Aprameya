@@ -262,9 +262,9 @@ const SocialShare: React.FC<SocialShareProps> = ({
                 animate="visible"
                 exit="hidden"
                 variants={containerVariants}
-                className="absolute z-50 mt-2 right-0 bg-[var(--card-bg)] p-3 rounded-lg shadow-md flex flex-col items-start gap-3 border border-[var(--border-color)] min-w-[220px]"
+                className="absolute z-50 mt-2 right-0 bg-[var(--surface)] p-3 rounded-[var(--r-md)] flex flex-col items-start gap-3 border border-[var(--border)] min-w-[220px]"
               >
-                <div className="text-sm font-medium mb-1 w-full pb-2 border-b border-border">
+                <div className="text-sm font-medium mb-1 w-full pb-2 border-b border-[var(--border)] text-[var(--text)]">
                   Share via
                 </div>
                 {socials.map((social) => (

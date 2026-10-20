@@ -120,8 +120,8 @@ export const ButtonHold = ({
         <button
             className={cn(
                 "btn-hold relative overflow-hidden select-none transition-all",
-                "bg-[var(--card-bg)] text-[var(--text-secondary)] border border-[var(--border-color)]",
-                isComplete && "activated border-[hsl(var(--accent))] text-[var(--text-primary)] bg-[var(--btn-bg-hover)]",
+                "bg-[var(--surface)] text-[var(--text-2)] border border-[var(--border)]",
+                isComplete && "activated border-[var(--red)] text-[var(--text)] bg-[var(--surface-2)]",
                 className
             )}
             onMouseDown={startHold}
@@ -133,7 +133,7 @@ export const ButtonHold = ({
         >
             <div
                 className={cn(
-                    "progress-fill absolute top-0 left-0 h-full bg-[hsl(var(--accent))] opacity-20 transition-[width] duration-100 ease-linear",
+                    "progress-fill absolute top-0 left-0 h-full bg-[var(--red)] opacity-20 transition-[width] duration-100 ease-linear",
                     isHeld ? `w-full opacity-100` : "w-0",
                     isComplete && "w-full opacity-10"
                 )}

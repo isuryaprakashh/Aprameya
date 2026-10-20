@@ -5,29 +5,41 @@ import { cva, type VariantProps } from "class-variance-authority"
 import { cn } from "@/lib/utils"
 
 const buttonVariants = cva(
-  "inline-flex items-center justify-center gap-2 whitespace-nowrap font-medium ring-offset-background transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0",
+  "inline-flex items-center justify-center gap-2 whitespace-nowrap font-body font-medium transition-colors duration-fast border focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus-ring focus-visible:ring-offset-2 focus-visible:ring-offset-bg disabled:pointer-events-none disabled:opacity-40 disabled:cursor-not-allowed [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 cursor-pointer shadow-none",
   {
     variants: {
       variant: {
-        default: "btn-primary px-8 py-4 text-sm",
-        secondary: "btn-secondary px-8 py-4 text-sm",
+        default:
+          "bg-red text-white border-transparent hover:bg-red-hover active:bg-red-hover",
+        primary:
+          "bg-red text-white border-transparent hover:bg-red-hover active:bg-red-hover",
+        inverse:
+          "bg-invert-bg text-invert-text border-transparent hover:opacity-90 active:opacity-90",
+        secondary:
+          "bg-transparent text-text border-border-strong hover:bg-surface-2 active:bg-surface-2",
         destructive:
-          "bg-red-600 text-white rounded-xl hover:bg-red-700",
+          "bg-transparent text-red-text border-red-line hover:bg-red-soft active:bg-red-soft",
+        danger:
+          "bg-transparent text-red-text border-red-line hover:bg-red-soft active:bg-red-soft",
         outline:
-          "border border-white/10 bg-transparent text-white rounded-xl hover:bg-white/5",
-        ghost: "hover:bg-white/5 text-white",
-        link: "text-emerald-400 underline-offset-4 hover:underline",
-        icon: "btn-icon",
+          "border border-border-strong bg-transparent text-text hover:bg-surface-2",
+        ghost:
+          "border-transparent bg-transparent text-text-2 hover:text-text hover:bg-surface-2",
+        link:
+          "text-text hover:text-white border-transparent p-0 h-auto underline-offset-4 hover:underline",
+        icon:
+          "bg-transparent text-text-2 border-transparent hover:text-text hover:bg-surface-2 p-2 rounded-md",
       },
       size: {
-        default: "h-12 px-6 py-3 text-sm",
-        sm: "h-10 px-4 py-2 text-xs",
-        lg: "h-14 px-8 py-4 text-base",
-        icon: "h-10 w-10",
+        default: "h-10 px-4 text-[14px] rounded-md",
+        sm: "h-8 px-3 text-[13px] rounded-md",
+        md: "h-10 px-4 text-[14px] rounded-md",
+        lg: "h-12 px-6 text-[15px] rounded-md",
+        icon: "h-10 w-10 rounded-md",
       },
     },
     defaultVariants: {
-      variant: "default",
+      variant: "secondary",
       size: "default",
     },
   }

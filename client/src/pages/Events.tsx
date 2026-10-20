@@ -5,20 +5,17 @@ import { events as fallbackEvents } from '../lib/data';
 import { useQuery } from '@tanstack/react-query';
 import {
   Calendar,
-  Clock as ResultClockIcon,
-  MapPin as ResultMapIcon,
+  Clock,
+  MapPin,
   Search,
-  Ticket
+  ArrowRight,
+  Ticket,
 } from 'lucide-react';
-import { motion } from 'framer-motion';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import UnderConstruction from '../components/UnderConstruction';
-import WanderingEyesLoader from '../components/WanderingEyesLoader';
-import { useToast } from "@/hooks/use-toast";
-import { cn } from "@/lib/utils";
-import { useAuth } from '@/context/AuthContext';
+import StatusBadge from '@/components/ui/StatusBadge';
 import ChamferedButton from '@/components/ui/ChamferedButton';
+import EmptyState from '../components/EmptyState';
+import { useToast } from "@/hooks/use-toast";
+import { useAuth } from '@/context/AuthContext';
 
 const Events = () => {
   const { toast } = useToast();
@@ -42,20 +39,36 @@ const Events = () => {
     initialData: fallbackEvents,
     staleTime: 60000,
   });
+
   const { user } = useAuth();
   const { data: userRegistrations = [] } = useQuery<EventRegistration[]>({
     queryKey: ['/api/event-registrations/my'],
     enabled: !!user,
   });
-  const registeredEventIds = new Set(userRegistrations.map(r => r.event_id));
-
+  const registeredEventIds = new Set(userRegistrations.map((r) => r.event_id));
   const [, setLocation] = useLocation();
 
-  const [filterType, setFilterType] = useState('all');
+  const [activeTab, setActiveTab] = useState<'upcoming' | 'past'>('upcoming');
   const [searchTerm, setSearchTerm] = useState('');
 
-  // Sort events to find upcoming ones
-  const upcomingEvents = [...events].sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()).filter(e => new Date(e.date) > new Date()).slice(0, 1);
+  const now = new Date();
+  const upcomingList = events.filter((e) => {
+    const d = new Date(e.date);
+    return isNaN(d.getTime()) || d >= now;
+  });
+  const pastList = events.filter((e) => {
+    const d = new Date(e.date);
+    return !isNaN(d.getTime()) && d < now;
+  });
+
+  const currentList = activeTab === 'upcoming' ? upcomingList : pastList;
+  const filteredEvents = currentList.filter(
+    (e) =>
+      e.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      (e.description && e.description.toLowerCase().includes(searchTerm.toLowerCase()))
+  );
+
+  const nextSpotlight = upcomingList.length > 0 ? upcomingList[0] : null;
 
   const handleQuickRegister = async (event: Event) => {
     if (!user) {
@@ -72,17 +85,12 @@ const Events = () => {
       const baseUrl = import.meta.env.VITE_API_URL || "";
       const response = await fetch(`${baseUrl}/api/event-registrations`, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
-        body: JSON.stringify({
-          event_id: event.id,
-        }),
+        body: JSON.stringify({ event_id: event.id }),
       });
 
       const result = await response.json();
-
       if (response.ok) {
         toast({
           title: "Successfully Registered",
@@ -96,8 +104,7 @@ const Events = () => {
           variant: "destructive",
         });
       }
-    } catch (error) {
-      console.error('Error registering for event:', error);
+    } catch {
       toast({
         title: "Network Error",
         description: "Please try again later.",
@@ -106,249 +113,223 @@ const Events = () => {
     }
   };
 
-  // Filter events
-  const filteredEvents = events.filter(event => {
-    const matchesSearch = event.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      event.description.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesType = filterType === 'all' || event.type === filterType;
-    return matchesSearch && matchesType;
-  });
-
-  const eventTypes = ['all', ...Array.from(new Set(events.map(e => e.type)))];
-
-  if (isLoading && events.length === 0) {
-    return (
-      <WanderingEyesLoader
-        fullPage
-        size="md"
-        text="EXPLORING EVENTS & WORKSHOPS"
-        subtext="FETCHING SCHEDULE & REGISTRATION TELEMETRY"
-      />
-    );
-  }
-
   return (
-    <div className="fadeIn min-h-screen bg-[var(--bg-body)]">
-      {/* Header Section */}
-      <section className="relative pt-32 pb-16 px-6 md:px-12 border-b border-red-500/15">
-        <div className="max-w-7xl mx-auto">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-          >
-            <p className="text-[11px] font-sans font-semibold uppercase tracking-[0.15em] text-red-400 mb-3">
-              Schedule & Logistics
-            </p>
+    <main className="w-full bg-bg min-h-screen text-text">
+      {/* ─── PAGE HEADER (Section 5.3 & 5) ─── */}
+      <section className="pt-24 pb-8 px-6 md:px-8 max-w-[1200px] mx-auto">
+        <p className="font-mono text-xs uppercase tracking-[0.06em] text-text-3 mb-2">
+          02 — CALENDAR
+        </p>
+        <h1 className="font-display font-medium text-3xl sm:text-4xl md:text-5xl tracking-tight text-text mb-3">
+          Workshops & events.
+        </h1>
+        <p className="text-base text-text-2 max-w-xl leading-relaxed mb-10">
+          Hands-on robotics bootcamps, perception symposiums, and engineering workshops hosted by Aprameya.
+        </p>
 
-            <h1 className="text-4xl sm:text-5xl md:text-6xl mb-4 tracking-tight text-white font-display font-bold">
-              <span className="text-[#94A3B8] font-normal">Workshops &</span>{" "}
-              <span>Events</span>
-            </h1>
-            <p className="text-base text-[#94A3B8] max-w-xl leading-relaxed">
-              Hands-on robotics sessions, ROS 2 bootcamps, and technical symposiums hosted by Aprameya at KL University.
-            </p>
-
-            {/* Upcoming Highlight */}
-            {upcomingEvents.length > 0 && (
-              <div className="mt-8 max-w-2xl morphic-metallic-card p-5 rounded-xl flex flex-col sm:flex-row items-start sm:items-center gap-4">
-                <div className="w-10 h-10 bg-red-950/60 flex items-center justify-center rounded-lg border border-red-400/30 shrink-0 text-red-300 shadow-[inset_0_1px_1px_rgba(254,202,202,0.2)]">
-                  <Calendar className="w-5 h-5" />
-                </div>
-                <div className="flex-1">
-                  <div className="text-[10px] text-red-400 font-semibold uppercase tracking-wider mb-0.5">Upcoming Session</div>
-                  <div className="text-white font-display font-bold text-base">{upcomingEvents[0].title}</div>
-                  <div className="text-xs text-[#94A3B8]">{upcomingEvents[0].date} • {upcomingEvents[0].location}</div>
-                </div>
-                {/* Highlight Action */}
-                {user && registeredEventIds.has(upcomingEvents[0].id) ? (
-                  <Button className="w-full sm:w-auto ml-0 sm:ml-auto bg-red-950/60 text-red-300 border border-red-500/30 cursor-default" size="sm">
-                    Registered
-                  </Button>
-                ) : (
-                  upcomingEvents[0].ticketEnabled ? (
-                    <ChamferedButton
-                      variant="primary"
-                      size="sm"
-                      className="w-full sm:w-auto ml-0 sm:ml-auto"
-                      onClick={() => setLocation(`/events/${upcomingEvents[0].id}/register`)}
-                    >
-                      <Ticket className="w-3.5 h-3.5 mr-1.5" />
-                      Get Pass
-                    </ChamferedButton>
-                  ) : (
-                    <ChamferedButton
-                      variant="primary"
-                      size="sm"
-                      className="w-full sm:w-auto ml-0 sm:ml-auto"
-                      onClick={() => handleQuickRegister(upcomingEvents[0])}
-                    >
-                      Register Now
-                    </ChamferedButton>
-                  )
-                )}
-              </div>
-            )}
-          </motion.div>
-        </div>
-      </section>
-
-      {/* Main Content */}
-      <section className="py-12 px-6 md:px-12 bg-black">
-        <div className="max-w-7xl mx-auto">
-          {events.length > 0 ? (
-            <>
-              <div className="flex flex-col md:flex-row gap-4 mb-8 items-start md:items-center justify-between">
-                {/* Filter Tabs */}
-                <div className="flex overflow-x-auto pb-2 md:pb-0 gap-1.5 no-scrollbar w-full md:w-auto">
-                  {eventTypes.map(type => (
-                    <button
-                      key={type}
-                      onClick={() => setFilterType(type)}
-                      className={cn(
-                        "px-3.5 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap transition-all cursor-pointer",
-                        filterType === type
-                          ? "btn-metallic-red text-white shadow-[0_2px_10px_rgba(220,38,38,0.4)]"
-                          : "btn-metallic-ghost text-[#94A3B8] hover:text-white"
-                      )}
-                    >
-                      {type.charAt(0).toUpperCase() + type.slice(1)}
-                    </button>
-                  ))}
+        {/* ─── NEXT EVENT SPOTLIGHT (Only on Upcoming) ─── */}
+        {activeTab === 'upcoming' && nextSpotlight && (
+          <div className="rounded-lg border border-border p-6 bg-surface mb-10">
+            <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
+              <div className="flex items-start gap-6">
+                {/* Large mono day + month block */}
+                <div className="w-16 h-16 rounded-md border border-border bg-surface-2 flex flex-col items-center justify-center shrink-0 font-mono">
+                  <span className="text-[11px] text-text-3 uppercase tracking-wider font-semibold">
+                    {nextSpotlight.month || 'UPCOMING'}
+                  </span>
+                  <span className="font-display font-medium text-2xl text-text leading-none mt-1">
+                    {nextSpotlight.day || '—'}
+                  </span>
                 </div>
 
-                {/* Search */}
-                <div className="relative w-full md:w-64">
-                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-red-400/60 w-3.5 h-3.5" />
-                  <input
-                    type="text"
-                    placeholder="Search events..."
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                    className="w-full pl-9 pr-4 py-2 bg-[#1A050A]/70 border border-red-500/20 rounded-lg text-sm text-white focus:outline-none focus:border-red-400/50"
-                  />
-                </div>
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {filteredEvents.length > 0 ? (
-                  filteredEvents.map((event, index) => {
-                    const parsedDate = event.date ? new Date(event.date) : null;
-                    const isValidDate = parsedDate && !isNaN(parsedDate.getTime());
-                    const displayMonth = event.month || (isValidDate ? parsedDate.toLocaleString('en-US', { month: 'short' }) : 'EVENT');
-                    const displayDay = event.day || (isValidDate ? String(parsedDate.getDate()) : '•');
-
-                    return (
-                    <motion.div
-                      key={event.id}
-                      initial={{ opacity: 0, y: 16 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: index * 0.08 }}
-                    >
-                      <div className="h-full flex flex-col morphic-metallic-card rounded-xl overflow-hidden transition-colors duration-300">
-                        <div className="relative h-44 overflow-hidden border-b border-red-500/15 bg-black">
-                          <img
-                            src={event.image}
-                            alt={event.title}
-                            className="w-full h-full object-cover transition-transform duration-500 hover:scale-105"
-                          />
-                          <div className="absolute top-3 right-3 z-20">
-                            <span className="bg-black/80 backdrop-blur-sm text-white px-2 py-0.5 rounded border border-red-500/25 text-[10px] uppercase font-sans font-bold">
-                              {event.type}
-                            </span>
-                          </div>
-                          {event.ticketEnabled && (
-                            <div className="absolute top-3 left-3 z-20">
-                              <span className="bg-red-600/90 text-white px-2 py-0.5 rounded flex items-center gap-1 text-[10px] uppercase font-sans font-semibold shadow">
-                                <Ticket className="w-3 h-3" /> Pass Required
-                              </span>
-                            </div>
-                          )}
-                        </div>
-
-                        <div className="p-5 flex flex-col flex-grow">
-                          <div className="flex justify-between items-start mb-3">
-                            <div>
-                              <h3 className="text-base font-bold font-display text-white mb-1">
-                                {event.title}
-                              </h3>
-                            </div>
-                            <div className="text-center bg-red-950/50 border border-red-400/30 rounded-lg px-2.5 py-1 min-w-[48px] shrink-0">
-                              <div className="text-[9px] text-red-400 uppercase font-bold">{displayMonth}</div>
-                              <div className="text-base font-bold text-white font-display">{displayDay}</div>
-                            </div>
-                          </div>
-
-                          <div className="space-y-1.5 mb-4 text-xs text-[#94A3B8]">
-                            <div className="flex items-center">
-                              <ResultClockIcon className="w-3.5 h-3.5 mr-1.5 text-red-400" />
-                              {event.time}
-                            </div>
-                            <div className="flex items-center">
-                              <ResultMapIcon className="w-3.5 h-3.5 mr-1.5 text-red-400" />
-                              {event.location}
-                            </div>
-                          </div>
-
-                          <p className="text-xs text-[#94A3B8] mb-5 line-clamp-2 leading-relaxed">
-                            {event.description}
-                          </p>
-
-                          <div className="mt-auto pt-4 border-t border-red-500/15 flex items-center justify-between">
-                            {user && registeredEventIds.has(event.id) ? (
-                              <Badge variant="outline" className="bg-red-950/60 text-red-300 border-red-500/30 w-full justify-center py-2 text-xs">
-                                Registered
-                              </Badge>
-                            ) : (
-                              event.capacity && (event.registeredCount || 0) >= event.capacity ? (
-                                <Button disabled className="w-full bg-red-950/40 text-red-400 border border-red-500/20 cursor-not-allowed text-xs">
-                                  Capacity Reached
-                                </Button>
-                              ) : event.ticketEnabled ? (
-                                <ChamferedButton
-                                  variant="primary"
-                                  size="sm"
-                                  className="w-full text-xs"
-                                  onClick={() => setLocation(`/events/${event.id}/register`)}
-                                >
-                                  <Ticket className="w-3.5 h-3.5 mr-1.5" />
-                                  Get Entry Pass
-                                </ChamferedButton>
-                              ) : (
-                                <ChamferedButton
-                                  variant="secondary"
-                                  size="sm"
-                                  className="w-full text-xs"
-                                  onClick={() => handleQuickRegister(event)}
-                                >
-                                  Register Now
-                                </ChamferedButton>
-                              )
-                            )}
-                          </div>
-                        </div>
-                      </div>
-                    </motion.div>
-                    );
-                  })
-                ) : (
-                  <div className="text-center py-16 col-span-full border border-red-500/15 rounded-xl morphic-metallic-card">
-                    <p className="text-sm text-[#94A3B8]">No events matching "{searchTerm}"</p>
+                <div>
+                  <div className="flex items-center gap-2 mb-2">
+                    <StatusBadge status="Upcoming" isLive={true} />
+                    <span className="font-mono text-xs text-text-3 uppercase tracking-[0.06em]">
+                      Spotlight
+                    </span>
                   </div>
+                  <h2 className="font-display font-medium text-xl sm:text-2xl text-text tracking-tight mb-2">
+                    {nextSpotlight.title}
+                  </h2>
+                  <div className="flex flex-wrap items-center gap-4 text-xs font-mono text-text-2">
+                    {nextSpotlight.time && (
+                      <span className="flex items-center gap-1.5">
+                        <Clock className="w-3.5 h-3.5 text-text-3" />
+                        {nextSpotlight.time}
+                      </span>
+                    )}
+                    {nextSpotlight.location && (
+                      <span className="flex items-center gap-1.5">
+                        <MapPin className="w-3.5 h-3.5 text-text-3" />
+                        {nextSpotlight.location}
+                      </span>
+                    )}
+                  </div>
+                </div>
+              </div>
+
+              {/* Action buttons */}
+              <div className="flex items-center gap-3 shrink-0">
+                {user && registeredEventIds.has(nextSpotlight.id) ? (
+                  <span className="h-10 px-4 rounded-md border border-border text-xs font-mono text-text-3 flex items-center">
+                    Registered
+                  </span>
+                ) : nextSpotlight.ticketEnabled ? (
+                  <ChamferedButton
+                    variant="primary"
+                    size="md"
+                    onClick={() => setLocation(`/events/${nextSpotlight.id}/register`)}
+                    rightIcon={<Ticket className="w-4 h-4" />}
+                  >
+                    Register
+                  </ChamferedButton>
+                ) : (
+                  <ChamferedButton
+                    variant="primary"
+                    size="md"
+                    onClick={() => handleQuickRegister(nextSpotlight)}
+                  >
+                    Register
+                  </ChamferedButton>
                 )}
               </div>
-            </>
-          ) : (
-            <UnderConstruction
-              category="WORKSHOPS & SESSIONS"
-              title="Schedule in Preparation"
-              subtitle="Session Logistics & Lab Availability"
-              description="Lab coordinators are organizing upcoming hands-on hardware workshops and guest lectures. Registration will open on this page once dates and venue bookings are finalized."
+            </div>
+          </div>
+        )}
+
+        {/* ─── TABS & SEARCH BAR (Section 4.7 & 5.3) ─── */}
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-border pb-4">
+          <div className="flex items-center gap-8">
+            <button
+              onClick={() => setActiveTab('upcoming')}
+              className={`relative pb-4 font-body text-sm font-medium transition-colors cursor-pointer ${
+                activeTab === 'upcoming' ? 'text-text' : 'text-text-2 hover:text-text'
+              }`}
+            >
+              Upcoming ({upcomingList.length})
+              {activeTab === 'upcoming' && (
+                <span className="absolute bottom-[-1px] left-0 right-0 h-[2px] bg-red" />
+              )}
+            </button>
+            <button
+              onClick={() => setActiveTab('past')}
+              className={`relative pb-4 font-body text-sm font-medium transition-colors cursor-pointer ${
+                activeTab === 'past' ? 'text-text' : 'text-text-2 hover:text-text'
+              }`}
+            >
+              Past ({pastList.length})
+              {activeTab === 'past' && (
+                <span className="absolute bottom-[-1px] left-0 right-0 h-[2px] bg-red" />
+              )}
+            </button>
+          </div>
+
+          <div className="relative w-full sm:w-60">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-text-3" />
+            <input
+              type="text"
+              placeholder="Search schedule..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="w-full h-9 pl-9 pr-3 rounded-md border border-border-strong bg-transparent text-xs text-text placeholder:text-text-3 focus:outline-none focus:border-focus-ring"
             />
-          )}
+          </div>
         </div>
       </section>
-    </div>
+
+      {/* ─── EVENT LIST ROWS (Section 5.3) ─── */}
+      <section className="pb-24 px-6 md:px-8 max-w-[1200px] mx-auto">
+        {filteredEvents.length > 0 ? (
+          <div className="divide-y divide-border border-b border-border">
+            {filteredEvents.map((event) => {
+              const isRegistered = user && registeredEventIds.has(event.id);
+              return (
+                <div
+                  key={event.id}
+                  className="py-6 flex flex-col md:flex-row md:items-center justify-between gap-6 hover:bg-surface/40 px-4 -mx-4 rounded-md transition-colors duration-fast"
+                >
+                  {/* Left: Date block + Title + Details */}
+                  <div className="flex items-start gap-5 min-w-0">
+                    <div className="w-14 h-14 rounded-md border border-border bg-surface-2 flex flex-col items-center justify-center shrink-0 font-mono">
+                      <span className="text-[10px] text-text-3 uppercase tracking-wider font-semibold">
+                        {event.month || 'DATE'}
+                      </span>
+                      <span className="font-display font-medium text-lg text-text leading-none mt-0.5">
+                        {event.day || '—'}
+                      </span>
+                    </div>
+
+                    <div className="min-w-0">
+                      <div className="flex items-center gap-2 mb-1">
+                        <StatusBadge status={event.status || (activeTab === 'upcoming' ? 'Open' : 'Past')} />
+                        <span className="font-mono text-xs uppercase tracking-[0.06em] text-text-3">
+                          {event.type}
+                        </span>
+                      </div>
+                      <h3 className="font-display font-medium text-base sm:text-lg text-text tracking-tight mb-1 truncate">
+                        {event.title}
+                      </h3>
+                      <p className="text-xs text-text-2 line-clamp-1 max-w-xl mb-2">
+                        {event.description}
+                      </p>
+                      <div className="flex items-center gap-4 text-xs font-mono text-text-3">
+                        {event.time && <span>{event.time}</span>}
+                        {event.location && (
+                          <span className="flex items-center gap-1">
+                            <MapPin className="w-3 h-3" />
+                            {event.location}
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Right: Action */}
+                  <div className="shrink-0 flex items-center gap-3 md:self-center">
+                    {activeTab === 'past' ? (
+                      <span className="font-mono text-xs text-text-3">Completed</span>
+                    ) : isRegistered ? (
+                      <span className="h-9 px-3 rounded-md border border-border text-xs font-mono text-text-3 flex items-center">
+                        Registered
+                      </span>
+                    ) : event.ticketEnabled ? (
+                      <ChamferedButton
+                        variant="secondary"
+                        size="sm"
+                        onClick={() => setLocation(`/events/${event.id}/register`)}
+                        rightIcon={<ArrowRight className="w-3.5 h-3.5" />}
+                      >
+                        Register
+                      </ChamferedButton>
+                    ) : (
+                      <ChamferedButton
+                        variant="secondary"
+                        size="sm"
+                        onClick={() => handleQuickRegister(event)}
+                        rightIcon={<ArrowRight className="w-3.5 h-3.5" />}
+                      >
+                        Register
+                      </ChamferedButton>
+                    )}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        ) : (
+          <EmptyState
+            icon={Calendar}
+            title={activeTab === 'upcoming' ? 'No upcoming events' : 'No past events found'}
+            description={
+              activeTab === 'upcoming'
+                ? 'Check back soon for new bootcamps and workshops.'
+                : 'No archived events match your search keywords.'
+            }
+          />
+        )}
+      </section>
+    </main>
   );
 };
 
