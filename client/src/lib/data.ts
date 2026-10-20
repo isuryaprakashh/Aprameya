@@ -26,25 +26,8 @@ export const blogPosts: BlogPost[] = [];
 // Verified research publications (empty by default; populated via peer-reviewed DB entries)
 export const researchItems: ResearchItem[] = [];
 
-// Club Events
-export const events: Event[] = [
-  {
-    id: "1",
-    title: "Autonomous Navigation & Perception Workshop",
-    type: "Workshop",
-    date: "2026-09-20",
-    day: "20",
-    month: "Sep",
-    year: "2026",
-    time: "10:00 AM - 4:00 PM",
-    location: "R609e, R&D Block, KL University",
-    description: "Hands-on session covering ROS 2 nodes, LiDAR point-cloud processing, and camera-sensor calibration for autonomous mobility platforms.",
-    image: "/assets/event_workshop.png",
-    capacity: 60,
-    registrationOpen: true,
-    ticketEnabled: true
-  }
-];
+// Club Events (empty by default; populated dynamically from MongoDB)
+export const events: Event[] = [];
 
 // Verified Faculty Mentors and Core Team Leads (loaded dynamically from MongoDB)
 export const teamMembers: TeamMember[] = [];
@@ -78,16 +61,7 @@ export const blogCategories = [
   "Field Notes"
 ];
 
-export const upcomingEvents = [
-  {
-    id: "1",
-    title: "Autonomous Navigation & Perception Workshop",
-    day: "20",
-    month: "Sep",
-    date: "2026-09-20",
-    location: "R609e, R&D Block, KL University"
-  }
-];
+export const upcomingEvents: any[] = [];
 
 export const featuredItems = [
   {

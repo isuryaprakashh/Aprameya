@@ -5,7 +5,6 @@ import { useAuth } from '@/context/AuthContext';
 import { useToast } from '@/hooks/use-toast';
 import { apiRequest } from '@/lib/queryClient';
 import { Event, TicketRegistration as TicketType } from '@/lib/types';
-import { events as fallbackEvents } from '@/lib/data';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
@@ -51,21 +50,12 @@ export default function TicketRegistration() {
     queryKey: [`/api/events/${eventId}`],
     queryFn: async () => {
       const baseUrl = import.meta.env.VITE_API_URL || '';
-      try {
-        const res = await fetch(`${baseUrl}/api/events/${eventId}`);
-        if (!res.ok) {
-          const fallback = fallbackEvents.find((e) => e.id === eventId);
-          if (fallback) return fallback;
-          throw new Error('Event not found');
-        }
-        return res.json();
-      } catch (err) {
-        const fallback = fallbackEvents.find((e) => e.id === eventId);
-        if (fallback) return fallback;
-        throw err;
+      const res = await fetch(`${baseUrl}/api/events/${eventId}`);
+      if (!res.ok) {
+        throw new Error('Event not found');
       }
+      return res.json();
     },
-    initialData: () => fallbackEvents.find((e) => e.id === eventId),
     enabled: !!eventId,
   });
 

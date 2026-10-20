@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { useLocation } from 'wouter';
 import { Event, EventRegistration } from '../lib/types';
-import { events as fallbackEvents } from '../lib/data';
 import { useQuery } from '@tanstack/react-query';
 import {
   Calendar as CalendarIcon,
@@ -29,21 +28,20 @@ export const Events: React.FC = () => {
     queryKey: ['/api/events'],
     queryFn: async () => {
       const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 5000);
+      const timeoutId = setTimeout(() => controller.abort(), 8000);
       try {
         const baseUrl = import.meta.env.VITE_API_URL || '';
         const res = await fetch(`${baseUrl}/api/events`, { credentials: 'include', signal: controller.signal });
         clearTimeout(timeoutId);
-        if (!res.ok) return fallbackEvents;
+        if (!res.ok) return [];
         const data = await res.json();
-        return Array.isArray(data) && data.length > 0 ? data : fallbackEvents;
+        return Array.isArray(data) ? data : [];
       } catch {
         clearTimeout(timeoutId);
-        return fallbackEvents;
+        return [];
       }
     },
-    initialData: fallbackEvents,
-    staleTime: 60000,
+    staleTime: 5000,
   });
 
   const { data: userRegistrations = [] } = useQuery<EventRegistration[]>({

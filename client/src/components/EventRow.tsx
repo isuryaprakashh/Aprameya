@@ -57,7 +57,7 @@ export const EventRow: React.FC<EventRowProps> = ({
                 {event.type}
               </Tag>
             )}
-            <StatusBadge status={event.status || 'Upcoming'} />
+            <StatusBadge status={event.status || (isPast ? 'Completed' : 'Upcoming')} />
           </div>
 
           <p className="text-[14px] text-text-2 line-clamp-1 mb-1.5">

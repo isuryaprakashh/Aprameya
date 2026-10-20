@@ -33,7 +33,7 @@ export const EventCard: React.FC<EventCardProps> = ({ event, onRegister, isRegis
       <div>
         {/* Header row: Status + Type */}
         <div className="flex items-center justify-between mb-4">
-          <StatusBadge status={event.status || 'Upcoming'} />
+          <StatusBadge status={event.status || (isPast ? 'Completed' : 'Upcoming')} />
           {event.type && (
             <Tag size="dense">
               {event.type}

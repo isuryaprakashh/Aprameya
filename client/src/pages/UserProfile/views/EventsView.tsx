@@ -6,7 +6,6 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { apiRequest } from '@/lib/queryClient';
 import { useToast } from '@/hooks/use-toast';
 import { Event, EventRegistration } from '@/lib/types';
-import { events as fallbackEvents } from '@/lib/data';
 import { useAuth } from '@/context/AuthContext';
 import { Ring } from '@/components/ui/ring';
 
@@ -24,8 +23,7 @@ export default function EventsView({ handleEdit, handleCreate, handleDelete }: E
 
     const { data: events = [], isLoading } = useQuery<Event[]>({
         queryKey: ['/api/events'],
-        initialData: fallbackEvents as Event[],
-        staleTime: 60000,
+        staleTime: 5000,
     });
 
     const { data: userEventRegistrations = [] } = useQuery<EventRegistration[]>({
