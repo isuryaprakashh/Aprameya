@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'wouter';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Home, Layers, Calendar, Users, MoreHorizontal, X, FileText, BookOpen, Info, LogIn, LogOut, Ticket, User, LayoutDashboard } from 'lucide-react';
+import { Home, Layers, Calendar, Users, MoreHorizontal, X, FileText, BookOpen, Info, LogIn, LogOut, Ticket, User, LayoutDashboard, Sun, Moon } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
-import { ThemeToggle } from './theme-toggle';
+import { useTheme } from '@/components/theme-provider';
 
 export const Dock: React.FC = () => {
   const [location] = useLocation();
   const { user, logoutMutation } = useAuth();
+  const { theme, setTheme } = useTheme();
   const [moreOpen, setMoreOpen] = useState(false);
   const [keyboardOpen, setKeyboardOpen] = useState(false);
 
@@ -211,10 +212,24 @@ export const Dock: React.FC = () => {
                 </Link>
               </div>
 
-              <div className="flex items-center justify-between p-3 rounded-[var(--r-2)] border border-hairline bg-surface-2/30 mb-4">
-                <span className="text-[13px] font-sans text-text-2">Appearance</span>
-                <ThemeToggle />
-              </div>
+              <button
+                type="button"
+                onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
+                className="w-full flex items-center justify-between p-3 rounded-[var(--r-2)] border border-hairline bg-surface-2/60 hover:bg-surface-2 active:scale-[0.99] transition-all cursor-pointer mb-4 text-left select-none group"
+                aria-label="Toggle appearance"
+              >
+                <div className="flex items-center gap-2.5">
+                  {theme === 'dark' ? (
+                    <Sun className="w-4 h-4 text-mute group-hover:text-paper transition-colors" />
+                  ) : (
+                    <Moon className="w-4 h-4 text-mute group-hover:text-paper transition-colors" />
+                  )}
+                  <span className="text-[13px] font-sans text-paper">Appearance</span>
+                </div>
+                <span className="text-[11px] font-mono text-mute uppercase tracking-wider bg-surface-3 px-2 py-0.5 rounded-[5px] border border-hairline">
+                  {theme === 'dark' ? 'Dark' : 'Light'}
+                </span>
+              </button>
 
               {user ? (
                 <button

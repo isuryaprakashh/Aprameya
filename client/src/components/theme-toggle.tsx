@@ -10,14 +10,14 @@ export function ThemeToggle() {
 
     return (
         <button
-            className="theme-toggle"
+            className="w-9 h-9 rounded-[10px] border border-hairline bg-surface-2 hover:bg-surface-3 hover:border-hairline-2 flex items-center justify-center text-paper transition-all duration-fast cursor-pointer select-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-signal"
             onClick={toggleTheme}
             aria-label="Toggle Theme"
         >
             {theme === "light" ? (
-                <Moon className="w-5 h-5" />
+                <Moon className="w-4 h-4 text-paper" />
             ) : (
-                <Sun className="w-5 h-5" />
+                <Sun className="w-4 h-4 text-paper" />
             )}
         </button>
     )

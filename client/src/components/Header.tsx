@@ -116,7 +116,7 @@ export const Header: React.FC = () => {
           <ThemeToggle />
 
           {user ? (
-            <div className="relative" ref={dropdownRef}>
+            <div className="hidden md:block relative" ref={dropdownRef}>
               <button
                 type="button"
                 onClick={() => setUserDropdownOpen(!userDropdownOpen)}
@@ -284,7 +284,7 @@ export const Header: React.FC = () => {
               </AnimatePresence>
             </div>
           ) : (
-            <div className="flex items-center gap-2">
+            <div className="hidden md:flex items-center gap-2">
               <Link href="/login">
                 <Button variant="ghost" size="sm">
                   Sign in
