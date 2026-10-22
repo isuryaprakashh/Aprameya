@@ -101,10 +101,10 @@ export const Teams: React.FC = () => {
                   key={role}
                   type="button"
                   onClick={() => setSelectedRole(role)}
-                  className={`h-7 px-3 rounded-[var(--r-full)] text-[12px] font-sans font-medium transition-colors cursor-pointer select-none border ${
+                  className={`h-7 px-3.5 rounded-[var(--r-full)] text-[12px] font-sans transition-all duration-fast cursor-pointer select-none border ${
                     isSelected
-                      ? 'border-signal-line bg-signal-soft text-signal-text'
-                      : 'border-hairline bg-transparent text-text-2 hover:border-hairline-2 hover:text-paper'
+                      ? 'border-signal/50 bg-signal/10 dark:bg-signal/15 text-signal dark:text-signal-text font-semibold shadow-xs ring-1 ring-signal/20'
+                      : 'border-hairline-2 bg-surface-2/80 dark:bg-surface-2/70 text-text-2 dark:text-text-2 font-medium hover:bg-surface-3 hover:text-paper hover:border-hairline-3 shadow-xs'
                   }`}
                 >
                   {role}

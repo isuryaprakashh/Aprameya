@@ -16,6 +16,7 @@ import { Input } from '@/components/ui/input';
 import EventRow from '@/components/EventRow';
 import EventCard from '@/components/EventCard';
 import EmptyState from '@/components/EmptyState';
+import { Skeleton } from '@/components/ui/skeleton';
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from '@/context/AuthContext';
 
@@ -279,7 +280,22 @@ export const Events: React.FC = () => {
 
       {/* ─── EVENT LISTINGS ─── */}
       <section className="pb-24 px-5 sm:px-8 lg:px-12 max-w-container mx-auto text-left">
-        {filteredEvents.length > 0 ? (
+        {isLoadingEvents ? (
+          <div className="flex flex-col divide-y divide-hairline">
+            {[1, 2, 3, 4].map((i) => (
+              <div key={i} className="py-5 flex items-center justify-between gap-4">
+                <div className="flex items-center gap-6">
+                  <Skeleton className="w-14 h-14 rounded-md" />
+                  <div className="space-y-2">
+                    <Skeleton className="w-48 sm:w-64 h-5" />
+                    <Skeleton className="w-32 h-4" />
+                  </div>
+                </div>
+                <Skeleton className="w-24 h-8 rounded-full" />
+              </div>
+            ))}
+          </div>
+        ) : filteredEvents.length > 0 ? (
           activeTab === 'upcoming' ? (
             <div className="flex flex-col divide-y divide-hairline">
               {filteredEvents.map((event) => (

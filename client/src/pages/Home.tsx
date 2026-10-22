@@ -51,8 +51,8 @@ export default function Home() {
           {/* Left: Text Stack */}
           <div className="lg:col-span-7 flex flex-col items-start">
             {/* Pill Eyebrow with Red Dot */}
-            <div className="inline-flex items-center gap-2.5 px-3.5 py-1.5 rounded-full border border-hairline bg-surface-1 text-xs font-mono text-text-2 mb-4 sm:mb-6 lg:mb-8">
-              <span className="w-2 h-2 rounded-full bg-signal shrink-0" />
+            <div className="inline-flex items-center gap-2.5 px-3.5 py-1.5 rounded-full border border-hairline-2 bg-surface-2/70 text-xs font-mono text-text-2 dark:text-text-2 shadow-xs mb-4 sm:mb-6 lg:mb-8 backdrop-blur-xs">
+              <span className="w-2 h-2 rounded-full bg-signal shrink-0 animate-[live-pulse_2s_ease-in-out_infinite]" />
               <span>KL University • Autonomous Systems & Robotics Club</span>
             </div>
 
@@ -101,6 +101,8 @@ export default function Home() {
                   loop
                   muted
                   playsInline
+                  // @ts-ignore — fetchpriority is valid HTML but not in React types yet
+                  fetchpriority="high"
                   className="w-full h-full object-cover"
                   src="/assets/hero-loop.mp4"
                 />

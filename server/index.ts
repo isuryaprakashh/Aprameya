@@ -34,6 +34,10 @@ app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 app.use(cookieParser());
 
+// Gzip/Brotli compression — shrinks API responses 60-80%
+import compression from 'compression';
+app.use(compression());
+
 // Configure Helmet for security headers
 import helmet from "helmet";
 app.use(helmet());
@@ -116,18 +120,31 @@ app.use(session({
   },
 }));
 
-// IMPORTANT: Add this logging middleware AFTER session middleware
-app.use((req, res, next) => {
-  console.log('📍 Request:', {
-    method: req.method,
-    path: req.path,
-    sessionID: req.sessionID,
-    userId: req.session?.userId,
-    hasCookie: !!req.headers.cookie,
-    cookies: req.headers.cookie,
-  });
+// Cache-Control for public GET API routes — browsers cache for 60s, serve stale while revalidating
+app.use('/api', (req, res, next) => {
+  if (req.method === 'GET') {
+    // Don't cache authenticated user-specific endpoints
+    const noCachePrefixes = ['/auth', '/event-registrations/my', '/recruitment/applications'];
+    const shouldSkip = noCachePrefixes.some(prefix => req.path.startsWith(prefix));
+    if (!shouldSkip) {
+      res.set('Cache-Control', 'public, max-age=60, stale-while-revalidate=300');
+    }
+  }
   next();
 });
+
+// Verbose request logging — only in development to avoid prod latency
+if (process.env.NODE_ENV !== 'production' && process.env.RENDER !== 'true') {
+  app.use((req, res, next) => {
+    console.log('📍 Request:', {
+      method: req.method,
+      path: req.path,
+      sessionID: req.sessionID,
+      userId: req.session?.userId,
+    });
+    next();
+  });
+}
 
 // Logging middleware
 app.use((req, res, next) => {

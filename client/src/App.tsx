@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Suspense } from "react";
 import { Route, Switch, Redirect, useLocation } from "wouter";
 import { Toaster } from "@/components/ui/toaster";
 
@@ -8,28 +8,38 @@ import Header from "./components/Header";
 import Dock from "./components/Dock";
 import Footer from "./components/Footer";
 import ScrollToTop from "./components/ScrollToTop";
+import { usePrefetchAllData } from "./hooks/usePrefetchAllData";
 
-import DashboardRouter from "./components/DashboardRouter";
+// ─── Eagerly loaded: Landing page (critical path) ───
 import Home from "./pages/Home";
-import Projects from "./pages/Projects";
-import Blogs from "./pages/Blogs";
-import BlogDetails from "./pages/BlogDetails";
-import Events from "./pages/Events";
-import Teams from "./pages/Teams";
-import TeamMemberDetail from "./pages/TeamMemberDetail";
-import About from "./pages/About";
-import Login from "./pages/Login";
-import Signup from "./pages/Signup";
-import ForgotPassword from "./pages/ForgotPassword";
-import UserProfile from "./pages/UserProfile";
-import NotFound from "./pages/not-found";
 
-import TicketRegistration from "./pages/TicketRegistration";
-import MyTickets from "./pages/MyTickets";
-import AdminScanQR from "./pages/AdminScanQR";
-import Recruitment from "./pages/Recruitment";
-import RecruitmentApply from "./pages/RecruitmentApply";
-import RecruitmentStatus from "./pages/RecruitmentStatus";
+// ─── Lazy-loaded pages: Each gets its own chunk ───
+const Projects = React.lazy(() => import("./pages/Projects"));
+const Blogs = React.lazy(() => import("./pages/Blogs"));
+const BlogDetails = React.lazy(() => import("./pages/BlogDetails"));
+const Events = React.lazy(() => import("./pages/Events"));
+const Teams = React.lazy(() => import("./pages/Teams"));
+const TeamMemberDetail = React.lazy(() => import("./pages/TeamMemberDetail"));
+const About = React.lazy(() => import("./pages/About"));
+const Login = React.lazy(() => import("./pages/Login"));
+const Signup = React.lazy(() => import("./pages/Signup"));
+const ForgotPassword = React.lazy(() => import("./pages/ForgotPassword"));
+const UserProfile = React.lazy(() => import("./pages/UserProfile"));
+const NotFound = React.lazy(() => import("./pages/not-found"));
+const TicketRegistration = React.lazy(() => import("./pages/TicketRegistration"));
+const MyTickets = React.lazy(() => import("./pages/MyTickets"));
+const AdminScanQR = React.lazy(() => import("./pages/AdminScanQR"));
+const Recruitment = React.lazy(() => import("./pages/Recruitment"));
+const RecruitmentApply = React.lazy(() => import("./pages/RecruitmentApply"));
+const RecruitmentStatus = React.lazy(() => import("./pages/RecruitmentStatus"));
+const DashboardRouter = React.lazy(() => import("./components/DashboardRouter"));
+
+// Minimal loading fallback — matches the app's dark theme
+const PageLoader = () => (
+  <div className="min-h-screen bg-ink flex items-center justify-center">
+    <div className="w-6 h-6 rounded-full border-2 border-signal border-t-transparent animate-spin" />
+  </div>
+);
 
 // Routes that render as standalone pages (no header/footer)
 const STANDALONE_ROUTES = ['/scan'];
@@ -45,11 +55,7 @@ const ProtectedRoute = ({ component: Component, roles, ...rest }: ProtectedRoute
   const { user, isLoading } = useAuth();
 
   if (isLoading) {
-    return (
-      <div className="min-h-screen bg-ink flex items-center justify-center">
-        <div className="w-6 h-6 rounded-full border-2 border-signal border-t-transparent animate-spin" />
-      </div>
-    );
+    return <PageLoader />;
   }
 
   if (!user) {
@@ -68,17 +74,22 @@ function AppContent() {
   const isStandalone = STANDALONE_ROUTES.includes(location);
   const isDashboard = location.startsWith('/dashboard') || location.startsWith('/profile');
 
+  // Prefetch data for all pages in the background so navigation feels instant
+  usePrefetchAllData();
+
   return (
     <>
       <ScrollToTop />
 
       {/* Standalone routes (no header/footer) */}
       {isStandalone && (
-        <Switch>
-          <Route path="/scan">
-            <ProtectedRoute component={AdminScanQR} roles={['ADMIN', 'CORE']} />
-          </Route>
-        </Switch>
+        <Suspense fallback={<PageLoader />}>
+          <Switch>
+            <Route path="/scan">
+              <ProtectedRoute component={AdminScanQR} roles={['ADMIN', 'CORE']} />
+            </Route>
+          </Switch>
+        </Suspense>
       )}
 
       {/* Standard layout with header/footer */}
@@ -87,46 +98,48 @@ function AppContent() {
           {!isDashboard && <Header />}
 
           <main className="flex-grow min-h-[100dvh] flex flex-col">
-            <Switch>
-              <Route path="/" component={Home} />
-              <Route path="/projects" component={Projects} />
-              <Route path="/blogs" component={Blogs} />
-              <Route path="/blogs/:id" component={BlogDetails} />
-              <Route path="/events" component={Events} />
-              <Route path="/teams/:id" component={TeamMemberDetail} />
-              <Route path="/team/:id" component={TeamMemberDetail} />
-              <Route path="/teams" component={Teams} />
-              <Route path="/team" component={Teams} />
-              <Route path="/recruitment" component={Recruitment} />
-              <Route path="/about" component={About} />
-              <Route path="/login" component={Login} />
-              <Route path="/signup" component={Signup} />
-              <Route path="/forgot-password" component={ForgotPassword} />
-              <Route path="/reset-password" component={ForgotPassword} />
+            <Suspense fallback={<PageLoader />}>
+              <Switch>
+                <Route path="/" component={Home} />
+                <Route path="/projects" component={Projects} />
+                <Route path="/blogs" component={Blogs} />
+                <Route path="/blogs/:id" component={BlogDetails} />
+                <Route path="/events" component={Events} />
+                <Route path="/teams/:id" component={TeamMemberDetail} />
+                <Route path="/team/:id" component={TeamMemberDetail} />
+                <Route path="/teams" component={Teams} />
+                <Route path="/team" component={Teams} />
+                <Route path="/recruitment" component={Recruitment} />
+                <Route path="/about" component={About} />
+                <Route path="/login" component={Login} />
+                <Route path="/signup" component={Signup} />
+                <Route path="/forgot-password" component={ForgotPassword} />
+                <Route path="/reset-password" component={ForgotPassword} />
 
-              <Route path="/events/:eventId/register" component={TicketRegistration} />
+                <Route path="/events/:eventId/register" component={TicketRegistration} />
 
-              <Route path="/recruitment/apply" component={RecruitmentApply} />
-              <Route path="/recruitment/status" component={RecruitmentStatus} />
+                <Route path="/recruitment/apply" component={RecruitmentApply} />
+                <Route path="/recruitment/status" component={RecruitmentStatus} />
 
-              <Route path="/my-tickets">
-                <ProtectedRoute component={MyTickets} />
-              </Route>
+                <Route path="/my-tickets">
+                  <ProtectedRoute component={MyTickets} />
+                </Route>
 
-              {/* Dashboard routes */}
-              <Route path="/dashboard">
-                <ProtectedRoute component={DashboardRouter} />
-              </Route>
-              <Route path="/dashboard/:rest*">
-                <ProtectedRoute component={DashboardRouter} />
-              </Route>
+                {/* Dashboard routes */}
+                <Route path="/dashboard">
+                  <ProtectedRoute component={DashboardRouter} />
+                </Route>
+                <Route path="/dashboard/:rest*">
+                  <ProtectedRoute component={DashboardRouter} />
+                </Route>
 
-              <Route path="/profile">
-                <ProtectedRoute component={UserProfile} />
-              </Route>
+                <Route path="/profile">
+                  <ProtectedRoute component={UserProfile} />
+                </Route>
 
-              <Route component={NotFound} />
-            </Switch>
+                <Route component={NotFound} />
+              </Switch>
+            </Suspense>
           </main>
 
           {!isDashboard && <Footer />}
