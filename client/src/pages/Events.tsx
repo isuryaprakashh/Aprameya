@@ -25,7 +25,7 @@ export const Events: React.FC = () => {
   const [, setLocation] = useLocation();
   const { user } = useAuth();
 
-  const { data: events = [], isLoading } = useQuery<Event[]>({
+  const { data: events = [], isLoading: isLoadingEvents } = useQuery<Event[]>({
     queryKey: ['/api/events'],
     queryFn: async () => {
       const controller = new AbortController();
@@ -67,7 +67,7 @@ export const Events: React.FC = () => {
   const currentList = activeTab === 'upcoming' ? upcomingList : pastList;
   const filteredEvents = currentList.filter(
     (e) =>
-      e.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      (e.title || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
       (e.description && e.description.toLowerCase().includes(searchTerm.toLowerCase()))
   );
 

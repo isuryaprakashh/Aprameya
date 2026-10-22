@@ -1,5 +1,9 @@
 export interface Project {
   id: string;
+  _id?: string;
+  slug?: string;
+  year?: string | number;
+  status?: string;
   title: string;
   category: string;
   description: string;
@@ -34,6 +38,8 @@ export interface ResearchItem {
 
 export interface Event {
   id: string;
+  _id?: string;
+  status?: string;
   title: string;
   type: string;
   date: string;

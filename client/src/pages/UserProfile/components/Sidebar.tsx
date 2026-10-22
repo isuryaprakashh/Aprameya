@@ -199,7 +199,7 @@ export const Sidebar = ({
 
       {/* Mobile Drawer */}
       <Sheet open={isMobileOpen} onOpenChange={setIsMobileOpen}>
-        <SheetContent side="left" className="p-0 w-64 bg-bg border-r border-border">
+        <SheetContent side="left" hideClose className="p-0 w-64 bg-bg border-r border-border [&>button]:hidden">
           <SidebarContent
             activeView={activeView}
             setActiveView={setActiveView}
