@@ -13,6 +13,7 @@ import {
   UserPlus,
   Shield,
   User,
+  LogOut,
 } from 'lucide-react';
 import Logo from '@/components/icons/Logo';
 import RoleBadge from '@/components/ui/RoleBadge';
@@ -41,7 +42,7 @@ const SidebarContent = ({
   isMobile,
   closeMobile,
 }: SidebarContentProps) => {
-  const { user } = useAuth();
+  const { user, logoutMutation } = useAuth();
   const [, navigate] = useLocation();
   const isAdmin = user?.role === 'ADMIN';
   const isCore = user?.role === 'CORE';
@@ -163,6 +164,17 @@ const SidebarContent = ({
         >
           <Home className="w-3.5 h-3.5" /> View Public Site
         </Link>
+
+        <button
+          type="button"
+          onClick={() => {
+            logoutMutation.mutate();
+            if (isMobile && closeMobile) closeMobile();
+          }}
+          className="w-full flex items-center justify-center gap-2 h-9 rounded-md text-xs font-mono text-signal-text hover:bg-signal-soft border border-signal-line/30 hover:border-signal-line transition-colors cursor-pointer"
+        >
+          <LogOut className="w-3.5 h-3.5" /> Sign out
+        </button>
       </div>
     </div>
   );

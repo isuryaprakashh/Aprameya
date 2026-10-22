@@ -124,10 +124,25 @@ app.use(session({
 app.use('/api', (req, res, next) => {
   if (req.method === 'GET') {
     // Don't cache authenticated user-specific endpoints
-    const noCachePrefixes = ['/auth', '/event-registrations/my', '/recruitment/applications'];
+    const noCachePrefixes = [
+      '/me',
+      '/users/me',
+      '/auth',
+      '/event-registrations/my',
+      '/recruitment/applications',
+      '/tickets/my',
+      '/my-tickets',
+      '/users',
+    ];
     const shouldSkip = noCachePrefixes.some(prefix => req.path.startsWith(prefix));
     if (!shouldSkip) {
       res.set('Cache-Control', 'public, max-age=60, stale-while-revalidate=300');
+    } else {
+      res.set({
+        'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate',
+        'Pragma': 'no-cache',
+        'Expires': '0',
+      });
     }
   }
   next();

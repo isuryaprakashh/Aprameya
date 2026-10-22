@@ -106,18 +106,54 @@ router.post("/login", async (req, res) => {
 });
 
 router.post("/logout", (req, res) => {
-    req.session.destroy((err) => {
-        if (err) {
-            console.error('❌ Logout error:', err);
-            return res.status(500).json({ error: "Logout failed" });
-        }
+    const isProduction = process.env.NODE_ENV === 'production' || process.env.RENDER === 'true';
 
+    const clearAuthCookies = () => {
+        const cookieOptions = {
+            path: '/',
+            httpOnly: true,
+            secure: isProduction,
+            sameSite: (isProduction ? 'none' : 'lax') as 'none' | 'lax',
+        };
+
+        // Clear configured session cookie with matching attributes
+        res.clearCookie('aprameya.sid', cookieOptions);
+        res.clearCookie('connect.sid', cookieOptions);
+
+        // Fallbacks without explicit options
         res.clearCookie('aprameya.sid');
+        res.clearCookie('connect.sid');
+    };
+
+    const finishLogout = () => {
+        clearAuthCookies();
+        res.set({
+            'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate',
+            'Pragma': 'no-cache',
+            'Expires': '0',
+        });
         res.json({ success: true });
-    });
+    };
+
+    if (req.session) {
+        req.session.destroy((err) => {
+            if (err) {
+                console.error('❌ Logout error destroying session:', err);
+            }
+            finishLogout();
+        });
+    } else {
+        finishLogout();
+    }
 });
 
 router.get("/me", async (req, res) => {
+    res.set({
+        'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate',
+        'Pragma': 'no-cache',
+        'Expires': '0',
+    });
+
     if (!req.session?.userId) {
         return res.status(401).json({ error: "Not authenticated" });
     }

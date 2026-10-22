@@ -31,6 +31,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
                 const baseUrl = import.meta.env.VITE_API_URL || "";
                 const res = await fetch(`${baseUrl}/api/me`, { 
                     credentials: "include",
+                    cache: "no-store",
+                    headers: {
+                        "Cache-Control": "no-cache",
+                        "Pragma": "no-cache",
+                    },
                     signal: controller.signal 
                 });
                 clearTimeout(timeoutId);
@@ -98,21 +103,37 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     const logoutMutation = useMutation({
         mutationFn: async () => {
-            await apiRequest("/api/logout", { method: "POST" });
+            try {
+                await apiRequest("/api/logout", { method: "POST" });
+            } catch (err) {
+                console.warn("Logout request failed:", err);
+            }
         },
         onSuccess: () => {
+            // Cancel any in-flight /api/me requests
+            queryClient.cancelQueries({ queryKey: ["/api/me"] });
+            // Immediately clear cached user and query cache
             queryClient.setQueryData(["/api/me"], null);
-            queryClient.invalidateQueries({ queryKey: ["/api/me"] });
+            queryClient.removeQueries({ queryKey: ["/api/me"] });
+            queryClient.clear();
+            queryClient.setQueryData(["/api/me"], null);
+
             toast({
                 title: "Logged out",
                 description: "See you soon!",
             });
         },
-        onError: (error: Error) => {
+        onError: () => {
+            // Even if network/server errors, clear local state
+            queryClient.cancelQueries({ queryKey: ["/api/me"] });
+            queryClient.setQueryData(["/api/me"], null);
+            queryClient.removeQueries({ queryKey: ["/api/me"] });
+            queryClient.clear();
+            queryClient.setQueryData(["/api/me"], null);
+
             toast({
-                title: "Logout failed",
-                description: error.message,
-                variant: "destructive",
+                title: "Logged out",
+                description: "See you soon!",
             });
         },
     });
